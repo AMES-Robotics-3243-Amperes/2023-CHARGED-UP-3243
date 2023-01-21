@@ -43,17 +43,17 @@ public class ReidPrototypeCommand extends CommandBase {
   // ££ In brevity: If the X button is pressed the compliant motors will spin, if the A button is pressed PID tuning can begin. Tune by changing the values that are passed to setPIDValues()
   @Override
   public void execute() {
-    double speed = 0;
+    double wheelSpeed = 0;
 
     if (m_controller.getXButton()) {
-      speed = Constants.kWheelSpeed;
+      wheelSpeed = Constants.kWheelSpeed;
     }
 
-    if (m_controller.getYButton()) {
+    if (m_controller.getBButton()) {
       m_reidPrototypeSubsystem.closeGrabber(Constants.kGrabberSpeed);
     }
 
-    if (m_controller.getAButton()) {
+    if (m_controller.getYButton()) {
       m_reidPrototypeSubsystem.openGrabber(Constants.kGrabberSpeed);
     }
     
@@ -64,7 +64,7 @@ public class ReidPrototypeCommand extends CommandBase {
       m_reidPrototypeSubsystem.setCurrentReference(0);
     }
 
-    m_reidPrototypeSubsystem.spinMotor(speed);
+    m_reidPrototypeSubsystem.spinMotor(wheelSpeed);
     m_reidPrototypeSubsystem.setPIDValues(0.008, 0.002, 0, 0.072);
   }
  

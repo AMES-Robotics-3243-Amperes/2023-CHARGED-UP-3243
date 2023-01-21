@@ -44,7 +44,6 @@ public class ReidPrototypeSubsystem extends SubsystemBase {
 
   public void spinMotor(double speed) {
     // ££ Spins the two compliant wheel motors when called
-    
     compliantMotorZero.set(speed);
     compliantMotorOne.set(speed);
   }
