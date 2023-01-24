@@ -61,6 +61,11 @@ public final class Constants {
 
   }
 
+  /** ++ constants for GRABBER ---------------------------------------------------------- */
+  public static final class Grabber {
+  
+  }
+
   /** ++ constants for PHOTONVISION ----------------------------------------------------- */
   public static final class PhotonVision {
 
