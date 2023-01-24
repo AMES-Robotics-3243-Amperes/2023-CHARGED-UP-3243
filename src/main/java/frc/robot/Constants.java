@@ -70,6 +70,8 @@ public final class Constants {
     public static class MotorIDs {
       public static final int armPivot = 1000; // H! TODO insert the motor IDs
       public static final int armExtension = 1001;
+      public static final int WristPitch = 1002;
+      public static final int WristRoll = 1003;
     }
 
     // H! Holds the data for the positions of stuff in the arm

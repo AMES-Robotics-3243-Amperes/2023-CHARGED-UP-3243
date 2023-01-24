@@ -18,16 +18,25 @@ public class LegAnkleSubsystem extends SubsystemBase {
   
   private PIDController pidArmPivot = new PIDController(0.1, 0, 0);
   private PIDController pidArmExtention = new PIDController(0.1, 0, 0);
+  private PIDController pidWristPitch = new PIDController(0.1, 0, 0);
+  private PIDController pidWristRoll = new PIDController(0.1, 0, 0); 
+
 
   
   private CANSparkMax armPivot = new CANSparkMax(Constants.MotorIDs.armPivot, MotorType.kBrushless);
   private CANSparkMax armExtension = new CANSparkMax(Constants.MotorIDs.armExtension, MotorType.kBrushless);
+  private CANSparkMax wristPitch = new CANSparkMax(Constants.MotorIDs.WristPitch, MotorType.kBrushless);
+  private CANSparkMax wristRoll = new CANSparkMax(Constants.MotorIDs.WristRoll, MotorType.kBrushless);
 
   private SparkMaxAbsoluteEncoder armPivotEncoder = armPivot.getAbsoluteEncoder(Type.kDutyCycle);
   private SparkMaxAbsoluteEncoder armExtensionEncoder = armExtension.getAbsoluteEncoder(Type.kDutyCycle);
+  private SparkMaxAbsoluteEncoder wristPitchEncoder = wristPitch.getAbsoluteEncoder(Type.kDutyCycle);
+  private SparkMaxAbsoluteEncoder wristRollEncoder = wristRoll.getAbsoluteEncoder(Type.kDutyCycle);
 
   private double targetSpeedArmPivot = 0.0;
   private double targetSpeedArmExtension = 0.0;
+  private double targetSpeedWristPitch = 0.0;
+  private double targetSpeedWristRoll = 0.0;
 
 
   /** Creates a new LegAnkleSubsystem. */
@@ -37,7 +46,8 @@ public class LegAnkleSubsystem extends SubsystemBase {
   }
 
   public void moveToXYTheta(double x, double y, double pitch) {
-    // H! Inverse kinematics: see more detailed math here: https://www.desmos.com/calculator/l89yzwijul
+    // H! Inverse kinematics: see more detailed math here: https://www.desmos.com/calculator/l89yzwijul 
+    // ss Hale your desmos is broken and i have no idea what this even does.
     double targetArmAngle = Math.atan((y + Constants.ArmData.wristLength * Math.sin(pitch))  /  (x + Constants.ArmData.wristLength * Math.cos(pitch)));
     double targetArmLength = (y + Constants.ArmData.wristLength * Math.sin(pitch)) / Math.sin(targetArmAngle);
     double targetWristAngle = pitch - targetArmAngle;
@@ -46,7 +56,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
     pidArmPivot.setSetpoint(targetArmAngle);
     pidArmExtention.setSetpoint(targetArmLength);
 
-    // H! TODO Add the wrrist stuff. Feel free to basicly copy what I did and jsut change the names
+    // H! TODO Add the wrist stuff. Feel free to basically copy what I did and just change the names
   }
 
   @Override
