@@ -20,8 +20,6 @@ public class LegAnkleSubsystem extends SubsystemBase {
   private PIDController pidArmExtention = new PIDController(0.1, 0, 0);
   private PIDController pidWristPitch = new PIDController(0.1, 0, 0);
   private PIDController pidWristRoll = new PIDController(0.1, 0, 0); 
-
-
   
   private CANSparkMax armPivot = new CANSparkMax(Constants.MotorIDs.armPivot, MotorType.kBrushless);
   private CANSparkMax armExtension = new CANSparkMax(Constants.MotorIDs.armExtension, MotorType.kBrushless);
@@ -45,18 +43,22 @@ public class LegAnkleSubsystem extends SubsystemBase {
     
   }
 
-  public void moveToXYTheta(double x, double y, double pitch) {
+  public void moveToXYTheta(double x, double y, double pitch, double roll) {
     // H! Inverse kinematics: see more detailed math here: https://www.desmos.com/calculator/l89yzwijul 
-    // ss Hale your desmos is broken and i have no idea what this even does.
     double targetArmAngle = Math.atan((y + Constants.ArmData.wristLength * Math.sin(pitch))  /  (x + Constants.ArmData.wristLength * Math.cos(pitch)));
     double targetArmLength = (y + Constants.ArmData.wristLength * Math.sin(pitch)) / Math.sin(targetArmAngle);
     double targetWristAngle = pitch - targetArmAngle;
+    double targetWristRoll = roll;
 
 
     pidArmPivot.setSetpoint(targetArmAngle);
     pidArmExtention.setSetpoint(targetArmLength);
+    pidWristPitch.setSetpoint(targetWristAngle);
+    pidWristRoll.setSetpoint(targetWristRoll);
 
     // H! TODO Add the wrist stuff. Feel free to basically copy what I did and just change the names
+
+
   }
 
   @Override
@@ -64,5 +66,12 @@ public class LegAnkleSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     targetSpeedArmPivot = pidArmPivot.calculate(armPivotEncoder.getPosition());
     targetSpeedArmExtension = pidArmExtention.calculate(armExtensionEncoder.getPosition());
+    targetSpeedWristPitch = pidWristPitch.calculate(wristPitchEncoder.getPosition());
+    targetSpeedWristRoll = pidWristRoll.calculate(wristRollEncoder.getPosition());
+    
+    armPivot.set(targetSpeedArmPivot);
+    armExtension.set(targetSpeedArmExtension);
+    wristPitch.set(targetSpeedWristPitch);
+    wristRoll.set(targetSpeedWristRoll);
   }
 }
