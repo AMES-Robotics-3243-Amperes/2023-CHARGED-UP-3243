@@ -13,7 +13,63 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public static class OperatorConstants {
-    public static final int kDriverControllerPort = 0;
+
+  /** ++ constants for DRIVE TRAIN -------------------------------------------*/
+  public static final class DriveTrain {
+    
+
   }
+
+
+
+  /** ++ constants for JOYSTICKS -------------------------------------------- */
+  public static final class Joysticks {
+    public static final int primaryControllerID = 0;
+    public static final int secondaryControllerID = 1;
+
+    // ++ OTHER JOYSTICK CONSTANTS --
+    public static final double deadZoneSize = 0.15;
+    /**  ++ lowPassFilterStrength should be between 0 & 1. The closer it is to 1, the smoother acceleration will be. */
+    public static final double driveLowPassFilterStrength = 0.91;
+    public static final double rotationLowPassFilterStrength = 0.2;
+    // ++ we probably don't want the speed damcursjdjdjdpers as finals incase we want a fastmode/to change them later 
+    public static final double driveSpeedDamper = 0.65; 
+    public static final double rotationDamper = 8.0; 
+
+    // ss This is the multiplier for Fast Mode
+    // explained in JoyUtil.java
+    public static final double fastModeMaxMultiplier = 0.5;
+
+    /** ++ the damper for the D-Pad inputs */
+    public static final double dPadDamper = 0.7;
+
+
+    // ++ JOYSTICK CURVE CONSTANTS --
+    public static final double aCoeff = 0.7;
+    public static final int firstPower = 3;
+
+    public static final int secondPower = 1; 
+    public static final double bCoeff = (1.0 - aCoeff); 
+
+
+  }
+
+  
+
+  /** ++ constants for WRIST and ARM ---------------------------------------------------- */
+  public static final class WristAndArm {
+
+  }
+
+  /** ++ constants for PHOTONVISION ----------------------------------------------------- */
+  public static final class PhotonVision {
+
+  }
+
+  /** ++ constants for NEOs ------------------------------------------------------------- */
+  public static final class NEOs{
+    public static double maxNEORPM = 5500.0;
+  }
+
+
 }
