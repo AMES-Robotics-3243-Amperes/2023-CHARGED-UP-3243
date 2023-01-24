@@ -6,12 +6,12 @@ These are two-character tags to show who wrote which comments (mostly so we can 
 
 tag - Name: role 
 
-:D - Mason Hirschi: team co-lead
-++ - Maya Nelson: team co-lead
-:> - Crystal Stay: team assistant lead
+:D - Mason Hirschi: team co-lead,
+++ - Maya Nelson: team co-lead,
+:> - Crystal Stay: team assistant lead,
 
-££ - Jasper
-H! - Hale
-&& - Moth
-ss - Silas
+££ - Jasper,
+H! - Hale,
+&& - Moth,
+ss - Silas,
 <> - Bryce
