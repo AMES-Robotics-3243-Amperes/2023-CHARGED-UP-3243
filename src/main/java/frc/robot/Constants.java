@@ -56,7 +56,7 @@ public final class Constants {
 
   }
 
-  /** ++ constants for GRABBER */
+  /** ++ constants for GRABBER ---------------------------------------------------------- */
   public static final class Grabber {
     public static final double kWheelSpeed = 0.5;
     public static final double kGrabberSpeed = 1.0;
@@ -73,10 +73,6 @@ public final class Constants {
 
   }
 
-  /** ++ constants for GRABBER ---------------------------------------------------------- */
-  public static final class Grabber {
-  
-  }
 
   /** ++ constants for PHOTONVISION ----------------------------------------------------- */
   public static final class PhotonVision {
