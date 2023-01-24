@@ -12,6 +12,8 @@ package frc.robot;
  * <p>It is advised to statically import this class (or one of its inner classes) wherever the
  * constants are needed, to reduce verbosity.
  */
+
+ // ££ I still don't understand why putting k in front of variables is the standard in WPILib
 public final class Constants {
 
   /** ++ constants for DRIVE TRAIN -------------------------------------------*/
@@ -54,17 +56,17 @@ public final class Constants {
 
   }
 
-  
+  /** ++ constants for GRABBER ---------------------------------------------------------- */
+  public static final class Grabber {
+
+  }
+   
 
   /** ++ constants for WRIST and ARM ---------------------------------------------------- */
   public static final class WristAndArm {
 
   }
 
-  /** ++ constants for GRABBER ---------------------------------------------------------- */
-  public static final class Grabber {
-  
-  }
 
   /** ++ constants for PHOTONVISION ----------------------------------------------------- */
   public static final class PhotonVision {
