@@ -56,8 +56,6 @@ public class LegAnkleSubsystem extends SubsystemBase {
     pidWristPitch.setSetpoint(targetWristAngle);
     pidWristRoll.setSetpoint(targetWristRoll);
 
-    // H! TODO Add the wrist stuff. Feel free to basically copy what I did and just change the names
-
 
   }
 
