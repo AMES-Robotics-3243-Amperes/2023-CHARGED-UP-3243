@@ -43,7 +43,11 @@ public class LegAnkleSubsystem extends SubsystemBase {
     
   }
 
-  public void moveToXYTheta(double x, double y, double pitch, double roll) {
+  public void moveByXYThetaRollOffset(double xOffset, double yOffset, double pitchOffset, double rollOffset) {
+
+  }
+
+  public void moveToXYThetaRoll(double x, double y, double pitch, double roll) {
     // H! Inverse kinematics: see more detailed math here: https://www.desmos.com/calculator/l89yzwijul 
     double targetArmAngle = Math.atan((y + Constants.WristAndArm.wristLength * Math.sin(pitch))  /  (x + Constants.WristAndArm.wristLength * Math.cos(pitch)));
     double targetArmLength = (y + Constants.WristAndArm.wristLength * Math.sin(pitch)) / Math.sin(targetArmAngle);
