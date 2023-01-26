@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import frc.robot.Constants.DriveTrain.ModuleConstants;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -57,14 +58,13 @@ public class SwerveModule {
         m_turningEncoder.setPositionConversionFactor(ModuleConstants.kTurningEncoderPositionFactor);
         m_turningEncoder.setVelocityConversionFactor(ModuleConstants.kTurningEncoderVelocityFactor);
 
-        // <> invert the turning encoder, as the way rev modules are assembled
-        // <> leaves the turning encoder inverted
-        m_turningEncoder.setInverted(true);
+        // <> invert the turning encoder
+        m_turningEncoder.setInverted(ModuleConstants.kTurningEncoderInverted);
 
         // <> enable pid wrap on 0 to 2 pi, as the wheels rotate freely
         m_turningPIDController.setPositionPIDWrappingEnabled(true);
-        m_turningPIDController.setPositionPIDWrappingMinInput(0);
-        m_turningPIDController.setPositionPIDWrappingMaxInput(2 * Math.PI);
+        m_turningPIDController.setPositionPIDWrappingMinInput(ModuleConstants.kTurningEncoderPositionPIDMinInput);
+        m_turningPIDController.setPositionPIDWrappingMaxInput(ModuleConstants.kTurningEncoderPositionPIDMaxInput);
 
         // <> set p, i, and d terms for driving
         m_drivingPIDController.setP(ModuleConstants.kDrivingP);

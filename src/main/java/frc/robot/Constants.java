@@ -4,6 +4,12 @@
 
 package frc.robot;
 
+import com.revrobotics.CANSparkMax.IdleMode;
+
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.util.Units;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -18,8 +24,102 @@ public final class Constants {
 
   /** ++ constants for DRIVE TRAIN -------------------------------------------*/
   public static final class DriveTrain {
-    
+    public static final class DriveConstants {
+      // <> if the driving is field relative
+      public static final boolean fieldRelative = true;
 
+      // <> max ALLOWED speeds
+      public static final double kMaxSpeedMetersPerSecond = 4.8;
+      public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
+  
+      // <> distance between centers of right and left wheels on robot
+      public static final double kRobotWidth = Units.inchesToMeters(26.5);
+      // <> distance between front and back wheels on robot
+      public static final double kRobotLength = Units.inchesToMeters(26.5);
+
+      // <> configure kinematics
+      public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
+          new Translation2d(kRobotLength / 2, kRobotWidth / 2),
+          new Translation2d(kRobotLength / 2, -kRobotWidth / 2),
+          new Translation2d(-kRobotLength / 2, kRobotWidth / 2),
+          new Translation2d(-kRobotLength / 2, -kRobotWidth / 2));
+  
+      // <> angular offsets of the modules
+      public static final double kFrontLeftChassisAngularOffset = 0;
+      public static final double kFrontRightChassisAngularOffset = 0;
+      public static final double kBackLeftChassisAngularOffset = 0;
+      public static final double kBackRightChassisAngularOffset = 0;
+  
+      // <> spark max ids
+      public static final int kFrontLeftDrivingCanId = 11;
+      public static final int kRearLeftDrivingCanId = 13;
+      public static final int kFrontRightDrivingCanId = 15;
+      public static final int kRearRightDrivingCanId = 17;
+  
+      public static final int kFrontLeftTurningCanId = 10;
+      public static final int kRearLeftTurningCanId = 12;
+      public static final int kFrontRightTurningCanId = 14;
+      public static final int kRearRightTurningCanId = 16;
+  
+      // <> if the gyro is reversed
+      public static final boolean kGyroReversed = false;
+    }
+    
+    public static final class ModuleConstants {
+      /** 
+       * <> direct quote from rev robotis:
+       * 
+       * The MAXSwerve module can be configured with one of three pinion gears:
+       * 12T, 13T, or 14T. This changes the drive speed of the module
+       * (a pinion gear with more teeth will result in a robot that drives faster).
+      */
+      public static final int kDrivingMotorPinionTeeth = 14;
+  
+      // <> if constructed correctly, all modules' turning encoders will be reversed
+      public static final boolean kTurningEncoderInverted = true;
+  
+      // <> required for various calculations
+      public static final double kWheelDiameterMeters = 0.0762;
+      public static final double kWheelCircumferenceMeters = kWheelDiameterMeters * Math.PI;
+
+      // <> quote from revrobotics:
+      // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15 teeth on the bevel pinion
+      public static final double kDrivingMotorReduction = (45.0 * 22) / (kDrivingMotorPinionTeeth * 15);
+  
+      public static final double kDrivingEncoderPositionFactor = (kWheelDiameterMeters * Math.PI)
+          / kDrivingMotorReduction; // meters
+      public static final double kDrivingEncoderVelocityFactor = ((kWheelDiameterMeters * Math.PI)
+          / kDrivingMotorReduction) / 60.0; // meters per second
+  
+      public static final double kTurningEncoderPositionFactor = (2 * Math.PI); // <> radians
+      public static final double kTurningEncoderVelocityFactor = (2 * Math.PI) / 60.0; // <> radians per second
+  
+      public static final double kTurningEncoderPositionPIDMinInput = 0; // <> radians
+      public static final double kTurningEncoderPositionPIDMaxInput = kTurningEncoderPositionFactor; // <> radians
+  
+      // <> pidf stuff
+      public static final double kDrivingP = 0.04;
+      public static final double kDrivingI = 0;
+      public static final double kDrivingD = 0;
+      public static final double kDrivingFF = 0;
+      public static final double kDrivingMinOutput = -1;
+      public static final double kDrivingMaxOutput = 1;
+  
+      public static final double kTurningP = 1;
+      public static final double kTurningI = 0;
+      public static final double kTurningD = 0;
+      public static final double kTurningFF = 0;
+      public static final double kTurningMinOutput = -1;
+      public static final double kTurningMaxOutput = 1;
+  
+      // <> idle modes
+      public static final IdleMode kDrivingMotorIdleMode = IdleMode.kBrake;
+      public static final IdleMode kTurningMotorIdleMode = IdleMode.kBrake;
+  
+      // <> current limits
+      public static final int kDrivingMotorCurrentLimit = 50; // <> amps
+      public static final int kTurningMotorCurrentLimit = 20; // <> amps
+    }
   }
 
 
