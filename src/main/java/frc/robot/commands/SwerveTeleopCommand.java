@@ -4,21 +4,22 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.JoyUtil;
+import frc.robot.subsystems.DriveSubsystem;
 
-/** An example command that uses an example subsystem. */
-public class TeleopDriveCommand extends CommandBase {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final DriveSubsystem m_driveSubsystem;
+public class SwerveTeleopCommand extends CommandBase {
+  // <> subsystem
+  private final DriveSubsystem m_DriveSubsystem;
 
-  /**
-   * Creates a new ExampleCommand.
-   *
-   * @param subsystem The subsystem used by this command.
-   */
-  public TeleopDriveCommand(DriveSubsystem subsystem) {
-    m_driveSubsystem = subsystem;
+  // <> driver joyutil
+  private final JoyUtil controller;
+
+  /** Creates a new SwerveTeleopCommand. */
+  public SwerveTeleopCommand(DriveSubsystem subsystem, JoyUtil controller) {
+    m_DriveSubsystem = subsystem;
+    this.controller = controller;
+
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
   }
@@ -29,7 +30,14 @@ public class TeleopDriveCommand extends CommandBase {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    // <> drive the drivetrain with the controller's input
+    m_DriveSubsystem.drive(
+      controller.getDriveXWithAdjustments(),
+      controller.getDriveYWithAdjustments(),
+      controller.getRotationWithAdjustments(),
+      DriveConstants.fieldRelative);
+  }
 
   // Called once the command ends or is interrupted.
   @Override
