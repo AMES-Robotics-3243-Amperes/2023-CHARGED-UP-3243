@@ -49,10 +49,10 @@ public class LegAnkleSubsystem extends SubsystemBase {
   }
 
   public void moveByXYTheta(double x, double y, double pitch, double roll) {
-    targetX = targetX + x;
-    targetY = targetY + y;
-    targetPitch = targetPitch + pitch;
-    targetRoll = targetRoll + roll;
+    targetX = targetX + x * Constants.WristAndArm.changeXMultiplier;
+    targetY = targetY + y * Constants.WristAndArm.changeYMultiplier;
+    targetPitch = targetPitch + pitch * Constants.WristAndArm.changePitchMultiplier;
+    targetRoll = targetRoll + roll * Constants.WristAndArm.changeRollMultiplier;
 
     moveToXYTheta(targetX, targetY, targetPitch, targetRoll);
   }
