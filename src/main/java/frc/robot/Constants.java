@@ -26,19 +26,19 @@ public final class Constants {
   public static final class DriveTrain {
     public static final class DriveConstants {
       // <> if the driving is field relative
-      public static final boolean fieldRelative = false;
+      public static final boolean fieldRelative = true;
 
       // <> speed damper
-      public static final double kDrivingMetersPerSecond = 3.5;
-      public static final double kAngularRadiansPerSecond = 0.7 * Math.PI; // radians per second
+      public static final double kDrivingMetersPerSecond = 4.5;
+      public static final double kAngularRadiansPerSecond = 1.3 * Math.PI; // radians per second
 
       // <> max speed
       public static final double kMaxMetersPerSecond = 1;
   
       // <> distance between centers of right and left wheels on robot
-      public static final double kRobotWidth = Units.inchesToMeters(26.5);
+      public static final double kRobotWidth = Units.inchesToMeters(27);
       // <> distance between front and back wheels on robot
-      public static final double kRobotLength = Units.inchesToMeters(26.5);
+      public static final double kRobotLength = Units.inchesToMeters(32);
 
       // <> configure kinematics
       public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
@@ -48,21 +48,21 @@ public final class Constants {
           new Translation2d(-kRobotLength / 2, -kRobotWidth / 2));
   
       // <> angular offsets of the modules
-      public static final double kFrontLeftChassisAngularOffset = 0;
+      public static final double kFrontLeftChassisAngularOffset = -Math.PI / 2;
       public static final double kFrontRightChassisAngularOffset = 0;
-      public static final double kBackLeftChassisAngularOffset = 0;
-      public static final double kBackRightChassisAngularOffset = 0;
+      public static final double kBackLeftChassisAngularOffset = Math.PI;
+      public static final double kBackRightChassisAngularOffset = Math.PI / 2;
   
       // <> spark max ids
       public static final int kFrontLeftDrivingCanId = 9;
       public static final int kRearLeftDrivingCanId = 15;
-      public static final int kFrontRightDrivingCanId = 6;
-      public static final int kRearRightDrivingCanId = 4;
+      public static final int kFrontRightDrivingCanId = 7;
+      public static final int kRearRightDrivingCanId = 11;
   
       public static final int kFrontLeftTurningCanId = 8;
       public static final int kRearLeftTurningCanId = 12;
-      public static final int kFrontRightTurningCanId = 10;
-      public static final int kRearRightTurningCanId = 13;
+      public static final int kFrontRightTurningCanId = 2;
+      public static final int kRearRightTurningCanId = 5;
   
       // <> if the gyro is reversed
       public static final boolean kGyroReversed = false;
@@ -101,14 +101,14 @@ public final class Constants {
       public static final double kTurningEncoderPositionPIDMaxInput = kTurningEncoderPositionFactor; // <> radians
   
       // <> pidf stuff
-      public static final double kDrivingP = 0.07;
+      public static final double kDrivingP = 0.2;
       public static final double kDrivingI = 0;
       public static final double kDrivingD = 0;
       public static final double kDrivingFF = 0;
       public static final double kDrivingMinOutput = -1;
       public static final double kDrivingMaxOutput = 1;
   
-      public static final double kTurningP = 1;
+      public static final double kTurningP = 0.15;
       public static final double kTurningI = 0;
       public static final double kTurningD = 0;
       public static final double kTurningFF = 0;
