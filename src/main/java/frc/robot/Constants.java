@@ -26,11 +26,14 @@ public final class Constants {
   public static final class DriveTrain {
     public static final class DriveConstants {
       // <> if the driving is field relative
-      public static final boolean fieldRelative = true;
+      public static final boolean fieldRelative = false;
 
-      // <> max ALLOWED speeds
-      public static final double kMaxSpeedMetersPerSecond = 4.8;
-      public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
+      // <> speed damper
+      public static final double kDrivingMetersPerSecond = 3.5;
+      public static final double kAngularRadiansPerSecond = 0.7 * Math.PI; // radians per second
+
+      // <> max speed
+      public static final double kMaxMetersPerSecond = 1;
   
       // <> distance between centers of right and left wheels on robot
       public static final double kRobotWidth = Units.inchesToMeters(26.5);
@@ -51,15 +54,15 @@ public final class Constants {
       public static final double kBackRightChassisAngularOffset = 0;
   
       // <> spark max ids
-      public static final int kFrontLeftDrivingCanId = 11;
-      public static final int kRearLeftDrivingCanId = 13;
-      public static final int kFrontRightDrivingCanId = 15;
-      public static final int kRearRightDrivingCanId = 17;
+      public static final int kFrontLeftDrivingCanId = 9;
+      public static final int kRearLeftDrivingCanId = 15;
+      public static final int kFrontRightDrivingCanId = 6;
+      public static final int kRearRightDrivingCanId = 4;
   
-      public static final int kFrontLeftTurningCanId = 10;
+      public static final int kFrontLeftTurningCanId = 8;
       public static final int kRearLeftTurningCanId = 12;
-      public static final int kFrontRightTurningCanId = 14;
-      public static final int kRearRightTurningCanId = 16;
+      public static final int kFrontRightTurningCanId = 10;
+      public static final int kRearRightTurningCanId = 13;
   
       // <> if the gyro is reversed
       public static final boolean kGyroReversed = false;
@@ -98,7 +101,7 @@ public final class Constants {
       public static final double kTurningEncoderPositionPIDMaxInput = kTurningEncoderPositionFactor; // <> radians
   
       // <> pidf stuff
-      public static final double kDrivingP = 0.04;
+      public static final double kDrivingP = 0.07;
       public static final double kDrivingI = 0;
       public static final double kDrivingD = 0;
       public static final double kDrivingFF = 0;
@@ -130,13 +133,13 @@ public final class Constants {
     public static final int secondaryControllerID = 1;
 
     // ++ OTHER JOYSTICK CONSTANTS --
-    public static final double deadZoneSize = 0.15;
+    public static final double deadZoneSize = 0.05;
     /**  ++ lowPassFilterStrength should be between 0 & 1. The closer it is to 1, the smoother acceleration will be. */
     public static final double driveLowPassFilterStrength = 0.91;
     public static final double rotationLowPassFilterStrength = 0.2;
     // ++ we probably don't want the speed damcursjdjdjdpers as finals incase we want a fastmode/to change them later 
-    public static final double driveSpeedDamper = 0.65; 
-    public static final double rotationDamper = 8.0; 
+    public static final double driveSpeedDamper = 0.7;
+    public static final double rotationDamper = 0.8; 
 
     // ss This is the multiplier for Fast Mode
     // explained in JoyUtil.java

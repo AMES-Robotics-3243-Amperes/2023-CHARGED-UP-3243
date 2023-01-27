@@ -77,22 +77,22 @@ public final class JoyUtil extends XboxController {
 
     // ++ these methods make it so you don't have to pass anything in when you call them, you just call the 
     // ++ method that corresponds with the joystick you want. It also keeps track of the previous filtered value 
-    public double getDriveXWithAdjustments(){
-        double rawJoyPos = getLeftX(); // + (getDPadX()); 
+    public double getDriveStraightWithAdjustments(){
+        double rawJoyPos = getLeftY(); // + (getDPadX()); 
         double filterStrength = Constants.Joysticks.driveLowPassFilterStrength;
         double damperStrength = Constants.Joysticks.driveSpeedDamper;
         double adjustedPos = composeDriveJoyFunctions(rawJoyPos, prevFilteredX, filterStrength, damperStrength);
 
-        prevFilteredX = lowPassFilter(rawJoyPos, prevFilteredX, filterStrength);
+        // prevFilteredX = lowPassFilter(rawJoyPos, prevFilteredX, filterStrength);
         return adjustedPos;
     }
-    public double getDriveYWithAdjustments(){
-        double rawJoyPos = getLeftY(); // + (getDPadY()); 
+    public double getDriveStrafeWithAdjustments(){
+        double rawJoyPos = -getLeftX(); // + (getDPadY()); 
         double filterStrength = Constants.Joysticks.driveLowPassFilterStrength;
         double damperStrength = Constants.Joysticks.driveSpeedDamper;
         double adjustedPos = composeDriveJoyFunctions(rawJoyPos, prevFilteredY, filterStrength, damperStrength); 
 
-        prevFilteredY = lowPassFilter(rawJoyPos, prevFilteredY, filterStrength);
+        // prevFilteredY = lowPassFilter(rawJoyPos, prevFilteredY, filterStrength);
         return adjustedPos;
     }
     public double getRotationWithAdjustments() {
