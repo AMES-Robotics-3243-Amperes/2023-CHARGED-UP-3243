@@ -81,6 +81,10 @@ public final class Constants {
     public static final double wristLength = 3.0;
     
 
+    public static final double changeXMultiplier = 0.1;
+    public static final double changeYMultiplier = 0.1;
+    public static final double changePitchMultiplier = 0.1;
+    public static final double changeRollMultiplier = 0.1;
   }
 
 
