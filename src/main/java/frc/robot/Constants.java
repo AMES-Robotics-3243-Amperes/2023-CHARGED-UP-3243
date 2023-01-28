@@ -37,7 +37,7 @@ public final class Constants {
         public static final double kDrivingMinOutput = -1;
         public static final double kDrivingMaxOutput = 1;
 
-        public static final double kTurningP = 0.38;
+        public static final double kTurningP = 0.4;
         public static final double kTurningI = 0;
         public static final double kTurningD = 0;
         public static final double kTurningFF = 0;
@@ -130,7 +130,7 @@ public final class Constants {
       // <> if the encoders were zeored properly in rev client)
       public static final class ModuleOffsets {
 
-        public static final double kFrontLeftOffset = -Math.PI / 2;
+        public static final double kFrontLeftOffset = Math.PI / 2;
         public static final double kFrontRightOffset = Math.PI;
         public static final double kBackLeftOffset = 0;
         public static final double kBackRightOffset = Math.PI * 1.5;
@@ -155,13 +155,14 @@ public final class Constants {
 
       // <> if the driving is field relative
       public static final boolean fieldRelative = true;
+      public static final double gyroOffset = -90;
 
       // <> speed damper (flat constant supplied speed is multiplied by)
-      public static final double kDrivingSpeedDamper = 5.5; // <> meters per second
-      public static final double kAngularSpeedDamper = 3 * Math.PI; // <> Pradians per second
+      public static final double kDrivingSpeedDamper = 12; // <> meters per second
+      public static final double kAngularSpeedDamper = 5.5 * Math.PI; // <> Pradians per second
 
       // <> max speed
-      public static final double kMaxMetersPerSecond = 1;
+      public static final double kMaxMetersPerSecond = 5.5;
 
       // <> if the gyro is reversed
       public static final boolean kGyroReversed = false;
@@ -175,12 +176,12 @@ public final class Constants {
     public static final int secondaryControllerID = 1;
 
     // ++ OTHER JOYSTICK CONSTANTS --
-    public static final double deadZoneSize = 0.05;
+    public static final double deadZoneSize = 0.09;
     /**  ++ lowPassFilterStrength should be between 0 & 1. The closer it is to 1, the smoother acceleration will be. */
     public static final double driveLowPassFilterStrength = 0.91;
     public static final double rotationLowPassFilterStrength = 0.2;
     // ++ we probably don't want the speed damcursjdjdjdpers as finals incase we want a fastmode/to change them later
-    public static final double driveSpeedDamper = 0.7;
+    public static final double driveSpeedDamper = 0.9;
     public static final double rotationDamper = 0.8;
 
     // ss This is the multiplier for Fast Mode

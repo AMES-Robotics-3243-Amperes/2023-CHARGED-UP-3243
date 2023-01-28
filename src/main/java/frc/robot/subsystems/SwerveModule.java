@@ -185,13 +185,7 @@ public class SwerveModule {
     );
 
     // <> don't worry about turning the wheel if it's spinning a tiny amount
-    if (
-      Math.abs(optimizedDesiredState.speedMetersPerSecond) <
-      ModuleConstants.kModuleMinSpeed &&
-      !allowLowSpeedTurning
-    ) {
-      optimizedDesiredState = new SwerveModuleState(0, getRotation());
-    }
+
 
     // <> command driving
     m_drivingPIDController.setReference(

@@ -125,27 +125,37 @@ public class DriveSubsystem extends SubsystemBase {
     ySpeed *= DriveConstants.kDrivingSpeedDamper;
     rot *= DriveConstants.kAngularSpeedDamper;
 
+    // <> god i hate programming why do i have to do this
+    if (fieldRelative) {
+      ySpeed *= -1;
+    }
+
+    ChassisSpeeds fieldRelativeSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+      xSpeed,
+      ySpeed,
+      rot,
+      getHeading()
+    );
+    fieldRelativeSpeeds.vyMetersPerSecond *= -1;
+
     // <> adjust the inputs if field relative is true
     SwerveModuleState[] swerveModuleStates = DriveConstants.ChasisKinematics.kDriveKinematics.toSwerveModuleStates(
       fieldRelative
-        ? ChassisSpeeds.fromFieldRelativeSpeeds(
-          xSpeed,
-          ySpeed,
-          rot,
-          getHeading()
-        )
+        ? fieldRelativeSpeeds
         : new ChassisSpeeds(xSpeed, ySpeed, rot)
+    );
+
+    SmartDashboard.putString(
+      "chasis speed target",
+      ChassisSpeeds
+        .fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getHeading())
+        .toString()
     );
 
     // <> desaturate wheel speeds
     SwerveDriveKinematics.desaturateWheelSpeeds(
       swerveModuleStates,
       DriveConstants.kMaxMetersPerSecond
-    );
-
-    SmartDashboard.putNumber(
-      "front left encoder",
-      m_frontLeft.getState().angle.getRadians()
     );
 
     // <> set desired wheel speeds
@@ -182,7 +192,10 @@ public class DriveSubsystem extends SubsystemBase {
    *
    * @param desiredStates The desired SwerveModule states.
    */
-  public void setModuleStates(SwerveModuleState[] desiredStates, boolean allowLowSpeedTurning) {
+  public void setModuleStates(
+    SwerveModuleState[] desiredStates,
+    boolean allowLowSpeedTurning
+  ) {
     // <> desaturate wheel speeds
     SwerveDriveKinematics.desaturateWheelSpeeds(
       desiredStates,
@@ -215,7 +228,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @return the robot's heading
    */
   public Rotation2d getHeading() {
-    return Rotation2d.fromDegrees(m_gyro.getAngle());
+    return Rotation2d.fromDegrees(m_gyro.getAngle() + DriveConstants.gyroOffset);
   }
 
   /**
