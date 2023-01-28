@@ -61,20 +61,22 @@ public class SwerveModule {
 
     // <> apply position and velocity conversion factors
     m_drivingEncoder.setPositionConversionFactor(
-      ModuleConstants.kDrivingEncoderPositionFactor
+      ModuleConstants.EncoderFactors.kDrivingEncoderPositionFactor
     );
     m_drivingEncoder.setVelocityConversionFactor(
-      ModuleConstants.kDrivingEncoderVelocityFactor
+      ModuleConstants.EncoderFactors.kDrivingEncoderVelocityFactor
     );
     m_turningEncoder.setPositionConversionFactor(
-      ModuleConstants.kTurningEncoderPositionFactor
+      ModuleConstants.EncoderFactors.kTurningEncoderPositionFactor
     );
     m_turningEncoder.setVelocityConversionFactor(
-      ModuleConstants.kTurningEncoderVelocityFactor
+      ModuleConstants.EncoderFactors.kTurningEncoderVelocityFactor
     );
 
     // <> invert the turning encoder
-    m_turningEncoder.setInverted(ModuleConstants.kTurningEncoderInverted);
+    m_turningEncoder.setInverted(
+      ModuleConstants.PhysicalProperties.kTurningEncoderInverted
+    );
 
     // <> enable pid wrap on 0 to 2 pi, as the wheels rotate freely
     m_turningPIDController.setPositionPIDWrappingEnabled(true);
@@ -86,23 +88,23 @@ public class SwerveModule {
     );
 
     // <> set p, i, and d terms for driving
-    m_drivingPIDController.setP(ModuleConstants.kDrivingP);
-    m_drivingPIDController.setI(ModuleConstants.kDrivingI);
-    m_drivingPIDController.setD(ModuleConstants.kDrivingD);
-    m_drivingPIDController.setFF(ModuleConstants.kDrivingFF);
+    m_drivingPIDController.setP(ModuleConstants.PIDF.kDrivingP);
+    m_drivingPIDController.setI(ModuleConstants.PIDF.kDrivingI);
+    m_drivingPIDController.setD(ModuleConstants.PIDF.kDrivingD);
+    m_drivingPIDController.setFF(ModuleConstants.PIDF.kDrivingFF);
     m_drivingPIDController.setOutputRange(
-      ModuleConstants.kDrivingMinOutput,
-      ModuleConstants.kDrivingMaxOutput
+      ModuleConstants.PIDF.kDrivingMinOutput,
+      ModuleConstants.PIDF.kDrivingMaxOutput
     );
 
     // <> set p, i, and d terms for turning
-    m_turningPIDController.setP(ModuleConstants.kTurningP);
-    m_turningPIDController.setI(ModuleConstants.kTurningI);
-    m_turningPIDController.setD(ModuleConstants.kTurningD);
-    m_turningPIDController.setFF(ModuleConstants.kTurningFF);
+    m_turningPIDController.setP(ModuleConstants.PIDF.kTurningP);
+    m_turningPIDController.setI(ModuleConstants.PIDF.kTurningI);
+    m_turningPIDController.setD(ModuleConstants.PIDF.kTurningD);
+    m_turningPIDController.setFF(ModuleConstants.PIDF.kTurningFF);
     m_turningPIDController.setOutputRange(
-      ModuleConstants.kTurningMinOutput,
-      ModuleConstants.kTurningMaxOutput
+      ModuleConstants.PIDF.kTurningMinOutput,
+      ModuleConstants.PIDF.kTurningMaxOutput
     );
 
     // <> set idle modes and current limits
@@ -143,6 +145,15 @@ public class SwerveModule {
   /**
    * <>
    *
+   * @return current {@link Rotation2d} of the module
+   */
+  public Rotation2d getRotation() {
+    return getState().angle;
+  }
+
+  /**
+   * <>
+   *
    * @return the {@link SwerveModulePosition} of the module
    */
   public SwerveModulePosition getPosition() {
@@ -161,6 +172,7 @@ public class SwerveModule {
   public void setDesiredState(SwerveModuleState desiredState) {
     // <> apply chasis angular offset
     SwerveModuleState correctedDesiredState = new SwerveModuleState();
+
     correctedDesiredState.speedMetersPerSecond =
       desiredState.speedMetersPerSecond;
     correctedDesiredState.angle =
@@ -171,6 +183,14 @@ public class SwerveModule {
       correctedDesiredState,
       new Rotation2d(m_turningEncoder.getPosition())
     );
+
+    // <> don't worry about turning the wheel if it's spinning a tiny amount
+    if (
+      Math.abs(optimizedDesiredState.speedMetersPerSecond) <
+      ModuleConstants.kModuleMinSpeed
+    ) {
+      optimizedDesiredState = new SwerveModuleState(0, getRotation());
+    }
 
     // <> command driving
     m_drivingPIDController.setReference(

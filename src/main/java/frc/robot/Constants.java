@@ -24,103 +24,80 @@ public final class Constants {
   /** ++ constants for DRIVE TRAIN -------------------------------------------*/
   public static final class DriveTrain {
 
-    public static final class DriveConstants {
-
-      // <> if the driving is field relative
-      public static final boolean fieldRelative = true;
-
-      // <> speed damper
-      public static final double kDrivingMetersPerSecond = 5.5;
-      public static final double kAngularRadiansPerSecond = 3 * Math.PI; // radians per second
-
-      // <> max speed
-      public static final double kMaxMetersPerSecond = 1;
-
-      // <> distance between centers of right and left wheels on robot
-      public static final double kRobotWidth = Units.inchesToMeters(27);
-      // <> distance between front and back wheels on robot
-      public static final double kRobotLength = Units.inchesToMeters(32);
-
-      // <> configure kinematics
-      public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
-        new Translation2d(kRobotLength / 2, kRobotWidth / 2),
-        new Translation2d(kRobotLength / 2, -kRobotWidth / 2),
-        new Translation2d(-kRobotLength / 2, kRobotWidth / 2),
-        new Translation2d(-kRobotLength / 2, -kRobotWidth / 2)
-      );
-
-      // <> angular offsets of the modules
-      public static final double kFrontLeftChassisAngularOffset = -Math.PI / 2;
-      public static final double kFrontRightChassisAngularOffset = Math.PI;
-      public static final double kBackLeftChassisAngularOffset = 0;
-      public static final double kBackRightChassisAngularOffset = Math.PI * 1.5;
-
-      // <> spark max ids
-      public static final int kFrontLeftDrivingCanId = 9;
-      public static final int kRearLeftDrivingCanId = 15;
-      public static final int kFrontRightDrivingCanId = 7;
-      public static final int kRearRightDrivingCanId = 5;
-
-      public static final int kFrontLeftTurningCanId = 8;
-      public static final int kRearLeftTurningCanId = 12;
-      public static final int kFrontRightTurningCanId = 2;
-      public static final int kRearRightTurningCanId = 11;
-
-      // <> if the gyro is reversed
-      public static final boolean kGyroReversed = false;
-    }
-
+    // <> constants for individual modules
     public static final class ModuleConstants {
 
-      /**
-       * <> direct quote from rev robotis:
-       *
-       * The MAXSwerve module can be configured with one of three pinion gears:
-       * 12T, 13T, or 14T. This changes the drive speed of the module
-       * (a pinion gear with more teeth will result in a robot that drives faster).
-       */
-      public static final int kDrivingMotorPinionTeeth = 13;
+      // <> pidf values / min and max outputs
+      public static final class PIDF {
 
-      // <> if constructed correctly, all modules' turning encoders will be reversed
-      public static final boolean kTurningEncoderInverted = true;
+        public static final double kDrivingP = 0.35;
+        public static final double kDrivingI = 0;
+        public static final double kDrivingD = 0;
+        public static final double kDrivingFF = 0;
+        public static final double kDrivingMinOutput = -1;
+        public static final double kDrivingMaxOutput = 1;
 
-      // <> required for various calculations
-      public static final double kWheelDiameterMeters = 0.0762;
-      public static final double kWheelCircumferenceMeters =
-        kWheelDiameterMeters * Math.PI;
+        public static final double kTurningP = 0.38;
+        public static final double kTurningI = 0;
+        public static final double kTurningD = 0;
+        public static final double kTurningFF = 0;
+        public static final double kTurningMinOutput = -1;
+        public static final double kTurningMaxOutput = 1;
+      }
 
-      // <> quote from revrobotics:
-      // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15 teeth on the bevel pinion
-      public static final double kDrivingMotorReduction =
-        (45.0 * 22) / (kDrivingMotorPinionTeeth * 15);
+      // <> everything having to do with the physical assembly of the modules
+      public static final class PhysicalProperties {
 
-      public static final double kDrivingEncoderPositionFactor =
-        (kWheelDiameterMeters * Math.PI) / kDrivingMotorReduction; // meters
-      public static final double kDrivingEncoderVelocityFactor =
-        ((kWheelDiameterMeters * Math.PI) / kDrivingMotorReduction) / 60.0; // meters per second
+        /**
+         * <> direct quote from rev robotis:
+         *
+         * The MAXSwerve module can be configured with one of three pinion gears:
+         * 12T, 13T, or 14T. This changes the drive speed of the module
+         * (a pinion gear with more teeth will result in a robot that drives faster).
+         */
+        public static final int kDrivingMotorPinionTeeth = 13;
 
-      public static final double kTurningEncoderPositionFactor = (2 * Math.PI); // <> radians
-      public static final double kTurningEncoderVelocityFactor =
-        (2 * Math.PI) / 60.0; // <> radians per second
+        // <> if constructed correctly, all modules' turning encoders will be reversed
+        public static final boolean kTurningEncoderInverted = true;
 
+        // <> required for various calculations
+        public static final double kWheelDiameterMeters = 0.0762;
+        public static final double kWheelCircumferenceMeters =
+          kWheelDiameterMeters * Math.PI;
+      }
+
+      // all the encoder factors
+      public static final class EncoderFactors {
+
+        // <> quote from revrobotics:
+        // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15 teeth on the bevel pinion
+        public static final double kDrivingMotorReduction =
+          (45.0 * 22) / (PhysicalProperties.kDrivingMotorPinionTeeth * 15);
+
+        public static final double kDrivingEncoderPositionFactor =
+          (PhysicalProperties.kWheelDiameterMeters * Math.PI) /
+          kDrivingMotorReduction;
+        public static final double kDrivingEncoderVelocityFactor =
+          (
+            (PhysicalProperties.kWheelDiameterMeters * Math.PI) /
+            kDrivingMotorReduction
+          ) /
+          60.0;
+
+        public static final double kTurningEncoderPositionFactor =
+          (2 * Math.PI);
+        public static final double kTurningEncoderVelocityFactor =
+          (2 * Math.PI) / 60.0;
+      }
+
+      // <> the maximum wheel speed the modules will turn for
+      // <> (in meters per second)
+      public static final double kModuleMinSpeed = 0.02;
+
+      // <> pid connects at 0 and 2 pi because rotation is continuous
       public static final double kTurningEncoderPositionPIDMinInput = 0; // <> radians
       public static final double kTurningEncoderPositionPIDMaxInput =
-        kTurningEncoderPositionFactor; // <> radians
-
-      // <> pidf stuff
-      public static final double kDrivingP = 0.35;
-      public static final double kDrivingI = 0;
-      public static final double kDrivingD = 0;
-      public static final double kDrivingFF = 0;
-      public static final double kDrivingMinOutput = -1;
-      public static final double kDrivingMaxOutput = 1;
-
-      public static final double kTurningP = 0.28;
-      public static final double kTurningI = 0.001;
-      public static final double kTurningD = 0.0;
-      public static final double kTurningFF = 0;
-      public static final double kTurningMinOutput = -1;
-      public static final double kTurningMaxOutput = 1;
+        Math.PI * 2; // <> radians
 
       // <> idle modes
       public static final IdleMode kDrivingMotorIdleMode = IdleMode.kBrake;
@@ -129,6 +106,65 @@ public final class Constants {
       // <> current limits
       public static final int kDrivingMotorCurrentLimit = 50; // <> amps
       public static final int kTurningMotorCurrentLimit = 20; // <> amps
+    }
+
+    public static final class DriveConstants {
+
+      // <> spark max ids
+      public static final class IDs {
+
+        // <> driving ids
+        public static final int kFrontLeftDrivingCanId = 9;
+        public static final int kRearLeftDrivingCanId = 15;
+        public static final int kFrontRightDrivingCanId = 7;
+        public static final int kRearRightDrivingCanId = 5;
+
+        // <> turning ids
+        public static final int kFrontLeftTurningCanId = 8;
+        public static final int kRearLeftTurningCanId = 12;
+        public static final int kFrontRightTurningCanId = 2;
+        public static final int kRearRightTurningCanId = 11;
+      }
+
+      // <> absolute encoder offsets (should be multiples of pi / 2
+      // <> if the encoders were zeored properly in rev client)
+      public static final class ModuleOffsets {
+
+        public static final double kFrontLeftOffset = -Math.PI / 2;
+        public static final double kFrontRightOffset = Math.PI;
+        public static final double kBackLeftOffset = 0;
+        public static final double kBackRightOffset = Math.PI * 1.5;
+      }
+
+      // <> things involving the physical setup of the chasis
+      public static final class ChasisKinematics {
+
+        // <> distance between centers of right and left wheels on robot
+        public static final double kRobotWidth = Units.inchesToMeters(27);
+        // <> distance between front and back wheels on robot
+        public static final double kRobotLength = Units.inchesToMeters(32);
+
+        // <> kinematics (defined with above constants)
+        public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
+          new Translation2d(kRobotLength / 2, kRobotWidth / 2),
+          new Translation2d(kRobotLength / 2, -kRobotWidth / 2),
+          new Translation2d(-kRobotLength / 2, kRobotWidth / 2),
+          new Translation2d(-kRobotLength / 2, -kRobotWidth / 2)
+        );
+      }
+
+      // <> if the driving is field relative
+      public static final boolean fieldRelative = true;
+
+      // <> speed damper (flat constant supplied speed is multiplied by)
+      public static final double kDrivingMetersPerSecond = 5.5; // <> meters per second
+      public static final double kAngularRadiansPerSecond = 3 * Math.PI; // <> Pradians per second
+
+      // <> max speed
+      public static final double kMaxMetersPerSecond = 1;
+
+      // <> if the gyro is reversed
+      public static final boolean kGyroReversed = false;
     }
   }
 
