@@ -149,10 +149,10 @@ public class DriveSubsystem extends SubsystemBase {
     );
 
     // <> set desired wheel speeds
-    m_frontLeft.setDesiredState(swerveModuleStates[0]);
-    m_frontRight.setDesiredState(swerveModuleStates[1]);
-    m_rearLeft.setDesiredState(swerveModuleStates[2]);
-    m_rearRight.setDesiredState(swerveModuleStates[3]);
+    m_frontLeft.setDesiredState(swerveModuleStates[0], false);
+    m_frontRight.setDesiredState(swerveModuleStates[1], false);
+    m_rearLeft.setDesiredState(swerveModuleStates[2], false);
+    m_rearRight.setDesiredState(swerveModuleStates[3], false);
   }
 
   /**
@@ -160,16 +160,20 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public void setX() {
     m_frontLeft.setDesiredState(
-      new SwerveModuleState(0, Rotation2d.fromDegrees(45))
+      new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
+      true
     );
     m_frontRight.setDesiredState(
-      new SwerveModuleState(0, Rotation2d.fromDegrees(-45))
+      new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
+      true
     );
     m_rearLeft.setDesiredState(
-      new SwerveModuleState(0, Rotation2d.fromDegrees(-45))
+      new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
+      true
     );
     m_rearRight.setDesiredState(
-      new SwerveModuleState(0, Rotation2d.fromDegrees(45))
+      new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
+      true
     );
   }
 
@@ -178,7 +182,7 @@ public class DriveSubsystem extends SubsystemBase {
    *
    * @param desiredStates The desired SwerveModule states.
    */
-  public void setModuleStates(SwerveModuleState[] desiredStates) {
+  public void setModuleStates(SwerveModuleState[] desiredStates, boolean allowLowSpeedTurning) {
     // <> desaturate wheel speeds
     SwerveDriveKinematics.desaturateWheelSpeeds(
       desiredStates,
@@ -186,10 +190,10 @@ public class DriveSubsystem extends SubsystemBase {
     );
 
     // <> set the desired states
-    m_frontLeft.setDesiredState(desiredStates[0]);
-    m_frontRight.setDesiredState(desiredStates[1]);
-    m_rearLeft.setDesiredState(desiredStates[2]);
-    m_rearRight.setDesiredState(desiredStates[3]);
+    m_frontLeft.setDesiredState(desiredStates[0], allowLowSpeedTurning);
+    m_frontRight.setDesiredState(desiredStates[1], allowLowSpeedTurning);
+    m_rearLeft.setDesiredState(desiredStates[2], allowLowSpeedTurning);
+    m_rearRight.setDesiredState(desiredStates[3], allowLowSpeedTurning);
   }
 
   /** <> reset the drive encoders */

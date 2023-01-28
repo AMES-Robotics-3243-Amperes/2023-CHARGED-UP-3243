@@ -169,7 +169,7 @@ public class SwerveModule {
    *
    * @param desiredState desired {@link SwerveModuleState}
    */
-  public void setDesiredState(SwerveModuleState desiredState) {
+  public void setDesiredState(SwerveModuleState desiredState, boolean allowLowSpeedTurning) {
     // <> apply chasis angular offset
     SwerveModuleState correctedDesiredState = new SwerveModuleState();
 
@@ -187,7 +187,8 @@ public class SwerveModule {
     // <> don't worry about turning the wheel if it's spinning a tiny amount
     if (
       Math.abs(optimizedDesiredState.speedMetersPerSecond) <
-      ModuleConstants.kModuleMinSpeed
+      ModuleConstants.kModuleMinSpeed &&
+      !allowLowSpeedTurning
     ) {
       optimizedDesiredState = new SwerveModuleState(0, getRotation());
     }
