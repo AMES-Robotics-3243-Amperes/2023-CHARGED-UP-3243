@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import com.kauailabs.navx.frc.AHRS;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -11,7 +13,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveTrain.DriveConstants;
@@ -44,7 +45,7 @@ public class DriveSubsystem extends SubsystemBase {
   );
 
   // <> gyro
-  private final ADIS16470_IMU m_gyro = new ADIS16470_IMU();
+  private final AHRS m_gyro = new AHRS();
 
   // <> odometry for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
@@ -59,7 +60,12 @@ public class DriveSubsystem extends SubsystemBase {
   );
 
   /** Creates a new DriveSubsystem. */
-  public DriveSubsystem() {}
+  public DriveSubsystem() {
+    SwerveModulePosition[] swerveModulePositions = {m_frontLeft.getPosition(), m_frontRight.getPosition(), m_rearLeft.getPosition(), m_rearRight.getPosition()};
+
+    resetEncoders();
+    m_odometry.resetPosition(new Rotation2d(0), swerveModulePositions, new Pose2d());
+  }
 
   @Override
   public void periodic() {
@@ -123,7 +129,7 @@ public class DriveSubsystem extends SubsystemBase {
     rot *= DriveConstants.kAngularRadiansPerSecond;
 
     // <> adjust the inputs if field relative is true
-    var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
+    SwerveModuleState[] swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
       fieldRelative
         ? ChassisSpeeds.fromFieldRelativeSpeeds(
           xSpeed,
