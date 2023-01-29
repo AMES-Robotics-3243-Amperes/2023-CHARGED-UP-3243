@@ -121,9 +121,9 @@ public class DriveSubsystem extends SubsystemBase {
     boolean fieldRelative
   ) {
     // <> apply speeds defined in constants
-    xSpeed *= DriveConstants.kDrivingMetersPerSecond;
-    ySpeed *= DriveConstants.kDrivingMetersPerSecond;
-    rot *= DriveConstants.kAngularRadiansPerSecond;
+    xSpeed *= DriveConstants.kDrivingSpeedDamper;
+    ySpeed *= DriveConstants.kDrivingSpeedDamper;
+    rot *= DriveConstants.kAngularSpeedDamper;
 
     // <> adjust the inputs if field relative is true
     SwerveModuleState[] swerveModuleStates = DriveConstants.ChasisKinematics.kDriveKinematics.toSwerveModuleStates(
@@ -186,7 +186,7 @@ public class DriveSubsystem extends SubsystemBase {
     // <> desaturate wheel speeds
     SwerveDriveKinematics.desaturateWheelSpeeds(
       desiredStates,
-      DriveConstants.kDrivingMetersPerSecond
+      DriveConstants.kDrivingSpeedDamper
     );
 
     // <> set the desired states

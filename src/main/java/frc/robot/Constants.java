@@ -157,8 +157,8 @@ public final class Constants {
       public static final boolean fieldRelative = true;
 
       // <> speed damper (flat constant supplied speed is multiplied by)
-      public static final double kDrivingMetersPerSecond = 5.5; // <> meters per second
-      public static final double kAngularRadiansPerSecond = 3 * Math.PI; // <> Pradians per second
+      public static final double kDrivingSpeedDamper = 5.5; // <> meters per second
+      public static final double kAngularSpeedDamper = 3 * Math.PI; // <> Pradians per second
 
       // <> max speed
       public static final double kMaxMetersPerSecond = 1;

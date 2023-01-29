@@ -80,7 +80,7 @@ public final class JoyUtil extends XboxController {
     public double getDriveStraightWithAdjustments(){
         double rawJoyPos = getLeftY(); // + (getDPadX()); 
         double filterStrength = Constants.Joysticks.driveLowPassFilterStrength;
-        double damperStrength = Constants.Joysticks.driveSpeedDamper;
+        double damperStrength = Constants.DriveTrain.DriveConstants.kDrivingSpeedDamper;
         double adjustedPos = composeDriveJoyFunctions(rawJoyPos, prevFilteredX, filterStrength, damperStrength);
 
         // prevFilteredX = lowPassFilter(rawJoyPos, prevFilteredX, filterStrength);
@@ -89,7 +89,7 @@ public final class JoyUtil extends XboxController {
     public double getDriveStrafeWithAdjustments(){
         double rawJoyPos = -getLeftX(); // + (getDPadY()); 
         double filterStrength = Constants.Joysticks.driveLowPassFilterStrength;
-        double damperStrength = Constants.Joysticks.driveSpeedDamper;
+        double damperStrength = Constants.DriveTrain.DriveConstants.kDrivingSpeedDamper;
         double adjustedPos = composeDriveJoyFunctions(rawJoyPos, prevFilteredY, filterStrength, damperStrength); 
 
         // prevFilteredY = lowPassFilter(rawJoyPos, prevFilteredY, filterStrength);
@@ -102,7 +102,7 @@ public final class JoyUtil extends XboxController {
         // ++ the rotation axis is right x
         double rawJoyPos = getRightX();
         double filterStrength = Constants.Joysticks.rotationLowPassFilterStrength;
-        double damperStrength = Constants.Joysticks.rotationDamper;
+        double damperStrength = Constants.DriveTrain.DriveConstants.kAngularSpeedDamper;
         double adjustedPos = ( lowPassFilter( posWithDeadzone(rawJoyPos), prevFilteredR, filterStrength) * damperStrength );
         return adjustedPos;
     }
@@ -194,7 +194,7 @@ public final class JoyUtil extends XboxController {
         double withFilter = lowPassFilter(withDead, prevFilterJoy, filterStrength);
         double withCurve = joyCurve(withFilter); 
         double withSpeedMode = fastMode(withCurve, (getRightTriggerAxis() - getLeftTriggerAxis()));
-        double withDamper = withSpeedMode * Constants.Joysticks.driveSpeedDamper;
+        double withDamper = withSpeedMode * Constants.DriveTrain.DriveConstants.kDrivingSpeedDamper;
 
         double adjustedJoyPos = withDamper;
 
