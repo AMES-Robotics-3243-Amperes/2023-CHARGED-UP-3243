@@ -36,9 +36,9 @@ public class SwerveTeleopCommand extends CommandBase {
   public void execute() {
     // <> drive the drivetrain with the controller's input
     m_DriveSubsystem.drive(
-      MathUtil.applyDeadband(-controller.getLeftY(), 0.09),
-      MathUtil.applyDeadband(-controller.getLeftX(), 0.09),
-      MathUtil.applyDeadband(-controller.getRightX(), 0.09),
+      controller.getDriveStraightWithAdjustments(),
+      controller.getDriveStrafeWithAdjustments(),
+      -controller.getRotationWithAdjustments(),
       DriveConstants.fieldRelative
     );
   }
