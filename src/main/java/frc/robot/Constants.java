@@ -164,7 +164,7 @@ public final class Constants {
 
       // <> if the driving is field relative
       public static final boolean fieldRelative = true;
-      public static final Rotation2d gyroOffset = Rotation2d.fromDegrees(180);
+      public static final Rotation2d gyroOffset = Rotation2d.fromDegrees(0);
 
       // <> speed damper (flat constant supplied speed is multiplied by)
       public static final double kDrivingSpeedDamper = 5; // <> meters per second

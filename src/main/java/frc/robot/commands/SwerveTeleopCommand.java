@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveTrain.DriveConstants;
 import frc.robot.JoyUtil;
@@ -41,6 +42,9 @@ public class SwerveTeleopCommand extends CommandBase {
       MathUtil.applyDeadband(controller.getRightX(), 0.09),
       DriveConstants.fieldRelative
     );
+
+    // <> debug
+    SmartDashboard.putNumber("odometry pose translation x", m_DriveSubsystem.getPose().getTranslation().getX());
   }
 
   // Called once the command ends or is interrupted.

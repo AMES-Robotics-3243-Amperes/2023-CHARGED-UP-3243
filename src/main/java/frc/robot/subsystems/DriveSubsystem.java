@@ -12,7 +12,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveTrain.DriveConstants;
 
@@ -49,7 +48,7 @@ public class DriveSubsystem extends SubsystemBase {
   // <> odometry for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
     DriveConstants.ChasisKinematics.kDriveKinematics,
-    Rotation2d.fromDegrees(m_gyro.getAngle()),
+    getHeading(),
     new SwerveModulePosition[] {
       m_frontLeft.getPosition(),
       m_frontRight.getPosition(),
@@ -61,14 +60,13 @@ public class DriveSubsystem extends SubsystemBase {
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
     resetEncoders();
-    zeroHeading();
   }
 
   @Override
   public void periodic() {
     // <> update odometry
     m_odometry.update(
-      Rotation2d.fromDegrees(m_gyro.getAngle()),
+      getHeading(),
       new SwerveModulePosition[] {
         m_frontLeft.getPosition(),
         m_frontRight.getPosition(),
@@ -135,13 +133,6 @@ public class DriveSubsystem extends SubsystemBase {
           getHeading()
         )
         : new ChassisSpeeds(xSpeed, ySpeed, rot)
-    );
-
-    SmartDashboard.putString(
-      "chasis speed target",
-      ChassisSpeeds
-        .fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getHeading())
-        .toString()
     );
 
     // <> desaturate wheel speeds
