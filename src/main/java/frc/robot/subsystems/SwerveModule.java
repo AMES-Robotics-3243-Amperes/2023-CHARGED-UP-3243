@@ -26,7 +26,7 @@ public class SwerveModule {
   private final SparkMaxPIDController m_drivingPIDController;
   private final SparkMaxPIDController m_turningPIDController;
 
-  private double m_chassisAngularOffset = 0;
+  private Rotation2d m_chassisAngularOffset;
   private SwerveModuleState m_desiredState = new SwerveModuleState(
     0.0,
     new Rotation2d()
@@ -39,7 +39,7 @@ public class SwerveModule {
   public SwerveModule(
     int drivingCANId,
     int turningCANId,
-    double chassisAngularOffset
+    Rotation2d chassisAngularOffset
   ) {
     // <> initilize spark maxes
     m_drivingSparkMax = new CANSparkMax(drivingCANId, MotorType.kBrushless);
@@ -138,7 +138,7 @@ public class SwerveModule {
     // <> return a swerve module state adjusted for the chasis angular offset
     return new SwerveModuleState(
       m_drivingEncoder.getVelocity(),
-      new Rotation2d(m_turningEncoder.getPosition() - m_chassisAngularOffset)
+      new Rotation2d(m_turningEncoder.getPosition() - m_chassisAngularOffset.getRadians())
     );
   }
 
@@ -160,7 +160,7 @@ public class SwerveModule {
     // <> return a new swerve module position adjusted for the angular offset
     return new SwerveModulePosition(
       m_drivingEncoder.getPosition(),
-      new Rotation2d(m_turningEncoder.getPosition() - m_chassisAngularOffset)
+      new Rotation2d(m_turningEncoder.getPosition() - m_chassisAngularOffset.getRadians())
     );
   }
 
@@ -176,7 +176,7 @@ public class SwerveModule {
     correctedDesiredState.speedMetersPerSecond =
       desiredState.speedMetersPerSecond;
     correctedDesiredState.angle =
-      desiredState.angle.plus(Rotation2d.fromRadians(m_chassisAngularOffset));
+      desiredState.angle.plus(m_chassisAngularOffset);
 
     // <> optimize state to avoid turning more than 90 degrees
     SwerveModuleState optimizedDesiredState = SwerveModuleState.optimize(

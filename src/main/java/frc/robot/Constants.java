@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.revrobotics.CANSparkMax.IdleMode;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
@@ -114,26 +115,34 @@ public final class Constants {
       public static final class IDs {
 
         // <> driving ids
-        public static final int kFrontLeftDrivingCanId = 9;
-        public static final int kRearLeftDrivingCanId = 15;
-        public static final int kFrontRightDrivingCanId = 7;
-        public static final int kRearRightDrivingCanId = 5;
+        public static final int kFrontLeftDrivingCanId = 5;
+        public static final int kRearLeftDrivingCanId = 7;
+        public static final int kFrontRightDrivingCanId = 12;
+        public static final int kRearRightDrivingCanId = 9;
 
         // <> turning ids
-        public static final int kFrontLeftTurningCanId = 8;
-        public static final int kRearLeftTurningCanId = 12;
-        public static final int kFrontRightTurningCanId = 2;
-        public static final int kRearRightTurningCanId = 11;
+        public static final int kFrontLeftTurningCanId = 11;
+        public static final int kRearLeftTurningCanId = 2;
+        public static final int kFrontRightTurningCanId = 15;
+        public static final int kRearRightTurningCanId = 8;
       }
 
       // <> absolute encoder offsets (should be multiples of pi / 2
       // <> if the encoders were zeored properly in rev client)
       public static final class ModuleOffsets {
 
-        public static final double kFrontLeftOffset = Math.PI / 2;
-        public static final double kFrontRightOffset = Math.PI;
-        public static final double kBackLeftOffset = 0;
-        public static final double kBackRightOffset = Math.PI * 1.5;
+        public static final Rotation2d kFrontLeftOffset = Rotation2d.fromRadians(
+          Math.PI * 0.5
+        );
+        public static final Rotation2d kFrontRightOffset = Rotation2d.fromRadians(
+          Math.PI
+        );
+        public static final Rotation2d kBackLeftOffset = Rotation2d.fromRadians(
+          0
+        );
+        public static final Rotation2d kBackRightOffset = Rotation2d.fromRadians(
+          Math.PI * 1.5
+        );
       }
 
       // <> things involving the physical setup of the chasis
@@ -155,17 +164,17 @@ public final class Constants {
 
       // <> if the driving is field relative
       public static final boolean fieldRelative = true;
-      public static final double gyroOffset = -90;
+      public static final Rotation2d gyroOffset = Rotation2d.fromDegrees(180);
 
       // <> speed damper (flat constant supplied speed is multiplied by)
-      public static final double kDrivingSpeedDamper = 12; // <> meters per second
-      public static final double kAngularSpeedDamper = 5.5 * Math.PI; // <> Pradians per second
+      public static final double kDrivingSpeedDamper = 5; // <> meters per second
+      public static final double kAngularSpeedDamper = 0.8 * Math.PI; // <> Pradians per second
 
       // <> max speed
-      public static final double kMaxMetersPerSecond = 5.5;
+      public static final double kMaxMetersPerSecond = 1.6;
 
-      // <> if the gyro is reversed
-      public static final boolean kGyroReversed = false;
+      // <> this should be true
+      public static final boolean kGyroReversed = true;
     }
   }
 
@@ -176,7 +185,7 @@ public final class Constants {
     public static final int secondaryControllerID = 1;
 
     // ++ OTHER JOYSTICK CONSTANTS --
-    public static final double deadZoneSize = 0.09;
+    public static final double deadZoneSize = 0.12;
     /**  ++ lowPassFilterStrength should be between 0 & 1. The closer it is to 1, the smoother acceleration will be. */
     public static final double driveLowPassFilterStrength = 0.91;
     public static final double rotationLowPassFilterStrength = 0.2;

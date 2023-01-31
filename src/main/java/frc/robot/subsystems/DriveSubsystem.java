@@ -125,23 +125,15 @@ public class DriveSubsystem extends SubsystemBase {
     ySpeed *= DriveConstants.kDrivingSpeedDamper;
     rot *= DriveConstants.kAngularSpeedDamper;
 
-    // <> god i hate programming why do i have to do this
-    if (fieldRelative) {
-      ySpeed *= -1;
-    }
-
-    ChassisSpeeds fieldRelativeSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-      xSpeed,
-      ySpeed,
-      rot,
-      getHeading()
-    );
-    fieldRelativeSpeeds.vyMetersPerSecond *= -1;
-
     // <> adjust the inputs if field relative is true
     SwerveModuleState[] swerveModuleStates = DriveConstants.ChasisKinematics.kDriveKinematics.toSwerveModuleStates(
       fieldRelative
-        ? fieldRelativeSpeeds
+        ? ChassisSpeeds.fromFieldRelativeSpeeds(
+          xSpeed,
+          ySpeed,
+          rot,
+          getHeading()
+        )
         : new ChassisSpeeds(xSpeed, ySpeed, rot)
     );
 
@@ -228,7 +220,11 @@ public class DriveSubsystem extends SubsystemBase {
    * @return the robot's heading
    */
   public Rotation2d getHeading() {
-    return Rotation2d.fromDegrees(m_gyro.getAngle() + DriveConstants.gyroOffset);
+    Rotation2d raw_reading = Rotation2d
+      .fromDegrees(m_gyro.getAngle())
+      .plus(DriveConstants.gyroOffset);
+
+    return DriveConstants.kGyroReversed ? raw_reading.times(-1) : raw_reading;
   }
 
   /**

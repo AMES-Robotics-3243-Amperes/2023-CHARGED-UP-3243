@@ -1,6 +1,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
@@ -118,13 +119,7 @@ public final class JoyUtil extends XboxController {
         // ++ takes input and compares it to deadzone size
         // returns joystick size if it's greater than the deadzone, 0 otherwise
 
-        double deadZoneSize = Constants.Joysticks.deadZoneSize;
-
-        if (Math.abs(pos) >= deadZoneSize ) {
-            return pos;
-        } else {
-            return 0.0; 
-        }
+        return MathUtil.applyDeadband(pos, Constants.Joysticks.deadZoneSize);
     }
 
   
