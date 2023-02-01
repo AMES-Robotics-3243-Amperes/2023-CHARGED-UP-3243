@@ -4,21 +4,15 @@
 
 package frc.robot;
 
-import frc.robot.commands.TeleopDriveCommand;
 import frc.robot.subsystems.DriveSubsystem;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.JoyUtil; 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.PlaceGamePiece;
 import frc.robot.commands.ReidPrototypeCommand;
 import frc.robot.subsystems.ReidPrototypeSubsystem;
 import frc.robot.subsystems.LegAnkleSubsystem;
-import frc.robot.commands.WristCommand;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -41,8 +35,6 @@ public class RobotContainer {
   // ++ ----- COMMANDS -------------
   private final PlaceGamePiece m_placeGamePieceCommand = new PlaceGamePiece(m_driveSubsystem, m_legAnkleSubsystem, m_reidPrototypeSubsystem);
   private final ReidPrototypeCommand m_prototypeCommand = new ReidPrototypeCommand(m_reidPrototypeSubsystem, secondaryController);
-
-  XboxController controller = new XboxController(0);
   
   
 
