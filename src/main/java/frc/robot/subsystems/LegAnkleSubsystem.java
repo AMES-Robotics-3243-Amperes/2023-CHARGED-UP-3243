@@ -48,6 +48,12 @@ public class LegAnkleSubsystem extends SubsystemBase {
     
   }
 
+  /** H! Moves the arm-wrist assembly by a given position diference 
+   * @param x The diference in distance in front of the pivot
+   * @param y The diference in distance above the target
+   * @param pitch The diference in pitch to approach at
+   * @param roll The diference in roll to aproach at
+  */
   public void moveByXYTheta(double x, double y, double pitch, double roll) {
     targetX = targetX + x * Constants.WristAndArm.changeXMultiplier;
     targetY = targetY + y * Constants.WristAndArm.changeYMultiplier;
@@ -57,7 +63,14 @@ public class LegAnkleSubsystem extends SubsystemBase {
     moveToXYTheta(targetX, targetY, targetPitch, targetRoll);
   }
 
-  public void moveToXYTheta(double x, double y, double pitch, double roll) {
+  /** H! Moves the arm-wrist assembly to a given position and rotation. 
+   * @param x The target distance in front of the pivot
+   * @param y The target distance above the target
+   * @param pitch The target pitch to approach at
+   * @param roll The target roll to aproach at
+   * @return Whether the arm is in a small range of the target
+  */
+  public boolean moveToXYTheta(double x, double y, double pitch, double roll) {
     // H! Inverse kinematics: see more detailed math here: https://www.desmos.com/calculator/l89yzwijul 
     double targetArmAngle = Math.atan((y + Constants.WristAndArm.wristLength * Math.sin(pitch))  /  (x + Constants.WristAndArm.wristLength * Math.cos(pitch)));
     double targetArmLength = (y + Constants.WristAndArm.wristLength * Math.sin(pitch)) / Math.sin(targetArmAngle);
@@ -70,8 +83,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
     pidWristPitch.setSetpoint(targetWristAngle);
     pidWristRoll.setSetpoint(targetWristRoll);
 
-    // H! TODO Add the wrist stuff. Feel free to basically copy what I did and just change the names
-
+    return false; // H! TODO make it return the right value
 
   }
 
