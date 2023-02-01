@@ -58,13 +58,39 @@ public final class Constants {
 
   /** ++ constants for GRABBER ---------------------------------------------------------- */
   public static final class Grabber {
-
+    public static final double kWheelSpeed = 0.5;
+    public static final double kGrabberSpeed = 1.0;
+    public static final double kPositiveEncoderRotationLimit = 0.5;
+    public static final double kNegativeEncoderRotationLimit = 0.5;
+    public static final int kMotorId = 8;
+    public static final double ktargetAmperage = 2.0;
+    public static final int kCurrentLimit = 35;
   }
    
 
   /** ++ constants for WRIST and ARM ---------------------------------------------------- */
   public static final class WristAndArm {
+    /**
+     * H! This class just holds all the motor ids
+     */
+    public static class MotorIDs {
+      public static final int armPivot = 1000; // H! TODO insert the motor IDs
+      public static final int armExtension = 1001;
+      public static final int WristPitch = 1002;
+      public static final int WristRoll = 1003;
+    }
 
+    // H! Holds the data for the positions of stuff in the arm
+    // H! TODO Insert the actually correct data
+    public static final double minLength = 0.0;
+    public static final double maxLength = 1000.0;
+    public static final double wristLength = 3.0;
+    
+
+    public static final double changeXMultiplier = 0.1;
+    public static final double changeYMultiplier = 0.1;
+    public static final double changePitchMultiplier = 0.1;
+    public static final double changeRollMultiplier = 0.1;
   }
 
 
