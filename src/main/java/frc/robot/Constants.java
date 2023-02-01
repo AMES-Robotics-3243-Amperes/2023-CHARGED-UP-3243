@@ -56,11 +56,7 @@ public final class Constants {
 
   }
 
-<<<<<<< HEAD
   /** ++ constants for GRABBER ---------------------------------------------------------- */
-=======
-  /** ++ constants for GRABBER */
->>>>>>> 782bafece647034722a242f4066bd410690d5b54
   public static final class Grabber {
     public static final double kWheelSpeed = 0.5;
     public static final double kGrabberSpeed = 1.0;
