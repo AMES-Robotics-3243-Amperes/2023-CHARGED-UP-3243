@@ -58,7 +58,13 @@ public final class Constants {
 
   /** ++ constants for GRABBER ---------------------------------------------------------- */
   public static final class Grabber {
-
+    public static final double kWheelSpeed = 0.5;
+    public static final double kGrabberSpeed = 1.0;
+    public static final double kPositiveEncoderRotationLimit = 0.5;
+    public static final double kNegativeEncoderRotationLimit = 0.5;
+    public static final int kMotorId = 8;
+    public static final double ktargetAmperage = 2.0;
+    public static final int kCurrentLimit = 35;
   }
    
 
