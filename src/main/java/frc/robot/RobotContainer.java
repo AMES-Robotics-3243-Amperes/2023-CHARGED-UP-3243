@@ -17,6 +17,9 @@ import frc.robot.commands.ReidPrototypeCommand;
 import frc.robot.subsystems.ReidPrototypeSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 
+import frc.robot.subsystems.LegAnkleSubsystem;
+import frc.robot.commands.WristCommand;
+
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
