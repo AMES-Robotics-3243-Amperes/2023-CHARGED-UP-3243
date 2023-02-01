@@ -5,22 +5,30 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Constants;
 import frc.robot.commands.PlaceGamePieceCommands.MoveArmToTarget;
 import frc.robot.commands.PlaceGamePieceCommands.MoveRobotToGrid;
 import frc.robot.commands.PlaceGamePieceCommands.ReleaseGameObject;
+import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.LegAnkleSubsystem;
+import frc.robot.subsystems.ReidPrototypeSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class PlaceGamePiece extends SequentialCommandGroup {
+
+  public boolean isCube;
+  public Constants.Target target;
+
   /** Creates a new PlaceGamePiece. */
-  public PlaceGamePiece() {
+  public PlaceGamePiece(DriveSubsystem driveSubsystem, LegAnkleSubsystem legAnkleSubsystem, ReidPrototypeSubsystem grabberSubsystem) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new MoveRobotToGrid(),
-      new MoveArmToTarget(),
-      new ReleaseGameObject()
+      new MoveRobotToGrid(isCube, target, driveSubsystem),
+      new MoveArmToTarget(isCube, target, legAnkleSubsystem),
+      new ReleaseGameObject(isCube, target, grabberSubsystem)
     );
   }
 }

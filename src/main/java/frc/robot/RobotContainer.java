@@ -8,15 +8,15 @@ import frc.robot.commands.TeleopDriveCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.JoyUtil; 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commands.PlaceGamePiece;
 import frc.robot.commands.ReidPrototypeCommand;
 import frc.robot.subsystems.ReidPrototypeSubsystem;
-import edu.wpi.first.wpilibj2.command.Command;
-
 import frc.robot.subsystems.LegAnkleSubsystem;
 import frc.robot.commands.WristCommand;
 
@@ -36,13 +36,15 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   // ++ ----- SUBSYSTEMS -----------
   private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
+  private final LegAnkleSubsystem m_legAnkleSubsystem = new LegAnkleSubsystem();
+  private final ReidPrototypeSubsystem m_reidPrototypeSubsystem = new ReidPrototypeSubsystem();
   // ++ ----- COMMANDS -------------
-
+  private final PlaceGamePiece m_placeGamePieceCommand = new PlaceGamePiece(m_driveSubsystem, m_legAnkleSubsystem, m_reidPrototypeSubsystem);
+  private final ReidPrototypeCommand m_prototypeCommand = new ReidPrototypeCommand(m_reidPrototypeSubsystem, secondaryController);
 
   XboxController controller = new XboxController(0);
-
-  private final ReidPrototypeSubsystem m_reidPrototypeSubsystem = new ReidPrototypeSubsystem();   
-  private final ReidPrototypeCommand m_prototypeCommand = new ReidPrototypeCommand(m_reidPrototypeSubsystem, controller);
+  
+  
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -58,6 +60,10 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
-  private void configureButtonBindings() {}
+  private void configureButtonBindings() {
+    // H! Make it so the X button activates the PlaceGamePiece Routine
+    Trigger xButton = new JoystickButton(primaryController, XboxController.Button.kX.value);
+    xButton.onTrue(m_placeGamePieceCommand);
+  }
 
 }

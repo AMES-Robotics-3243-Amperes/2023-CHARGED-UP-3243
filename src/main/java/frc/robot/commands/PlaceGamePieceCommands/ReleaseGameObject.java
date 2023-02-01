@@ -5,10 +5,12 @@
 package frc.robot.commands.PlaceGamePieceCommands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
+import frc.robot.subsystems.ReidPrototypeSubsystem;
 
 public class ReleaseGameObject extends CommandBase {
   /** Creates a new ReleaseGameObject. */
-  public ReleaseGameObject() {
+  public ReleaseGameObject(boolean isCube, Constants.Target target, ReidPrototypeSubsystem grabberSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -18,7 +20,9 @@ public class ReleaseGameObject extends CommandBase {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    
+  }
 
   // Called once the command ends or is interrupted.
   @Override
