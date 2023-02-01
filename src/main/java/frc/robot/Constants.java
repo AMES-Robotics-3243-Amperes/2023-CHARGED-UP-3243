@@ -78,5 +78,60 @@ public final class Constants {
     public static double maxNEORPM = 5500.0;
   }
 
+  /** H! Constants for what automation stuff needs to do -------------------------------- */
+  public static final class AutomationConfigure {
+    // H! TODO None of these constants are right
+    public static final class Cone{
+      public static final class HighTarget {
+        public static final double armX = 0.0;
+        public static final double armY = 0.0;
+        public static final double armPitch = 0.0;
+        public static final double armRoll = 0.0;
+      }
+  
+      public static final class MidTarget {
+        public static final double armX = 0.0;
+        public static final double armY = 0.0;
+        public static final double armPitch = 0.0;
+        public static final double armRoll = 0.0;
+      }
+  
+      public static final class LowTarget {
+        public static final double armX = 0.0;
+        public static final double armY = 0.0;
+        public static final double armPitch = 0.0;
+        public static final double armRoll = 0.0;
+      }
+    }
 
+    public static final class Cube{
+      public static final class HighTarget {
+        public static final double armX = 0.0;
+        public static final double armY = 0.0;
+        public static final double armPitch = 0.0;
+        public static final double armRoll = 0.0;
+      }
+  
+      public static final class MidTarget {
+        public static final double armX = 0.0;
+        public static final double armY = 0.0;
+        public static final double armPitch = 0.0;
+        public static final double armRoll = 0.0;
+      }
+  
+      public static final class LowTarget {
+        public static final double armX = 0.0;
+        public static final double armY = 0.0;
+        public static final double armPitch = 0.0;
+        public static final double armRoll = 0.0;
+      }
+    }
+
+  }
+
+  // H! This is my fault, so feel free to move it to a better place if need be
+  /** H! Enum for the diferent target heights */
+  public static enum Target {
+    HIGH_TARGET, MID_TARGET, LOW_TARGET
+  }
 }
