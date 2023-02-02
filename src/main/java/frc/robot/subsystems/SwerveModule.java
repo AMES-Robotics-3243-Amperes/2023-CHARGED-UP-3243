@@ -138,7 +138,9 @@ public class SwerveModule {
     // <> return a swerve module state adjusted for the chasis angular offset
     return new SwerveModuleState(
       m_drivingEncoder.getVelocity(),
-      new Rotation2d(m_turningEncoder.getPosition() - m_chassisAngularOffset.getRadians())
+      new Rotation2d(
+        m_turningEncoder.getPosition() - m_chassisAngularOffset.getRadians()
+      )
     );
   }
 
@@ -151,6 +153,11 @@ public class SwerveModule {
     return getState().angle;
   }
 
+  public void stop() {
+    m_turningSparkMax.set(0);
+    m_drivingSparkMax.set(0);
+  }
+
   /**
    * <>
    *
@@ -160,7 +167,9 @@ public class SwerveModule {
     // <> return a new swerve module position adjusted for the angular offset
     return new SwerveModulePosition(
       m_drivingEncoder.getPosition(),
-      new Rotation2d(m_turningEncoder.getPosition() - m_chassisAngularOffset.getRadians())
+      new Rotation2d(
+        m_turningEncoder.getPosition() - m_chassisAngularOffset.getRadians()
+      )
     );
   }
 
@@ -169,7 +178,10 @@ public class SwerveModule {
    *
    * @param desiredState desired {@link SwerveModuleState}
    */
-  public void setDesiredState(SwerveModuleState desiredState, boolean allowLowSpeedTurning) {
+  public void setDesiredState(
+    SwerveModuleState desiredState,
+    boolean allowLowSpeedTurning
+  ) {
     // <> apply chasis angular offset
     SwerveModuleState correctedDesiredState = new SwerveModuleState();
 
@@ -185,7 +197,10 @@ public class SwerveModule {
     );
 
     // <> don't worry about turning the wheel if it's spinning a tiny amount
-
+    if (!allowLowSpeedTurning && Math.abs(optimizedDesiredState.speedMetersPerSecond) < ModuleConstants.kModuleMinSpeed) {
+      stop();
+      return;
+    }
 
     // <> command driving
     m_drivingPIDController.setReference(

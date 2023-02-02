@@ -5,9 +5,12 @@
 package frc.robot;
 
 import com.revrobotics.CANSparkMax.IdleMode;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 
 /**
@@ -162,16 +165,51 @@ public final class Constants {
         );
       }
 
+      // <> stuff pertaining to trajectory following,
+      // <> not the actual autonomous period
+      public static final class AutoConstants {
+
+        // <> max speeds (only for pathfinding, not controling)
+        public static final double kMaxMetersPerSecond =
+          DriveConstants.kMaxMetersPerSecond;
+        public static final double kMaxAngularMetersPerSecond = 2 * Math.PI;
+        public static final double kMaxAngularAccelerationMetersPerSecond =
+          2 * Math.PI;
+
+        // <> pid constraints for turning
+        public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
+          kMaxAngularMetersPerSecond,
+          kMaxAngularAccelerationMetersPerSecond
+        );
+
+        // pid controls
+        public static final double kMovementP = 0.4;
+        public static final double kTurningP = 0.52;
+
+        // <> config for generated trajectories
+        public static final TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
+          DriveConstants.AutoConstants.kMaxMetersPerSecond,
+          DriveConstants.AutoConstants.kMaxAngularMetersPerSecond
+        )
+          .setKinematics(ChasisKinematics.kDriveKinematics);
+
+        public static final PIDController movementPidController = new PIDController(
+          DriveConstants.AutoConstants.kMovementP,
+          0,
+          0
+        );
+      }
+
       // <> if the driving is field relative
-      public static final boolean fieldRelative = true;
-      public static final Rotation2d gyroOffset = Rotation2d.fromDegrees(0);
+      public static final boolean kFieldRelative = true;
+      public static final Rotation2d kGyroOffset = Rotation2d.fromDegrees(0);
 
       // <> speed damper (flat constant supplied speed is multiplied by)
-      public static final double kDrivingSpeedDamper = 5; // <> meters per second
-      public static final double kAngularSpeedDamper = 0.8 * Math.PI; // <> Pradians per second
+      public static final double kDrivingSpeedDamper = 12; // <> meters per second
+      public static final double kAngularSpeedDamper = 2 * Math.PI; // <> Pradians per second
 
       // <> max speed
-      public static final double kMaxMetersPerSecond = 1.6;
+      public static final double kMaxMetersPerSecond = 2.5;
 
       // <> this should be true
       public static final boolean kGyroReversed = true;
@@ -206,6 +244,9 @@ public final class Constants {
 
     public static final int secondPower = 1;
     public static final double bCoeff = (1.0 - aCoeff);
+
+    // <> why can't this be an enum (check robot container to see how these are used)
+    public static final int A = 1;
   }
 
   /** ++ constants for GRABBER ---------------------------------------------------------- */

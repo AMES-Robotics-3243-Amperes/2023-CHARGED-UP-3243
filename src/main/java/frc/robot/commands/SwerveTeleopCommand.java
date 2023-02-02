@@ -40,7 +40,7 @@ public class SwerveTeleopCommand extends CommandBase {
       controller.getDriveStraightWithAdjustments(),
       -controller.getDriveStrafeWithAdjustments(),
       MathUtil.applyDeadband(controller.getRightX(), 0.09),
-      DriveConstants.fieldRelative
+      DriveConstants.kFieldRelative
     );
 
     // <> debug

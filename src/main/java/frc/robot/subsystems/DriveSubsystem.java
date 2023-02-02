@@ -176,8 +176,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @param desiredStates The desired SwerveModule states.
    */
   public void setModuleStates(
-    SwerveModuleState[] desiredStates,
-    boolean allowLowSpeedTurning
+    SwerveModuleState[] desiredStates
   ) {
     // <> desaturate wheel speeds
     SwerveDriveKinematics.desaturateWheelSpeeds(
@@ -186,10 +185,10 @@ public class DriveSubsystem extends SubsystemBase {
     );
 
     // <> set the desired states
-    m_frontLeft.setDesiredState(desiredStates[0], allowLowSpeedTurning);
-    m_frontRight.setDesiredState(desiredStates[1], allowLowSpeedTurning);
-    m_rearLeft.setDesiredState(desiredStates[2], allowLowSpeedTurning);
-    m_rearRight.setDesiredState(desiredStates[3], allowLowSpeedTurning);
+    m_frontLeft.setDesiredState(desiredStates[0], true);
+    m_frontRight.setDesiredState(desiredStates[1], true);
+    m_rearLeft.setDesiredState(desiredStates[2], true);
+    m_rearRight.setDesiredState(desiredStates[3], true);
   }
 
   /** <> reset the drive encoders */
@@ -213,9 +212,16 @@ public class DriveSubsystem extends SubsystemBase {
   public Rotation2d getHeading() {
     Rotation2d raw_reading = Rotation2d
       .fromDegrees(m_gyro.getAngle())
-      .plus(DriveConstants.gyroOffset);
+      .plus(DriveConstants.kGyroOffset);
 
     return DriveConstants.kGyroReversed ? raw_reading.times(-1) : raw_reading;
+  }
+
+  public void stopModules() {
+    m_frontLeft.stop();
+    m_frontRight.stop();
+    m_rearLeft.stop();
+    m_rearRight.stop();
   }
 
   /**
