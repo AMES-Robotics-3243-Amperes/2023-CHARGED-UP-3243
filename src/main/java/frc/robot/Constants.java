@@ -171,10 +171,10 @@ public final class Constants {
 
         // <> max speeds (only for pathfinding, not controling)
         public static final double kMaxMetersPerSecond =
-          DriveConstants.kMaxMetersPerSecond;
-        public static final double kMaxAngularMetersPerSecond = 2 * Math.PI;
+          1.8;
+        public static final double kMaxAngularMetersPerSecond = 1 * Math.PI;
         public static final double kMaxAngularAccelerationMetersPerSecond =
-          2 * Math.PI;
+          1.4 * Math.PI;
 
         // <> pid constraints for turning
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
@@ -183,8 +183,9 @@ public final class Constants {
         );
 
         // pid controls
-        public static final double kMovementP = 0.4;
-        public static final double kTurningP = 0.52;
+        public static final double kMovementP = 0.5;
+        public static final double kTurningP = 0.42;
+        public static final double kTurningD = 0.0004;
 
         // <> config for generated trajectories
         public static final TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
@@ -206,7 +207,7 @@ public final class Constants {
 
       // <> speed damper (flat constant supplied speed is multiplied by)
       public static final double kDrivingSpeedDamper = 12; // <> meters per second
-      public static final double kAngularSpeedDamper = 2 * Math.PI; // <> Pradians per second
+      public static final double kAngularSpeedDamper = 2.6 * Math.PI; // <> Pradians per second
 
       // <> max speed
       public static final double kMaxMetersPerSecond = 2.5;
