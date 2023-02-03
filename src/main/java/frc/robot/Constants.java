@@ -251,10 +251,42 @@ public final class Constants {
   }
 
   /** ++ constants for GRABBER ---------------------------------------------------------- */
-  public static final class Grabber {}
+  public static final class Grabber {
+    public static final double kWheelSpeed = 0.5;
+    public static final double kGrabberSpeed = 1.0;
+    public static final double kPositiveEncoderRotationLimit = 0.5;
+    public static final double kNegativeEncoderRotationLimit = 0.5;
+    public static final int kMotorId = 8;
+    public static final double ktargetAmperage = 2.0;
+    public static final int kCurrentLimit = 35;
+  }
+   
 
   /** ++ constants for WRIST and ARM ---------------------------------------------------- */
-  public static final class WristAndArm {}
+  public static final class WristAndArm {
+    /**
+     * H! This class just holds all the motor ids
+     */
+    public static class MotorIDs {
+      public static final int armPivot = 1000; // H! TODO insert the motor IDs
+      public static final int armExtension = 1001;
+      public static final int WristPitch = 1002;
+      public static final int WristRoll = 1003;
+    }
+
+    // H! Holds the data for the positions of stuff in the arm
+    // H! TODO Insert the actually correct data
+    public static final double minLength = 0.0;
+    public static final double maxLength = 1000.0;
+    public static final double wristLength = 3.0;
+    
+
+    public static final double changeXMultiplier = 0.1;
+    public static final double changeYMultiplier = 0.1;
+    public static final double changePitchMultiplier = 0.1;
+    public static final double changeRollMultiplier = 0.1;
+  }
+
 
   /** ++ constants for PHOTONVISION ----------------------------------------------------- */
   public static final class PhotonVision {}
@@ -263,5 +295,62 @@ public final class Constants {
   public static final class NEOs {
 
     public static double maxNEORPM = 5500.0;
+  }
+
+  /** H! Constants for what automation stuff needs to do -------------------------------- */
+  public static final class AutomationConfigure {
+    // H! TODO None of these constants are right
+    public static final class Cone{
+      public static final class HighTarget {
+        public static final double armX = 0.0;
+        public static final double armY = 0.0;
+        public static final double armPitch = 0.0;
+        public static final double armRoll = 0.0;
+      }
+  
+      public static final class MidTarget {
+        public static final double armX = 0.0;
+        public static final double armY = 0.0;
+        public static final double armPitch = 0.0;
+        public static final double armRoll = 0.0;
+      }
+  
+      public static final class LowTarget {
+        public static final double armX = 0.0;
+        public static final double armY = 0.0;
+        public static final double armPitch = 0.0;
+        public static final double armRoll = 0.0;
+      }
+    }
+
+    public static final class Cube{
+      public static final class HighTarget {
+        public static final double armX = 0.0;
+        public static final double armY = 0.0;
+        public static final double armPitch = 0.0;
+        public static final double armRoll = 0.0;
+      }
+  
+      public static final class MidTarget {
+        public static final double armX = 0.0;
+        public static final double armY = 0.0;
+        public static final double armPitch = 0.0;
+        public static final double armRoll = 0.0;
+      }
+  
+      public static final class LowTarget {
+        public static final double armX = 0.0;
+        public static final double armY = 0.0;
+        public static final double armPitch = 0.0;
+        public static final double armRoll = 0.0;
+      }
+    }
+
+  }
+
+  // H! This is my fault, so feel free to move it to a better place if need be
+  /** H! Enum for the diferent target heights */
+  public static enum Target {
+    HIGH_TARGET, MID_TARGET, LOW_TARGET
   }
 }
