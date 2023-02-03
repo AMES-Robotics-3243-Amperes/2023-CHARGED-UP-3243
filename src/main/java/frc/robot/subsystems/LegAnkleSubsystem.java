@@ -83,7 +83,13 @@ public class LegAnkleSubsystem extends SubsystemBase {
     pidWristPitch.setSetpoint(targetWristAngle);
     pidWristRoll.setSetpoint(targetWristRoll);
 
-    return false; // H! TODO make it return the right value
+    // Return whether it's in the right position
+    return (
+      pidArmPivot.atSetpoint() &&
+      pidArmExtention.atSetpoint() &&
+      pidWristPitch.atSetpoint() &&
+      pidWristRoll.atSetpoint()
+    );
 
   }
 
