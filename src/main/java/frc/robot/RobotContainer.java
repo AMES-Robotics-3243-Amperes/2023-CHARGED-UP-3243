@@ -66,7 +66,7 @@ public class RobotContainer {
 
   // <> this is required for creating new swerve trajectory follow commands
   private final ProfiledPIDController thetaPidController;
-  private final PlaceGamePiece m_placeGamePieceCommand = new PlaceGamePiece(m_driveSubsystem, m_legAnkleSubsystem, m_reidPrototypeSubsystem);
+  private final PlaceGamePiece m_placeGamePieceCommand;
   private final ReidPrototypeCommand m_prototypeCommand = new ReidPrototypeCommand(m_reidPrototypeSubsystem, secondaryController);
   
   
@@ -86,6 +86,9 @@ public class RobotContainer {
 
     m_driveSubsystem.setDefaultCommand(m_SwerveTeleopCommand);
     m_driveSubsystem.resetOdometry(new Pose2d());
+
+    // H! This command is here because it needs thetaPidController to be created for it to be created
+    m_placeGamePieceCommand = new PlaceGamePiece(m_driveSubsystem, m_legAnkleSubsystem, m_reidPrototypeSubsystem, thetaPidController);
 
     // Configure the trigger bindings
     configureBindings();
