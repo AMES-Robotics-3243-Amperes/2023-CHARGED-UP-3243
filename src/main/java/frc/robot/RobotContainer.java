@@ -4,6 +4,19 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.DriveTrain.DriveConstants;
+import frc.robot.commands.SwerveTeleopCommand;
+import frc.robot.commands.SwerveAutoMoveCommand;
+import java.util.List;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -15,47 +28,103 @@ import frc.robot.subsystems.ReidPrototypeSubsystem;
 import frc.robot.subsystems.LegAnkleSubsystem;
 
 /**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
- * subsystems, commands, and button mappings) should be declared here.
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in
+ * the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of
+ * the robot (including
+ * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
 
   // ++ CONTROLLER STUFF ---------------------
-  public static JoyUtil primaryController = new JoyUtil(Constants.Joysticks.primaryControllerID);
-  public static JoyUtil secondaryController = new JoyUtil(Constants.Joysticks.secondaryControllerID);
+  public static JoyUtil primaryController = new JoyUtil(
+    Constants.Joysticks.primaryControllerID
+  );
+  public static JoyUtil secondaryController = new JoyUtil(
+    Constants.Joysticks.secondaryControllerID
+  );
 
-  
+  public static JoystickButton primaryAButton = new JoystickButton(
+    primaryController,
+    Constants.Joysticks.A
+  );
+
   // The robot's subsystems and commands are defined here...
   // ++ ----- SUBSYSTEMS -----------
   private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
   private final LegAnkleSubsystem m_legAnkleSubsystem = new LegAnkleSubsystem();
   private final ReidPrototypeSubsystem m_reidPrototypeSubsystem = new ReidPrototypeSubsystem();
+
   // ++ ----- COMMANDS -------------
+  //private final SwerveTrajectoryFollowCommand m_SwerveTrajectoryFollowCommand;
+  private final SwerveTeleopCommand m_SwerveTeleopCommand = new SwerveTeleopCommand(
+    m_driveSubsystem,
+    primaryController
+  );
+
+  // <> this is required for creating new swerve trajectory follow commands
+  private final ProfiledPIDController thetaPidController;
   private final PlaceGamePiece m_placeGamePieceCommand = new PlaceGamePiece(m_driveSubsystem, m_legAnkleSubsystem, m_reidPrototypeSubsystem);
   private final ReidPrototypeCommand m_prototypeCommand = new ReidPrototypeCommand(m_reidPrototypeSubsystem, secondaryController);
   
   
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  /**
+   * The container for the robot. Contains subsystems, OI devices, and commands.
+   */
   public RobotContainer() {
-    // Configure the button bindings
-    configureButtonBindings();
+    thetaPidController =
+      new ProfiledPIDController(
+        DriveConstants.AutoConstants.kTurningP,
+        0,
+        DriveConstants.AutoConstants.kTurningD,
+        DriveConstants.AutoConstants.kThetaControllerConstraints
+      );
+    thetaPidController.enableContinuousInput(-Math.PI, Math.PI);
 
-    m_reidPrototypeSubsystem.setDefaultCommand(m_prototypeCommand);
+    m_driveSubsystem.setDefaultCommand(m_SwerveTeleopCommand);
+    m_driveSubsystem.resetOdometry(new Pose2d());
+
+    // Configure the trigger bindings
+    configureBindings();
   }
 
   /**
-   * Use this method to define your button->command mappings. Buttons can be created by
-   * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
-   * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+   * Use this method to define your trigger->command mappings. Triggers can be
+   * created via the
+   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with
+   * an arbitrary
+   * predicate, or via the named factories in {@link
+   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for
+   * {@link
+   * CommandXboxController
+   * Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
+   * PS4} controllers or
+   * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
+   * joysticks}.
    */
-  private void configureButtonBindings() {
+  public void configureBindings() {
+    primaryAButton.onTrue(
+      new SwerveAutoMoveCommand(
+        m_driveSubsystem,
+        TrajectoryGenerator.generateTrajectory(
+          m_driveSubsystem.getPose(),
+          List.of(),
+          new Pose2d(new Translation2d(-2, 0.5), Rotation2d.fromDegrees(90)),
+          DriveConstants.AutoConstants.trajectoryConfig
+        ),
+        thetaPidController
+      )
+    );
+    
     // H! Make it so the X button activates the PlaceGamePiece Routine
     Trigger xButton = new JoystickButton(primaryController, XboxController.Button.kX.value);
     xButton.onTrue(m_placeGamePieceCommand);
   }
 
+  public Command getAutonomousCommand() {
+    return null;
+  }
 }
