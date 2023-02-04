@@ -269,23 +269,28 @@ public final class Constants {
      * H! This class just holds all the motor ids
      */
     public static class MotorIDs {
-      public static final int armPivot = 1000; // H! TODO insert the motor IDs
-      public static final int armExtension = 1001;
-      public static final int WristPitch = 1002;
-      public static final int WristRoll = 1003;
+      public static final int armPivot = 14;
+      public static final int armExtension = 4;
+      public static final int WristPitch = 12;
+      public static final int WristRoll = 7;
     }
 
     // H! Holds the data for the positions of stuff in the arm
-    // H! TODO Insert the actually correct data
-    public static final double minLength = 0.0;
-    public static final double maxLength = 1000.0;
-    public static final double wristLength = 3.0;
+    public static final double minLength = 0.92804;
+    public static final double maxLength = 1.5494;
+    public static final double wristLength = 0.072327;
     
 
     public static final double changeXMultiplier = 0.1;
     public static final double changeYMultiplier = 0.1;
     public static final double changePitchMultiplier = 0.1;
     public static final double changeRollMultiplier = 0.1;
+
+
+    public static final double maxX = 1000.0;
+    public static final double minX = -1000.0;
+    public static final double maxY = 1000.0;
+    public static final double minY = -1000.0;
   }
 
 
@@ -352,6 +357,7 @@ public final class Constants {
 
   // H! TODO This also needs the right numbers inserted
   /** H! An array of all the filled positions the robot could move to to place a game piece */
+  // :D in the future, these will be managed by the Field Manager (probably)
   public static final Pose2d[] PlacementFieldLocations = {
     new Pose2d(),
     new Pose2d(),

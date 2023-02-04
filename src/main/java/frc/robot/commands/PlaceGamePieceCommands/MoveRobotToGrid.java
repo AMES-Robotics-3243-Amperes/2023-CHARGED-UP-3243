@@ -65,7 +65,7 @@ public class MoveRobotToGrid extends SwerveAutoMoveCommand {
 
 
   public void onPOVRight() {
-    changeTrajectory() // H! TODO Configure this once changeTrajectory is implemented in SwerveAutoMoveCommand
+    changeTrajectory(); // H! TODO Configure this once changeTrajectory is implemented in SwerveAutoMoveCommand
   }
   
   public void onPOVLeft() {

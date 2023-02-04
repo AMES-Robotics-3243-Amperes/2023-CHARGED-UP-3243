@@ -10,9 +10,9 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import static frc.robot.Constants.WristAndArm.*;
 
 public class LegAnkleSubsystem extends SubsystemBase {
   
@@ -21,10 +21,10 @@ public class LegAnkleSubsystem extends SubsystemBase {
   private PIDController pidWristPitch = new PIDController(0.1, 0, 0);
   private PIDController pidWristRoll = new PIDController(0.1, 0, 0); 
   
-  private CANSparkMax armPivot = new CANSparkMax(Constants.WristAndArm.MotorIDs.armPivot, MotorType.kBrushless);
-  private CANSparkMax armExtension = new CANSparkMax(Constants.WristAndArm.MotorIDs.armExtension, MotorType.kBrushless);
-  private CANSparkMax wristPitch = new CANSparkMax(Constants.WristAndArm.MotorIDs.WristPitch, MotorType.kBrushless);
-  private CANSparkMax wristRoll = new CANSparkMax(Constants.WristAndArm.MotorIDs.WristRoll, MotorType.kBrushless);
+  private CANSparkMax armPivot = new CANSparkMax(MotorIDs.armPivot, MotorType.kBrushless);
+  private CANSparkMax armExtension = new CANSparkMax(MotorIDs.armExtension, MotorType.kBrushless);
+  private CANSparkMax wristPitch = new CANSparkMax(MotorIDs.WristPitch, MotorType.kBrushless);
+  private CANSparkMax wristRoll = new CANSparkMax(MotorIDs.WristRoll, MotorType.kBrushless);
 
   private SparkMaxAbsoluteEncoder armPivotEncoder = armPivot.getAbsoluteEncoder(Type.kDutyCycle);
   private SparkMaxAbsoluteEncoder armExtensionEncoder = armExtension.getAbsoluteEncoder(Type.kDutyCycle);
@@ -34,7 +34,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
   private double targetSpeedArmPivot = 0.0;
   private double targetSpeedArmExtension = 0.0;
   private double targetSpeedWristPitch = 0.0;
-  private double targetSpeedWristRoll =0.0;
+  private double targetSpeedWristRoll = 0.0;
 
   private double targetX = 0.0;
   private double targetY = 0.0;
@@ -65,12 +65,18 @@ public class LegAnkleSubsystem extends SubsystemBase {
 
   /** H! Moves the arm-wrist assembly to a given position and rotation. 
    * @param x The target distance in front of the pivot
-   * @param y The target distance above the target
+   * @param y The target distance above the pivot
    * @param pitch The target pitch to approach at
    * @param roll The target roll to aproach at
    * @return Whether the arm is in a small range of the target
   */
-  public boolean moveToXYTheta(double x, double y, double pitch, double roll) {
+  public boolean moveToXYTheta(double xIn, double yIn, double pitchIn, double rollIn) {
+    // H! Prevent the arm from going places it shouldn't
+    double x = clamp(maxX, minX, xIn);
+    double y = clamp(maxY, minY, yIn);
+    double pitch = pitchIn;
+    double roll = rollIn;
+
     // H! Inverse kinematics: see more detailed math here: https://www.desmos.com/calculator/l89yzwijul 
     double targetArmAngle = Math.atan((y + Constants.WristAndArm.wristLength * Math.sin(pitch))  /  (x + Constants.WristAndArm.wristLength * Math.cos(pitch)));
     double targetArmLength = (y + Constants.WristAndArm.wristLength * Math.sin(pitch)) / Math.sin(targetArmAngle);
@@ -83,7 +89,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
     pidWristPitch.setSetpoint(targetWristAngle);
     pidWristRoll.setSetpoint(targetWristRoll);
 
-    // Return whether it's in the right position
+    // H! Return whether it's in the right position
     return (
       pidArmPivot.atSetpoint() &&
       pidArmExtention.atSetpoint() &&
@@ -105,5 +111,18 @@ public class LegAnkleSubsystem extends SubsystemBase {
     armExtension.set(targetSpeedArmExtension);
     wristPitch.set(targetSpeedWristPitch);
     wristRoll.set(targetSpeedWristRoll);
+  }
+
+
+
+
+
+
+
+
+
+
+  private static double clamp(double min, double max, double x) {
+    return x>max?max:(x<min?min:x); // H! I have written the most unreadable line of code of my entire life. Witness the result.
   }
 }
