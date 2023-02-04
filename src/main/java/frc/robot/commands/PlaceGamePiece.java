@@ -27,7 +27,7 @@ public class PlaceGamePiece extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new MoveRobotToGrid(isCube, target, driveSubsystem, thetaPidController),
+      new MoveRobotToGrid(isCube, target, driveSubsystem, null, thetaPidController),
       new MoveArmToTarget(isCube, target, legAnkleSubsystem),
       new ReleaseGameObject(isCube, target, grabberSubsystem)
     );

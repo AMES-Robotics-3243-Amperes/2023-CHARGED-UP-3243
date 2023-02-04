@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.revrobotics.CANSparkMax.IdleMode;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -347,6 +348,17 @@ public final class Constants {
     }
 
   }
+
+
+  // H! TODO This also needs the right numbers inserted
+  /** H! An array of all the filled positions the robot could move to to place a game piece */
+  public static final Pose2d[] PlacementFieldLocations = {
+    new Pose2d(),
+    new Pose2d(),
+    new Pose2d(),
+    new Pose2d()
+  };
+
 
   // H! This is my fault, so feel free to move it to a better place if need be
   /** H! Enum for the diferent target heights */
