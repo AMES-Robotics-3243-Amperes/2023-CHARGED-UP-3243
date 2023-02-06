@@ -47,6 +47,31 @@ public class MoveRobotToGrid extends SwerveAutoMoveCommand {
   }
 
 
+  /** Creates a new MoveRobotToGrid. */
+  public MoveRobotToGrid(boolean isCube, Constants.Target target, DriveSubsystem driveSubsystem, JoyUtil controller, ProfiledPIDController thetaPidController, int targetPoseIndex) {
+    super(
+      driveSubsystem,
+      new Pose2d(), // H! TODO Make this actually be the correct pose
+      thetaPidController
+    );
+    this.isCube = isCube;
+    this.driveSubsystem = driveSubsystem;
+    this.target = target; 
+    this.controller = controller;
+    this.thetaPidController = thetaPidController;
+    this.targetPoseIndex = targetPoseIndex;
+
+    // H! Binds onPOVRight to starting pov right
+    rightPOVBindingEventLoop = new EventLoop();
+    controller.povRight(rightPOVBindingEventLoop).rising().ifHigh(this::onPOVRight);
+
+    // H! Binds onPOVLeft to starting pov left
+    leftPOVBindingEventLoop = new EventLoop();
+    controller.povLeft(leftPOVBindingEventLoop).rising().ifHigh(this::onPOVLeft);
+  }
+
+
+
   @Override
   public void execute() {
     super.execute();
@@ -65,11 +90,13 @@ public class MoveRobotToGrid extends SwerveAutoMoveCommand {
 
 
   public void onPOVRight() {
-    changeTrajectory(); // H! TODO Configure this once changeTrajectory is implemented in SwerveAutoMoveCommand
+    isDone = true;
+    new MoveRobotToGrid(isCube, target, driveSubsystem, controller, thetaPidController, targetPoseIndex + 1).schedule();
   }
   
   public void onPOVLeft() {
-  
+    isDone = true;
+    new MoveRobotToGrid(isCube, target, driveSubsystem, controller, thetaPidController, targetPoseIndex - 1).schedule();
   }
   
   
