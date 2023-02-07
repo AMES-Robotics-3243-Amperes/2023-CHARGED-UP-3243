@@ -46,6 +46,17 @@ public class LegAnkleSubsystem extends SubsystemBase {
   public LegAnkleSubsystem() {
     // H! TODO configure arm length encoder to return arm length, not encoder rotation
     
+    // H! Set soft current limits
+    armPivot.setSmartCurrentLimit(pivotCurrentLimit);
+    armExtension.setSmartCurrentLimit(extensionCurrentLimit);
+    wristPitch.setSmartCurrentLimit(pitchCurrentLimit);
+    wristRoll.setSmartCurrentLimit(rollCurrentLimit);
+
+    // H! Set hard current limits
+    armPivot.setSecondaryCurrentLimit(NEO1650CurrentLimitHard);
+    armExtension.setSecondaryCurrentLimit(NEO1650CurrentLimitHard);
+    wristPitch.setSecondaryCurrentLimit(NEO550CurrentLimitHard);
+    wristRoll.setSecondaryCurrentLimit(NEO550CurrentLimitHard);
   }
 
   /** H! Moves the arm-wrist assembly by a given position diference 

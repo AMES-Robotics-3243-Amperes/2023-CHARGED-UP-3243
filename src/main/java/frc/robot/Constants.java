@@ -291,6 +291,14 @@ public final class Constants {
     public static final double minX = -1000.0;
     public static final double maxY = 1000.0;
     public static final double minY = -1000.0;
+
+    public static final int pivotCurrentLimit = 30;
+    public static final int extensionCurrentLimit = 20;
+    public static final int pitchCurrentLimit = 10;
+    public static final int rollCurrentLimit = 10;
+
+    public static final int NEO1650CurrentLimitHard = 40;
+    public static final int NEO550CurrentLimitHard = 20;
   }
 
 
