@@ -26,22 +26,14 @@ public class SwerveModule {
   private final SparkMaxPIDController m_drivingPIDController;
   private final SparkMaxPIDController m_turningPIDController;
 
-  private Rotation2d m_chassisAngularOffset;
-  private SwerveModuleState m_desiredState = new SwerveModuleState(
-    0.0,
-    new Rotation2d()
-  );
+  private final Rotation2d m_chassisAngularOffset;
+  private SwerveModuleState m_desiredState = new SwerveModuleState(0.0, new Rotation2d());
 
   /**
-   * <> construct a swerve module with a driving id, can id, and chassis angular
-   * offset
+   * <> construct a swerve module with a driving id, can id, and chassis angular offset
    */
-  public SwerveModule(
-    int drivingCANId,
-    int turningCANId,
-    Rotation2d chassisAngularOffset
-  ) {
-    // <> initilize spark maxes
+  public SwerveModule(int drivingCANId, int turningCANId, Rotation2d chassisAngularOffset) {
+    // <> initialize spark maxes
     m_drivingSparkMax = new CANSparkMax(drivingCANId, MotorType.kBrushless);
     m_turningSparkMax = new CANSparkMax(turningCANId, MotorType.kBrushless);
 
@@ -60,68 +52,46 @@ public class SwerveModule {
     m_turningPIDController.setFeedbackDevice(m_turningEncoder);
 
     // <> apply position and velocity conversion factors
-    m_drivingEncoder.setPositionConversionFactor(
-      ModuleConstants.EncoderFactors.kDrivingEncoderPositionFactor
-    );
-    m_drivingEncoder.setVelocityConversionFactor(
-      ModuleConstants.EncoderFactors.kDrivingEncoderVelocityFactor
-    );
-    m_turningEncoder.setPositionConversionFactor(
-      ModuleConstants.EncoderFactors.kTurningEncoderPositionFactor
-    );
-    m_turningEncoder.setVelocityConversionFactor(
-      ModuleConstants.EncoderFactors.kTurningEncoderVelocityFactor
-    );
+    m_drivingEncoder.setPositionConversionFactor(ModuleConstants.EncoderFactors.kDrivingEncoderPositionFactor);
+    m_drivingEncoder.setVelocityConversionFactor(ModuleConstants.EncoderFactors.kDrivingEncoderVelocityFactor);
+    m_turningEncoder.setPositionConversionFactor(ModuleConstants.EncoderFactors.kTurningEncoderPositionFactor);
+    m_turningEncoder.setVelocityConversionFactor(ModuleConstants.EncoderFactors.kTurningEncoderVelocityFactor);
 
     // <> invert the turning encoder
-    m_turningEncoder.setInverted(
-      ModuleConstants.PhysicalProperties.kTurningEncoderInverted
-    );
+    m_turningEncoder.setInverted(ModuleConstants.PhysicalProperties.kTurningEncoderInverted);
 
     // <> enable pid wrap on 0 to 2 pi, as the wheels rotate freely
     m_turningPIDController.setPositionPIDWrappingEnabled(true);
-    m_turningPIDController.setPositionPIDWrappingMinInput(
-      ModuleConstants.kTurningEncoderPositionPIDMinInput
-    );
-    m_turningPIDController.setPositionPIDWrappingMaxInput(
-      ModuleConstants.kTurningEncoderPositionPIDMaxInput
-    );
+    m_turningPIDController.setPositionPIDWrappingMinInput(ModuleConstants.kTurningEncoderPositionPIDMinInput);
+    m_turningPIDController.setPositionPIDWrappingMaxInput(ModuleConstants.kTurningEncoderPositionPIDMaxInput);
 
     // <> set p, i, and d terms for driving
     m_drivingPIDController.setP(ModuleConstants.PIDF.kDrivingP);
     m_drivingPIDController.setI(ModuleConstants.PIDF.kDrivingI);
     m_drivingPIDController.setD(ModuleConstants.PIDF.kDrivingD);
     m_drivingPIDController.setFF(ModuleConstants.PIDF.kDrivingFF);
-    m_drivingPIDController.setOutputRange(
-      ModuleConstants.PIDF.kDrivingMinOutput,
-      ModuleConstants.PIDF.kDrivingMaxOutput
-    );
+    m_drivingPIDController.setOutputRange(ModuleConstants.PIDF.kDrivingMinOutput,
+      ModuleConstants.PIDF.kDrivingMaxOutput);
 
     // <> set p, i, and d terms for turning
     m_turningPIDController.setP(ModuleConstants.PIDF.kTurningP);
     m_turningPIDController.setI(ModuleConstants.PIDF.kTurningI);
     m_turningPIDController.setD(ModuleConstants.PIDF.kTurningD);
     m_turningPIDController.setFF(ModuleConstants.PIDF.kTurningFF);
-    m_turningPIDController.setOutputRange(
-      ModuleConstants.PIDF.kTurningMinOutput,
-      ModuleConstants.PIDF.kTurningMaxOutput
-    );
+    m_turningPIDController.setOutputRange(ModuleConstants.PIDF.kTurningMinOutput,
+      ModuleConstants.PIDF.kTurningMaxOutput);
 
     // <> set idle modes and current limits
     m_drivingSparkMax.setIdleMode(ModuleConstants.kDrivingMotorIdleMode);
     m_turningSparkMax.setIdleMode(ModuleConstants.kTurningMotorIdleMode);
-    m_drivingSparkMax.setSmartCurrentLimit(
-      ModuleConstants.kDrivingMotorCurrentLimit
-    );
-    m_turningSparkMax.setSmartCurrentLimit(
-      ModuleConstants.kTurningMotorCurrentLimit
-    );
+    m_drivingSparkMax.setSmartCurrentLimit(ModuleConstants.kDrivingMotorCurrentLimit);
+    m_turningSparkMax.setSmartCurrentLimit(ModuleConstants.kTurningMotorCurrentLimit);
 
     // <> save configurations in case of a brown out
     m_drivingSparkMax.burnFlash();
     m_turningSparkMax.burnFlash();
 
-    // <> initilize desired state to the current state
+    // <> initialize desired state to the current state
     m_chassisAngularOffset = chassisAngularOffset;
     m_desiredState.angle = new Rotation2d(m_turningEncoder.getPosition());
 
@@ -135,22 +105,10 @@ public class SwerveModule {
    * @return current {@link SwerveModuleState} of the module
    */
   public SwerveModuleState getState() {
-    // <> return a swerve module state adjusted for the chasis angular offset
-    return new SwerveModuleState(
-      m_drivingEncoder.getVelocity(),
-      new Rotation2d(
-        m_turningEncoder.getPosition() - m_chassisAngularOffset.getRadians()
-      )
-    );
-  }
+    double velocity = m_drivingEncoder.getVelocity();
+    Rotation2d rotation = new Rotation2d(m_turningEncoder.getPosition() - m_chassisAngularOffset.getRadians());
 
-  /**
-   * <>
-   *
-   * @return current {@link Rotation2d} of the module
-   */
-  public Rotation2d getRotation() {
-    return getState().angle;
+    return new SwerveModuleState(velocity, rotation);
   }
 
   public void stop() {
@@ -164,13 +122,10 @@ public class SwerveModule {
    * @return the {@link SwerveModulePosition} of the module
    */
   public SwerveModulePosition getPosition() {
-    // <> return a new swerve module position adjusted for the angular offset
-    return new SwerveModulePosition(
-      m_drivingEncoder.getPosition(),
-      new Rotation2d(
-        m_turningEncoder.getPosition() - m_chassisAngularOffset.getRadians()
-      )
-    );
+    double position = m_drivingEncoder.getPosition();
+    Rotation2d rotation = new Rotation2d(m_turningEncoder.getPosition() - m_chassisAngularOffset.getRadians());
+
+    return new SwerveModulePosition(position, rotation);
   }
 
   /**
@@ -178,45 +133,35 @@ public class SwerveModule {
    *
    * @param desiredState desired {@link SwerveModuleState}
    */
-  public void setDesiredState(
-    SwerveModuleState desiredState,
-    boolean allowLowSpeedTurning
-  ) {
-    // <> apply chasis angular offset
+  public void setDesiredState(SwerveModuleState desiredState, boolean allowLowSpeedTurning) {
+    // <> apply chassis angular offset
     SwerveModuleState correctedDesiredState = new SwerveModuleState();
 
-    correctedDesiredState.speedMetersPerSecond =
-      desiredState.speedMetersPerSecond;
-    correctedDesiredState.angle =
-      desiredState.angle.plus(m_chassisAngularOffset);
+    correctedDesiredState.speedMetersPerSecond = desiredState.speedMetersPerSecond;
+    correctedDesiredState.angle = desiredState.angle.plus(m_chassisAngularOffset);
 
     // <> optimize state to avoid turning more than 90 degrees
-    SwerveModuleState optimizedDesiredState = SwerveModuleState.optimize(
-      correctedDesiredState,
-      new Rotation2d(m_turningEncoder.getPosition())
-    );
+    Rotation2d currentAngle = new Rotation2d(m_turningEncoder.getPosition());
+    SwerveModuleState optimizedDesiredState = SwerveModuleState.optimize(correctedDesiredState, currentAngle);
 
     // <> don't worry about turning the wheel if it's spinning a tiny amount
-    if (!allowLowSpeedTurning && Math.abs(optimizedDesiredState.speedMetersPerSecond) < ModuleConstants.kModuleMinSpeed) {
+    boolean lowSpeed = Math.abs(optimizedDesiredState.speedMetersPerSecond) < ModuleConstants.kModuleMinSpeed;
+    if (!allowLowSpeedTurning && lowSpeed) {
       stop();
       return;
     }
 
     // <> command driving
-    m_drivingPIDController.setReference(
-      optimizedDesiredState.speedMetersPerSecond,
-      CANSparkMax.ControlType.kVelocity
-    );
-    m_turningPIDController.setReference(
-      optimizedDesiredState.angle.getRadians(),
-      CANSparkMax.ControlType.kPosition
-    );
+    m_drivingPIDController.setReference(optimizedDesiredState.speedMetersPerSecond, CANSparkMax.ControlType.kVelocity);
+    m_turningPIDController.setReference(optimizedDesiredState.angle.getRadians(), CANSparkMax.ControlType.kPosition);
 
     // <> set the desired state to the calculated desired state
     m_desiredState = desiredState;
   }
 
-  /** <> zeroes all encoders */
+  /**
+   * <> zeroes all encoders
+   */
   public void resetEncoders() {
     m_drivingEncoder.setPosition(0);
   }

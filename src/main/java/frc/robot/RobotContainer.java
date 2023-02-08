@@ -64,14 +64,14 @@ public class RobotContainer {
     thetaPidController =
       new ProfiledPIDController(
         DriveConstants.AutoConstants.kTurningP,
-        0,
+        DriveConstants.AutoConstants.kTurningI,
         DriveConstants.AutoConstants.kTurningD,
         DriveConstants.AutoConstants.kThetaControllerConstraints
       );
     thetaPidController.enableContinuousInput(-Math.PI, Math.PI);
 
     m_driveSubsystem.setDefaultCommand(m_SwerveTeleopCommand);
-    m_driveSubsystem.resetOdometry(new Pose2d());
+    m_driveSubsystem.resetOdometry(new Pose2d(new Translation2d(), m_driveSubsystem.getHeading()));
 
     // Configure the trigger bindings
     configureBindings();
@@ -96,9 +96,9 @@ public class RobotContainer {
       new SwerveAutoMoveCommand(
         m_driveSubsystem,
         TrajectoryGenerator.generateTrajectory(
-          m_driveSubsystem.getPose(),
+          new Pose2d(),
           List.of(),
-          new Pose2d(new Translation2d(-2, 0.5), Rotation2d.fromDegrees(90)),
+          new Pose2d(new Translation2d(-1.2, 0.3), Rotation2d.fromDegrees(90)),
           DriveConstants.AutoConstants.trajectoryConfig
         ),
         thetaPidController

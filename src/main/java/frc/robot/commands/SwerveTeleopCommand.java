@@ -5,6 +5,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveTrain.DriveConstants;
@@ -19,7 +21,9 @@ public class SwerveTeleopCommand extends CommandBase {
   // <> driver joyutil
   private final JoyUtil controller;
 
-  /** Creates a new SwerveTeleopCommand. */
+  /**
+   * Creates a new SwerveTeleopCommand.
+   */
   public SwerveTeleopCommand(DriveSubsystem subsystem, JoyUtil controller) {
     m_DriveSubsystem = subsystem;
     this.controller = controller;
@@ -36,15 +40,14 @@ public class SwerveTeleopCommand extends CommandBase {
   @Override
   public void execute() {
     // <> drive the drivetrain with the controller's input
-    m_DriveSubsystem.drive(
-      controller.getDriveStraightWithAdjustments(),
-      -controller.getDriveStrafeWithAdjustments(),
-      MathUtil.applyDeadband(controller.getRightX(), 0.09),
-      DriveConstants.kFieldRelative
-    );
+    m_DriveSubsystem.drive(controller.getDriveStraightWithAdjustments(), -controller.getDriveStrafeWithAdjustments(),
+      MathUtil.applyDeadband(controller.getRightX(), 0.09), DriveConstants.kFieldRelative);
 
-    // <> debug
-    SmartDashboard.putNumber("odometry pose translation x", m_DriveSubsystem.getPose().getTranslation().getX());
+    // <> temporary for debugging purposes
+    if (controller.getBButtonPressed()) {
+      m_DriveSubsystem.resetOdometry(new Pose2d(new Translation2d(), m_DriveSubsystem.getHeading()));
+      m_DriveSubsystem.zeroHeading();
+    }
   }
 
   // Called once the command ends or is interrupted.
