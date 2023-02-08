@@ -188,7 +188,7 @@ public final class JoyUtil extends XboxController {
         double withDead = posWithDeadzone(rawJoyPos);
         double withFilter = lowPassFilter(withDead, prevFilterJoy, filterStrength);
         double withCurve = joyCurve(withFilter); 
-        double withSpeedMode = fastMode(withCurve, (getRightTriggerAxis() - getLeftTriggerAxis()));
+        double withSpeedMode = fastMode(withCurve, (getRightTriggerAxis() - (getLeftTriggerAxis() * Constants.Joysticks.slowModeMultiplier)));
         double withDamper = withSpeedMode * Constants.DriveTrain.DriveConstants.kDrivingSpeedDamper;
 
         double adjustedJoyPos = withDamper;
