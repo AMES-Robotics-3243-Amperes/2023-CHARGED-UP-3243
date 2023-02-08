@@ -177,15 +177,13 @@ public class SwerveAutoMoveCommand extends CommandBase {
 
   @Override
   public void initialize() {
-    m_timer.restart();
+    m_timer.reset();
+    m_timer.start();
   }
 
   @Override
   public void execute() {
-    double curTime = m_timer.get();
-    var desiredState = m_trajectory.sample(curTime);
-
-    var targetChassisSpeeds = m_controller.calculate(m_pose.get(), desiredState, m_desiredRotation.get());
+    var targetChassisSpeeds = m_controller.calculate(m_pose.get(), getDesiredState(), m_desiredRotation.get());
 
     // <> turn the correct way even if the gyro is reversed
     if (Constants.DriveTrain.DriveConstants.kGyroReversed) {
@@ -204,8 +202,8 @@ public class SwerveAutoMoveCommand extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    Translation2d desiredTranslation =
-      m_trajectory.sample(m_trajectory.getTotalTimeSeconds()).poseMeters.getTranslation();
+    Trajectory.State desiredState = getDesiredState();
+    Translation2d desiredTranslation = desiredState.poseMeters.getTranslation();
     Rotation2d desiredRotation = m_desiredRotation.get();
 
     // <> make the desired rotation the same
