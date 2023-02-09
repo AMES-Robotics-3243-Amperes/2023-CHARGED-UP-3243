@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -153,6 +155,12 @@ public final class Constants {
       }
     }
 
+  }
+
+  /** ++ field measurement constants */ // ---------------------------------------------------
+  public static final class FieldConstants {
+    public static Pose2d blueScoringPositions[]; // [++ make these final
+    public static Pose2d redScoringPositions[];
   }
 
   // H! This is my fault, so feel free to move it to a better place if need be
