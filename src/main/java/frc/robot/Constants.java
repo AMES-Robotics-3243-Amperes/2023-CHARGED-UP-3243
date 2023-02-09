@@ -54,7 +54,7 @@ public final class Constants {
       public static final class PhysicalProperties {
 
         /**
-         * <> direct quote from rev robotis:
+         * <> direct quote from rev robotics:
          *
          * The MAXSwerve module can be configured with one of three pinion gears:
          * 12T, 13T, or 14T. This changes the drive speed of the module
@@ -67,14 +67,12 @@ public final class Constants {
 
         // <> required for various calculations
         public static final double kWheelDiameterMeters = 0.0762;
-        public static final double kWheelCircumferenceMeters =
-          kWheelDiameterMeters * Math.PI;
       }
 
       // all the encoder factors
       public static final class EncoderFactors {
 
-        // <> quote from revrobotics:
+        // <> quote from rev robotics:
         // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15 teeth on the bevel pinion
         public static final double kDrivingMotorReduction =
           (45.0 * 22) / (PhysicalProperties.kDrivingMotorPinionTeeth * 15);
@@ -119,20 +117,20 @@ public final class Constants {
       public static final class IDs {
 
         // <> driving ids
-        public static final int kFrontLeftDrivingCanId = 5;
-        public static final int kRearLeftDrivingCanId = 7;
-        public static final int kFrontRightDrivingCanId = 12;
-        public static final int kRearRightDrivingCanId = 9;
+        public static final int kFrontLeftDrivingCanId = 3;
+        public static final int kRearLeftDrivingCanId = 9;
+        public static final int kFrontRightDrivingCanId = 5;
+        public static final int kRearRightDrivingCanId = 13;
 
         // <> turning ids
         public static final int kFrontLeftTurningCanId = 11;
         public static final int kRearLeftTurningCanId = 2;
-        public static final int kFrontRightTurningCanId = 15;
-        public static final int kRearRightTurningCanId = 8;
+        public static final int kFrontRightTurningCanId = 8;
+        public static final int kRearRightTurningCanId = 15;
       }
 
       // <> absolute encoder offsets (should be multiples of pi / 2
-      // <> if the encoders were zeored properly in rev client)
+      // <> if the encoders were zeroed properly in rev client)
       public static final class ModuleOffsets {
 
         public static final Rotation2d kFrontLeftOffset = Rotation2d.fromRadians(
@@ -149,8 +147,8 @@ public final class Constants {
         );
       }
 
-      // <> things involving the physical setup of the chasis
-      public static final class ChasisKinematics {
+      // <> things involving the physical setup of the chassis
+      public static final class ChassisKinematics {
 
         // <> distance between centers of right and left wheels on robot
         public static final double kRobotWidth = Units.inchesToMeters(27);
@@ -170,9 +168,8 @@ public final class Constants {
       // <> not the actual autonomous period
       public static final class AutoConstants {
 
-        // <> max speeds (only for pathfinding, not controling)
-        public static final double kMaxMetersPerSecond =
-          1.8;
+        // <> max speeds (only for pathfinding, not controlling)
+        public static final double kMaxMetersPerSecond = 1.8;
         public static final double kMaxAngularMetersPerSecond = 1 * Math.PI;
         public static final double kMaxAngularAccelerationMetersPerSecond =
           1.4 * Math.PI;
@@ -184,22 +181,37 @@ public final class Constants {
         );
 
         // pid controls
-        public static final double kMovementP = 0.5;
-        public static final double kTurningP = 0.42;
-        public static final double kTurningD = 0.0004;
+        public static final double kMovementP = 1;
+        public static final double kMovementIInitial = 0;
+        public static final double kMovementITrajectoryEnd = 0.25;
+        public static final double kMovementD = 0.2;
+
+        public static final double kTurningP = 1;
+        public static final double kTurningI = 0;
+        public static final double kTurningD = 0.0005;
 
         // <> config for generated trajectories
         public static final TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
           DriveConstants.AutoConstants.kMaxMetersPerSecond,
           DriveConstants.AutoConstants.kMaxAngularMetersPerSecond
         )
-          .setKinematics(ChasisKinematics.kDriveKinematics);
+          .setKinematics(ChassisKinematics.kDriveKinematics);
 
-        public static final PIDController movementPidController = new PIDController(
-          DriveConstants.AutoConstants.kMovementP,
-          0,
-          0
+        public static final PIDController movementPidControllerInitial = new PIDController(
+          kMovementP,
+          kMovementIInitial,
+          kMovementD
         );
+
+        public static final PIDController movementPidControllerTrajectoryEnd = new PIDController(
+          kMovementP,
+          kMovementITrajectoryEnd,
+          kMovementD
+        );
+
+        // <> leniency for ending SwerveAutoMoveCommands
+        public static double angleLeniencyDegrees = 1;
+        public static double positionLeniencyMeters = 0.03;
       }
 
       // <> if the driving is field relative
@@ -208,7 +220,7 @@ public final class Constants {
 
       // <> speed damper (flat constant supplied speed is multiplied by)
       public static final double kDrivingSpeedDamper = 12; // <> meters per second
-      public static final double kAngularSpeedDamper = 2.6 * Math.PI; // <> Pradians per second
+      public static final double kAngularSpeedDamper = 2.6 * Math.PI; // <> radians per second
 
       // <> max speed
       public static final double kMaxMetersPerSecond = 2.5;
@@ -236,6 +248,8 @@ public final class Constants {
     // ss This is the multiplier for Fast Mode
     // explained in JoyUtil.java
     public static final double fastModeMaxMultiplier = 0.5;
+    // :> Slow mode multiplier
+    public static final double slowModeMultiplier = 3; 
 
     /** ++ the damper for the D-Pad inputs */
     public static final double dPadDamper = 0.7;
