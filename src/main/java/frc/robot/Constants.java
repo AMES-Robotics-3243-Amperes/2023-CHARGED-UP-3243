@@ -120,7 +120,7 @@ public final class Constants {
         public static final int kFrontLeftDrivingCanId = 3;
         public static final int kRearLeftDrivingCanId = 9;
         public static final int kFrontRightDrivingCanId = 5;
-        public static final int kRearRightDrivingCanId = 13;
+        public static final int kRearRightDrivingCanId = 1;
 
         // <> turning ids
         public static final int kFrontLeftTurningCanId = 11;
@@ -183,7 +183,7 @@ public final class Constants {
         // pid controls
         public static final double kMovementP = 1;
         public static final double kMovementIInitial = 0;
-        public static final double kMovementITrajectoryEnd = 0.25;
+        public static final double kMovementITrajectoryEnd = 0.1;
         public static final double kMovementD = 0.2;
 
         public static final double kTurningP = 1;
@@ -271,7 +271,7 @@ public final class Constants {
     public static final double kGrabberSpeed = 1.0;
     public static final double kPositiveEncoderRotationLimit = 0.5;
     public static final double kNegativeEncoderRotationLimit = 0.5;
-    public static final int kMotorId = 8;
+    public static final int kMotorId = 7;
     public static final double ktargetAmperage = 2.0;
     public static final int kCurrentLimit = 35;
   }
@@ -283,10 +283,10 @@ public final class Constants {
      * H! This class just holds all the motor ids
      */
     public static class MotorIDs {
-      public static final int armPivot = 14;
+      public static final int armPivot = 12;
       public static final int armExtension = 4;
-      public static final int WristPitch = 12;
-      public static final int WristRoll = 7;
+      public static final int WristPitch = 14;
+      public static final int WristRoll = 6;
     }
 
     // H! Holds the data for the positions of stuff in the arm

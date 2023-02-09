@@ -29,7 +29,8 @@ public class MoveRobotToGrid extends SwerveAutoMoveCommand {
     super(
       driveSubsystem,
       new Pose2d(), // H! TODO Make this actually be the correct pose
-      thetaPidController
+      thetaPidController,
+      false
     );
     this.isCube = isCube;
     this.driveSubsystem = driveSubsystem;
@@ -52,7 +53,8 @@ public class MoveRobotToGrid extends SwerveAutoMoveCommand {
     super(
       driveSubsystem,
       new Pose2d(), // H! TODO Make this actually be the correct pose
-      thetaPidController
+      thetaPidController,
+      false
     );
     this.isCube = isCube;
     this.driveSubsystem = driveSubsystem;

@@ -13,12 +13,14 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants.DriveTrain.DriveConstants;
 import frc.robot.subsystems.DriveSubsystem;
 
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -159,6 +161,26 @@ public class SwerveAutoMoveCommand extends CommandBase {
                                ProfiledPIDController thetaPidController, boolean lazy) {
     this(trajectory, subsystem::getPose, DriveConstants.ChassisKinematics.kDriveKinematics,
       DriveConstants.AutoConstants.movementPidControllerInitial,
+      DriveConstants.AutoConstants.movementPidControllerInitial, thetaPidController, subsystem::setModuleStates, lazy
+      , subsystem);
+  }
+
+  /**
+   * <> Creates a new SwerveAutoMoveCommand that makes the robot follow a trajectory
+   *
+   * <p>Note: The controllers will *not* set the outputVolts to zero upon completion of the path-
+   * this is left to the user, since it is not appropriate for paths with non-stationary endstates.
+   *
+   * @param subsystem          the {@link DriveSubsystem} to control
+   * @param pose               the {@link Pose2d} to follow
+   * @param thetaPidController the {@link ProfiledPIDController} to control correcting angular movement
+   *                           (this is required because pid controllers can't be made continuous statically)
+   */
+  public SwerveAutoMoveCommand(DriveSubsystem subsystem, Pose2d pose, ProfiledPIDController thetaPidController,
+                               boolean lazy) {
+    this(TrajectoryGenerator.generateTrajectory(subsystem.getPose(), List.of(), pose,
+      DriveConstants.AutoConstants.trajectoryConfig), subsystem::getPose,
+      DriveConstants.ChassisKinematics.kDriveKinematics, DriveConstants.AutoConstants.movementPidControllerInitial,
       DriveConstants.AutoConstants.movementPidControllerInitial, thetaPidController, subsystem::setModuleStates, lazy
       , subsystem);
   }

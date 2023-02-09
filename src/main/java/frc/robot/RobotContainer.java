@@ -9,24 +9,21 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DriveTrain.DriveConstants;
-import frc.robot.commands.SwerveTeleopCommand;
-import frc.robot.commands.SwerveAutoMoveCommand;
-import java.util.List;
-import frc.robot.subsystems.DriveSubsystem;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.event.EventLoop;
 import frc.robot.commands.PlaceGamePiece;
 import frc.robot.commands.ReidPrototypeCommand;
-import frc.robot.subsystems.ReidPrototypeSubsystem;
+import frc.robot.commands.SwerveAutoMoveCommand;
+import frc.robot.commands.SwerveTeleopCommand;
+import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LegAnkleSubsystem;
+import frc.robot.subsystems.ReidPrototypeSubsystem;
+
+import java.util.List;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -40,17 +37,8 @@ import frc.robot.subsystems.LegAnkleSubsystem;
 public class RobotContainer {
 
   // ++ CONTROLLER STUFF ---------------------
-  public static JoyUtil primaryController = new JoyUtil(
-    Constants.Joysticks.primaryControllerID
-  );
-  public static JoyUtil secondaryController = new JoyUtil(
-    Constants.Joysticks.secondaryControllerID
-  );
-
-  public static JoystickButton primaryAButton = new JoystickButton(
-    primaryController,
-    Constants.Joysticks.A
-  );
+  public static JoyUtil primaryController = new JoyUtil(Constants.Joysticks.primaryControllerID);
+  public static JoyUtil secondaryController = new JoyUtil(Constants.Joysticks.secondaryControllerID);
 
   // The robot's subsystems and commands are defined here...
   // ++ ----- SUBSYSTEMS -----------
@@ -58,38 +46,34 @@ public class RobotContainer {
   private final LegAnkleSubsystem m_legAnkleSubsystem = new LegAnkleSubsystem();
   private final ReidPrototypeSubsystem m_reidPrototypeSubsystem = new ReidPrototypeSubsystem();
 
-  // ++ ----- COMMANDS -------------
-  //private final SwerveTrajectoryFollowCommand m_SwerveTrajectoryFollowCommand;
-  private final SwerveTeleopCommand m_SwerveTeleopCommand = new SwerveTeleopCommand(
-    m_driveSubsystem,
-    primaryController
-  );
-
   // <> this is required for creating new swerve trajectory follow commands
   private final ProfiledPIDController thetaPidController;
-  private final PlaceGamePiece m_placeGamePieceCommand;
-  private final ReidPrototypeCommand m_prototypeCommand = new ReidPrototypeCommand(m_reidPrototypeSubsystem, secondaryController);
-  
-  
+
+  // ++ ----- COMMANDS -------------
+  //private final SwerveTrajectoryFollowCommand m_SwerveTrajectoryFollowCommand;
+  private final SwerveTeleopCommand m_SwerveTeleopCommand = new SwerveTeleopCommand(m_driveSubsystem,
+    primaryController);
+
+  //private final PlaceGamePiece m_placeGamePieceCommand;
+  private final ReidPrototypeCommand m_prototypeCommand = new ReidPrototypeCommand(m_reidPrototypeSubsystem,
+    secondaryController);
+
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    thetaPidController =
-      new ProfiledPIDController(
-        DriveConstants.AutoConstants.kTurningP,
-        DriveConstants.AutoConstants.kTurningI,
-        DriveConstants.AutoConstants.kTurningD,
-        DriveConstants.AutoConstants.kThetaControllerConstraints
-      );
+    thetaPidController = new ProfiledPIDController(DriveConstants.AutoConstants.kTurningP,
+      DriveConstants.AutoConstants.kTurningI, DriveConstants.AutoConstants.kTurningD,
+      DriveConstants.AutoConstants.kThetaControllerConstraints);
     thetaPidController.enableContinuousInput(-Math.PI, Math.PI);
 
     m_driveSubsystem.setDefaultCommand(m_SwerveTeleopCommand);
     m_driveSubsystem.resetOdometry(new Pose2d(new Translation2d(), m_driveSubsystem.getHeading()));
 
     // H! This command is here because it needs thetaPidController to be created for it to be created
-    m_placeGamePieceCommand = new PlaceGamePiece(m_driveSubsystem, m_legAnkleSubsystem, m_reidPrototypeSubsystem, thetaPidController);
+    //m_placeGamePieceCommand = new PlaceGamePiece(m_driveSubsystem, m_legAnkleSubsystem, m_reidPrototypeSubsystem,
+    //  thetaPidController);
 
     // Configure the trigger bindings
     configureBindings();
@@ -110,23 +94,14 @@ public class RobotContainer {
    * joysticks}.
    */
   public void configureBindings() {
-    primaryAButton.onTrue(
-      new SwerveAutoMoveCommand(
-        m_driveSubsystem,
-        TrajectoryGenerator.generateTrajectory(
-          new Pose2d(),
-          List.of(),
-          new Pose2d(new Translation2d(-1.2, 0.3), Rotation2d.fromDegrees(90)),
-          DriveConstants.AutoConstants.trajectoryConfig
-        ),
-        thetaPidController,
-        false
-      )
-    );
-    
+    JoystickButton primaryAButton = new JoystickButton(primaryController, Constants.Joysticks.A);
+    primaryAButton.onTrue(new SwerveAutoMoveCommand(m_driveSubsystem,
+      TrajectoryGenerator.generateTrajectory(new Pose2d(), List.of(), new Pose2d(new Translation2d(-1.2, 0.3),
+        Rotation2d.fromDegrees(90)), DriveConstants.AutoConstants.trajectoryConfig), thetaPidController, false));
+
     // H! Make it so the X button activates the PlaceGamePiece Routine
     Trigger xButton = new JoystickButton(primaryController, XboxController.Button.kX.value);
-    xButton.onTrue(m_placeGamePieceCommand);
+    //xButton.onTrue(m_placeGamePieceCommand);
   }
 
   public Command getAutonomousCommand() {
