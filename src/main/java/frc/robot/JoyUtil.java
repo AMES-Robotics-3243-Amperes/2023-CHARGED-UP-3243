@@ -1,6 +1,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
@@ -77,22 +78,22 @@ public final class JoyUtil extends XboxController {
 
     // ++ these methods make it so you don't have to pass anything in when you call them, you just call the 
     // ++ method that corresponds with the joystick you want. It also keeps track of the previous filtered value 
-    public double getDriveXWithAdjustments(){
-        double rawJoyPos = getLeftX(); // + (getDPadX()); 
+    public double getDriveStraightWithAdjustments(){
+        double rawJoyPos = getLeftY(); // + (getDPadX()); 
         double filterStrength = Constants.Joysticks.driveLowPassFilterStrength;
-        double damperStrength = Constants.Joysticks.driveSpeedDamper;
+        double damperStrength = Constants.DriveTrain.DriveConstants.kDrivingSpeedDamper;
         double adjustedPos = composeDriveJoyFunctions(rawJoyPos, prevFilteredX, filterStrength, damperStrength);
 
-        prevFilteredX = lowPassFilter(rawJoyPos, prevFilteredX, filterStrength);
+        // prevFilteredX = lowPassFilter(rawJoyPos, prevFilteredX, filterStrength);
         return adjustedPos;
     }
-    public double getDriveYWithAdjustments(){
-        double rawJoyPos = getLeftY(); // + (getDPadY()); 
+    public double getDriveStrafeWithAdjustments(){
+        double rawJoyPos = -getLeftX(); // + (getDPadY()); 
         double filterStrength = Constants.Joysticks.driveLowPassFilterStrength;
-        double damperStrength = Constants.Joysticks.driveSpeedDamper;
+        double damperStrength = Constants.DriveTrain.DriveConstants.kDrivingSpeedDamper;
         double adjustedPos = composeDriveJoyFunctions(rawJoyPos, prevFilteredY, filterStrength, damperStrength); 
 
-        prevFilteredY = lowPassFilter(rawJoyPos, prevFilteredY, filterStrength);
+        // prevFilteredY = lowPassFilter(rawJoyPos, prevFilteredY, filterStrength);
         return adjustedPos;
     }
     public double getRotationWithAdjustments() {
@@ -102,7 +103,7 @@ public final class JoyUtil extends XboxController {
         // ++ the rotation axis is right x
         double rawJoyPos = getRightX();
         double filterStrength = Constants.Joysticks.rotationLowPassFilterStrength;
-        double damperStrength = Constants.Joysticks.rotationDamper;
+        double damperStrength = Constants.DriveTrain.DriveConstants.kAngularSpeedDamper;
         double adjustedPos = ( lowPassFilter( posWithDeadzone(rawJoyPos), prevFilteredR, filterStrength) * damperStrength );
         return adjustedPos;
     }
@@ -118,13 +119,7 @@ public final class JoyUtil extends XboxController {
         // ++ takes input and compares it to deadzone size
         // returns joystick size if it's greater than the deadzone, 0 otherwise
 
-        double deadZoneSize = Constants.Joysticks.deadZoneSize;
-
-        if (Math.abs(pos) >= deadZoneSize ) {
-            return pos;
-        } else {
-            return 0.0; 
-        }
+        return MathUtil.applyDeadband(pos, Constants.Joysticks.deadZoneSize);
     }
 
   
@@ -193,8 +188,8 @@ public final class JoyUtil extends XboxController {
         double withDead = posWithDeadzone(rawJoyPos);
         double withFilter = lowPassFilter(withDead, prevFilterJoy, filterStrength);
         double withCurve = joyCurve(withFilter); 
-        double withSpeedMode = fastMode(withCurve, (getRightTriggerAxis() - getLeftTriggerAxis()));
-        double withDamper = withSpeedMode * Constants.Joysticks.driveSpeedDamper;
+        double withSpeedMode = fastMode(withCurve, (getRightTriggerAxis() - (getLeftTriggerAxis() * Constants.Joysticks.slowModeMultiplier)));
+        double withDamper = withSpeedMode * Constants.DriveTrain.DriveConstants.kDrivingSpeedDamper;
 
         double adjustedJoyPos = withDamper;
 

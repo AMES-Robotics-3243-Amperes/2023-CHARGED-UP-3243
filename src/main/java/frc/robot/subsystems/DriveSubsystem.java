@@ -4,20 +4,171 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.DriveTrain.DriveConstants;
 
 public class DriveSubsystem extends SubsystemBase {
-  /** Creates a new ExampleSubsystem. */
-  public DriveSubsystem() {}
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
+  // <> create swerve modules
+  private final SwerveModule m_frontLeft = new SwerveModule(DriveConstants.IDs.kFrontLeftDrivingCanId,
+    DriveConstants.IDs.kFrontLeftTurningCanId, DriveConstants.ModuleOffsets.kFrontLeftOffset);
+
+  private final SwerveModule m_frontRight = new SwerveModule(DriveConstants.IDs.kFrontRightDrivingCanId,
+    DriveConstants.IDs.kFrontRightTurningCanId, DriveConstants.ModuleOffsets.kFrontRightOffset);
+
+  private final SwerveModule m_rearLeft = new SwerveModule(DriveConstants.IDs.kRearLeftDrivingCanId,
+    DriveConstants.IDs.kRearLeftTurningCanId, DriveConstants.ModuleOffsets.kBackLeftOffset);
+
+  private final SwerveModule m_rearRight = new SwerveModule(DriveConstants.IDs.kRearRightDrivingCanId,
+    DriveConstants.IDs.kRearRightTurningCanId, DriveConstants.ModuleOffsets.kBackRightOffset);
+
+  // <> gyro
+  private final AHRS m_gyro = new AHRS();
+
+  // <> odometry for tracking robot pose
+  SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(DriveConstants.ChassisKinematics.kDriveKinematics,
+    getHeading(), new SwerveModulePosition[]{m_frontLeft.getPosition(), m_frontRight.getPosition(),
+    m_rearLeft.getPosition(), m_rearRight.getPosition()});
+
+  /**
+   * Creates a new DriveSubsystem.
+   */
+  public DriveSubsystem() {
+    resetEncoders();
   }
 
   @Override
-  public void simulationPeriodic() {
-    // This method will be called once per scheduler run during simulation
+  public void periodic() {
+    SwerveModulePosition[] modulePositions = {m_frontLeft.getPosition(), m_frontRight.getPosition(),
+      m_rearLeft.getPosition(), m_rearRight.getPosition()};
+
+    m_odometry.update(getHeading(), modulePositions);
+  }
+
+  /**
+   * <>
+   *
+   * @return the pose
+   */
+  public Pose2d getPose() {
+    return m_odometry.getPoseMeters();
+  }
+
+  /**
+   * <> resets the odometry to the specified pose
+   *
+   * @param pose pose to set the odometry to
+   */
+  public void resetOdometry(Pose2d pose) {
+    SwerveModulePosition[] modulePositions = {m_frontLeft.getPosition(), m_frontRight.getPosition(),
+      m_rearLeft.getPosition(), m_rearRight.getPosition()};
+
+    m_odometry.resetPosition(getHeading(), modulePositions, pose);
+  }
+
+  /**
+   * <> drive the robot
+   *
+   * @param xSpeed        Speed of the robot in the x direction (forward).
+   * @param ySpeed        Speed of the robot in the y direction (sideways).
+   * @param rot           Angular rate of the robot.
+   * @param fieldRelative Whether the provided x and y speeds are relative to the
+   *                      field.
+   */
+  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+    // <> apply dampers defined in constants
+    xSpeed *= DriveConstants.kDrivingSpeedDamper;
+    ySpeed *= DriveConstants.kDrivingSpeedDamper;
+    rot *= DriveConstants.kAngularSpeedDamper;
+
+    // <> adjust the inputs if field relative is true
+    SwerveModuleState[] swerveModuleStates =
+      DriveConstants.ChassisKinematics.kDriveKinematics.toSwerveModuleStates(fieldRelative ?
+        ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getHeading()) : new ChassisSpeeds(xSpeed, ySpeed,
+        rot));
+
+    // <> desaturate wheel speeds
+    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.kMaxMetersPerSecond);
+
+    // <> set desired wheel speeds
+    m_frontLeft.setDesiredState(swerveModuleStates[0], false);
+    m_frontRight.setDesiredState(swerveModuleStates[1], false);
+    m_rearLeft.setDesiredState(swerveModuleStates[2], false);
+    m_rearRight.setDesiredState(swerveModuleStates[3], false);
+  }
+
+  /**
+   * <> set wheels into an x position to prevent movement
+   */
+  public void setX() {
+    m_frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)), true);
+    m_frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)), true);
+    m_rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)), true);
+    m_rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)), true);
+  }
+
+  /**
+   * <> set the swerve modules' desired states
+   *
+   * @param desiredStates The desired SwerveModule states.
+   */
+  public void setModuleStates(SwerveModuleState[] desiredStates) {
+    // <> desaturate wheel speeds
+    SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, DriveConstants.kDrivingSpeedDamper);
+
+    // <> set the desired states
+    m_frontLeft.setDesiredState(desiredStates[0], true);
+    m_frontRight.setDesiredState(desiredStates[1], true);
+    m_rearLeft.setDesiredState(desiredStates[2], true);
+    m_rearRight.setDesiredState(desiredStates[3], true);
+  }
+
+  /**
+   * <> reset the drive encoders
+   */
+  public void resetEncoders() {
+    m_frontLeft.resetEncoders();
+    m_rearLeft.resetEncoders();
+    m_frontRight.resetEncoders();
+    m_rearRight.resetEncoders();
+  }
+
+  /**
+   * <> zero robot heading gyro
+   */
+  public void zeroHeading() {
+    m_gyro.reset();
+  }
+
+  /**
+   * <>
+   *
+   * @return the robot's heading
+   */
+  public Rotation2d getHeading() {
+    Rotation2d raw_angle = Rotation2d.fromDegrees(m_gyro.getAngle());
+    Rotation2d raw_angle_adjusted = raw_angle.plus(DriveConstants.kGyroOffset);
+
+    return DriveConstants.kGyroReversed ? raw_angle_adjusted.times(-1) : raw_angle_adjusted;
+  }
+
+  public void stopModules() {
+    m_frontLeft.stop();
+    m_frontRight.stop();
+    m_rearLeft.stop();
+    m_rearRight.stop();
+  }
+
+  /**
+   * <>
+   *
+   * @return robot's turn rate in degrees per second
+   */
+  public double getTurnRate() {
+    return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
   }
 }

@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.commands.PlaceGamePieceCommands.MoveArmToTarget;
@@ -22,11 +23,11 @@ public class PlaceGamePiece extends SequentialCommandGroup {
   public Constants.Target target;
 
   /** Creates a new PlaceGamePiece. */
-  public PlaceGamePiece(DriveSubsystem driveSubsystem, LegAnkleSubsystem legAnkleSubsystem, ReidPrototypeSubsystem grabberSubsystem) {
+  public PlaceGamePiece(DriveSubsystem driveSubsystem, LegAnkleSubsystem legAnkleSubsystem, ReidPrototypeSubsystem grabberSubsystem, ProfiledPIDController thetaPidController) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new MoveRobotToGrid(isCube, target, driveSubsystem),
+      new MoveRobotToGrid(isCube, target, driveSubsystem, null, thetaPidController),
       new MoveArmToTarget(isCube, target, legAnkleSubsystem),
       new ReleaseGameObject(isCube, target, grabberSubsystem)
     );
