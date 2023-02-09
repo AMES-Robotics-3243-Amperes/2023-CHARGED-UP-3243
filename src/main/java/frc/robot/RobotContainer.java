@@ -14,6 +14,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants.DriveTrain.DriveConstants;
 import frc.robot.commands.PlaceGamePiece;
 import frc.robot.commands.ReidPrototypeCommand;
@@ -55,8 +58,6 @@ public class RobotContainer {
     primaryController);
 
   //private final PlaceGamePiece m_placeGamePieceCommand;
-  private final ReidPrototypeCommand m_prototypeCommand = new ReidPrototypeCommand(m_reidPrototypeSubsystem,
-    secondaryController);
 
 
   /**
@@ -78,7 +79,7 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
   }
-
+//maya stop letting me steal your computer (++ wow, you wrote that in front of me. bold) i know :)
   /**
    * Use this method to define your trigger->command mappings. Triggers can be
    * created via the
