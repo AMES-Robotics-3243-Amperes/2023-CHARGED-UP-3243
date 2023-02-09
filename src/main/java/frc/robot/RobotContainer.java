@@ -96,8 +96,8 @@ public class RobotContainer {
   public void configureBindings() {
     JoystickButton primaryAButton = new JoystickButton(primaryController, Constants.Joysticks.A);
     primaryAButton.onTrue(new SwerveAutoMoveCommand(m_driveSubsystem,
-      TrajectoryGenerator.generateTrajectory(new Pose2d(), List.of(), new Pose2d(new Translation2d(-1.2, 0.3),
-        Rotation2d.fromDegrees(90)), DriveConstants.AutoConstants.trajectoryConfig), thetaPidController, false));
+      TrajectoryGenerator.generateTrajectory(new Pose2d(), List.of(), new Pose2d(new Translation2d(-1, 0.3),
+        Rotation2d.fromDegrees(10)), DriveConstants.AutoConstants.trajectoryConfig), thetaPidController, false));
 
     // H! Make it so the X button activates the PlaceGamePiece Routine
     Trigger xButton = new JoystickButton(primaryController, XboxController.Button.kX.value);

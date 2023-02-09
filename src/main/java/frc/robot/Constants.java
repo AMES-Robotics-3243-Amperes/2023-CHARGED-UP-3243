@@ -181,10 +181,13 @@ public final class Constants {
         );
 
         // pid controls
-        public static final double kMovementP = 1;
+        public static final double kMovementPInitial = 0.5;
         public static final double kMovementIInitial = 0;
-        public static final double kMovementITrajectoryEnd = 0.1;
-        public static final double kMovementD = 0.2;
+        public static final double kMovementDInitial = 0;
+
+        public static final double kMovementPTrajectoryEnd = 3;
+        public static final double kMovementITrajectoryEnd = 0.5;
+        public static final double kMovementDTrajectoryEnd = 0.1;
 
         public static final double kTurningP = 1;
         public static final double kTurningI = 0;
@@ -198,20 +201,20 @@ public final class Constants {
           .setKinematics(ChassisKinematics.kDriveKinematics);
 
         public static final PIDController movementPidControllerInitial = new PIDController(
-          kMovementP,
+          kMovementPInitial,
           kMovementIInitial,
-          kMovementD
+          kMovementDInitial
         );
 
         public static final PIDController movementPidControllerTrajectoryEnd = new PIDController(
-          kMovementP,
+          kMovementPTrajectoryEnd,
           kMovementITrajectoryEnd,
-          kMovementD
+          kMovementDTrajectoryEnd
         );
 
         // <> leniency for ending SwerveAutoMoveCommands
-        public static double angleLeniencyDegrees = 1;
-        public static double positionLeniencyMeters = 0.03;
+        public static double angleLeniencyDegrees = 0.8;
+        public static double positionLeniencyMeters = 0.035;
       }
 
       // <> if the driving is field relative

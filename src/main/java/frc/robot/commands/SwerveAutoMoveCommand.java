@@ -15,6 +15,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants.DriveTrain.DriveConstants;
@@ -249,6 +250,9 @@ public class SwerveAutoMoveCommand extends CommandBase {
 
     boolean xCorrect = xError < DriveConstants.AutoConstants.positionLeniencyMeters;
     boolean yCorrect = yError < DriveConstants.AutoConstants.positionLeniencyMeters;
+
+    SmartDashboard.putNumber("desired x", desiredTranslation.getX());
+    SmartDashboard.putNumber("desired y", desiredTranslation.getY());
 
     if (trajectoryIsFinished()) {
       m_controller = new HolonomicDriveController(DriveConstants.AutoConstants.movementPidControllerTrajectoryEnd,
