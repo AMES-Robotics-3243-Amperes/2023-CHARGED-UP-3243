@@ -181,7 +181,8 @@ public final class Constants {
 
         // pid controls
         public static final double kMovementP = 1;
-        public static final double kMovementI = 0.22;
+        public static final double kMovementIInitial = 0;
+        public static final double kMovementITrajectoryEnd = 0.25;
         public static final double kMovementD = 0.2;
 
         public static final double kTurningP = 1;
@@ -195,9 +196,15 @@ public final class Constants {
         )
           .setKinematics(ChassisKinematics.kDriveKinematics);
 
-        public static final PIDController movementPidController = new PIDController(
+        public static final PIDController movementPidControllerInitial = new PIDController(
           kMovementP,
-          kMovementI,
+          kMovementIInitial,
+          kMovementD
+        );
+
+        public static final PIDController movementPidControllerTrajectoryEnd = new PIDController(
+          kMovementP,
+          kMovementITrajectoryEnd,
           kMovementD
         );
 

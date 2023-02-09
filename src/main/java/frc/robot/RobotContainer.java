@@ -115,7 +115,8 @@ public class RobotContainer {
           new Pose2d(new Translation2d(-1.2, 0.3), Rotation2d.fromDegrees(90)),
           DriveConstants.AutoConstants.trajectoryConfig
         ),
-        thetaPidController
+        thetaPidController,
+        false
       )
     );
     

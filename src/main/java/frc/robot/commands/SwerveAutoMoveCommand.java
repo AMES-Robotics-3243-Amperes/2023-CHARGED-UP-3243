@@ -16,7 +16,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.Constants;
+import frc.robot.Constants.DriveTrain.DriveConstants;
 import frc.robot.subsystems.DriveSubsystem;
 
 import java.util.function.Consumer;
@@ -28,23 +28,20 @@ import static edu.wpi.first.util.ErrorMessages.requireNonNullParam;
  * A command that uses two PID controllers ({@link PIDController}) and a ProfiledPIDController
  * ({@link ProfiledPIDController}) to follow a trajectory {@link Trajectory} with a swerve drive.
  *
- * <p>This command outputs the raw desired Swerve Module States ({@link SwerveModuleState}) in an
- * array. The desired wheel and module rotation velocities should be taken from those and used in
- * velocity PIDs.
- *
  * <p>The robot angle controller does not follow the angle given by the trajectory but rather goes
  * to the angle given in the final state of the trajectory.
  *
- * <p>This class is provided by the NewCommands VendorDep
+ * @apiNote this is just an extension of {@link edu.wpi.first.wpilibj2.command.SwerveControllerCommand}
  */
 public class SwerveAutoMoveCommand extends CommandBase {
   private final Timer m_timer = new Timer();
   private final Trajectory m_trajectory;
   private final Supplier<Pose2d> m_pose;
   private final SwerveDriveKinematics m_kinematics;
-  private final HolonomicDriveController m_controller;
   private final Consumer<SwerveModuleState[]> m_outputModuleStates;
   private final Supplier<Rotation2d> m_desiredRotation;
+  private final boolean m_lazy; // if the robot ends as soon as the trajectory ends
+  private HolonomicDriveController m_controller;
 
   /**
    * Constructs a new SwerveControllerCommand that when executed will follow the provided
@@ -70,11 +67,12 @@ public class SwerveAutoMoveCommand extends CommandBase {
   public SwerveAutoMoveCommand(Trajectory trajectory, Supplier<Pose2d> pose, SwerveDriveKinematics kinematics,
                                PIDController xController, PIDController yController,
                                ProfiledPIDController thetaController, Supplier<Rotation2d> desiredRotation,
-                               Consumer<SwerveModuleState[]> outputModuleStates, Subsystem... requirements) {
+                               Consumer<SwerveModuleState[]> outputModuleStates, boolean lazy,
+                               Subsystem... requirements) {
     this(trajectory, pose, kinematics, new HolonomicDriveController(requireNonNullParam(xController, "xController",
       "SwerveControllerCommand"), requireNonNullParam(yController, "yController", "SwerveControllerCommand"),
       requireNonNullParam(thetaController, "thetaController", "SwerveControllerCommand")), desiredRotation,
-      outputModuleStates, requirements);
+      outputModuleStates, lazy, requirements);
   }
 
   /**
@@ -103,10 +101,11 @@ public class SwerveAutoMoveCommand extends CommandBase {
   public SwerveAutoMoveCommand(Trajectory trajectory, Supplier<Pose2d> pose, SwerveDriveKinematics kinematics,
                                PIDController xController, PIDController yController,
                                ProfiledPIDController thetaController,
-                               Consumer<SwerveModuleState[]> outputModuleStates, Subsystem... requirements) {
+                               Consumer<SwerveModuleState[]> outputModuleStates, boolean lazy,
+                               Subsystem... requirements) {
     this(trajectory, pose, kinematics, xController, yController, thetaController,
       () -> trajectory.getStates().get(trajectory.getStates().size() - 1).poseMeters.getRotation(),
-      outputModuleStates, requirements);
+      outputModuleStates, lazy, requirements);
   }
 
   /**
@@ -129,7 +128,8 @@ public class SwerveAutoMoveCommand extends CommandBase {
    */
   public SwerveAutoMoveCommand(Trajectory trajectory, Supplier<Pose2d> pose, SwerveDriveKinematics kinematics,
                                HolonomicDriveController controller, Supplier<Rotation2d> desiredRotation,
-                               Consumer<SwerveModuleState[]> outputModuleStates, Subsystem... requirements) {
+                               Consumer<SwerveModuleState[]> outputModuleStates, boolean lazy,
+                               Subsystem... requirements) {
     m_trajectory = requireNonNullParam(trajectory, "trajectory", "SwerveControllerCommand");
     m_pose = requireNonNullParam(pose, "pose", "SwerveControllerCommand");
     m_kinematics = requireNonNullParam(kinematics, "kinematics", "SwerveControllerCommand");
@@ -138,6 +138,8 @@ public class SwerveAutoMoveCommand extends CommandBase {
     m_desiredRotation = requireNonNullParam(desiredRotation, "desiredRotation", "SwerveControllerCommand");
 
     m_outputModuleStates = requireNonNullParam(outputModuleStates, "outputModuleStates", "SwerveControllerCommand");
+
+    m_lazy = lazy;
 
     addRequirements(requirements);
   }
@@ -154,11 +156,11 @@ public class SwerveAutoMoveCommand extends CommandBase {
    *                           (this is required because pid controllers can't be made continuous statically)
    */
   public SwerveAutoMoveCommand(DriveSubsystem subsystem, Trajectory trajectory,
-                               ProfiledPIDController thetaPidController) {
-    this(trajectory, subsystem::getPose, Constants.DriveTrain.DriveConstants.ChassisKinematics.kDriveKinematics,
-      Constants.DriveTrain.DriveConstants.AutoConstants.movementPidController,
-      Constants.DriveTrain.DriveConstants.AutoConstants.movementPidController, thetaPidController,
-      subsystem::setModuleStates, subsystem);
+                               ProfiledPIDController thetaPidController, boolean lazy) {
+    this(trajectory, subsystem::getPose, DriveConstants.ChassisKinematics.kDriveKinematics,
+      DriveConstants.AutoConstants.movementPidControllerInitial,
+      DriveConstants.AutoConstants.movementPidControllerInitial, thetaPidController, subsystem::setModuleStates, lazy
+      , subsystem);
   }
 
   public Trajectory.State getDesiredState() {
@@ -175,6 +177,10 @@ public class SwerveAutoMoveCommand extends CommandBase {
     return desiredState;
   }
 
+  public boolean trajectoryIsFinished() {
+    return m_timer.hasElapsed(m_trajectory.getTotalTimeSeconds());
+  }
+
   @Override
   public void initialize() {
     m_timer.reset();
@@ -186,7 +192,7 @@ public class SwerveAutoMoveCommand extends CommandBase {
     var targetChassisSpeeds = m_controller.calculate(m_pose.get(), getDesiredState(), m_desiredRotation.get());
 
     // <> turn the correct way even if the gyro is reversed
-    if (Constants.DriveTrain.DriveConstants.kGyroReversed) {
+    if (DriveConstants.kGyroReversed) {
       targetChassisSpeeds.omegaRadiansPerSecond *= -1;
     }
 
@@ -207,21 +213,27 @@ public class SwerveAutoMoveCommand extends CommandBase {
     Rotation2d desiredRotation = m_desiredRotation.get();
 
     // <> make the desired rotation the same
-    if (Constants.DriveTrain.DriveConstants.kGyroReversed) {
+    if (DriveConstants.kGyroReversed) {
       desiredRotation.times(-1);
     }
 
     Pose2d currentPose = m_pose.get();
 
     double angleError = Math.abs(desiredRotation.minus(currentPose.getRotation()).getDegrees()) % 360;
-    boolean angleCorrect = angleError < Constants.DriveTrain.DriveConstants.AutoConstants.angleLeniencyDegrees;
+    boolean angleCorrect = angleError < DriveConstants.AutoConstants.angleLeniencyDegrees;
 
     double xError = Math.abs(desiredTranslation.getX() - currentPose.getX());
     double yError = Math.abs(desiredTranslation.getY() - currentPose.getY());
 
-    boolean xCorrect = xError < Constants.DriveTrain.DriveConstants.AutoConstants.positionLeniencyMeters;
-    boolean yCorrect = yError < Constants.DriveTrain.DriveConstants.AutoConstants.positionLeniencyMeters;
+    boolean xCorrect = xError < DriveConstants.AutoConstants.positionLeniencyMeters;
+    boolean yCorrect = yError < DriveConstants.AutoConstants.positionLeniencyMeters;
 
-    return angleCorrect && xCorrect && yCorrect;
+    if (trajectoryIsFinished()) {
+      m_controller = new HolonomicDriveController(DriveConstants.AutoConstants.movementPidControllerTrajectoryEnd,
+        DriveConstants.AutoConstants.movementPidControllerTrajectoryEnd, m_controller.getThetaController());
+    }
+
+    // if the trajectory ended and (lazy or (angleCorrect and xCorrect and yCorrect))
+    return trajectoryIsFinished() && (m_lazy || (angleCorrect && xCorrect && yCorrect));
   }
 }
