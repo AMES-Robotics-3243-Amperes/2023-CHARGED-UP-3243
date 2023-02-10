@@ -73,10 +73,11 @@ PhotonCamera m_camera;
     // :D getting an object (of type var, eugh) which contains the data for all the photon targets visible by the camera
     var results = m_camera.getLatestResult();
     // :D now getting the "best" target, as ruled by photonlib, to pull data from later
-    
-    PhotonTrackedTarget target = results.getBestTarget();
-    SmartDashboard.putBoolean("istargetnull", (target != null));
-    return target;
+    if (results.hasTargets()) {
+      PhotonTrackedTarget target = results.getBestTarget();
+      return target;
+    }
+    return null;
   }
 
 
@@ -92,7 +93,6 @@ PhotonCamera m_camera;
       
       // :D Optional allows us to account for the case when the robot sees a fiducial that is not on the field layout file (ids 1-8)
       Optional<Pose3d> tagPose = m_aprilTagFieldLayout.getTagPose(seenTarget.getFiducialId());
-      SmartDashboard.putNumber("Tagpose", tagPose.get().getX());
     
       if (tagPose.isPresent()){
         Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(cameraToTarget, tagPose.get(), camToBot);
@@ -141,7 +141,4 @@ public void periodic() {
 public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
   }
-
-public void setDefaultCommand(PhotonVisionCommand m_photonVisionCommand) {
-}
 }

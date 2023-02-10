@@ -45,7 +45,6 @@ public void execute() {
     if (m_subsystem.returnBestTarget() != null){
       botPose = m_subsystem.checkRobotPosition();
       System.out.print(botPose);
-      SmartDashboard.putNumber("BotPosePVCX", botPose.getX());
       targX = m_subsystem.returnBestTarget().getBestCameraToTarget().getX();
       targY = m_subsystem.returnBestTarget().getBestCameraToTarget().getY();
       targZ = m_subsystem.returnBestTarget().getBestCameraToTarget().getZ();
@@ -64,9 +63,6 @@ public void execute() {
       SmartDashboard.putNumber("target dist", Math.sqrt((targX*targX)+(targY*targY)+(targZ*targZ)));
       SmartDashboard.putNumber("target ID", id);
     }
-    SmartDashboard.putNumber("Robot Pose X", botPose.getX());
-    SmartDashboard.putNumber("Robot Pose Y", botPose.getY());
-    SmartDashboard.putNumber("Robot Pose Z", botPose.getZ());
   }
 
   // Called once the command ends or is interrupted.
