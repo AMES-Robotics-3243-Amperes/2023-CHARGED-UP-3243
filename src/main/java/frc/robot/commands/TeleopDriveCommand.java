@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import frc.robot.JoyUtil;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -16,8 +17,9 @@ public class TeleopDriveCommand extends CommandBase {
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
+ * @param primaryController
    */
-  public TeleopDriveCommand(DriveSubsystem subsystem) {
+  public TeleopDriveCommand(DriveSubsystem subsystem, JoyUtil primaryController) {
     m_driveSubsystem = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);

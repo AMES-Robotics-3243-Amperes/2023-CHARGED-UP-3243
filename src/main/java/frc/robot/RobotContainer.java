@@ -4,8 +4,10 @@
 
 package frc.robot;
 
+import frc.robot.commands.PhotonVisionCommand;
 import frc.robot.commands.TeleopDriveCommand;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.PhotonVisionSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -22,17 +24,24 @@ public class RobotContainer {
   // ++ CONTROLLER STUFF ---------------------
   public static JoyUtil primaryController = new JoyUtil(Constants.Joysticks.primaryControllerID);
   public static JoyUtil secondaryController = new JoyUtil(Constants.Joysticks.secondaryControllerID);
+  private final PhotonVisionSubsystem m_photonVisionSubsystem = new PhotonVisionSubsystem();
+  private final PhotonVisionCommand m_photonVisionCommand = new PhotonVisionCommand(m_photonVisionSubsystem);
 
   
   // The robot's subsystems and commands are defined here...
   // ++ ----- SUBSYSTEMS -----------
   private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
   // ++ ----- COMMANDS -------------
-
+  private final TeleopDriveCommand m_TeleopDriveCommand = new TeleopDriveCommand(m_driveSubsystem, primaryController);
 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+
+    m_driveSubsystem.setDefaultCommand(m_TeleopDriveCommand);
+
+    m_photonVisionSubsystem.setDefaultCommand(m_photonVisionCommand);
+
     // Configure the trigger bindings
     configureBindings();
   }
