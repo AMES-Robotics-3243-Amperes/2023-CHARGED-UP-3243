@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.Optional;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -36,12 +38,12 @@ public class FieldPosManager {
     public void setScoringPositions() {
         if (allianceColor != DriverStation.Alliance.Invalid && allianceColor != null ){
             if (allianceColor == DriverStation.Alliance.Red){
-                alliedScoringPositions = Constants.FieldConstants.redScoringPositions;
-                opposingScoringPositions = Constants.FieldConstants.blueScoringPositions;
+                alliedScoringPositions = Constants.FieldConstants.Red.scoringPositions;
+                opposingScoringPositions = Constants.FieldConstants.Blue.scoringPositions;
             }
             else if (allianceColor == DriverStation.Alliance.Blue){
-                alliedScoringPositions = Constants.FieldConstants.blueScoringPositions;
-                opposingScoringPositions = Constants.FieldConstants.blueScoringPositions;
+                alliedScoringPositions = Constants.FieldConstants.Blue.scoringPositions;
+                opposingScoringPositions = Constants.FieldConstants.Red.scoringPositions;
             }
         } else {
             System.err.println("INVALID ALLIANCE COLOR IN FIELDPOSMANAGER");
@@ -106,24 +108,44 @@ public class FieldPosManager {
         return latestRobotPosition;
     }
 
-    public Pose2d getFieldElement(fieldElement element, boolean isCurrentAlliance){
+    public Pose2d getFieldElement(fieldElement element, boolean isCurrentAlliance, int scoringZoneID){
         if (allianceColor != DriverStation.Alliance.Invalid && allianceColor != null ){
             if ((isCurrentAlliance && allianceColor==DriverStation.Alliance.Red) || (!isCurrentAlliance && allianceColor==DriverStation.Alliance.Blue)){
                 // :D red alliance poses
                 switch (element){
                     case doubleLoadingZone:
-
+                        return Constants.FieldConstants.Red.doubleLoadingZone;
                     case singleLoadingZone:
-
+                        return Constants.FieldConstants.Red.singleLoadingZone;
                     case chargeStationBottomLeft:
-
+                        return Constants.FieldConstants.Red.chargeStationBottomLeft;
                     case chargeStationTopRight:
-
+                        return Constants.FieldConstants.Red.chargeStationTopRight;
+                    case scoringPosition:
+                        // :D TODO: make the robot not throw a fit if scoringzoneid is not passed in
+                        return Constants.FieldConstants.Red.scoringPositions[scoringZoneID];
                     default:
-
+                        // :D TODO: figure out what to put here
+                        return new Pose2d();
                 }
             } else {
-                
+                // :D red alliance poses
+                switch (element){
+                    case doubleLoadingZone:
+                        return Constants.FieldConstants.Blue.doubleLoadingZone;
+                    case singleLoadingZone:
+                        return Constants.FieldConstants.Blue.singleLoadingZone;
+                    case chargeStationBottomLeft:
+                        return Constants.FieldConstants.Blue.chargeStationBottomLeft;
+                    case chargeStationTopRight:
+                        return Constants.FieldConstants.Blue.chargeStationTopRight;
+                    case scoringPosition:
+                        // :D TODO: make the robot not throw a fit if scoringzoneid is not passed in
+                        return Constants.FieldConstants.Blue.scoringPositions[scoringZoneID];
+                    default:
+                        // :D TODO: figure out what to put here
+                        return new Pose2d();
+                }
             }
 
         } else {
@@ -133,7 +155,7 @@ public class FieldPosManager {
     }
 
     public enum fieldElement{
-        doubleLoadingZone, singleLoadingZone, chargeStationBottomLeft, chargeStationTopRight
+        doubleLoadingZone, singleLoadingZone, chargeStationBottomLeft, chargeStationTopRight, scoringPosition
     }
 
 }

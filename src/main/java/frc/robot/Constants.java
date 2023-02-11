@@ -382,8 +382,40 @@ public final class Constants {
 
   /** ++ field measurement constants */ // ---------------------------------------------------
   public static final class FieldConstants {
-    public static Pose2d blueScoringPositions[]; // [++ make these final
-    public static Pose2d redScoringPositions[];
+    public static final class Blue{
+      public static Pose2d scoringPositions[] = {
+        new Pose2d(),
+        new Pose2d(),
+        new Pose2d(),
+        new Pose2d(),
+        new Pose2d(),
+        new Pose2d(),
+        new Pose2d(),
+        new Pose2d(),
+        new Pose2d()
+      }; // [++ make these final
+      public static Pose2d doubleLoadingZone = new Pose2d();
+      public static Pose2d singleLoadingZone = new Pose2d();
+      public static Pose2d chargeStationBottomLeft = new Pose2d();
+      public static Pose2d chargeStationTopRight = new Pose2d();
+    }
+    public static final class Red{
+      public static Pose2d scoringPositions[] = {
+        new Pose2d(),
+        new Pose2d(),
+        new Pose2d(),
+        new Pose2d(),
+        new Pose2d(),
+        new Pose2d(),
+        new Pose2d(),
+        new Pose2d(),
+        new Pose2d()
+      };
+      public static Pose2d doubleLoadingZone = new Pose2d();
+      public static Pose2d singleLoadingZone = new Pose2d();
+      public static Pose2d chargeStationBottomLeft = new Pose2d();
+      public static Pose2d chargeStationTopRight = new Pose2d();
+    }
   }
 
   // H! This is my fault, so feel free to move it to a better place if need be
