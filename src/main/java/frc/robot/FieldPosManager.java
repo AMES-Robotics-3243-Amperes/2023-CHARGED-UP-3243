@@ -43,6 +43,8 @@ public class FieldPosManager {
                 alliedScoringPositions = Constants.FieldConstants.blueScoringPositions;
                 opposingScoringPositions = Constants.FieldConstants.blueScoringPositions;
             }
+        } else {
+            System.err.println("INVALID ALLIANCE COLOR IN FIELDPOSMANAGER");
         }
     }
 
@@ -102,6 +104,36 @@ public class FieldPosManager {
      */
     public Pose2d getRobotPose(){
         return latestRobotPosition;
+    }
+
+    public Pose2d getFieldElement(fieldElement element, boolean isCurrentAlliance){
+        if (allianceColor != DriverStation.Alliance.Invalid && allianceColor != null ){
+            if ((isCurrentAlliance && allianceColor==DriverStation.Alliance.Red) || (!isCurrentAlliance && allianceColor==DriverStation.Alliance.Blue)){
+                // :D red alliance poses
+                switch (element){
+                    case doubleLoadingZone:
+
+                    case singleLoadingZone:
+
+                    case chargeStationBottomLeft:
+
+                    case chargeStationTopRight:
+
+                    default:
+
+                }
+            } else {
+                
+            }
+
+        } else {
+            System.err.println("INVALID ALLIANCE COLOR IN FIELDPOSMANAGER");
+            return null;
+        }
+    }
+
+    public enum fieldElement{
+        doubleLoadingZone, singleLoadingZone, chargeStationBottomLeft, chargeStationTopRight
     }
 
 }
