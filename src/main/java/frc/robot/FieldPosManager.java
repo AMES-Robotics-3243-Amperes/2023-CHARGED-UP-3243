@@ -4,11 +4,8 @@
 
 package frc.robot;
 
-import java.util.Optional;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.wpilibj.DriverStation;
 
 /** ++ This class manages the field locations for the robot. It'll deal with outputs from PhotonVisioin. 
@@ -19,6 +16,7 @@ public class FieldPosManager {
     public DriverStation.Alliance allianceColor = DriverStation.getAlliance();
 
     public Pose2d latestRobotPosition = new Pose2d();
+
 
     public Pose2d latestOdometryPose = new Pose2d();
     public Pose2d previousOdometryPose = new Pose2d();
@@ -108,6 +106,13 @@ public class FieldPosManager {
         return latestRobotPosition;
     }
 
+    /**
+     * A function to find the poses of selected field elements.
+     * @param element is a field element enum, of type FieldPosManager.fieldElement, which chooses the object whose pose we are looking for.
+     * @param isCurrentAlliance is a boolean which defines whether the field element in question belongs to our alliance or the opponent's.
+     * @param scoringZoneID is an integer which determines the scoring zone if scoringPosition is passed in to the 'element' parameter
+     * @return the position of the requested field element as a Pose2d.
+     */
     public Pose2d getFieldElement(fieldElement element, boolean isCurrentAlliance, int scoringZoneID){
         if (allianceColor != DriverStation.Alliance.Invalid && allianceColor != null ){
             if ((isCurrentAlliance && allianceColor==DriverStation.Alliance.Red) || (!isCurrentAlliance && allianceColor==DriverStation.Alliance.Blue)){
@@ -122,7 +127,7 @@ public class FieldPosManager {
                     case chargeStationTopRight:
                         return Constants.FieldConstants.Red.chargeStationTopRight;
                     case scoringPosition:
-                        // :D TODO: make the robot not throw a fit if scoringzoneid is not passed in
+                        // :D TODO: make the robot not throw a fit if scoringZoneID is not passed in
                         return Constants.FieldConstants.Red.scoringPositions[scoringZoneID];
                     default:
                         // :D TODO: figure out what to put here
@@ -140,7 +145,7 @@ public class FieldPosManager {
                     case chargeStationTopRight:
                         return Constants.FieldConstants.Blue.chargeStationTopRight;
                     case scoringPosition:
-                        // :D TODO: make the robot not throw a fit if scoringzoneid is not passed in
+                        // :D TODO: make the robot not throw a fit if scoringZoneID is not passed in
                         return Constants.FieldConstants.Blue.scoringPositions[scoringZoneID];
                     default:
                         // :D TODO: figure out what to put here
