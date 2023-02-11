@@ -304,11 +304,11 @@ public final class Constants {
     public static final double changePitchMultiplier = 0.1;
     public static final double changeRollMultiplier = 0.1;
 
-
-    public static final double maxX = 1000.0;
-    public static final double minX = -1000.0;
-    public static final double maxY = 1000.0;
-    public static final double minY = -1000.0;
+    //&& x and y max and min from pivot in meters
+    public static final double maxX = 0.535069 + 1.2192;
+    public static final double minX = -0.277731 - 1.2192;
+    public static final double maxY = 1.9812 - 0.476364 ;
+    public static final double minY = 0 - 0.476364;
 
     public static final int pivotCurrentLimit = 30;
     public static final int extensionCurrentLimit = 20;
@@ -384,8 +384,40 @@ public final class Constants {
 
   /** ++ field measurement constants */ // ---------------------------------------------------
   public static final class FieldConstants {
-    public static Pose2d blueScoringPositions[]; // [++ make these final
-    public static Pose2d redScoringPositions[];
+    public static final class Blue{
+      public static Pose2d scoringPositions[] = {
+        new Pose2d(),
+        new Pose2d(),
+        new Pose2d(),
+        new Pose2d(),
+        new Pose2d(),
+        new Pose2d(),
+        new Pose2d(),
+        new Pose2d(),
+        new Pose2d()
+      }; // [++ make these final
+      public static Pose2d doubleLoadingZone = new Pose2d();
+      public static Pose2d singleLoadingZone = new Pose2d();
+      public static Pose2d chargeStationBottomLeft = new Pose2d();
+      public static Pose2d chargeStationTopRight = new Pose2d();
+    }
+    public static final class Red{
+      public static Pose2d scoringPositions[] = {
+        new Pose2d(),
+        new Pose2d(),
+        new Pose2d(),
+        new Pose2d(),
+        new Pose2d(),
+        new Pose2d(),
+        new Pose2d(),
+        new Pose2d(),
+        new Pose2d()
+      };
+      public static Pose2d doubleLoadingZone = new Pose2d();
+      public static Pose2d singleLoadingZone = new Pose2d();
+      public static Pose2d chargeStationBottomLeft = new Pose2d();
+      public static Pose2d chargeStationTopRight = new Pose2d();
+    }
   }
 
   // H! This is my fault, so feel free to move it to a better place if need be
