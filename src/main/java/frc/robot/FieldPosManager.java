@@ -114,7 +114,7 @@ public class FieldPosManager {
      * @return the position of the requested field element as a Pose2d.
      */
     public Pose2d getFieldElement(fieldElement element, boolean isCurrentAlliance, int scoringZoneID){
-        if (allianceColor != DriverStation.Alliance.Invalid && allianceColor != null ){
+        if (allianceColor != DriverStation.Alliance.Invalid && allianceColor != null){
             if ((isCurrentAlliance && allianceColor==DriverStation.Alliance.Red) || (!isCurrentAlliance && allianceColor==DriverStation.Alliance.Blue)){
                 // :D red alliance poses
                 switch (element){
