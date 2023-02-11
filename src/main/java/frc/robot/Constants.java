@@ -317,6 +317,8 @@ public final class Constants {
 
     public static final int NEO1650CurrentLimitHard = 40;
     public static final int NEO550CurrentLimitHard = 20;
+
+    public static final double atSetpointThreshold = 0.05;
   }
 
 
