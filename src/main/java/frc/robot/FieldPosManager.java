@@ -4,7 +4,13 @@
 
 package frc.robot;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.DriverStation;
 
@@ -106,18 +112,44 @@ public class FieldPosManager {
         return latestRobotPosition;
     }
 
+    public int getNearestScoringZoneIndex(Pose2d robotPose, boolean ofCurrentAlliance){
+        List<Pose2d> alliedScorePoses = Arrays.asList(alliedScoringPositions);
+        List<Pose2d> opposeScorePoses = Arrays.asList(opposingScoringPositions);
+
+        if(ofCurrentAlliance){
+            Pose2d nearestAllyPose = robotPose.nearest(alliedScorePoses);
+            for (int i=0;i<alliedScoringPositions.length;i++) {
+                if (alliedScoringPositions[i]==nearestAllyPose) {
+                    return i;
+                }
+            }
+
+            return -1;
+            
+        } else {
+            Pose2d nearestOppPose = robotPose.nearest(opposeScorePoses);
+            for (int i=0;i<alliedScoringPositions.length;i++) {
+                if (alliedScoringPositions[i]==nearestOppPose) {
+                    return i;
+                }
+            }
+            return -1;
+
+        }
+    }
+
     /**
      * A function to find the poses of selected field elements.
-     * @param element is a field element enum, of type FieldPosManager.fieldElement, which chooses the object whose pose we are looking for.
-     * @param isCurrentAlliance is a boolean which defines whether the field element in question belongs to our alliance or the opponent's.
+     * @param spot is a field element enum, of type FieldPosManager.fieldSpot2d, which chooses the object whose pose we are looking for.
+     * @param ofCurrentAlliance is a boolean which defines whether the field element in question belongs to our alliance or the opponent's.
      * @param scoringZoneID is an integer which determines the scoring zone if scoringPosition is passed in to the 'element' parameter
      * @return the position of the requested field element as a Pose2d.
      */
-    public Pose2d getFieldElement(fieldElement element, boolean isCurrentAlliance, int scoringZoneID){
+    public Pose2d get2dFieldPose(fieldSpot2d spot, boolean ofCurrentAlliance, int scoringZoneID){
         if (allianceColor != DriverStation.Alliance.Invalid && allianceColor != null){
-            if ((isCurrentAlliance && allianceColor==DriverStation.Alliance.Red) || (!isCurrentAlliance && allianceColor==DriverStation.Alliance.Blue)){
+            if ((ofCurrentAlliance && allianceColor==DriverStation.Alliance.Red) || (!ofCurrentAlliance && allianceColor==DriverStation.Alliance.Blue)){
                 // :D red alliance poses
-                switch (element){
+                switch (spot){
                     case doubleLoadingZone:
                         return Constants.FieldConstants.Red.doubleLoadingZone;
                     case singleLoadingZone:
@@ -134,8 +166,8 @@ public class FieldPosManager {
                         return new Pose2d();
                 }
             } else {
-                // :D red alliance poses
-                switch (element){
+                // :D blue alliance poses
+                switch (spot){
                     case doubleLoadingZone:
                         return Constants.FieldConstants.Blue.doubleLoadingZone;
                     case singleLoadingZone:
@@ -159,8 +191,59 @@ public class FieldPosManager {
         }
     }
 
-    public enum fieldElement{
+    /**
+     * A function to find grabber poses as Pose3d.
+     * @param spot is a grabber spot enum, of type FieldPosManager.fieldSpot3d, which chooses the spot whose pose we are looking for.
+     * @param ofCurrentAlliance is a boolean which defines whether the field element in question belongs to our alliance or the opponent's.
+     * @param positionID is an integer which determines the scoring zone as well as picks 1-4 of the field center game pieces
+     * @return the position of the requested field element as a Pose3d.
+     */
+    public Pose3d get3dFieldPose(fieldSpot3d spot, boolean ofCurrentAlliance, int positionID){
+        if (allianceColor != DriverStation.Alliance.Invalid && allianceColor != null){
+            if ((ofCurrentAlliance && allianceColor==DriverStation.Alliance.Red) || (!ofCurrentAlliance && allianceColor==DriverStation.Alliance.Blue)){
+                // :D red alliance poses
+                switch (spot){
+                    case highGrabberScoring:
+                        return Constants.FieldConstants.Red.grabberPositions.highTargets[positionID];
+                    case middleGrabberScoring:
+                        return Constants.FieldConstants.Red.grabberPositions.middleTargets[positionID];
+                    case lowGrabberScoring:
+                        return Constants.FieldConstants.Red.grabberPositions.lowTargets[positionID];
+                    case centerFieldGamePieces:
+                        return Constants.FieldConstants.Red.grabberPositions.fieldCenterGamePieces[positionID];
+                    default:
+                        // :D TODO: figure out what to put here
+                        return new Pose3d();
+                }
+            } else {
+                // :D blue alliance poses
+                switch (spot){
+                    case highGrabberScoring:
+                        return Constants.FieldConstants.Blue.grabberPositions.highTargets[positionID];
+                    case middleGrabberScoring:
+                        return Constants.FieldConstants.Blue.grabberPositions.middleTargets[positionID];
+                    case lowGrabberScoring:
+                        return Constants.FieldConstants.Blue.grabberPositions.lowTargets[positionID];
+                    case centerFieldGamePieces:
+                        return Constants.FieldConstants.Blue.grabberPositions.fieldCenterGamePieces[positionID];
+                    default:
+                        // :D TODO: figure out what to put here
+                        return new Pose3d();
+                }
+            }
+
+        } else {
+            System.err.println("INVALID ALLIANCE COLOR IN FIELDPOSMANAGER");
+            return null;
+        }
+    }
+
+    public enum fieldSpot2d{
         doubleLoadingZone, singleLoadingZone, chargeStationBottomLeft, chargeStationTopRight, scoringPosition
+    }
+
+    public enum fieldSpot3d{
+        highGrabberScoring, middleGrabberScoring, lowGrabberScoring, centerFieldGamePieces
     }
 
 }

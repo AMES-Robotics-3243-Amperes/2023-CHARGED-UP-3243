@@ -5,6 +5,8 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+
 import com.revrobotics.CANSparkMax.IdleMode;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -383,6 +385,49 @@ public final class Constants {
   /** ++ field measurement constants */ // ---------------------------------------------------
   public static final class FieldConstants {
     public static final class Blue{
+      public static final class grabberPositions{
+        public static final Pose3d highTargets[] = {
+          new Pose3d(),
+          new Pose3d(),
+          new Pose3d(),
+          new Pose3d(),
+          new Pose3d(),
+          new Pose3d(),
+          new Pose3d(),
+          new Pose3d(),
+          new Pose3d()
+        };
+        public static final Pose3d middleTargets[] = {
+          new Pose3d(),
+          new Pose3d(),
+          new Pose3d(),
+          new Pose3d(),
+          new Pose3d(),
+          new Pose3d(),
+          new Pose3d(),
+          new Pose3d(),
+          new Pose3d()
+        };
+        public static final Pose3d lowTargets[] = {
+          new Pose3d(),
+          new Pose3d(),
+          new Pose3d(),
+          new Pose3d(),
+          new Pose3d(),
+          new Pose3d(),
+          new Pose3d(),
+          new Pose3d(),
+          new Pose3d()
+        };
+        public static final Pose3d fieldCenterGamePieces[] = {
+          new Pose3d(),
+          new Pose3d(),
+          new Pose3d(),
+          new Pose3d()
+        };
+      }
+      
+      // :D position of the robot's chassis:
       public static Pose2d scoringPositions[] = {
         new Pose2d(),
         new Pose2d(),
@@ -400,6 +445,48 @@ public final class Constants {
       public static Pose2d chargeStationTopRight = new Pose2d();
     }
     public static final class Red{
+      public static final class grabberPositions{
+        public static final Pose3d highTargets[] = {
+          new Pose3d(),
+          new Pose3d(),
+          new Pose3d(),
+          new Pose3d(),
+          new Pose3d(),
+          new Pose3d(),
+          new Pose3d(),
+          new Pose3d(),
+          new Pose3d()
+        };
+        public static final Pose3d middleTargets[] = {
+          new Pose3d(),
+          new Pose3d(),
+          new Pose3d(),
+          new Pose3d(),
+          new Pose3d(),
+          new Pose3d(),
+          new Pose3d(),
+          new Pose3d(),
+          new Pose3d()
+        };
+        public static final Pose3d lowTargets[] = {
+          new Pose3d(),
+          new Pose3d(),
+          new Pose3d(),
+          new Pose3d(),
+          new Pose3d(),
+          new Pose3d(),
+          new Pose3d(),
+          new Pose3d(),
+          new Pose3d()
+        };
+        public static final Pose3d fieldCenterGamePieces[] = {
+          new Pose3d(),
+          new Pose3d(),
+          new Pose3d(),
+          new Pose3d()
+        };
+      }
+
       public static Pose2d scoringPositions[] = {
         new Pose2d(),
         new Pose2d(),
