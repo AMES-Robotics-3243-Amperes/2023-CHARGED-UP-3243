@@ -11,10 +11,6 @@ public class PhotonVisionCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final PhotonVisionSubsystem m_subsystem;
 
-  double targX;
-  double targY;
-  double targZ;
-  int id;
   Pose3d botPose;
   double botX;
   double botY;
@@ -42,26 +38,17 @@ public void initialize() {}
   // Called every time the scheduler runs while the command is scheduled.
 @Override
 public void execute() {
-    if (m_subsystem.returnBestTarget() != null){
+    if (m_subsystem.targets != null){
       botPose = m_subsystem.checkRobotPosition();
       System.out.print(botPose);
-      targX = m_subsystem.returnBestTarget().getBestCameraToTarget().getX();
-      targY = m_subsystem.returnBestTarget().getBestCameraToTarget().getY();
-      targZ = m_subsystem.returnBestTarget().getBestCameraToTarget().getZ();
-      id = m_subsystem.returnBestTarget().getFiducialId();
       botX = botPose.getX();
       botY = botPose.getY();
       botSpin = botPose.getRotation().getAngle();
 
 
-      SmartDashboard.putNumber("target X dist", targX);
-      SmartDashboard.putNumber("target Y dist", targY);
-      SmartDashboard.putNumber("target Z dist", targZ);
       SmartDashboard.putNumber("robot X", botX);
       SmartDashboard.putNumber("robot Y", botY);
       SmartDashboard.putNumber("robot rotation", botSpin);
-      SmartDashboard.putNumber("target dist", Math.sqrt((targX*targX)+(targY*targY)+(targZ*targZ)));
-      SmartDashboard.putNumber("target ID", id);
     }
   }
 

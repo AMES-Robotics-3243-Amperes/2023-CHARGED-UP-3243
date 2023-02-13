@@ -1,38 +1,60 @@
 package frc.robot.subsystems;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Optional;
 
+import org.opencv.photo.Photo;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
+import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
-
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.commands.PhotonVisionCommand;
 
 public class PhotonVisionSubsystem extends SubsystemBase {
-    
+
+// :> the = new ArrayList is because the code interprets the array as null otherwise.
+ArrayList<Transform3d> camsToBot = new ArrayList<Transform3d>(); 
+ArrayList<PhotonPipelineResult> results = new ArrayList<PhotonPipelineResult>();
+ArrayList<PhotonCamera> cameras = new ArrayList<PhotonCamera>();
+public ArrayList<PhotonTrackedTarget> targets = new ArrayList<PhotonTrackedTarget>();
+ArrayList<Transform3d> cameraToTargets = new ArrayList<Transform3d>();
+public ArrayList<Optional<Pose3d>> tagPoses = new ArrayList<Optional<Pose3d>>();
+public ArrayList<Pose3d> robotPoses = new ArrayList<Pose3d>();
+
+
 PhotonCamera m_camera;
+PhotonCamera m_camera2;
+PhotonCamera m_camera3;
 
   private final Field2d m_field2d = new Field2d();
 
   // :D these are values that should be in constants after testing
-  public static final String cameraName = "Global_Shutter_Camera";
+  public static final String cameraName = Constants.PhotonVision.cameraName1;
+  public static final String camera2Name = Constants.PhotonVision.cameraName2;
+  public static final String camera3Name = Constants.PhotonVision.cameraName3;
   // :> BIG NOTE: Arducam_OV9281_MMN2 is the name of the camera but that is not what it looks for. It is looking for what photonvision reads
 
   //public static final string cameraName = "Microsoft_LifeCam_HD-3000";
   // :D this is a Transform3d that tracks the transformation from the camera to the robot
-  public static final Transform3d camToBot = new Transform3d(
+  public static final Transform3d camToBot1 = new Transform3d(
     new Pose3d(
 
       Units.inchesToMeters(14),
@@ -44,6 +66,17 @@ PhotonCamera m_camera;
     
     new Pose3d()
   );
+public static final Transform3d camtoBot2 = new Transform3d(
+  new Pose3d(
+  Units.inchesToMeters(-2),
+  Units.inchesToMeters(-13),
+  Units.inchesToMeters(12.5),
+  new Rotation3d(0,0, Units.degreesToRadians(-140))
+
+  ),
+  new Pose3d()
+);
+
 
   // :D end constants
 
@@ -53,10 +86,14 @@ PhotonCamera m_camera;
 
 
   public PhotonVisionSubsystem() {
-    
-
+    camsToBot.add(camToBot1);
+    //camsToBot.add(camtoBot2);
     // :D instantiate the camera and load the field layout
     m_camera = new PhotonCamera(cameraName);
+    m_camera2 = new PhotonCamera(camera2Name);
+    m_camera3 = new PhotonCamera(camera3Name);
+    cameras.add(m_camera);
+    //cameras.add(m_camera2);
     try{
       m_aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
     } catch (IOException err){
@@ -69,16 +106,16 @@ PhotonCamera m_camera;
    *
    * @return best PhotonTrackedTarget seen by m_camera or null if no targets are found
    */
-  public PhotonTrackedTarget returnBestTarget(){
-    // :D getting an object (of type var, eugh) which contains the data for all the photon targets visible by the camera
-    var results = m_camera.getLatestResult();
-    // :D now getting the "best" target, as ruled by photonlib, to pull data from later
-    if (results.hasTargets()) {
-      PhotonTrackedTarget target = results.getBestTarget();
-      return target;
-    }
-    return null;
-  }
+  //public PhotonTrackedTarget returnBestTarget(){
+    //// :D getting an object (of type var, eugh) which contains the data for all the photon targets visible by the camera
+    //var results = m_camera.getLatestResult();
+    //// :D now getting the "best" target, as ruled by photonlib, to pull data from later
+    //if (results.hasTargets()) {
+      //PhotonTrackedTarget target = results.getBestTarget();
+      //return target;
+    //}
+    //return null;
+  //}
 
 
   /**
@@ -87,23 +124,87 @@ PhotonCamera m_camera;
    * @return Pose3d representing the position of the camera on the field, or null if no valid targets are found
    */
   public Pose3d checkRobotPosition(){
-    PhotonTrackedTarget seenTarget = returnBestTarget();
-    if (seenTarget != null){
-      Transform3d cameraToTarget = seenTarget.getBestCameraToTarget();
-      
-      // :D Optional allows us to account for the case when the robot sees a fiducial that is not on the field layout file (ids 1-8)
-      Optional<Pose3d> tagPose = m_aprilTagFieldLayout.getTagPose(seenTarget.getFiducialId());
-    
-      if (tagPose.isPresent()){
-        Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(cameraToTarget, tagPose.get(), camToBot);
-        SmartDashboard.putNumber("robotposePVSX", robotPose.getX());
-        return robotPose;
+    // :> I'm so sorry for all of the for loops it is necessary for the three cameras.
+    if (targets != null){
+      for (int i = 0; i < 1; i++) {
+      cameraToTargets.add(targets.get(i).getBestCameraToTarget());
       }
+      // :D Optional allows us to account for the case when the robot sees a fiducial that is not on the field layout file (ids 1-8)
+      for (int i = 0; i < 1; i++) {
+      tagPoses.add(m_aprilTagFieldLayout.getTagPose(targets.get(i).getFiducialId()));
+      }
+      for (int j = 0; j < 1; j++) {
+      if (tagPoses.get(j).isPresent()){
+        robotPoses.add(PhotonUtils.estimateFieldToRobotAprilTag(cameraToTargets.get(j), tagPoses.get(j).get(), camsToBot.get(j)));
+        // :> The .get(j)s correspond to the for loop but and the other one turns it into a Pose3D instead of an optional Pose3D
+        
+        
+      }
+    }
+    Pose3d averageRobotPoses = averagePose3d(robotPoses.toArray(new Pose3d[robotPoses.size()]));
+    return averageRobotPoses;
     }
     return null;
   }
+  // :> Behold the cursed functions Hale made to average Pose3Ds 
+  // :> Quiver in its Assemblic WPILIBERAL glory
 
- 
+  private Pose3d averagePose3d(Pose3d... poses) {
+    Translation3d[] translations = new Translation3d[poses.length];
+    Rotation3d[] rotations = new Rotation3d[poses.length];
+
+    for (int i = 0; i < poses.length; i++) {
+      translations[i] = poses[i].getTranslation();
+      rotations[i] = poses[i].getRotation();
+    }
+
+    return new Pose3d(averageTranslation3d(translations), averageRotation3d(rotations));
+  }
+
+
+  /**<h2>Finds the average translation between any number of translations</h2>
+   * <p>H!</p>
+   * @param translations The tranlsations to average between
+   * @return The average tranlsation
+   */
+  private Translation3d averageTranslation3d(Translation3d... translations) {
+    int numArguments = translations.length;
+
+    Translation3d averageTranslation = new Translation3d();
+
+    for (Translation3d translation : translations) {
+      averageTranslation = averageTranslation.plus( translation.div(numArguments) );
+    }
+
+    return averageTranslation;
+  }
+
+
+  private Rotation3d averageRotation3d(Rotation3d... rotations) {
+    int numArguments = rotations.length;
+
+    // :> Takes the rotation into it's vectors
+    Vector<N3> averageVector = VecBuilder.fill(0, 0, 0);
+    double averageAngle = 0;
+
+    // :> Averages the values of each vector and it's angles
+    for (Rotation3d rotation : rotations) {
+      averageVector = new Vector<N3>(averageVector.plus(rotation.getAxis().div(numArguments)));
+      averageAngle += rotation.getAngle() / numArguments;
+    }
+
+    // :> normalizes the Vector and angle and puts it back together into a Rotation3D
+    averageVector = normalize(averageVector);
+    return new Rotation3d(averageVector, averageAngle);
+  }
+
+  // :> Manually normalizes the vector since WPILIB doesn't have a function for it already.
+  private Vector<N3> normalize(Vector<N3> vector) {
+    return vector.div(Math.sqrt(vector.elementPower(2).elementSum()));
+  }
+
+
+
 
 
  /**
@@ -128,11 +229,20 @@ PhotonCamera m_camera;
 
 @Override
 public void periodic() {
+
+  for (int i = 0; i < 1; i++) {
+    PhotonPipelineResult r=cameras.get(i).getLatestResult();
+    if (r.hasTargets()) {
+      results.add(r);
+      targets.add(results.get(i).getBestTarget());
+    }
+  }
+
     // :D create a SmartDashboard widget for the field positions
     SmartDashboard.putData("field", m_field2d);
 
     // This method will be called once per scheduler run
-    if (returnBestTarget()!= null){
+    if (targets != null){
       m_field2d.setRobotPose(checkRobotPosition().toPose2d());
     }
   }
