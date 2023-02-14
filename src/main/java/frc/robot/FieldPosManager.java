@@ -80,14 +80,22 @@ public class FieldPosManager {
         latestRobotPosition.transformBy(deltaPose);
     }
 
+    /**
+     * :D sets the robot pose to default (all zero values)
+     * SHOULD ONLY BE USED FOR DEBUGGING
+     */
+    public void resetRobotPos(){
+        latestRobotPosition = new Pose2d();
+    }
+
     /** 
-     * :D This is a function intended ONLY to be used by the swerve module subsystem.
+     * :D This is a function intended ONLY to be used by the drive subsystem.
      * It finds how much the odometry pose has changed since the last periodic loop.
      * Ideally, replace the swerve's rotation data with imu rotation data
      * (and transform the imu data appropriately so that it lines up)
      * @param swervePose is the Pose2d of the robot as reported by swerve odometry.
     */
-    public void updateFieldPosWithSwerveOdometry(Pose2d swervePose){
+    public void updateFieldPosWithSwerveData(Pose2d swervePose){
         if (hasPhotonPose){
             previousOdometryPose = latestOdometryPose;
             latestOdometryPose = swervePose;
