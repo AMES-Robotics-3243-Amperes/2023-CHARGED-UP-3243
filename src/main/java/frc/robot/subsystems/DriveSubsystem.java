@@ -36,9 +36,6 @@ public class DriveSubsystem extends SubsystemBase {
   // <> for keeping track of position
   private final FieldPosManager m_fieldPosManager;
 
-  // <> TODO: make this accurate and updatable through shuffleboard
-  private final Translation2d startPositionOffset = new Translation2d();
-
   /**
    * Creates a new DriveSubsystem.
    */
@@ -49,9 +46,8 @@ public class DriveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    m_fieldPosManager.updateFieldPosWithSwerveData(new Pose2d(
-      new Translation2d(m_gyro.getDisplacementX() + startPositionOffset.getX(),
-        m_gyro.getDisplacementY() + startPositionOffset.getY()), getHeading()));
+    m_fieldPosManager.updateFieldPosWithSwerveData(
+      new Pose2d(new Translation2d(m_gyro.getDisplacementX(), m_gyro.getDisplacementY()), getHeading()));
   }
 
   /**
@@ -69,7 +65,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @param pose pose to set the odometry to
    */
   public void resetPose() {
-  m_fieldPosManager.resetRobotPos();
+    m_fieldPosManager.resetRobotPos();
   }
 
   /**
