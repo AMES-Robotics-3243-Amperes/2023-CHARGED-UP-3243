@@ -38,9 +38,12 @@ public class RobotContainer {
   public static JoyUtil primaryController = new JoyUtil(Constants.Joysticks.primaryControllerID);
   public static JoyUtil secondaryController = new JoyUtil(Constants.Joysticks.secondaryControllerID);
 
+  // <> --- FIELD POS MANAGER ---
+  public static FieldPosManager fieldPosManager = new FieldPosManager();
+
   // The robot's subsystems and commands are defined here...
   // ++ ----- SUBSYSTEMS -----------
-  private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
+  private final DriveSubsystem m_driveSubsystem = new DriveSubsystem(fieldPosManager);
   private final LegAnkleSubsystem m_legAnkleSubsystem = new LegAnkleSubsystem();
   private final ReidPrototypeSubsystem m_reidPrototypeSubsystem = new ReidPrototypeSubsystem();
 
