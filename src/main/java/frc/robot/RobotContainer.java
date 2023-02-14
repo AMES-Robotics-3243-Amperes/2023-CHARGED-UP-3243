@@ -14,12 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants.DriveTrain.DriveConstants;
-import frc.robot.commands.PlaceGamePiece;
-import frc.robot.commands.ReidPrototypeCommand;
 import frc.robot.commands.SwerveAutoMoveCommand;
 import frc.robot.commands.SwerveTeleopCommand;
 import frc.robot.subsystems.DriveSubsystem;
@@ -70,7 +65,7 @@ public class RobotContainer {
     thetaPidController.enableContinuousInput(-Math.PI, Math.PI);
 
     m_driveSubsystem.setDefaultCommand(m_SwerveTeleopCommand);
-    m_driveSubsystem.resetOdometry(new Pose2d(new Translation2d(), m_driveSubsystem.getHeading()));
+    m_driveSubsystem.resetPose();
 
     // H! This command is here because it needs thetaPidController to be created for it to be created
     //m_placeGamePieceCommand = new PlaceGamePiece(m_driveSubsystem, m_legAnkleSubsystem, m_reidPrototypeSubsystem,

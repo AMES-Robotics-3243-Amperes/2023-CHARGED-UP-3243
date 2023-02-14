@@ -7,9 +7,13 @@ package frc.robot.subsystems;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.*;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveTrain.DriveConstants;
+import frc.robot.FieldPosManager;
 
 public class DriveSubsystem extends SubsystemBase {
 
@@ -29,10 +33,11 @@ public class DriveSubsystem extends SubsystemBase {
   // <> gyro
   private final AHRS m_gyro = new AHRS();
 
-  // <> odometry for tracking robot pose
-  SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(DriveConstants.ChassisKinematics.kDriveKinematics,
-    getHeading(), new SwerveModulePosition[]{m_frontLeft.getPosition(), m_frontRight.getPosition(),
-    m_rearLeft.getPosition(), m_rearRight.getPosition()});
+  // <> for keeping track of position
+  private final FieldPosManager posManager = new FieldPosManager();
+
+  // <> TODO: make this accurate and updatable through shuffleboard
+  private final Translation2d startPositionOffset = new Translation2d();
 
   /**
    * Creates a new DriveSubsystem.
@@ -43,10 +48,9 @@ public class DriveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SwerveModulePosition[] modulePositions = {m_frontLeft.getPosition(), m_frontRight.getPosition(),
-      m_rearLeft.getPosition(), m_rearRight.getPosition()};
-
-    m_odometry.update(getHeading(), modulePositions);
+    posManager.updateFieldPosWithSwerveData(new Pose2d(
+      new Translation2d(m_gyro.getDisplacementX() + startPositionOffset.getX(),
+        m_gyro.getDisplacementY() + startPositionOffset.getY()), getHeading()));
   }
 
   /**
@@ -55,7 +59,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @return the pose
    */
   public Pose2d getPose() {
-    return m_odometry.getPoseMeters();
+    return posManager.getRobotPose();
   }
 
   /**
@@ -63,11 +67,8 @@ public class DriveSubsystem extends SubsystemBase {
    *
    * @param pose pose to set the odometry to
    */
-  public void resetOdometry(Pose2d pose) {
-    SwerveModulePosition[] modulePositions = {m_frontLeft.getPosition(), m_frontRight.getPosition(),
-      m_rearLeft.getPosition(), m_rearRight.getPosition()};
-
-    m_odometry.resetPosition(getHeading(), modulePositions, pose);
+  public void resetPose() {
+  posManager.resetRobotPos();
   }
 
   /**
@@ -86,10 +87,9 @@ public class DriveSubsystem extends SubsystemBase {
     rot *= DriveConstants.kAngularSpeedDamper;
 
     // <> adjust the inputs if field relative is true
-    SwerveModuleState[] swerveModuleStates =
-      DriveConstants.ChassisKinematics.kDriveKinematics.toSwerveModuleStates(fieldRelative ?
-        ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getHeading()) : new ChassisSpeeds(xSpeed, ySpeed,
-        rot));
+    SwerveModuleState[] swerveModuleStates = DriveConstants.ChassisKinematics.kDriveKinematics.toSwerveModuleStates(
+      fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getHeading()) : new ChassisSpeeds(
+        xSpeed, ySpeed, rot));
 
     // <> desaturate wheel speeds
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.kMaxMetersPerSecond);
