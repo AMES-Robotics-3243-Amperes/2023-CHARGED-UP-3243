@@ -25,6 +25,7 @@ import frc.robot.commands.SwerveTeleopCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LegAnkleSubsystem;
 import frc.robot.subsystems.ReidPrototypeSubsystem;
+import frc.robot.subsystems.ShuffleboardSubsystem;
 
 import java.util.List;
 
@@ -48,6 +49,7 @@ public class RobotContainer {
   private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
   private final LegAnkleSubsystem m_legAnkleSubsystem = new LegAnkleSubsystem();
   private final ReidPrototypeSubsystem m_reidPrototypeSubsystem = new ReidPrototypeSubsystem();
+  private final ShuffleboardSubsystem m_shuffleboardSubsystem = new ShuffleboardSubsystem();
 
   // <> this is required for creating new swerve trajectory follow commands
   private final ProfiledPIDController thetaPidController;
