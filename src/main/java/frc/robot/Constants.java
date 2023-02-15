@@ -397,26 +397,26 @@ public final class Constants {
   /** ++ field measurement constants */ // ---------------------------------------------------
   public static final class FieldConstants {
     public static final double targetPositionsY[] = {
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
+      4.983,
+      4.424,
+      3.866,
+      3.307,
+      2.748,
+      2.189,
+      1.630,
+      1.072,
+      0.513
     };
     public static final class Blue{
       public static final class grabberPositions{
-        public static final Pose3d highTargetsXZ = new Pose3d(new Translation3d(0,0,0), new Rotation3d(0,0,0));
-        public static final Pose3d middleTargetsXZ = new Pose3d(new Translation3d(0,0,0), new Rotation3d(0,0,0));
-        public static final Pose3d lowTargetsXZ = new Pose3d(new Translation3d(0,0,0), new Rotation3d(0,0,0));
+        public static final Pose3d highTargetsXZ = new Pose3d(new Translation3d(0.379,0,0), new Rotation3d());
+        public static final Pose3d middleTargetsXZ = new Pose3d(new Translation3d(0.811,0,0), new Rotation3d());
+        public static final Pose3d lowTargetsXZ = new Pose3d(new Translation3d(1.185,0,0), new Rotation3d());
         public static final Pose3d fieldCenterGamePieces[] = {
-          new Pose3d(new Translation3d(0,0,0), new Rotation3d(0,0,0)),
-          new Pose3d(new Translation3d(0,0,0), new Rotation3d(0,0,0)),
-          new Pose3d(new Translation3d(0,0,0), new Rotation3d(0,0,0)),
-          new Pose3d(new Translation3d(0,0,0), new Rotation3d(0,0,0))
+          new Pose3d(new Translation3d(7.068,4.577,0), new Rotation3d()),
+          new Pose3d(new Translation3d(7.068,3.358,0), new Rotation3d()),
+          new Pose3d(new Translation3d(7.068,2.138,0), new Rotation3d()),
+          new Pose3d(new Translation3d(7.068,0.919,0), new Rotation3d())
         };
       }
       
@@ -481,14 +481,14 @@ public final class Constants {
     }
     public static final class Red{
       public static final class grabberPositions{
-        public static final Pose3d highTargetsXZ = new Pose3d(new Translation3d(0,0,0), new Rotation3d(0,0,0));
-        public static final Pose3d middleTargetsXZ = new Pose3d(new Translation3d(0,0,0), new Rotation3d(0,0,0));
-        public static final Pose3d lowTargetsXZ = new Pose3d(new Translation3d(0,0,0), new Rotation3d(0,0,0));
+        public static final Pose3d highTargetsXZ = new Pose3d(new Translation3d(16.162,0,0), new Rotation3d());
+        public static final Pose3d middleTargetsXZ = new Pose3d(new Translation3d(15.730,0,0), new Rotation3d());
+        public static final Pose3d lowTargetsXZ = new Pose3d(new Translation3d(15.350,0,0), new Rotation3d());
         public static final Pose3d fieldCenterGamePieces[] = {
-          new Pose3d(new Translation3d(0,0,0), new Rotation3d(0,0,0)),
-          new Pose3d(new Translation3d(0,0,0), new Rotation3d(0,0,0)),
-          new Pose3d(new Translation3d(0,0,0), new Rotation3d(0,0,0)),
-          new Pose3d(new Translation3d(0,0,0), new Rotation3d(0,0,0))
+          new Pose3d(new Translation3d(9.473,4.577,0), new Rotation3d()),
+          new Pose3d(new Translation3d(9.473,3.358,0), new Rotation3d()),
+          new Pose3d(new Translation3d(9.473,2.138,0), new Rotation3d()),
+          new Pose3d(new Translation3d(9.473,0.919,0), new Rotation3d())
         };
       }
 
