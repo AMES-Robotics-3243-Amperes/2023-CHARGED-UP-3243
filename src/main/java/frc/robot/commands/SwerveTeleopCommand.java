@@ -7,7 +7,6 @@ package frc.robot.commands;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveTrain.DriveConstants;
 import frc.robot.JoyUtil;
@@ -45,7 +44,7 @@ public class SwerveTeleopCommand extends CommandBase {
 
     // <> temporary for debugging purposes
     if (controller.getBButtonPressed()) {
-      m_DriveSubsystem.resetOdometry(new Pose2d(new Translation2d(), m_DriveSubsystem.getHeading()));
+      m_DriveSubsystem.resetPose();
       m_DriveSubsystem.zeroHeading();
     }
   }

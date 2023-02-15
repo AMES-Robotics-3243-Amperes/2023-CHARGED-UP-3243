@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
+import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
@@ -16,10 +17,10 @@ import static frc.robot.Constants.WristAndArm.*;
 
 public class LegAnkleSubsystem extends SubsystemBase {
   
-  private PIDController pidArmPivot = new PIDController(0.1, 0, 0);
-  private PIDController pidArmExtention = new PIDController(0.1, 0, 0);
-  private PIDController pidWristPitch = new PIDController(0.1, 0, 0);
-  private PIDController pidWristRoll = new PIDController(0.1, 0, 0); 
+  private SparkMaxPIDController pidArmPivot;
+  private SparkMaxPIDController pidArmExtention;
+  private SparkMaxPIDController pidWristPitch;
+  private SparkMaxPIDController pidWristRoll;
   
   private CANSparkMax armPivot = new CANSparkMax(MotorIDs.armPivot, MotorType.kBrushless);
   private CANSparkMax armExtension = new CANSparkMax(MotorIDs.armExtension, MotorType.kBrushless);
@@ -31,11 +32,6 @@ public class LegAnkleSubsystem extends SubsystemBase {
   private SparkMaxAbsoluteEncoder wristPitchEncoder = wristPitch.getAbsoluteEncoder(Type.kDutyCycle);
   private SparkMaxAbsoluteEncoder wristRollEncoder = wristRoll.getAbsoluteEncoder(Type.kDutyCycle);
 
-  private double targetSpeedArmPivot = 0.0;
-  private double targetSpeedArmExtension = 0.0;
-  private double targetSpeedWristPitch = 0.0;
-  private double targetSpeedWristRoll = 0.0;
-
   private double targetX = 0.0;
   private double targetY = 0.0;
   private double targetPitch = 0.0;
@@ -45,6 +41,19 @@ public class LegAnkleSubsystem extends SubsystemBase {
   /** Creates a new LegAnkleSubsystem. */
   public LegAnkleSubsystem() {
     // H! TODO configure arm length encoder to return arm length, not encoder rotation
+
+    pidArmPivot = armPivot.getPIDController();
+    pidArmExtention = armExtension.getPIDController();
+    pidWristPitch = wristPitch.getPIDController();
+    pidWristRoll = wristRoll.getPIDController();
+
+    // H! These should really be in constants, but that's a future me problem
+    setPIDFValues(pidArmPivot,     0, 0, 0, 0.001); 
+    setPIDFValues(pidArmExtention, 0, 0, 0, 0.001); 
+    setPIDFValues(pidWristPitch,   0, 0, 0, 0.001); 
+    setPIDFValues(pidWristRoll,    0, 0, 0, 0.001); 
+
+
     
     // H! Set soft current limits
     armPivot.setSmartCurrentLimit(pivotCurrentLimit);
@@ -66,12 +75,12 @@ public class LegAnkleSubsystem extends SubsystemBase {
    * @param roll The diference in roll to aproach at
   */
   public void moveByXYTheta(double x, double y, double pitch, double roll) {
-    targetX = targetX + x * Constants.WristAndArm.changeXMultiplier;
-    targetY = targetY + y * Constants.WristAndArm.changeYMultiplier;
-    targetPitch = targetPitch + pitch * Constants.WristAndArm.changePitchMultiplier;
-    targetRoll = targetRoll + roll * Constants.WristAndArm.changeRollMultiplier;
-
-    moveToXYTheta(targetX, targetY, targetPitch, targetRoll);
+    moveToXYTheta(
+      targetX + x * Constants.WristAndArm.changeXMultiplier,
+      targetY + y * Constants.WristAndArm.changeYMultiplier,
+      targetPitch + pitch * Constants.WristAndArm.changePitchMultiplier,
+      targetRoll + roll * Constants.WristAndArm.changeRollMultiplier
+    );
   }
 
   /** H! Moves the arm-wrist assembly to a given position and rotation. 
@@ -82,30 +91,24 @@ public class LegAnkleSubsystem extends SubsystemBase {
    * @return Whether the arm is in a small range of the target
   */
   public boolean moveToXYTheta(double xIn, double yIn, double pitchIn, double rollIn) {
-    // H! Prevent the arm from going places it shouldn't
-    double x = clamp(maxX, minX, xIn);
-    double y = clamp(maxY, minY, yIn);
-    double pitch = pitchIn;
-    double roll = rollIn;
+    // H! Prevent the arm from going places it shouldn't with clamps
+    targetX = clamp(maxX, minX, xIn);
+    targetY = clamp(maxY, minY, yIn);
+    targetPitch = pitchIn;
+    targetRoll = rollIn;
 
     // H! Inverse kinematics: see more detailed math here: https://www.desmos.com/calculator/l89yzwijul 
-    double targetArmAngle = Math.atan((y + Constants.WristAndArm.wristLength * Math.sin(pitch))  /  (x + Constants.WristAndArm.wristLength * Math.cos(pitch)));
-    double targetArmLength = (y + Constants.WristAndArm.wristLength * Math.sin(pitch)) / Math.sin(targetArmAngle);
-    double targetWristAngle = pitch - targetArmAngle;
-    double targetWristRoll = roll;
-
-
-    pidArmPivot.setSetpoint(targetArmAngle);
-    pidArmExtention.setSetpoint(targetArmLength);
-    pidWristPitch.setSetpoint(targetWristAngle);
-    pidWristRoll.setSetpoint(targetWristRoll);
+    double targetArmAngle = Math.atan((targetY + Constants.WristAndArm.wristLength * Math.sin(targetPitch))  /  (targetX + Constants.WristAndArm.wristLength * Math.cos(targetPitch)));
+    double targetArmLength = (targetY + Constants.WristAndArm.wristLength * Math.sin(targetPitch)) / Math.sin(targetArmAngle);
+    double targetWristAngle = targetPitch - targetArmAngle;
+    double targetWristRoll = targetRoll;
 
     // H! Return whether it's in the right position
     return (
-      pidArmPivot.atSetpoint() &&
-      pidArmExtention.atSetpoint() &&
-      pidWristPitch.atSetpoint() &&
-      pidWristRoll.atSetpoint()
+      Math.abs( armPivotEncoder.getPosition() - targetArmAngle ) < atSetpointThreshold &&
+      Math.abs( armExtensionEncoder.getPosition() - targetArmLength ) < atSetpointThreshold &&
+      Math.abs( wristPitchEncoder.getPosition() - targetWristAngle ) < atSetpointThreshold &&
+      Math.abs( wristRollEncoder.getPosition() - targetWristRoll ) < atSetpointThreshold
     );
 
   }
@@ -113,15 +116,17 @@ public class LegAnkleSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    targetSpeedArmPivot = pidArmPivot.calculate(armPivotEncoder.getPosition());
-    targetSpeedArmExtension = pidArmExtention.calculate(armExtensionEncoder.getPosition());
-    targetSpeedWristPitch = pidWristPitch.calculate(wristPitchEncoder.getPosition());
-    targetSpeedWristRoll = pidWristRoll.calculate(wristRollEncoder.getPosition());
-    
-    armPivot.set(targetSpeedArmPivot);
-    armExtension.set(targetSpeedArmExtension);
-    wristPitch.set(targetSpeedWristPitch);
-    wristRoll.set(targetSpeedWristRoll);
+    // H! Inverse kinematics: see more detailed math here: https://www.desmos.com/calculator/l89yzwijul 
+    double targetArmAngle = Math.atan((targetY + Constants.WristAndArm.wristLength * Math.sin(targetPitch))  /  (targetX + Constants.WristAndArm.wristLength * Math.cos(targetPitch)));
+    double targetArmLength = (targetY + Constants.WristAndArm.wristLength * Math.sin(targetPitch)) / Math.sin(targetArmAngle);
+    double targetWristAngle = targetPitch - targetArmAngle;
+    double targetWristRoll = targetRoll;
+
+
+    pidArmPivot.setReference(targetArmAngle, CANSparkMax.ControlType.kPosition);
+    pidArmExtention.setReference(targetArmLength, CANSparkMax.ControlType.kPosition);
+    pidWristPitch.setReference(targetWristAngle, CANSparkMax.ControlType.kPosition);
+    pidWristRoll.setReference(targetWristRoll, CANSparkMax.ControlType.kPosition);
   }
 
 
@@ -135,5 +140,12 @@ public class LegAnkleSubsystem extends SubsystemBase {
 
   private static double clamp(double min, double max, double x) {
     return x>max?max:(x<min?min:x); // H! I have written the most unreadable line of code of my entire life. Witness the result.
+  }
+
+  private static void setPIDFValues(SparkMaxPIDController pidController, double p, double i, double d, double f) {
+    pidController.setP(p);
+    pidController.setI(i);
+    pidController.setD(d);
+    pidController.setFF(f);
   }
 }
