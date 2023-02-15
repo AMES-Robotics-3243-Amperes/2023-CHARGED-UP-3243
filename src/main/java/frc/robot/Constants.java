@@ -266,12 +266,17 @@ public final class Constants {
     public static final double aCoeff = 0.7;
     public static final int firstPower = 3;
 
-    public static final int secondPower = 1;
-    public static final double bCoeff = (1.0 - aCoeff);
+    public static final int secondPower = 1; 
+    public static final double bCoeff = (1.0 - aCoeff); 
 
-    // <> why can't this be an enum (check robot container to see how these are used)
-    public static final int A = 1;
+
   }
+//hah now i stole crystal's computer too
+// :> Thanks Hannah
+
+  
+
+
 
   /** ++ constants for GRABBER ---------------------------------------------------------- */
   public static final class Grabber {
@@ -327,7 +332,10 @@ public final class Constants {
 
 
   /** ++ constants for PHOTONVISION ----------------------------------------------------- */
-  public static final class PhotonVision {}
+  public static final class PhotonVision {
+    public static final String cameraName1 = "Microsoft_LifeCam_HD-3000";
+    public static final String cameraName2 = "Global_Shutter_Camera";
+  }
 
   /** ++ constants for NEOs ------------------------------------------------------------- */
   public static final class NEOs {
