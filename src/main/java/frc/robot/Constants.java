@@ -72,7 +72,6 @@ public final class Constants {
   public static final class PhotonVision {
     public static final String cameraName1 = "Microsoft_LifeCam_HD-3000";
     public static final String cameraName2 = "Global_Shutter_Camera";
-    public static final String cameraName3 = "Global_Shutter_Camera3";
   }
 
   /** ++ constants for NEOs ------------------------------------------------------------- */

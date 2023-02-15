@@ -49,7 +49,6 @@ PhotonCamera m_camera3;
   // :D these are values that should be in constants after testing
   public static final String cameraName = Constants.PhotonVision.cameraName1;
   public static final String camera2Name = Constants.PhotonVision.cameraName2;
-  public static final String camera3Name = Constants.PhotonVision.cameraName3;
   // :> BIG NOTE: Arducam_OV9281_MMN2 is the name of the camera but that is not what it looks for. It is looking for what photonvision reads
 
   //public static final string cameraName = "Microsoft_LifeCam_HD-3000";
@@ -87,13 +86,12 @@ public static final Transform3d camtoBot2 = new Transform3d(
 
   public PhotonVisionSubsystem() {
     camsToBot.add(camToBot1);
-    //camsToBot.add(camtoBot2);
+    camsToBot.add(camtoBot2);
     // :D instantiate the camera and load the field layout
     m_camera = new PhotonCamera(cameraName);
     m_camera2 = new PhotonCamera(camera2Name);
-    m_camera3 = new PhotonCamera(camera3Name);
     cameras.add(m_camera);
-    //cameras.add(m_camera2);
+    cameras.add(m_camera2);
     try{
       m_aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
     } catch (IOException err){
@@ -125,7 +123,7 @@ public static final Transform3d camtoBot2 = new Transform3d(
    */
   public Pose3d checkRobotPosition(){
     // :> I'm so sorry for all of the for loops it is necessary for the three cameras.
-    if (targets != null){
+    if (targets.isEmpty() != true){
       for (int i = 0; i < 1; i++) {
       cameraToTargets.add(targets.get(i).getBestCameraToTarget());
       }
@@ -242,9 +240,10 @@ public void periodic() {
     SmartDashboard.putData("field", m_field2d);
 
     // This method will be called once per scheduler run
-    if (targets != null){
+    if (targets.isEmpty() != true){
       m_field2d.setRobotPose(checkRobotPosition().toPose2d());
     }
+    targets.clear();
   }
 
 @Override
