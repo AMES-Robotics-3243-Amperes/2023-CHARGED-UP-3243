@@ -18,10 +18,12 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants.DriveTrain.DriveConstants;
+import frc.robot.FieldPosManager.fieldElement;
 import frc.robot.commands.PlaceGamePiece;
 import frc.robot.commands.ReidPrototypeCommand;
 import frc.robot.commands.SwerveAutoMoveCommand;
 import frc.robot.commands.SwerveTeleopCommand;
+import frc.robot.commands.WristCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LegAnkleSubsystem;
 import frc.robot.subsystems.ReidPrototypeSubsystem;
@@ -56,6 +58,7 @@ public class RobotContainer {
   //private final SwerveTrajectoryFollowCommand m_SwerveTrajectoryFollowCommand;
   private final SwerveTeleopCommand m_SwerveTeleopCommand = new SwerveTeleopCommand(m_driveSubsystem,
     primaryController);
+  private final WristCommand m_WristCommand = new WristCommand(m_legAnkleSubsystem, secondaryController);
 
   //private final PlaceGamePiece m_placeGamePieceCommand;
 
@@ -69,6 +72,7 @@ public class RobotContainer {
       DriveConstants.AutoConstants.kThetaControllerConstraints);
     thetaPidController.enableContinuousInput(-Math.PI, Math.PI);
 
+    m_legAnkleSubsystem.setDefaultCommand(m_WristCommand);
     m_driveSubsystem.setDefaultCommand(m_SwerveTeleopCommand);
     m_driveSubsystem.resetOdometry(new Pose2d(new Translation2d(), m_driveSubsystem.getHeading()));
 

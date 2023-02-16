@@ -18,6 +18,8 @@ public class ReleaseGameObject extends CommandBase {
     this.isCube = isCube;
     this.grabberSubsystem = grabberSubsystem;
     this.target = target;
+
+    
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(grabberSubsystem);
   }
@@ -28,9 +30,7 @@ public class ReleaseGameObject extends CommandBase {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    grabberSubsystem.openGrabber(0.1); // H! TODO Put a speed that makes sense in here
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
@@ -40,5 +40,9 @@ public class ReleaseGameObject extends CommandBase {
   @Override
   public boolean isFinished() {
     return false; // H! TODO Implement finding out whether the grabber is open and make this dependent on it
+  }
+
+  protected void onConfirmed() {
+    grabberSubsystem.openGrabber(0.1); // H! TODO Put a speed that makes sense in here
   }
 }
