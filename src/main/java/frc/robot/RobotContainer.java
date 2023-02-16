@@ -10,13 +10,13 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.commands.PhotonVisionCommand;
+import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.PhotonVisionSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants.DriveTrain.DriveConstants;
 import frc.robot.FieldPosManager.fieldElement;
 import frc.robot.commands.PlaceGamePiece;
@@ -44,10 +44,16 @@ public class RobotContainer {
   // ++ CONTROLLER STUFF ---------------------
   public static JoyUtil primaryController = new JoyUtil(Constants.Joysticks.primaryControllerID);
   public static JoyUtil secondaryController = new JoyUtil(Constants.Joysticks.secondaryControllerID);
+  
+
+  // <> --- FIELD POS MANAGER ---
+  public static FieldPosManager fieldPosManager = new FieldPosManager();
 
   // The robot's subsystems and commands are defined here...
   // ++ ----- SUBSYSTEMS -----------
-  private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
+  public final PhotonVisionSubsystem m_photonVisionSubsystem = new PhotonVisionSubsystem(fieldPosManager);
+  public final PhotonVisionCommand m_photonVisionCommand = new PhotonVisionCommand(m_photonVisionSubsystem);
+  private final DriveSubsystem m_driveSubsystem = new DriveSubsystem(fieldPosManager);
   private final LegAnkleSubsystem m_legAnkleSubsystem = new LegAnkleSubsystem();
   private final ReidPrototypeSubsystem m_reidPrototypeSubsystem = new ReidPrototypeSubsystem();
 
@@ -61,8 +67,6 @@ public class RobotContainer {
   private final WristCommand m_WristCommand = new WristCommand(m_legAnkleSubsystem, secondaryController);
 
   //private final PlaceGamePiece m_placeGamePieceCommand;
-
-
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -74,11 +78,13 @@ public class RobotContainer {
 
     m_legAnkleSubsystem.setDefaultCommand(m_WristCommand);
     m_driveSubsystem.setDefaultCommand(m_SwerveTeleopCommand);
-    m_driveSubsystem.resetOdometry(new Pose2d(new Translation2d(), m_driveSubsystem.getHeading()));
+    m_driveSubsystem.resetPose();
 
     // H! This command is here because it needs thetaPidController to be created for it to be created
     //m_placeGamePieceCommand = new PlaceGamePiece(m_driveSubsystem, m_legAnkleSubsystem, m_reidPrototypeSubsystem,
     //  thetaPidController);
+    
+    m_photonVisionSubsystem.setDefaultCommand(m_photonVisionCommand);
 
     // Configure the trigger bindings
     configureBindings();
@@ -99,14 +105,6 @@ public class RobotContainer {
    * joysticks}.
    */
   public void configureBindings() {
-    JoystickButton primaryAButton = new JoystickButton(primaryController, Constants.Joysticks.A);
-    primaryAButton.onTrue(new SwerveAutoMoveCommand(m_driveSubsystem,
-      TrajectoryGenerator.generateTrajectory(new Pose2d(), List.of(), new Pose2d(new Translation2d(-1, 0.3),
-        Rotation2d.fromDegrees(10)), DriveConstants.AutoConstants.trajectoryConfig), thetaPidController, false));
-
-    // H! Make it so the X button activates the PlaceGamePiece Routine
-    Trigger xButton = new JoystickButton(primaryController, XboxController.Button.kX.value);
-    //xButton.onTrue(m_placeGamePieceCommand);
   }
 
   public Command getAutonomousCommand() {

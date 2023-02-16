@@ -5,11 +5,15 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+
 import com.revrobotics.CANSparkMax.IdleMode;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -263,12 +267,17 @@ public final class Constants {
     public static final double aCoeff = 0.7;
     public static final int firstPower = 3;
 
-    public static final int secondPower = 1;
-    public static final double bCoeff = (1.0 - aCoeff);
+    public static final int secondPower = 1; 
+    public static final double bCoeff = (1.0 - aCoeff); 
 
-    // <> why can't this be an enum (check robot container to see how these are used)
-    public static final int A = 1;
+
   }
+//hah now i stole crystal's computer too
+// :> Thanks Hannah
+
+  
+
+
 
   /** ++ constants for GRABBER ---------------------------------------------------------- */
   public static final class Grabber {
@@ -356,7 +365,10 @@ public final class Constants {
 
 
   /** ++ constants for PHOTONVISION ----------------------------------------------------- */
-  public static final class PhotonVision {}
+  public static final class PhotonVision {
+    public static final String cameraName1 = "Microsoft_LifeCam_HD-3000";
+    public static final String cameraName2 = "Global_Shutter_Camera";
+  }
 
   /** ++ constants for NEOs ------------------------------------------------------------- */
   public static final class NEOs {
@@ -366,7 +378,7 @@ public final class Constants {
 
   /** H! Constants for what automation stuff needs to do -------------------------------- */
   public static final class AutomationConfigure {
-    // H! TODO None of these constants are right
+    // H! TODO: None of these constants are right
     public static final class Cone{
       public static final class HighTarget {
         public static final double armX = 0.0;
@@ -417,39 +429,158 @@ public final class Constants {
 
   /** ++ field measurement constants */ // ---------------------------------------------------
   public static final class FieldConstants {
+    public static final double targetPositionsY[] = {
+      4.983,
+      4.424,
+      3.866,
+      3.307,
+      2.748,
+      2.189,
+      1.630,
+      1.072,
+      0.513
+    };
     public static final class Blue{
+      public static final class grabberPositions{
+        public static final Pose3d highTargetsXZ = new Pose3d(new Translation3d(0.379,0,0), new Rotation3d());
+        public static final Pose3d middleTargetsXZ = new Pose3d(new Translation3d(0.811,0,0), new Rotation3d());
+        public static final Pose3d lowTargetsXZ = new Pose3d(new Translation3d(1.185,0,0), new Rotation3d());
+        public static final Pose3d fieldCenterGamePieces[] = {
+          new Pose3d(new Translation3d(7.068,4.577,0), new Rotation3d()),
+          new Pose3d(new Translation3d(7.068,3.358,0), new Rotation3d()),
+          new Pose3d(new Translation3d(7.068,2.138,0), new Rotation3d()),
+          new Pose3d(new Translation3d(7.068,0.919,0), new Rotation3d())
+        };
+      }
+      
+      // :D position of the robot's chassis:
+      public static double scoringChassisPositionX = 0;
       public static Pose2d scoringPositions[] = {
-        new Pose2d(),
-        new Pose2d(),
-        new Pose2d(),
-        new Pose2d(),
-        new Pose2d(),
-        new Pose2d(),
-        new Pose2d(),
-        new Pose2d(),
-        new Pose2d()
-      }; // [++ make these final
-      public static Pose2d doubleLoadingZone = new Pose2d();
-      public static Pose2d singleLoadingZone = new Pose2d();
-      public static Pose2d chargeStationBottomLeft = new Pose2d();
-      public static Pose2d chargeStationTopRight = new Pose2d();
+        new Pose2d(
+          Constants.FieldConstants.Blue.scoringChassisPositionX,
+          Constants.FieldConstants.targetPositionsY[0],
+          new Rotation2d(Math.PI)
+        ),
+        new Pose2d(
+          Constants.FieldConstants.Blue.scoringChassisPositionX,
+          Constants.FieldConstants.targetPositionsY[1],
+          new Rotation2d(Math.PI)
+        ),
+        new Pose2d(
+          Constants.FieldConstants.Blue.scoringChassisPositionX,
+          Constants.FieldConstants.targetPositionsY[2],
+          new Rotation2d(Math.PI)
+        ),
+        new Pose2d(
+          Constants.FieldConstants.Blue.scoringChassisPositionX,
+          Constants.FieldConstants.targetPositionsY[3],
+          new Rotation2d(Math.PI)
+        ),
+        new Pose2d(
+          Constants.FieldConstants.Blue.scoringChassisPositionX,
+          Constants.FieldConstants.targetPositionsY[4],
+          new Rotation2d(Math.PI)
+        ),
+        new Pose2d(
+          Constants.FieldConstants.Blue.scoringChassisPositionX,
+          Constants.FieldConstants.targetPositionsY[5],
+          new Rotation2d(Math.PI)
+        ),
+        new Pose2d(
+          Constants.FieldConstants.Blue.scoringChassisPositionX,
+          Constants.FieldConstants.targetPositionsY[6],
+          new Rotation2d(Math.PI)
+        ),
+        new Pose2d(
+          Constants.FieldConstants.Blue.scoringChassisPositionX,
+          Constants.FieldConstants.targetPositionsY[7],
+          new Rotation2d(Math.PI)
+        ),
+        new Pose2d(
+          Constants.FieldConstants.Blue.scoringChassisPositionX,
+          Constants.FieldConstants.targetPositionsY[8],
+          new Rotation2d(Math.PI)
+        )
+      };
+
+      public static Pose2d doubleLoadingZone = new Pose2d(new Translation2d(0, 0), new Rotation2d(0));
+      public static Pose2d singleLoadingZone = new Pose2d(new Translation2d(0, 0), new Rotation2d(0));
+      public static Pose2d chargeStationBottomLeft = new Pose2d(new Translation2d(0, 0), new Rotation2d(0));
+      public static Pose2d chargeStationTopRight = new Pose2d(new Translation2d(0, 0), new Rotation2d(0));
+      public static Pose2d fieldBottomLeft = new Pose2d(new Translation2d(0, 0), new Rotation2d(0));
+      public static Pose2d fieldTopRight = new Pose2d(new Translation2d(0, 0), new Rotation2d(0));
+      public static Pose2d dividerTip = new Pose2d(new Translation2d(0, 0), new Rotation2d(0));
+      
     }
     public static final class Red{
+      public static final class grabberPositions{
+        public static final Pose3d highTargetsXZ = new Pose3d(new Translation3d(16.162,0,0), new Rotation3d());
+        public static final Pose3d middleTargetsXZ = new Pose3d(new Translation3d(15.730,0,0), new Rotation3d());
+        public static final Pose3d lowTargetsXZ = new Pose3d(new Translation3d(15.350,0,0), new Rotation3d());
+        public static final Pose3d fieldCenterGamePieces[] = {
+          new Pose3d(new Translation3d(9.473,4.577,0), new Rotation3d()),
+          new Pose3d(new Translation3d(9.473,3.358,0), new Rotation3d()),
+          new Pose3d(new Translation3d(9.473,2.138,0), new Rotation3d()),
+          new Pose3d(new Translation3d(9.473,0.919,0), new Rotation3d())
+        };
+      }
+
+      public static double scoringChassisPositionX = 0;
       public static Pose2d scoringPositions[] = {
-        new Pose2d(),
-        new Pose2d(),
-        new Pose2d(),
-        new Pose2d(),
-        new Pose2d(),
-        new Pose2d(),
-        new Pose2d(),
-        new Pose2d(),
-        new Pose2d()
+        new Pose2d(
+          Constants.FieldConstants.Red.scoringChassisPositionX,
+          Constants.FieldConstants.targetPositionsY[0],
+          new Rotation2d()
+        ),
+        new Pose2d(
+          Constants.FieldConstants.Red.scoringChassisPositionX,
+          Constants.FieldConstants.targetPositionsY[1],
+          new Rotation2d()
+        ),
+        new Pose2d(
+          Constants.FieldConstants.Red.scoringChassisPositionX,
+          Constants.FieldConstants.targetPositionsY[2],
+          new Rotation2d()
+        ),
+        new Pose2d(
+          Constants.FieldConstants.Red.scoringChassisPositionX,
+          Constants.FieldConstants.targetPositionsY[3],
+          new Rotation2d()
+        ),
+        new Pose2d(
+          Constants.FieldConstants.Red.scoringChassisPositionX,
+          Constants.FieldConstants.targetPositionsY[4],
+          new Rotation2d()
+        ),
+        new Pose2d(
+          Constants.FieldConstants.Red.scoringChassisPositionX,
+          Constants.FieldConstants.targetPositionsY[5],
+          new Rotation2d()
+        ),
+        new Pose2d(
+          Constants.FieldConstants.Red.scoringChassisPositionX,
+          Constants.FieldConstants.targetPositionsY[6],
+          new Rotation2d()
+        ),
+        new Pose2d(
+          Constants.FieldConstants.Red.scoringChassisPositionX,
+          Constants.FieldConstants.targetPositionsY[7],
+          new Rotation2d()
+        ),
+        new Pose2d(
+          Constants.FieldConstants.Red.scoringChassisPositionX,
+          Constants.FieldConstants.targetPositionsY[8],
+          new Rotation2d()
+        )
       };
-      public static Pose2d doubleLoadingZone = new Pose2d();
-      public static Pose2d singleLoadingZone = new Pose2d();
-      public static Pose2d chargeStationBottomLeft = new Pose2d();
-      public static Pose2d chargeStationTopRight = new Pose2d();
+
+      public static Pose2d doubleLoadingZone = new Pose2d(new Translation2d(0, 0), new Rotation2d(0));
+      public static Pose2d singleLoadingZone = new Pose2d(new Translation2d(0, 0), new Rotation2d(0));
+      public static Pose2d chargeStationBottomLeft = new Pose2d(new Translation2d(0, 0), new Rotation2d(0));
+      public static Pose2d chargeStationTopRight = new Pose2d(new Translation2d(0, 0), new Rotation2d(0));
+      public static Pose2d fieldBottomLeft = new Pose2d(new Translation2d(0, 0), new Rotation2d(0));
+      public static Pose2d fieldTopRight = new Pose2d(new Translation2d(0, 0), new Rotation2d(0));
+      public static Pose2d dividerTip = new Pose2d(new Translation2d(0, 0), new Rotation2d(0));
     }
   }
 

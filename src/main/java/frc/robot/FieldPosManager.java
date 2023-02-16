@@ -4,9 +4,18 @@
 
 package frc.robot;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.DriverStation;
+import frc.robot.subsystems.PhotonVisionSubsystem;
 
 /** ++ This class manages the field locations for the robot. It'll deal with outputs from PhotonVisioin. 
  * It'll also deal with odometry stuff.
@@ -72,14 +81,23 @@ public class FieldPosManager {
         latestRobotPosition.transformBy(deltaPose);
     }
 
+    /**
+     * :D sets the robot pose to default (all zero values)
+     * SHOULD ONLY BE USED FOR DEBUGGING
+     */
+    public void resetRobotPos(){
+        latestRobotPosition = new Pose2d();
+    }
+
     /** 
-     * :D This is a function intended ONLY to be used by the swerve module subsystem.
+     * :D This is a function intended ONLY to be used by the drive subsystem.
      * It finds how much the odometry pose has changed since the last periodic loop.
      * Ideally, replace the swerve's rotation data with imu rotation data
      * (and transform the imu data appropriately so that it lines up)
      * @param swervePose is the Pose2d of the robot as reported by swerve odometry.
     */
-    public void updateFieldPosWithSwerveOdometry(Pose2d swervePose){
+
+    public void updateFieldPosWithSwerveData(Pose2d swervePose){
         if (hasPhotonPose){
             previousOdometryPose = latestOdometryPose;
             latestOdometryPose = swervePose;
@@ -94,7 +112,7 @@ public class FieldPosManager {
      * @param photonPose is the position as reported by the PhotonVisionSubsystem.
     */
     public void updateFieldPosWithPhotonVisionPose(Pose2d photonPose){
-        setRobotPose(photonPose);
+        setRobotPose(PhotonVisionSubsystem.checkRobotPosition().toPose2d());
         hasPhotonPose = true;
     }
     
@@ -102,22 +120,66 @@ public class FieldPosManager {
      * Gives the robot's estimated Pose, based on odometry, imu data, and photonvision data.
      * @return estimated robot position as a Pose2d
      */
-    public Pose2d getRobotPose(){
+    public Pose2d getRobotPose() {
         return latestRobotPosition;
     }
 
+    public int getNearestScoringZoneIndex(Pose2d robotPose, boolean ofCurrentAlliance){
+        List<Pose2d> alliedScorePoses = Arrays.asList(alliedScoringPositions);
+        List<Pose2d> opposeScorePoses = Arrays.asList(opposingScoringPositions);
+
+        if(ofCurrentAlliance){
+            Pose2d nearestAllyPose = robotPose.nearest(alliedScorePoses);
+            for (int i=0;i<alliedScoringPositions.length;i++) {
+                if (alliedScoringPositions[i]==nearestAllyPose) {
+                    return i;
+                }
+            }
+
+            return -1;
+            
+        } else {
+            Pose2d nearestOppPose = robotPose.nearest(opposeScorePoses);
+            for (int i=0;i<alliedScoringPositions.length;i++) {
+                if (alliedScoringPositions[i]==nearestOppPose) {
+                    return i;
+                }
+            }
+            return -1;
+
+        }
+    }
+
     /**
-     * A function to find the poses of selected field elements.
-     * @param element is a field element enum, of type FieldPosManager.fieldElement, which chooses the object whose pose we are looking for.
-     * @param isCurrentAlliance is a boolean which defines whether the field element in question belongs to our alliance or the opponent's.
+     * A function to find the 2d poses as a top-down view of selected field elements.
+     * IDs correspond to the target you're looking for, and can be represented by the following diagram of the field,
+     * where the numbers 0-8 on the edges represent the scoring zone IDs:
+     *  
+     * <pre>
+     * 
+     *|                                                     |
+     *|                                                     |
+     *|                                                     |
+     *|0                                                   0|
+     *|1                                                   1|
+     *|2                                                   2|
+     *|3                                                   3|
+     *|4                                                   4|
+     *|5                                                   5|
+     *|6                                                   6|
+     *|7                                                   7|
+     *|8                                                   8|
+     * </pre>
+     * @param spot is a field element enum, of type FieldPosManager.fieldSpot2d, which chooses the object whose pose we are looking for.
+     * @param ofCurrentAlliance is a boolean which defines whether the field element in question belongs to our alliance or the opponent's.
      * @param scoringZoneID is an integer which determines the scoring zone if scoringPosition is passed in to the 'element' parameter
      * @return the position of the requested field element as a Pose2d.
      */
-    public Pose2d getFieldElement(fieldElement element, boolean isCurrentAlliance, int scoringZoneID){
+    public Pose2d get2dFieldPose(fieldSpot2d spot, boolean ofCurrentAlliance, int positionID){
         if (allianceColor != DriverStation.Alliance.Invalid && allianceColor != null){
-            if ((isCurrentAlliance && allianceColor==DriverStation.Alliance.Red) || (!isCurrentAlliance && allianceColor==DriverStation.Alliance.Blue)){
+            if ((ofCurrentAlliance && allianceColor==DriverStation.Alliance.Red) || (!ofCurrentAlliance && allianceColor==DriverStation.Alliance.Blue)){
                 // :D red alliance poses
-                switch (element){
+                switch (spot){
                     case doubleLoadingZone:
                         return Constants.FieldConstants.Red.doubleLoadingZone;
                     case singleLoadingZone:
@@ -127,15 +189,15 @@ public class FieldPosManager {
                     case chargeStationTopRight:
                         return Constants.FieldConstants.Red.chargeStationTopRight;
                     case scoringPosition:
-                        // :D TODO: make the robot not throw a fit if scoringZoneID is not passed in
-                        return Constants.FieldConstants.Red.scoringPositions[scoringZoneID];
+                        // :D TODO: make the robot not throw a fit if scoringZoneID is accidentally not passed in
+                        return Constants.FieldConstants.Red.scoringPositions[positionID];
                     default:
                         // :D TODO: figure out what to put here
                         return new Pose2d();
                 }
             } else {
-                // :D red alliance poses
-                switch (element){
+                // :D blue alliance poses
+                switch (spot){
                     case doubleLoadingZone:
                         return Constants.FieldConstants.Blue.doubleLoadingZone;
                     case singleLoadingZone:
@@ -145,8 +207,8 @@ public class FieldPosManager {
                     case chargeStationTopRight:
                         return Constants.FieldConstants.Blue.chargeStationTopRight;
                     case scoringPosition:
-                        // :D TODO: make the robot not throw a fit if scoringZoneID is not passed in
-                        return Constants.FieldConstants.Blue.scoringPositions[scoringZoneID];
+                        // :D TODO: make the robot not throw a fit if scoringZoneID is accidentally not passed in
+                        return Constants.FieldConstants.Blue.scoringPositions[positionID];
                     default:
                         // :D TODO: figure out what to put here
                         return new Pose2d();
@@ -159,8 +221,108 @@ public class FieldPosManager {
         }
     }
 
-    public enum fieldElement{
+    /**
+     * A function to find grabber poses as Pose3d.
+     * IDs correspond to the target you're looking for, and can be represented by the following diagram of the field,
+     * where the numbers 0-8 on the edges represent the scoring zone IDs and the numbers 0-3 in the center represent
+     * the initial game piece positions:
+     *  
+     * <pre>
+     * 
+     *|                                                     |
+     *|                                                     |
+     *|                                                     |
+     *|0                                                   0|
+     *|1                     0       0                     1|
+     *|2                                                   2|
+     *|3                     1       1                     3|
+     *|4                                                   4|
+     *|5                     2       2                     5|
+     *|6                                                   6|
+     *|7                     3       3                     7|
+     *|8                                                   8|
+     * </pre>
+     * @param spot is a grabber spot enum, of type FieldPosManager.fieldSpot3d, which chooses the spot whose pose we are looking for.
+     * @param ofCurrentAlliance is a boolean which defines whether the field element in question belongs to our alliance or the opponent's.
+     * @param positionID is an integer which determines the scoring zone as well as picks 1-4 of the field center game pieces
+     * @return the position of the requested field element as a Pose3d.
+     */
+    public Pose3d get3dFieldPose(fieldSpot3d spot, boolean ofCurrentAlliance, int positionID){
+        if (allianceColor != DriverStation.Alliance.Invalid && allianceColor != null){
+            if ((ofCurrentAlliance && allianceColor==DriverStation.Alliance.Red) || (!ofCurrentAlliance && allianceColor==DriverStation.Alliance.Blue)){
+                // :D red alliance poses
+                switch (spot){
+                    case highGrabberScoring:
+                        return new Pose3d(
+                            Constants.FieldConstants.Red.grabberPositions.highTargetsXZ.getX(),
+                            Constants.FieldConstants.targetPositionsY[positionID],
+                            Constants.FieldConstants.Red.grabberPositions.highTargetsXZ.getZ(),
+                            Constants.FieldConstants.Red.grabberPositions.highTargetsXZ.getRotation()
+                        );
+                    case middleGrabberScoring:
+                        return new Pose3d(
+                            Constants.FieldConstants.Red.grabberPositions.middleTargetsXZ.getX(),
+                            Constants.FieldConstants.targetPositionsY[positionID],
+                            Constants.FieldConstants.Red.grabberPositions.middleTargetsXZ.getZ(),
+                            Constants.FieldConstants.Red.grabberPositions.middleTargetsXZ.getRotation()
+                        );
+                    case lowGrabberScoring:
+                        return new Pose3d(
+                            Constants.FieldConstants.Red.grabberPositions.lowTargetsXZ.getX(),
+                            Constants.FieldConstants.targetPositionsY[positionID],
+                            Constants.FieldConstants.Red.grabberPositions.lowTargetsXZ.getZ(),
+                            Constants.FieldConstants.Red.grabberPositions.lowTargetsXZ.getRotation()
+                        );
+                    case centerFieldGamePieces:
+                        return Constants.FieldConstants.Red.grabberPositions.fieldCenterGamePieces[positionID];
+                    default:
+                        // :D TODO: figure out what to put here
+                        return new Pose3d();
+                }
+            } else {
+                // :D blue alliance poses
+                switch (spot){
+                    case highGrabberScoring:
+                        return new Pose3d(
+                            Constants.FieldConstants.Blue.grabberPositions.highTargetsXZ.getX(),
+                            Constants.FieldConstants.targetPositionsY[positionID],
+                            Constants.FieldConstants.Blue.grabberPositions.highTargetsXZ.getZ(),
+                            Constants.FieldConstants.Blue.grabberPositions.highTargetsXZ.getRotation()
+                        );
+                    case middleGrabberScoring:
+                        return new Pose3d(
+                            Constants.FieldConstants.Blue.grabberPositions.middleTargetsXZ.getX(),
+                            Constants.FieldConstants.targetPositionsY[positionID],
+                            Constants.FieldConstants.Blue.grabberPositions.middleTargetsXZ.getZ(),
+                            Constants.FieldConstants.Blue.grabberPositions.middleTargetsXZ.getRotation()
+                        );
+                    case lowGrabberScoring:
+                        return new Pose3d(
+                            Constants.FieldConstants.Blue.grabberPositions.lowTargetsXZ.getX(),
+                            Constants.FieldConstants.targetPositionsY[positionID],
+                            Constants.FieldConstants.Blue.grabberPositions.lowTargetsXZ.getZ(),
+                            Constants.FieldConstants.Blue.grabberPositions.lowTargetsXZ.getRotation()
+                        );
+                    case centerFieldGamePieces:
+                        return Constants.FieldConstants.Blue.grabberPositions.fieldCenterGamePieces[positionID];
+                    default:
+                        // :D TODO: figure out what to put here
+                        return new Pose3d();
+                }
+            }
+
+        } else {
+            System.err.println("INVALID ALLIANCE COLOR IN FIELDPOSMANAGER");
+            return null;
+        }
+    }
+
+    public enum fieldSpot2d{
         doubleLoadingZone, singleLoadingZone, chargeStationBottomLeft, chargeStationTopRight, scoringPosition
+    }
+
+    public enum fieldSpot3d{
+        highGrabberScoring, middleGrabberScoring, lowGrabberScoring, centerFieldGamePieces
     }
 
 }
