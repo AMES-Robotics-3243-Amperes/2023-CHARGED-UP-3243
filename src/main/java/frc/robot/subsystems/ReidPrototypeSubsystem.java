@@ -5,7 +5,10 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+<<<<<<< Updated upstream
 import edu.wpi.first.wpilibj.DigitalInput;
+=======
+>>>>>>> Stashed changes
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.revrobotics.CANSparkMax;
@@ -20,6 +23,7 @@ import frc.robot.Constants;
 public class ReidPrototypeSubsystem extends SubsystemBase {
 
   // ££ Creates all of the motor and the encoder; defines the PID controller
+<<<<<<< Updated upstream
   CANSparkMax grabberMotor = new CANSparkMax(Constants.kMotorId, MotorType.kBrushless);
   CANSparkMax compliantMotorZero = new CANSparkMax(1, MotorType.kBrushless);
   CANSparkMax compliantMotorOne = new CANSparkMax(2, MotorType.kBrushless);
@@ -64,6 +68,39 @@ public class ReidPrototypeSubsystem extends SubsystemBase {
     } else {
       grabberMotor.set(-1 * speed);
     }
+=======
+  CANSparkMax grabberMotor = new CANSparkMax(Constants.kGrabberMotorId, MotorType.kBrushless);
+  CANSparkMax compliantMotorZero = new CANSparkMax(Constants.kCompliantMotorIdOne, MotorType.kBrushless);
+  CANSparkMax compliantMotorOne = new CANSparkMax(Constants.kCompliantMotorIdTwo, MotorType.kBrushless);
+  private final SparkMaxAbsoluteEncoder grabberEncoder;
+  private final SparkMaxPIDController currentPIDController;
+  private boolean opening = false;
+  private boolean closing = false;
+ 
+  /** Creates a new ExampleSubsystem. */
+  public ReidPrototypeSubsystem() {
+    // ££ Creates the PID Controller and the Absolute encoder from the motor and sets the initial current limit
+    grabberMotor.setSecondaryCurrentLimit(Constants.kCurrentLimit);
+    compliantMotorZero.setSecondaryCurrentLimit(Constants.kCurrentLimit);
+    compliantMotorOne.setSecondaryCurrentLimit(Constants.kCurrentLimit);
+    currentPIDController = grabberMotor.getPIDController();
+    grabberEncoder = grabberMotor.getAbsoluteEncoder(Type.kDutyCycle);
+    setPIDValues(0, 0, 0, 0.001);
+  }
+
+  public void closeGrabber() {
+    grabberMotor.set(Constants.kGrabberSpeed);
+    compliantMotorZero.set(Constants.kWheelSpeed);
+    compliantMotorOne.set(Constants.kWheelSpeed);
+    opening = false;
+    closing = true;
+  }
+
+  public void openGrabber() {
+    grabberMotor.set(-Constants.kGrabberSpeed);
+    opening = true;
+    closing = false;
+>>>>>>> Stashed changes
   }
 
   public void setCurrentReference(double targetAmperage) {
@@ -71,11 +108,17 @@ public class ReidPrototypeSubsystem extends SubsystemBase {
     currentPIDController.setReference(targetAmperage, ControlType.kCurrent);
 
     SmartDashboard.putNumber("Target Current", targetAmperage);
+<<<<<<< Updated upstream
     SmartDashboard.putNumber("Actual Current", grabberMotor.getOutputCurrent());
   }
 
   public void setPIDValues(double kP, double kI, double kD, double kFF) {
     // ££ Sets the P, I, D, and FF values of the PID controller when called
+=======
+  }
+
+  public void setPIDValues(double kP, double kI, double kD, double kFF) {
+>>>>>>> Stashed changes
     currentPIDController.setP(kP);
     currentPIDController.setI(kI);
     currentPIDController.setD(kD);
@@ -84,7 +127,26 @@ public class ReidPrototypeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+<<<<<<< Updated upstream
     // This method will be called once per scheduler run
+=======
+    compliantMotorOne.set(0.1);
+    compliantMotorZero.set(0.1);
+
+    System.out.println("hey ");
+
+    // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Actual Current", grabberMotor.getOutputCurrent());
+    SmartDashboard.putNumber("Absolute Encoder", grabberEncoder.getPosition());
+
+    if (grabberEncoder.getPosition() * Constants.kGearRatio  >= Constants.kPositiveEncoderRotationLimit && opening) {
+      grabberMotor.set(0);
+    }
+
+    if (grabberEncoder.getPosition() * Constants.kGearRatio <= Constants.kNegativeEncoderRotationLimit && closing) {
+      grabberMotor.set(0);
+    }
+>>>>>>> Stashed changes
   }
 
   @Override

@@ -6,7 +6,10 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+<<<<<<< Updated upstream
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+=======
+>>>>>>> Stashed changes
 import frc.robot.commands.ReidPrototypeCommand;
 import frc.robot.subsystems.ReidPrototypeSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -19,7 +22,11 @@ import edu.wpi.first.wpilibj2.command.Command;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
+<<<<<<< Updated upstream
   XboxController controller = new XboxController(0);
+=======
+  XboxController controller = new XboxController(Constants.kControllerPort);
+>>>>>>> Stashed changes
 
   private final ReidPrototypeSubsystem m_reidPrototypeSubsystem = new ReidPrototypeSubsystem();   
   private final ReidPrototypeCommand m_prototypeCommand = new ReidPrototypeCommand(m_reidPrototypeSubsystem, controller);
