@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 
 import com.revrobotics.CANSparkMax.IdleMode;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -17,7 +18,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-//import frc.robot.FieldPosManager.fieldElement;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -125,7 +125,7 @@ public final class Constants {
         public static final int kFrontLeftDrivingCanId = 3;
         public static final int kRearLeftDrivingCanId = 9;
         public static final int kFrontRightDrivingCanId = 5;
-        public static final int kRearRightDrivingCanId = 13;
+        public static final int kRearRightDrivingCanId = 1;
 
         // <> turning ids
         public static final int kFrontLeftTurningCanId = 11;
@@ -167,12 +167,6 @@ public final class Constants {
           new Translation2d(-kRobotLength / 2, kRobotWidth / 2),
           new Translation2d(-kRobotLength / 2, -kRobotWidth / 2)
         );
-      }
-
-      // <> max temperatures of the 1550s and the 1650s
-      public static final class TempConstants {
-        public static final double max1650Temp = 100;
-        public static final double max550Temp = 100;
       }
 
       // <> stuff pertaining to trajectory following,
@@ -310,14 +304,14 @@ public final class Constants {
 
     public static class PID {
       public static class Extension {
-        public static final double P  = 0.2;
+        public static final double P  = 0.0;
         public static final double I  = 0.0;
         public static final double D  = 0.0;
         public static final double FF = 0.0;
       }
 
       public static class Pivot {
-        public static final double P  = 0.5;
+        public static final double P  = 0.8;
         public static final double I  = 0.0;
         public static final double D  = 0.0;
         public static final double FF = 0.0;
@@ -343,7 +337,7 @@ public final class Constants {
     // H! Holds the data for the positions of stuff in the arm
     public static final double minLength = 0.92804;
     public static final double maxLength = 1.5494;
-    public static final double wristLength = 0.1/*0.072327*/;
+    public static final double wristLength = 0/*0.072327*/;
     
 
     public static final double changeXMultiplier = 0.15 / 50;
@@ -357,12 +351,12 @@ public final class Constants {
     public static final double maxY = 1.9812 - 0.476364 ;
     public static final double minY = 0 - 0.476364;
 
-    public static final int pivotCurrentLimit = 10; // H! This is a temporary change! It was 30 before.
+    public static final int pivotCurrentLimit = 2; // H! This is a temporary change! It was 30 before.
     public static final int extensionCurrentLimit = 2; // H! This is a temporary change! It was 20 before.
     public static final int pitchCurrentLimit = 2; // H! This is a temporary change! It was 10 before.
     public static final int rollCurrentLimit = 2; // H! This is a temporary change! It was 10 before.
 
-    public static final int NEO1650CurrentLimitHard = 15; // H! This is a temporary change! It was 40 before.
+    public static final int NEO1650CurrentLimitHard = 2; // H! This is a temporary change! It was 40 before.
     public static final int NEO550CurrentLimitHard = 2; // H! This is a temporary change! It was 20 before.
 
     public static final double atSetpointThreshold = 0.005;

@@ -13,7 +13,7 @@ import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import frc.robot.Constants.DriveTrain.DriveConstants.TempConstants;
+//import frc.robot.Constants.DriveTrain.DriveConstants.TempConstants;
 import frc.robot.Constants.DriveTrain.ModuleConstants;
 
 public class SwerveModule {
@@ -172,8 +172,8 @@ public class SwerveModule {
    *
    * @return if either of the motors are too hot
    */
-  public boolean isTooHot() {
-    return m_drivingSparkMax.getMotorTemperature() > TempConstants.max1650Temp ||
-      m_turningSparkMax.getMotorTemperature() > TempConstants.max550Temp;
+  //public boolean isTooHot() {
+    //return m_drivingSparkMax.getMotorTemperature() > TempConstants.max1650Temp ||
+      //m_turningSparkMax.getMotorTemperature() > TempConstants.max550Temp;
   }
-}
+//}

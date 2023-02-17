@@ -4,30 +4,69 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import frc.robot.FieldPosManager;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.subsystems.LegAnkleSubsystem;
+import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.PhotonVisionSubsystem;
 
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ShuffleboardSubsystem extends SubsystemBase {
 
-  //&&Tabs
-  ShuffleboardTab driverFeedback;
+  //&& Widget objects
+  static ComplexWidget field2dWidget;
+
+  static SimpleWidget legAnkleCommandWidget;
+  static SimpleWidget driveTrainWidget;
 
   final Field2d field = new Field2d();
+  private FieldPosManager fieldPoseManager;
+
+  private LegAnkleSubsystem legAnkleSubsystem;
+  private DriveSubsystem driveTrainSubsystem;
+  private boolean[] photonVisionSubsystem;
+
 
   /** Creates a new ShuffleboardSubsystem. */
-  public ShuffleboardSubsystem() {
+  public ShuffleboardSubsystem(FieldPosManager posManager, LegAnkleSubsystem legAnkle, DriveSubsystem driveTrain, boolean[] photonVision) {
+
+    //&& set fieldPoseManager equal to posManager for Field2D widget
+    fieldPoseManager = posManager;
     
+    //&& Sets subsystems used in the widgets equal to their names
+    legAnkleSubsystem = legAnkle;
+    driveTrainSubsystem = driveTrain;
+    photonVisionSubsystem = photonVision;
+
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
 
-    //field.setRobotPose(fieldPoseManager);
+    //&& Field 2D widget
+    SmartDashboard.putData(field);
+    field.setRobotPose(fieldPoseManager.getRobotPose());
+
+    //&& Names the widgets that get displayed in shuffleboard
+    SmartDashboard.putString("legAnkleCommandWidget", legAnkleSubsystem.getClass().getName());
+    SmartDashboard.putString("driveTrainCommandWidget", driveTrainSubsystem.getClass().getName());
+
+    SmartDashboard.putBoolean("motorTooHot", driveTrainSubsystem.getMotorTooHot());
+
+    //&& TODO: Once Jasper merges into dev, finish creating widget for whether grabber is closed or not
+    SmartDashboard.putBoolean("grabberClosing", false);
+
+    SmartDashboard.putBooleanArray("seeingApriltag", photonVisionSubsystem);
+
+
 
   }
 }

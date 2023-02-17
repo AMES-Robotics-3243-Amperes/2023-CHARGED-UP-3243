@@ -253,4 +253,11 @@ public void periodic() {
 public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
   }
+
+  //&& TODO: define function that returns true if any of the cameras are seeing an Apriltag
+  public boolean seeingApriltag() {
+    return false;
+    //&& the ghungeon
+
+  }
 }
