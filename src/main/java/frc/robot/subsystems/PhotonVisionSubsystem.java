@@ -227,6 +227,13 @@ public static final Transform3d camtoBot2 = new Transform3d(
     }
     return scorePose;
 }
+  public boolean seesAprilTag(){
+    if (targets.isEmpty() != true) {
+    return true;
+    } else {
+    return false;
+    }
+  }
 
 @Override
 public void periodic() {
