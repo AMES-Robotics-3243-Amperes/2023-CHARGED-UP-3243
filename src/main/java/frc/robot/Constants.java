@@ -169,6 +169,12 @@ public final class Constants {
         );
       }
 
+      // <> max temperatures for the drive train motors
+      public static final class TempConstants {
+        public static final double max550TempCelsius = 100;
+        public static final double max1650TempCelsius = 100;
+      }
+
       // <> stuff pertaining to trajectory following,
       // <> not the actual autonomous period
       public static final class AutoConstants {
