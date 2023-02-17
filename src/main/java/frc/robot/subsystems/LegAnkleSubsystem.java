@@ -60,11 +60,15 @@ public class LegAnkleSubsystem extends SubsystemBase {
     pidWristPitch = wristPitch.getPIDController();
     pidWristRoll = wristRoll.getPIDController();
 
+    pidArmPivot.setFeedbackDevice(armPivotEncoder);
+
+    armExtensionEncoder.setPositionConversionFactor(extensionEncoderConversionFactor); // H! TODO < TRY CHANGING THIS TO 1
+    //armPivotEncoder.setPositionConversionFactor(1/10);//(1 / 100) * (24/54) * (21/32) = 0.00291666666
+
     armExtensionEncoder.setPosition(minLength);
     armPivotEncoder.setPosition(0.25);
 
-    armExtensionEncoder.setPositionConversionFactor(extensionEncoderConversionFactor); // H! TODO < TRY CHANGING THIS TO 1
-    armPivotEncoder.setPositionConversionFactor(1 / 100000);
+    
 
     
 

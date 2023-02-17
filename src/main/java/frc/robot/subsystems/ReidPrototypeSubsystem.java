@@ -22,7 +22,7 @@ public class ReidPrototypeSubsystem extends SubsystemBase {
   // ££ Creates all of the motor and the encoder; defines the PID controller
   CANSparkMax grabberMotor = new CANSparkMax(Constants.Grabber.kMotorId, MotorType.kBrushless);
   CANSparkMax compliantMotorZero = new CANSparkMax(10, MotorType.kBrushless);
-  CANSparkMax compliantMotorOne = new CANSparkMax(13, MotorType.kBrushless);
+  CANSparkMax compliantMotorOne = new CANSparkMax(130, MotorType.kBrushless); // H! TODO Change this to the real id when the grabber is on the robot
   private final SparkMaxAbsoluteEncoder grabberEncoder;
   private final SparkMaxPIDController currentPIDController;
 
