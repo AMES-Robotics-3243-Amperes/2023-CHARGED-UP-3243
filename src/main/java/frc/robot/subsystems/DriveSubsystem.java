@@ -60,9 +60,7 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   /**
-   * <> resets the odometry to the specified pose
-   *
-   * @param pose pose to set the odometry to
+   * <> resets the odometry to 0, 0, 0
    */
   public void resetPose() {
     m_fieldPosManager.resetRobotPos();
@@ -167,5 +165,14 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public double getTurnRate() {
     return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
+  }
+
+  /**
+   * <>
+   *
+   * @return if the motors are at an ok temperature (will return false if at unsafe temperatures)
+   */
+  public boolean getMotorsOkTemperature() {
+    return !(m_frontLeft.isTooHot() || m_frontRight.isTooHot() || m_rearLeft.isTooHot() || m_rearRight.isTooHot());
   }
 }

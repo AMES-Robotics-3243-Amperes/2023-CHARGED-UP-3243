@@ -227,6 +227,13 @@ public static final Transform3d camtoBot2 = new Transform3d(
     }
     return scorePose;
 }
+  public boolean seesAprilTag(){
+    if (targets.isEmpty() != true) {
+    return true;
+    } else {
+    return false;
+    }
+  }
 
 @Override
 public void periodic() {
@@ -252,5 +259,12 @@ public void periodic() {
 @Override
 public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
+  }
+
+  //&& TODO: define function that returns true if any of the cameras are seeing an Apriltag
+  public boolean seeingApriltag() {
+    return false;
+    //&& the ghungeon
+
   }
 }
