@@ -18,8 +18,12 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DriveTrain.DriveConstants;
+import frc.robot.FieldPosManager.fieldElement;
+import frc.robot.commands.PlaceGamePiece;
+import frc.robot.commands.ReidPrototypeCommand;
 import frc.robot.commands.SwerveAutoMoveCommand;
 import frc.robot.commands.SwerveTeleopCommand;
+import frc.robot.commands.WristCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LegAnkleSubsystem;
 import frc.robot.subsystems.ReidPrototypeSubsystem;
@@ -41,14 +45,15 @@ public class RobotContainer {
   // ++ CONTROLLER STUFF ---------------------
   public static JoyUtil primaryController = new JoyUtil(Constants.Joysticks.primaryControllerID);
   public static JoyUtil secondaryController = new JoyUtil(Constants.Joysticks.secondaryControllerID);
-  public final PhotonVisionSubsystem m_photonVisionSubsystem = new PhotonVisionSubsystem();
-  public final PhotonVisionCommand m_photonVisionCommand = new PhotonVisionCommand(m_photonVisionSubsystem);
+  
 
   // <> --- FIELD POS MANAGER ---
   public static FieldPosManager fieldPosManager = new FieldPosManager();
 
   // The robot's subsystems and commands are defined here...
   // ++ ----- SUBSYSTEMS -----------
+  public final PhotonVisionSubsystem m_photonVisionSubsystem = new PhotonVisionSubsystem(fieldPosManager);
+  public final PhotonVisionCommand m_photonVisionCommand = new PhotonVisionCommand(m_photonVisionSubsystem);
   private final DriveSubsystem m_driveSubsystem = new DriveSubsystem(fieldPosManager);
   private final LegAnkleSubsystem m_legAnkleSubsystem = new LegAnkleSubsystem();
   private final ReidPrototypeSubsystem m_reidPrototypeSubsystem = new ReidPrototypeSubsystem();
@@ -61,6 +66,7 @@ public class RobotContainer {
   //private final SwerveTrajectoryFollowCommand m_SwerveTrajectoryFollowCommand;
   private final SwerveTeleopCommand m_SwerveTeleopCommand = new SwerveTeleopCommand(m_driveSubsystem,
     primaryController);
+  private final WristCommand m_WristCommand = new WristCommand(m_legAnkleSubsystem, secondaryController);
 
   //private final PlaceGamePiece m_placeGamePieceCommand;
   /**
@@ -72,6 +78,7 @@ public class RobotContainer {
       DriveConstants.AutoConstants.kThetaControllerConstraints);
     thetaPidController.enableContinuousInput(-Math.PI, Math.PI);
 
+    m_legAnkleSubsystem.setDefaultCommand(m_WristCommand);
     m_driveSubsystem.setDefaultCommand(m_SwerveTeleopCommand);
     m_driveSubsystem.resetPose();
 

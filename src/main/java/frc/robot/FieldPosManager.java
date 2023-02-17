@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.DriverStation;
+import frc.robot.subsystems.PhotonVisionSubsystem;
 
 /** ++ This class manages the field locations for the robot. It'll deal with outputs from PhotonVisioin. 
  * It'll also deal with odometry stuff.
@@ -95,6 +96,7 @@ public class FieldPosManager {
      * (and transform the imu data appropriately so that it lines up)
      * @param swervePose is the Pose2d of the robot as reported by swerve odometry.
     */
+
     public void updateFieldPosWithSwerveData(Pose2d swervePose){
         if (hasPhotonPose){
             previousOdometryPose = latestOdometryPose;
@@ -110,7 +112,7 @@ public class FieldPosManager {
      * @param photonPose is the position as reported by the PhotonVisionSubsystem.
     */
     public void updateFieldPosWithPhotonVisionPose(Pose2d photonPose){
-        setRobotPose(photonPose);
+        setRobotPose(PhotonVisionSubsystem.checkRobotPosition().toPose2d());
         hasPhotonPose = true;
     }
     
@@ -118,7 +120,7 @@ public class FieldPosManager {
      * Gives the robot's estimated Pose, based on odometry, imu data, and photonvision data.
      * @return estimated robot position as a Pose2d
      */
-    public Pose2d getRobotPose(){
+    public Pose2d getRobotPose() {
         return latestRobotPosition;
     }
 
