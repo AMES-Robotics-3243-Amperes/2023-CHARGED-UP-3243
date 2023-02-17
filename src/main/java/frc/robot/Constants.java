@@ -343,12 +343,7 @@ public final class Constants {
     // H! Holds the data for the positions of stuff in the arm
     public static final double minLength = 0.92804;
     public static final double maxLength = 1.5494;
-<<<<<<< HEAD
-    public static final double wristLength = 0.0/*0.072327*/;
-=======
     public static final double wristLength = 0/*0.072327*/;
->>>>>>> ebb9d4034e677dca5afb1da5142de475c7e6b77b
-    
 
     public static final double changeXMultiplier = 0.15 / 50;
     public static final double changeYMultiplier = 0.10 / 50;
@@ -361,21 +356,13 @@ public final class Constants {
     public static final double maxY = 1.9812 - 0.476364 ;
     public static final double minY = 0 - 0.476364;
 
-<<<<<<< HEAD
-    public static final int pivotCurrentLimit = 30; // H! This is a temporary change! It was 30 before.
-    public static final int extensionCurrentLimit = 20; // H! This is a temporary change! It was 20 before.
-    public static final int pitchCurrentLimit = 2; // H! This is a temporary change! It was 10 before.
-    public static final int rollCurrentLimit = 2; // H! This is a temporary change! It was 10 before.
-
-    public static final int NEO1650CurrentLimitHard = 40; // H! This is a temporary change! It was 40 before.
-=======
     public static final int pivotCurrentLimit = 2; // H! This is a temporary change! It was 30 before.
     public static final int extensionCurrentLimit = 2; // H! This is a temporary change! It was 20 before.
     public static final int pitchCurrentLimit = 2; // H! This is a temporary change! It was 10 before.
     public static final int rollCurrentLimit = 2; // H! This is a temporary change! It was 10 before.
 
     public static final int NEO1650CurrentLimitHard = 2; // H! This is a temporary change! It was 40 before.
->>>>>>> ebb9d4034e677dca5afb1da5142de475c7e6b77b
+
     public static final int NEO550CurrentLimitHard = 2; // H! This is a temporary change! It was 20 before.
 
     public static final double atSetpointThreshold = 0.005;
