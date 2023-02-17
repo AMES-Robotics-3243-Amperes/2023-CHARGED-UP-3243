@@ -40,14 +40,15 @@ public class RobotContainer {
   // ++ CONTROLLER STUFF ---------------------
   public static JoyUtil primaryController = new JoyUtil(Constants.Joysticks.primaryControllerID);
   public static JoyUtil secondaryController = new JoyUtil(Constants.Joysticks.secondaryControllerID);
-  public final PhotonVisionSubsystem m_photonVisionSubsystem = new PhotonVisionSubsystem();
-  public final PhotonVisionCommand m_photonVisionCommand = new PhotonVisionCommand(m_photonVisionSubsystem);
+  
 
   // <> --- FIELD POS MANAGER ---
   public static FieldPosManager fieldPosManager = new FieldPosManager();
 
   // The robot's subsystems and commands are defined here...
   // ++ ----- SUBSYSTEMS -----------
+  public final PhotonVisionSubsystem m_photonVisionSubsystem = new PhotonVisionSubsystem(fieldPosManager);
+  public final PhotonVisionCommand m_photonVisionCommand = new PhotonVisionCommand(m_photonVisionSubsystem);
   private final DriveSubsystem m_driveSubsystem = new DriveSubsystem(fieldPosManager);
   private final LegAnkleSubsystem m_legAnkleSubsystem = new LegAnkleSubsystem();
   private final ReidPrototypeSubsystem m_reidPrototypeSubsystem = new ReidPrototypeSubsystem();
