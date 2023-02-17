@@ -25,13 +25,16 @@ public class WristCommand extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {}                
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_subsystem.moveByXYTheta(m_controller.getLeftX(),m_controller.getLeftY() , m_controller.getRightY(), m_controller.getRightX());
-
+    m_subsystem.moveByXYTheta(m_controller.getLeftX(), -m_controller.getLeftY() , m_controller.getRightY(), m_controller.getRightX());
+    /*
+    if (m_controller.getAButton()) {
+      m_subsystem.moveToXYTheta(0.5, 1.3, 0, 0);
+    }*/
   }
 
   // Called once the command ends or is interrupted.

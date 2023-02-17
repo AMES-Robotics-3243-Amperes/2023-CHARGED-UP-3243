@@ -22,6 +22,8 @@ import frc.robot.Constants;
 import static frc.robot.Constants.WristAndArm.*;
 
 public class LegAnkleSubsystem extends SubsystemBase {
+
+  private int counter = 0;
   
   private SparkMaxPIDController pidArmPivot;
   private SparkMaxPIDController pidArmExtention;
@@ -44,17 +46,36 @@ public class LegAnkleSubsystem extends SubsystemBase {
   private double targetRoll = 0.0;
 
   // H! FOR TESTING PURPOSES
-  //private ShuffleboardTab tab = Shuffleboard.getTab("Arm Testing");
+  private ShuffleboardTab tab = Shuffleboard.getTab("Arm Testing");
 
   // H! FOR TESTING PURPOSES
-  //private GenericEntry PValue = tab.add("P Value", PID.Extension.P).getEntry();
-  //private GenericEntry IValue = tab.add("I Value", PID.Extension.I).getEntry();
-  //private GenericEntry DValue = tab.add("D Value", PID.Extension.D).getEntry();
-  //private GenericEntry FFValue = tab.add("FF Value", PID.Extension.FF).getEntry();
+  private GenericEntry extensionPValue;
+  private GenericEntry extensionIValue;
+  private GenericEntry extensionDValue;
+  private GenericEntry extensionFFValue;
+
+  private GenericEntry pivotPValue;
+  private GenericEntry pivotIValue;
+  private GenericEntry pivotDValue;
+  private GenericEntry pivotFFValue;
+
+  
 
 
   /** Creates a new LegAnkleSubsystem. */
   public LegAnkleSubsystem() {
+
+    extensionPValue = tab.add("Ext P Value", PID.Extension.P).getEntry();
+    extensionIValue = tab.add("Ext I Value", PID.Extension.I).getEntry();
+    extensionDValue = tab.add("Ext D Value", PID.Extension.D).getEntry();
+    extensionFFValue = tab.add("Ext FF Value", PID.Extension.FF).getEntry();
+
+    pivotPValue = tab.add("Piv P Value", PID.Pivot.P).getEntry();
+    pivotIValue = tab.add("Piv I Value", PID.Pivot.I).getEntry();
+    pivotDValue = tab.add("Piv D Value", PID.Pivot.D).getEntry();
+    pivotFFValue = tab.add("Piv FF Value", PID.Pivot.FF).getEntry();
+
+
     pidArmPivot = armPivot.getPIDController();
     pidArmExtention = armExtension.getPIDController();
     pidWristPitch = wristPitch.getPIDController();
@@ -151,19 +172,26 @@ public class LegAnkleSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
 
-    /*setPIDFValues(pidArmExtention, 
-      PValue.getDouble(PID.Extension.P), 
-      IValue.getDouble(PID.Extension.I), 
-      DValue.getDouble(PID.Extension.D), 
-      FFValue.getDouble(PID.Extension.FF)
-    );*/
+    // H! The counter ensures intensive processes only run every so often
+    counter += 1;
+    counter %= 25;
 
-    /*setPIDFValues(pidArmPivot, 
-      PValue.getDouble(PID.Extension.P), 
-      IValue.getDouble(PID.Extension.I), 
-      DValue.getDouble(PID.Extension.D), 
-      FFValue.getDouble(PID.Extension.FF)
-    );*/
+    if (counter == 0) {
+      setPIDFValues(pidArmExtention, 
+        extensionPValue.getDouble(PID.Extension.P), 
+        extensionIValue.getDouble(PID.Extension.I), 
+        extensionDValue.getDouble(PID.Extension.D), 
+        extensionFFValue.getDouble(PID.Extension.FF)
+      );
+
+      setPIDFValues(pidArmPivot, 
+        pivotPValue.getDouble(PID.Pivot.P), 
+        pivotIValue.getDouble(PID.Pivot.I), 
+        pivotDValue.getDouble(PID.Pivot.D), 
+        pivotFFValue.getDouble(PID.Pivot.FF)
+      );
+    }
+    
     //armExtensionEncoder.setPosition(minLength);
 
     SmartDashboard.putNumber("targetX", targetX);
@@ -188,6 +216,9 @@ public class LegAnkleSubsystem extends SubsystemBase {
 
     // H! Convert angles to motor rotations
     targetArmAngle /= 2 * Math.PI;
+
+    // H! Prevent arm from extending too much or too little
+    targetArmLength = clamp(minLength, maxLength, targetArmLength);
 
     SmartDashboard.putNumber("targetArmAngle", targetArmAngle);
     SmartDashboard.putNumber("targetArmLength", targetArmLength);
@@ -221,7 +252,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
 
 
 
-  private static double clamp(double min, double max, double x) {
+  private static double clamp(double min,  double max, double x) {
     return x>max?max:(x<min?min:x); // H! I have written the most unreadable line of code of my entire life. Witness the result.
   }
 
