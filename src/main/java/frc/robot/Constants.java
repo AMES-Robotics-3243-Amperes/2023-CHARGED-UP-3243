@@ -9,7 +9,6 @@ import edu.wpi.first.math.geometry.Pose3d;
 
 import com.revrobotics.CANSparkMax.IdleMode;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -168,6 +167,12 @@ public final class Constants {
           new Translation2d(-kRobotLength / 2, kRobotWidth / 2),
           new Translation2d(-kRobotLength / 2, -kRobotWidth / 2)
         );
+      }
+
+      // <> max temperatures of the 1550s and the 1650s
+      public static final class TempConstants {
+        public static final double max1650Temp = 100;
+        public static final double max550Temp = 100;
       }
 
       // <> stuff pertaining to trajectory following,
