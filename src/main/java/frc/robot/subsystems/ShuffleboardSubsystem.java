@@ -66,12 +66,14 @@ public class ShuffleboardSubsystem extends SubsystemBase {
     SmartDashboard.putString("legAnkleCommandWidget", legAnkleSubsystem.getCurrentCommand().getName());
     SmartDashboard.putString("driveTrainCommandWidget", driveTrainSubsystem.getCurrentCommand().getName());
 
-    SmartDashboard.putBoolean("motorTooHot", driveTrainSubsystem.getMotorsOkTemperature());
+    SmartDashboard.putBoolean("motorTooHot", driveTrainSubsystem.getMotorTooHot());
 
     //&& TODO: Once Jasper merges into dev, finish creating widget for whether grabber is closed or not
     SmartDashboard.putBoolean("grabberClosing", false);
 
-    SmartDashboard.putBoolean("seeingApriltag", photonVisionSubsystem.seeingApriltag());
+    SmartDashboard.putBooleanArray("seeingApriltag", photonVisionSubsystem);
+
+
 
   }
 }

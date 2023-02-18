@@ -4,10 +4,8 @@
 
 package frc.robot.subsystems;
 
-import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -31,7 +29,7 @@ public class DriveSubsystem extends SubsystemBase {
     DriveConstants.IDs.kRearRightTurningCanId, DriveConstants.ModuleOffsets.kBackRightOffset);
 
   // <> gyro
-  private final AHRS m_gyro = new AHRS();
+  private final IMUSubsystem m_imuSubsystem = new IMUSubsystem();
 
   // <> for keeping track of position
   private final FieldPosManager m_fieldPosManager;
@@ -47,7 +45,7 @@ public class DriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     m_fieldPosManager.updateFieldPosWithSwerveData(
-      new Pose2d(new Translation2d(m_gyro.getDisplacementX(), m_gyro.getDisplacementY()), getHeading()));
+      new Pose2d(m_imuSubsystem.getDisplacement(), getHeading()));
   }
 
   /**
@@ -133,22 +131,12 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   /**
-   * <> zero robot heading gyro
-   */
-  public void zeroHeading() {
-    m_gyro.reset();
-  }
-
-  /**
    * <>
    *
    * @return the robot's heading
    */
   public Rotation2d getHeading() {
-    Rotation2d raw_angle = Rotation2d.fromDegrees(m_gyro.getAngle());
-    Rotation2d raw_angle_adjusted = raw_angle.plus(DriveConstants.kGyroOffset);
-
-    return DriveConstants.kGyroReversed ? raw_angle_adjusted.times(-1) : raw_angle_adjusted;
+    return m_imuSubsystem.getYaw();
   }
 
   public void stopModules() {
@@ -164,7 +152,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @return robot's turn rate in degrees per second
    */
   public double getTurnRate() {
-    return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
+    return m_imuSubsystem.getTurnRate();
   }
 
   /**

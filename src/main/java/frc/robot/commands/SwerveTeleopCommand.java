@@ -5,8 +5,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveTrain.DriveConstants;
 import frc.robot.JoyUtil;
@@ -41,12 +39,6 @@ public class SwerveTeleopCommand extends CommandBase {
     // <> drive the drivetrain with the controller's input
     m_DriveSubsystem.drive(controller.getDriveStraightWithAdjustments(), -controller.getDriveStrafeWithAdjustments(),
       MathUtil.applyDeadband(controller.getRightX(), 0.09), DriveConstants.kFieldRelative);
-
-    // <> temporary for debugging purposes
-    if (controller.getBButtonPressed()) {
-      m_DriveSubsystem.resetPose();
-      m_DriveSubsystem.zeroHeading();
-    }
   }
 
   // Called once the command ends or is interrupted.
