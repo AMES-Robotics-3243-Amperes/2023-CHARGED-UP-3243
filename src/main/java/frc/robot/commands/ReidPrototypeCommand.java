@@ -8,14 +8,6 @@ import frc.robot.subsystems.ReidPrototypeSubsystem;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-<<<<<<< Updated upstream
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-=======
->>>>>>> Stashed changes
 
 /** An example command that uses an example subsystem. */
 public class ReidPrototypeCommand extends CommandBase {
@@ -43,34 +35,6 @@ public class ReidPrototypeCommand extends CommandBase {
   public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
-<<<<<<< Updated upstream
-  // ££ In brevity: If the X button is pressed the compliant motors will spin, if the A button is pressed PID tuning can begin. Tune by changing the values that are passed to setPIDValues()
-  @Override
-  public void execute() {
-    double wheelSpeed = 0;
-
-    if (m_controller.getXButton()) {
-      wheelSpeed = Constants.kWheelSpeed;
-    }
-
-    if (m_controller.getBButton()) {
-      m_reidPrototypeSubsystem.closeGrabber(Constants.kGrabberSpeed);
-    }
-
-    if (m_controller.getYButton()) {
-      m_reidPrototypeSubsystem.openGrabber(Constants.kGrabberSpeed);
-    }
-    
-    if (m_controller.getAButton()) {
-      m_reidPrototypeSubsystem.setCurrentReference(Constants.ktargetAmperage);
-    }
-    else {
-      m_reidPrototypeSubsystem.setCurrentReference(0);
-    }
-
-    m_reidPrototypeSubsystem.spinMotor(wheelSpeed);
-    m_reidPrototypeSubsystem.setPIDValues(0.008, 0.002, 0, 0.072);
-=======
   // ££ In brevity: If the X button is pressed the compliant motors will spin, if the B button is pressed the grabber will close, if the Y button is pressed the grabber will open, and if the A button is pressed PID tuning can begin. Tune by changing the values that are passed to setPIDValues()
   @Override
   public void execute() {
@@ -78,21 +42,16 @@ public class ReidPrototypeCommand extends CommandBase {
       m_reidPrototypeSubsystem.closeGrabber();
     } else if (m_controller.getRightBumperPressed()) {
       m_reidPrototypeSubsystem.openGrabber();
-    } else if (m_controller.getBButtonPressed()) {
-      m_reidPrototypeSubsystem.setCurrentReference(Constants.ktargetAmperage);
+    } else if (m_controller.getBButton()) {
+      m_reidPrototypeSubsystem.setCurrentReference(true);
+    } else if (m_controller.getAButton()) {
+      m_reidPrototypeSubsystem.setCurrentReference(false);
     }
->>>>>>> Stashed changes
   }
  
   // Called once the command ends or is interrupted.
   @Override
-<<<<<<< Updated upstream
-  public void end(boolean interrupted) {
-    m_reidPrototypeSubsystem.spinMotor(0);
-  }
-=======
   public void end(boolean interrupted) {}
->>>>>>> Stashed changes
 
   // Returns true when the command should end.
   @Override
