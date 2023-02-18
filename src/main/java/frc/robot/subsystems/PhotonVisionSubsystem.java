@@ -26,23 +26,25 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.FieldPosManager;
 import frc.robot.commands.PhotonVisionCommand;
 
 public class PhotonVisionSubsystem extends SubsystemBase {
 
 // :> the = new ArrayList is because the code interprets the array as null otherwise.
-ArrayList<Transform3d> camsToBot = new ArrayList<Transform3d>(); 
+static ArrayList<Transform3d> camsToBot = new ArrayList<Transform3d>(); 
 ArrayList<PhotonPipelineResult> results = new ArrayList<PhotonPipelineResult>();
 ArrayList<PhotonCamera> cameras = new ArrayList<PhotonCamera>();
-public ArrayList<PhotonTrackedTarget> targets = new ArrayList<PhotonTrackedTarget>();
-ArrayList<Transform3d> cameraToTargets = new ArrayList<Transform3d>();
-public ArrayList<Optional<Pose3d>> tagPoses = new ArrayList<Optional<Pose3d>>();
-public ArrayList<Pose3d> robotPoses = new ArrayList<Pose3d>();
+public static ArrayList<PhotonTrackedTarget> targets = new ArrayList<PhotonTrackedTarget>();
+static ArrayList<Transform3d> cameraToTargets = new ArrayList<Transform3d>();
+public static ArrayList<Optional<Pose3d>> tagPoses = new ArrayList<Optional<Pose3d>>();
+public static ArrayList<Pose3d> robotPoses = new ArrayList<Pose3d>();
 
 
 PhotonCamera m_camera;
 PhotonCamera m_camera2;
 PhotonCamera m_camera3;
+FieldPosManager m_field;
 
   private final Field2d m_field2d = new Field2d();
 
@@ -80,11 +82,12 @@ public static final Transform3d camtoBot2 = new Transform3d(
   // :D end constants
 
   // :D a field layout stores all the vision targets on the field
-  AprilTagFieldLayout m_aprilTagFieldLayout;
+  static AprilTagFieldLayout m_aprilTagFieldLayout;
 
 
 
-  public PhotonVisionSubsystem() {
+  public PhotonVisionSubsystem(FieldPosManager field) {
+    m_field = field;
     camsToBot.add(camToBot1);
     camsToBot.add(camtoBot2);
     // :D instantiate the camera and load the field layout
@@ -121,7 +124,7 @@ public static final Transform3d camtoBot2 = new Transform3d(
    *
    * @return Pose3d representing the position of the camera on the field, or null if no valid targets are found
    */
-  public Pose3d checkRobotPosition(){
+  public static Pose3d checkRobotPosition(){
     // :> I'm so sorry for all of the for loops it is necessary for the three cameras.
     if (targets.isEmpty() != true){
       for (int i = 0; i < 1; i++) {
@@ -147,7 +150,7 @@ public static final Transform3d camtoBot2 = new Transform3d(
   // :> Behold the cursed functions Hale made to average Pose3Ds 
   // :> Quiver in its Assemblic WPILIBERAL glory
 
-  private Pose3d averagePose3d(Pose3d... poses) {
+  private static Pose3d averagePose3d(Pose3d... poses) {
     Translation3d[] translations = new Translation3d[poses.length];
     Rotation3d[] rotations = new Rotation3d[poses.length];
 
@@ -165,7 +168,7 @@ public static final Transform3d camtoBot2 = new Transform3d(
    * @param translations The tranlsations to average between
    * @return The average tranlsation
    */
-  private Translation3d averageTranslation3d(Translation3d... translations) {
+  private static Translation3d averageTranslation3d(Translation3d... translations) {
     int numArguments = translations.length;
 
     Translation3d averageTranslation = new Translation3d();
@@ -178,7 +181,7 @@ public static final Transform3d camtoBot2 = new Transform3d(
   }
 
 
-  private Rotation3d averageRotation3d(Rotation3d... rotations) {
+  private static Rotation3d averageRotation3d(Rotation3d... rotations) {
     int numArguments = rotations.length;
 
     // :> Takes the rotation into it's vectors
@@ -197,7 +200,7 @@ public static final Transform3d camtoBot2 = new Transform3d(
   }
 
   // :> Manually normalizes the vector since WPILIB doesn't have a function for it already.
-  private Vector<N3> normalize(Vector<N3> vector) {
+  private static Vector<N3> normalize(Vector<N3> vector) {
     return vector.div(Math.sqrt(vector.elementPower(2).elementSum()));
   }
 
@@ -224,6 +227,13 @@ public static final Transform3d camtoBot2 = new Transform3d(
     }
     return scorePose;
 }
+  public boolean seesAprilTag(){
+    if (targets.isEmpty() != true) {
+    return true;
+    } else {
+    return false;
+    }
+  }
 
 @Override
 public void periodic() {
@@ -241,7 +251,7 @@ public void periodic() {
 
     // This method will be called once per scheduler run
     if (targets.isEmpty() != true){
-      m_field2d.setRobotPose(checkRobotPosition().toPose2d());
+      m_field.updateFieldPosWithPhotonVisionPose(checkRobotPosition().toPose2d());
     }
     targets.clear();
   }
@@ -249,5 +259,12 @@ public void periodic() {
 @Override
 public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
+  }
+
+  //&& TODO: define function that returns true if any of the cameras are seeing an Apriltag
+  public boolean seeingApriltag() {
+    return false;
+    //&& the ghungeon
+
   }
 }

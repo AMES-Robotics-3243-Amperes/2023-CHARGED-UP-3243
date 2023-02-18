@@ -5,7 +5,6 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.revrobotics.CANSparkMax;
@@ -20,63 +19,61 @@ import frc.robot.Constants;
 public class ReidPrototypeSubsystem extends SubsystemBase {
 
   // ££ Creates all of the motor and the encoder; defines the PID controller
-  CANSparkMax grabberMotor = new CANSparkMax(Constants.Grabber.kMotorId, MotorType.kBrushless);
-  CANSparkMax compliantMotorZero = new CANSparkMax(10, MotorType.kBrushless);
-  CANSparkMax compliantMotorOne = new CANSparkMax(13, MotorType.kBrushless);
+  CANSparkMax grabberMotor = new CANSparkMax(Constants.Grabber.kGrabberMotorId, MotorType.kBrushless);
+  CANSparkMax compliantMotorZero = new CANSparkMax(Constants.Grabber.kCompliantMotorIdOne, MotorType.kBrushless);
+  CANSparkMax compliantMotorOne = new CANSparkMax(Constants.Grabber.kCompliantMotorIdTwo, MotorType.kBrushless);
   private final SparkMaxAbsoluteEncoder grabberEncoder;
   private final SparkMaxPIDController currentPIDController;
-
-  public double currentFF = 0;
-  public double currentP = 0;
-  public double currentI = 0;
-  public double currentD = 0;
+  private boolean opening = false;
+  private boolean closing = false;
  
   /** Creates a new ExampleSubsystem. */
   public ReidPrototypeSubsystem() {
-    // ££ Creates the PID Controller from the motor and sets the initial current limit
-    grabberMotor.setSmartCurrentLimit(Constants.Grabber.kCurrentLimit);
-    compliantMotorZero.setInverted(true);
-    compliantMotorOne.setInverted(true);
-    grabberMotor.setInverted(true);
+    // ££ Creates the PID Controller and the Absolute encoder from the motor and sets the initial current limit
+    grabberMotor.setSecondaryCurrentLimit(Constants.Grabber.kCurrentLimit);
+    compliantMotorZero.setSecondaryCurrentLimit(Constants.Grabber.kCurrentLimit);
+    compliantMotorOne.setSecondaryCurrentLimit(Constants.Grabber.kCurrentLimit);
     currentPIDController = grabberMotor.getPIDController();
     grabberEncoder = grabberMotor.getAbsoluteEncoder(Type.kDutyCycle);
+    setPIDValues(0.02, 0, 0, 0.0075);
   }
 
-  public void spinMotor(double speed) {
-    // ££ Spins the two compliant wheel motors when called
-    
-    compliantMotorZero.set(speed);
-    compliantMotorOne.set(speed);
+  public void resetStateValues() {
+    opening = false;
+    closing = false;
+    grabberMotor.set(0);
+    compliantMotorOne.set(0);
+    compliantMotorZero.set(0);
   }
 
-  public void closeGrabber(double speed) {
-    // ££ Grabs an object. Makes sure the grabber arms don't get too close together
-    if (grabberEncoder.getPosition() > Constants.Grabber.kPositiveEncoderRotationLimit) {
-      grabberMotor.set(0);
-    } else {
-      grabberMotor.set(speed);
-    }
+  public void openGrabber() {
+    grabberMotor.set(-Constants.Grabber.kGrabberSpeed);
+    opening = false;
+    closing = true;
   }
 
-  public void openGrabber(double speed) {
-    // ££ Releases an object. Makes sure the grabber arms don't get too far apart
-    if (grabberEncoder.getPosition() < Constants.Grabber.kNegativeEncoderRotationLimit) {
-      grabberMotor.set(0);
-    } else {
-      grabberMotor.set(-1 * speed);
-    }
+  public void closeGrabber() {
+    grabberMotor.set(Constants.Grabber.kGrabberSpeed);
+    compliantMotorZero.set(Constants.Grabber.kWheelSpeed);
+    compliantMotorOne.set(Constants.Grabber.kWheelSpeed);
+    opening = true;
+    closing = false;
   }
 
-  public void setCurrentReference(double targetAmperage) {
+  public void setCurrentReference(boolean openGrabber) {
     // ££ Sets the target amperage value and displays that along with the motors current to Smart Dashboard when called
-    currentPIDController.setReference(targetAmperage, ControlType.kCurrent);
-
-    SmartDashboard.putNumber("Target Current", targetAmperage);
-    SmartDashboard.putNumber("Actual Current", grabberMotor.getOutputCurrent());
+    if (openGrabber) { 
+      currentPIDController.setReference(Constants.Grabber.ktargetAmperage, ControlType.kCurrent);
+      opening = true;
+      closing = false;
+    } else {
+      currentPIDController.setReference(-Constants.Grabber.ktargetAmperage, ControlType.kCurrent);
+      opening = false;
+      closing = true;
+    }
   }
 
   public void setPIDValues(double kP, double kI, double kD, double kFF) {
-    // ££ Sets the P, I, D, and FF values of the PID controller when called
     currentPIDController.setP(kP);
     currentPIDController.setI(kI);
     currentPIDController.setD(kD);
@@ -86,10 +83,33 @@ public class ReidPrototypeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Actual Current", grabberMotor.getOutputCurrent());
+    SmartDashboard.putNumber("Absolute Encoder", grabberEncoder.getPosition());
+
+    if (grabberMotor.getOutputCurrent() > 1.0) {
+      compliantMotorZero.set(0);
+      compliantMotorOne.set(0);
+    }
+    
+    if (grabberEncoder.getPosition() >= Constants.Grabber.kPositiveEncoderRotationLimit && opening) {
+      grabberMotor.set(0);
+      currentPIDController.setReference(0, ControlType.kCurrent);
+      compliantMotorZero.set(0);
+      compliantMotorOne.set(0);
+      opening = false;
+    }
+
+    if (grabberEncoder.getPosition() <= Constants.Grabber.kNegativeEncoderRotationLimit && closing) {
+      grabberMotor.set(0);
+      currentPIDController.setReference(0, ControlType.kCurrent);
+      compliantMotorZero.set(0);
+      compliantMotorOne.set(0);
+      closing = false;
+    }
   }
 
   @Override
-  public void simulationPeriodic() {
+   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
   }
 }

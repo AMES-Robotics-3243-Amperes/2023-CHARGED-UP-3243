@@ -43,36 +43,20 @@ public class ReidPrototypeCommand extends CommandBase {
   // ££ In brevity: If the X button is pressed the compliant motors will spin, if the A button is pressed PID tuning can begin. Tune by changing the values that are passed to setPIDValues()
   @Override
   public void execute() {
-    double speed = 0;
-
-    if (m_controller.getXButton()) {
-      speed = Constants.Grabber.kWheelSpeed;
+    if (m_controller.getLeftBumperPressed()) {
+      m_reidPrototypeSubsystem.closeGrabber();
+    } else if (m_controller.getRightBumperPressed()) {
+      m_reidPrototypeSubsystem.openGrabber();
+    } else if (m_controller.getBButtonPressed()) {
+      m_reidPrototypeSubsystem.setCurrentReference(true);
+    } else if (m_controller.getAButtonPressed()) {
+      m_reidPrototypeSubsystem.setCurrentReference(false);
     }
-
-    if (m_controller.getYButton()) {
-      m_reidPrototypeSubsystem.closeGrabber(Constants.Grabber.kGrabberSpeed);
-    }
-
-    if (m_controller.getAButton()) {
-      m_reidPrototypeSubsystem.openGrabber(Constants.Grabber.kGrabberSpeed);
-    }
-    
-    if (m_controller.getAButton()) {
-      m_reidPrototypeSubsystem.setCurrentReference(Constants.Grabber.ktargetAmperage);
-    }
-    else {
-      m_reidPrototypeSubsystem.setCurrentReference(0);
-    }
-
-    m_reidPrototypeSubsystem.spinMotor(speed);
-    m_reidPrototypeSubsystem.setPIDValues(0.008, 0.002, 0, 0.072);
   }
  
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    m_reidPrototypeSubsystem.spinMotor(0);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
