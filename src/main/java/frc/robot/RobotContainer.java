@@ -45,19 +45,21 @@ public class RobotContainer {
   // ++ CONTROLLER STUFF ---------------------
   public static JoyUtil primaryController = new JoyUtil(Constants.Joysticks.primaryControllerID);
   public static JoyUtil secondaryController = new JoyUtil(Constants.Joysticks.secondaryControllerID);
-  
+ 
 
   // <> --- FIELD POS MANAGER ---
   public static FieldPosManager fieldPosManager = new FieldPosManager();
 
   // The robot's subsystems and commands are defined here...
   // ++ ----- SUBSYSTEMS -----------
-  public final PhotonVisionSubsystem m_photonVisionSubsystem = new PhotonVisionSubsystem(fieldPosManager);
-  public final PhotonVisionCommand m_photonVisionCommand = new PhotonVisionCommand(m_photonVisionSubsystem);
   private final DriveSubsystem m_driveSubsystem = new DriveSubsystem(fieldPosManager);
   private final LegAnkleSubsystem m_legAnkleSubsystem = new LegAnkleSubsystem();
   private final ReidPrototypeSubsystem m_reidPrototypeSubsystem = new ReidPrototypeSubsystem();
-  //private final ShuffleboardSubsystem m_shuffleboardSubsystem = new ShuffleboardSubsystem();
+  private final ShuffleboardSubsystem m_shuffleboardSubsystem = new ShuffleboardSubsystem(fieldPosManager, m_legAnkleSubsystem, m_driveSubsystem, null);
+
+  public final PhotonVisionSubsystem m_photonVisionSubsystem = new PhotonVisionSubsystem(fieldPosManager);
+  public final PhotonVisionCommand m_photonVisionCommand = new PhotonVisionCommand(m_photonVisionSubsystem);
+
 
   // <> this is required for creating new swerve trajectory follow commands
   private final ProfiledPIDController thetaPidController;
@@ -66,7 +68,6 @@ public class RobotContainer {
   //private final SwerveTrajectoryFollowCommand m_SwerveTrajectoryFollowCommand;
   private final SwerveTeleopCommand m_SwerveTeleopCommand = new SwerveTeleopCommand(m_driveSubsystem,
     primaryController);
-  private final WristCommand m_WristCommand = new WristCommand(m_legAnkleSubsystem, secondaryController);
 
   //private final PlaceGamePiece m_placeGamePieceCommand;
   /**
@@ -78,7 +79,6 @@ public class RobotContainer {
       DriveConstants.AutoConstants.kThetaControllerConstraints);
     thetaPidController.enableContinuousInput(-Math.PI, Math.PI);
 
-    m_legAnkleSubsystem.setDefaultCommand(m_WristCommand);
     m_driveSubsystem.setDefaultCommand(m_SwerveTeleopCommand);
     m_driveSubsystem.resetPose();
 
