@@ -31,6 +31,21 @@ import edu.wpi.first.math.util.Units;
 // ££ I still don't understand why putting k in front of variables is the standard in WPILib
 public final class Constants {
 
+  // ££ Constants for the Grabber
+  public static final class Grabber {
+    public static final int kControllerPort = 0;
+    public static final double kWheelSpeed = 0.2;
+    public static final double kGrabberSpeed = 0.05;
+    public static final double kPositiveEncoderRotationLimit = 0.41;
+    public static final double kNegativeEncoderRotationLimit = 0.3;
+    public static final int kGrabberMotorId = 16;
+    public static final int kCompliantMotorIdOne = 4;
+    public static final int kCompliantMotorIdTwo = 10;
+    public static final double ktargetAmperage = 4.0;
+    public static final int kCurrentLimit = 7;
+    public static final int kGearRatio = 25;
+  }
+
   /** ++ constants for DRIVE TRAIN -------------------------------------------*/
   public static final class DriveTrain {
 
@@ -277,24 +292,6 @@ public final class Constants {
 
 
   }
-//hah now i stole crystal's computer too
-// :> Thanks Hannah
-
-  
-
-
-
-  /** ++ constants for GRABBER ---------------------------------------------------------- */
-  public static final class Grabber {
-    public static final double kWheelSpeed = 0.5;
-    public static final double kGrabberSpeed = 1.0;
-    public static final double kPositiveEncoderRotationLimit = 0.5;
-    public static final double kNegativeEncoderRotationLimit = 0.5;
-    public static final int kMotorId = 20; // H! I'm using 7 for Arm extension, all the motor ids are messed up
-    public static final double ktargetAmperage = 2.0;
-    public static final int kCurrentLimit = 35;
-  }
-   
 
   /** ++ constants for WRIST and ARM ---------------------------------------------------- */
   public static final class WristAndArm {
@@ -304,8 +301,8 @@ public final class Constants {
     public static class MotorIDs {
       public static final int armPivot = 12;
       public static final int armExtension = 7;
-      public static final int wristPitch = 6;
-      public static final int wristRoll = 1;
+      public static final int WristPitch = 6;
+      public static final int WristRoll = 20;
     }
 
     public static class PID {

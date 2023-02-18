@@ -64,7 +64,7 @@ public class ShuffleboardSubsystem extends SubsystemBase {
     //&& TODO: Once Jasper merges into dev, finish creating widget for whether grabber is closed or not
     SmartDashboard.putBoolean("grabberClosing", false);
 
-    SmartDashboard.putBooleanArray("seeingApriltag", photonVisionSubsystem);
+    // SmartDashboard.putBooleanArray("seeingApriltag", photonVisionSubsystem);
 
 
 
