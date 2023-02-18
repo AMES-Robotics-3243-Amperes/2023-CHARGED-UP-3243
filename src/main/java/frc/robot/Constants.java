@@ -427,6 +427,7 @@ public final class Constants {
   }
 
   /** ++ field measurement constants */ // ---------------------------------------------------
+  // :D these constants are very nasty, beware!
   public static final class FieldConstants {
     public static Pose2d fieldBottomLeft = new Pose2d(new Translation2d(0, 0), new Rotation2d(0));
     public static Pose2d fieldTopRight = new Pose2d(new Translation2d(16.485, 8.102), new Rotation2d(0));
