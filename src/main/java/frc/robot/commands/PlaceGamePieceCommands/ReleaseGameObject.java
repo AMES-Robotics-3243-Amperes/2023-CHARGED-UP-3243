@@ -43,6 +43,6 @@ public class ReleaseGameObject extends CommandBase {
   }
 
   protected void onConfirmed() {
-    grabberSubsystem.openGrabber(0.1); // H! TODO Put a speed that makes sense in here
+    grabberSubsystem.openGrabber(); // H!
   }
 }
