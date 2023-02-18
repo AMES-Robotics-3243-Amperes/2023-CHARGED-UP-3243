@@ -32,8 +32,8 @@ public class LegAnkleSubsystem extends SubsystemBase {
   
   private CANSparkMax armPivot = new CANSparkMax(MotorIDs.armPivot, MotorType.kBrushless);
   private CANSparkMax armExtension = new CANSparkMax(MotorIDs.armExtension, MotorType.kBrushless);
-  private CANSparkMax wristPitch = new CANSparkMax(MotorIDs.WristPitch, MotorType.kBrushless);
-  private CANSparkMax wristRoll = new CANSparkMax(MotorIDs.WristRoll, MotorType.kBrushless);
+  private CANSparkMax wristPitch = new CANSparkMax(MotorIDs.wristPitch, MotorType.kBrushless);
+  private CANSparkMax wristRoll = new CANSparkMax(MotorIDs.wristRoll, MotorType.kBrushless);
 
   private RelativeEncoder armPivotEncoder = armPivot.getEncoder(/*Type.kDutyCycle*/);
   private RelativeEncoder armExtensionEncoder = armExtension.getEncoder(/*Type.kDutyCycle*/);

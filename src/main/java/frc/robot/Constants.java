@@ -125,7 +125,7 @@ public final class Constants {
         public static final int kFrontLeftDrivingCanId = 3;
         public static final int kRearLeftDrivingCanId = 9;
         public static final int kFrontRightDrivingCanId = 5;
-        public static final int kRearRightDrivingCanId = 1;
+        public static final int kRearRightDrivingCanId = 13;
 
         // <> turning ids
         public static final int kFrontLeftTurningCanId = 11;
@@ -290,7 +290,7 @@ public final class Constants {
     public static final double kGrabberSpeed = 1.0;
     public static final double kPositiveEncoderRotationLimit = 0.5;
     public static final double kNegativeEncoderRotationLimit = 0.5;
-    public static final int kMotorId = 70; // H! I'm using 7 for Arm extension, all the motor ids are messed up
+    public static final int kMotorId = 20; // H! I'm using 7 for Arm extension, all the motor ids are messed up
     public static final double ktargetAmperage = 2.0;
     public static final int kCurrentLimit = 35;
   }
@@ -304,8 +304,8 @@ public final class Constants {
     public static class MotorIDs {
       public static final int armPivot = 12;
       public static final int armExtension = 7;
-      public static final int WristPitch = 14;
-      public static final int WristRoll = 6;
+      public static final int wristPitch = 6;
+      public static final int wristRoll = 1;
     }
 
     public static class PID {
@@ -343,11 +343,7 @@ public final class Constants {
     // H! Holds the data for the positions of stuff in the arm
     public static final double minLength = 0.92804;
     public static final double maxLength = 1.5494;
-<<<<<<< HEAD
-    public static final double wristLength = 0.0/*0.072327*/;
-=======
-    public static final double wristLength = 0/*0.072327*/;
->>>>>>> ebb9d4034e677dca5afb1da5142de475c7e6b77b
+    public static final double wristLength = Units.inchesToMeters(10)/*0.072327*/;
     
 
     public static final double changeXMultiplier = 0.15 / 50;
@@ -361,21 +357,12 @@ public final class Constants {
     public static final double maxY = 1.9812 - 0.476364 ;
     public static final double minY = 0 - 0.476364;
 
-<<<<<<< HEAD
-    public static final int pivotCurrentLimit = 30; // H! This is a temporary change! It was 30 before.
-    public static final int extensionCurrentLimit = 20; // H! This is a temporary change! It was 20 before.
+    public static final int pivotCurrentLimit = 15; // H! This is a temporary change! It was 30 before.
+    public static final int extensionCurrentLimit = 10; // H! This is a temporary change! It was 20 before.
     public static final int pitchCurrentLimit = 2; // H! This is a temporary change! It was 10 before.
     public static final int rollCurrentLimit = 2; // H! This is a temporary change! It was 10 before.
 
-    public static final int NEO1650CurrentLimitHard = 40; // H! This is a temporary change! It was 40 before.
-=======
-    public static final int pivotCurrentLimit = 2; // H! This is a temporary change! It was 30 before.
-    public static final int extensionCurrentLimit = 2; // H! This is a temporary change! It was 20 before.
-    public static final int pitchCurrentLimit = 2; // H! This is a temporary change! It was 10 before.
-    public static final int rollCurrentLimit = 2; // H! This is a temporary change! It was 10 before.
-
-    public static final int NEO1650CurrentLimitHard = 2; // H! This is a temporary change! It was 40 before.
->>>>>>> ebb9d4034e677dca5afb1da5142de475c7e6b77b
+    public static final int NEO1650CurrentLimitHard = 20; // H! This is a temporary change! It was 40 before.
     public static final int NEO550CurrentLimitHard = 2; // H! This is a temporary change! It was 20 before.
 
     public static final double atSetpointThreshold = 0.005;
