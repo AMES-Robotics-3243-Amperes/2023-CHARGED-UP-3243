@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveTrain.DriveConstants.BalanceConstants;
 import frc.robot.subsystems.DriveSubsystem;
@@ -12,6 +13,9 @@ import frc.robot.subsystems.DriveSubsystem;
 public class BalanceCommand extends CommandBase {
   private final DriveSubsystem m_subsystem;
   private final ProfiledPIDController m_pidController = BalanceConstants.PIDController;
+
+  // keeps track of how long the robot has been balanced
+  private final Timer m_timer = new Timer();
 
   /**
    * Creates a new BalanceCommand.
@@ -31,6 +35,13 @@ public class BalanceCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    double chargeLevelDegrees = m_subsystem.getChargeLevel().getDegrees();
+    boolean isBalanced = Math.abs(chargeLevelDegrees) < BalanceConstants.kMaxBalanceLeniency.getDegrees();
+
+    if (!isBalanced) {
+      m_timer.restart();
+    }
+
     double pidOutput = m_pidController.calculate(m_subsystem.getChargeLevel().getDegrees());
     m_subsystem.drive(0, -pidOutput, 0, true);
   }
@@ -42,6 +53,6 @@ public class BalanceCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return m_timer.hasElapsed(BalanceConstants.kBalanceTimeSeconds);
   }
 }

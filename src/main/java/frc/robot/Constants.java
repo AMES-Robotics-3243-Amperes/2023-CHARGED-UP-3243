@@ -225,14 +225,20 @@ public final class Constants {
       }
 
       public static final class BalanceConstants {
-        // pid stuff while balancing
+        // <> the max angle that is considered balanced
+        public static final Rotation2d kMaxBalanceLeniency = Rotation2d.fromDegrees(2);
+
+        // <> how long the robot must balance for the command to end
+        public static final double kBalanceTimeSeconds = 1;
+
+        // <> pid stuff while balancing
         public static final double kP = 0.1;
         public static final double kI = 0;
         public static final double kD = 0;
 
-        // max speed while balancing
+        // <> max speed while balancing
         public static final double kMaxBalanceMetersPerSecond = 0.8;
-        // max accel while balancing
+        // <> max accel while balancing
         public static final double kMaxBalanceAccelMetersPerSecond = 0.4;
 
         public static final TrapezoidProfile.Constraints kPIDControllerConstraints = new TrapezoidProfile.Constraints(
