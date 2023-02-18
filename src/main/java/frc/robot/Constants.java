@@ -396,6 +396,8 @@ public final class Constants {
 
   /** ++ field measurement constants */ // ---------------------------------------------------
   public static final class FieldConstants {
+    public static Pose2d fieldBottomLeft = new Pose2d(new Translation2d(0, 0), new Rotation2d(0));
+    public static Pose2d fieldTopRight = new Pose2d(new Translation2d(16.485, 8.102), new Rotation2d(0));
     public static final double targetPositionsY[] = {
       4.983,
       4.424,
@@ -407,11 +409,44 @@ public final class Constants {
       1.072,
       0.513
     };
+    public static final double targetPositionsHiZ[] = {
+      1.373,
+      1.0727,
+      1.373,
+      1.373,
+      1.0727,
+      1.373,
+      1.373,
+      1.0727,
+      1.373
+    };
+    public static final double targetPositionsMidZ[] = {
+      1.068,
+      0.7687,
+      1.068,
+      1.068,
+      0.7687,
+      1.068,
+      1.068,
+      0.7687,
+      1.068
+    };
+    public static final double targetPositionsLowZ = 0.203;
     public static final class Blue{
+      public static final class autoPositions{
+        public static final Pose2d lowerPath[] = {
+          new Pose2d(new Translation2d(2.25, 0.75), new Rotation2d(0)),
+          new Pose2d(new Translation2d(6, 0.75), new Rotation2d(0))
+        };
+        public static final Pose2d upperPath[] = {
+          new Pose2d(new Translation2d(2.25, 4.6), new Rotation2d(0)),
+          new Pose2d(new Translation2d(6, 4.6), new Rotation2d(0))
+        };
+      }
       public static final class grabberPositions{
-        public static final Pose3d highTargetsXZ = new Pose3d(new Translation3d(0.379,0,0), new Rotation3d());
-        public static final Pose3d middleTargetsXZ = new Pose3d(new Translation3d(0.811,0,0), new Rotation3d());
-        public static final Pose3d lowTargetsXZ = new Pose3d(new Translation3d(1.185,0,0), new Rotation3d());
+        public static final double highTargetsX = 0.379;
+        public static final double middleTargetsX = 0.811;
+        public static final double lowTargetsX = 1.185;
         public static final Pose3d fieldCenterGamePieces[] = {
           new Pose3d(new Translation3d(7.068,4.577,0), new Rotation3d()),
           new Pose3d(new Translation3d(7.068,3.358,0), new Rotation3d()),
@@ -421,7 +456,7 @@ public final class Constants {
       }
       
       // :D position of the robot's chassis:
-      public static double scoringChassisPositionX = 0;
+      public static double scoringChassisPositionX = 1.806;
       public static Pose2d scoringPositions[] = {
         new Pose2d(
           Constants.FieldConstants.Blue.scoringChassisPositionX,
@@ -470,20 +505,28 @@ public final class Constants {
         )
       };
 
-      public static Pose2d doubleLoadingZone = new Pose2d(new Translation2d(0, 0), new Rotation2d(0));
-      public static Pose2d singleLoadingZone = new Pose2d(new Translation2d(0, 0), new Rotation2d(0));
-      public static Pose2d chargeStationBottomLeft = new Pose2d(new Translation2d(0, 0), new Rotation2d(0));
-      public static Pose2d chargeStationTopRight = new Pose2d(new Translation2d(0, 0), new Rotation2d(0));
-      public static Pose2d fieldBottomLeft = new Pose2d(new Translation2d(0, 0), new Rotation2d(0));
-      public static Pose2d fieldTopRight = new Pose2d(new Translation2d(0, 0), new Rotation2d(0));
-      public static Pose2d dividerTip = new Pose2d(new Translation2d(0, 0), new Rotation2d(0));
+      public static Pose2d doubleLoadingZone = new Pose2d(new Translation2d(1.4, 6.75), new Rotation2d(Math.PI));
+      public static Pose2d singleLoadingZone = new Pose2d(new Translation2d(2.342, 7), new Rotation2d(Math.PI/2));
+      public static Pose2d chargeStationBottomLeft = new Pose2d(new Translation2d(3.276, 1.522), new Rotation2d(0));
+      public static Pose2d chargeStationTopRight = new Pose2d(new Translation2d(4.495, 3.979), new Rotation2d(0));
+      public static Pose2d dividerTip = new Pose2d(new Translation2d(3.276, 5.487), new Rotation2d(0));
       
     }
     public static final class Red{
+      public static final class autoPositions{
+        public static final Pose2d lowerPath[] = {
+          new Pose2d(new Translation2d(14.25, 0.75), new Rotation2d(Math.PI)),
+          new Pose2d(new Translation2d(10.5, 0.75), new Rotation2d(Math.PI))
+        };
+        public static final Pose2d upperPath[] = {
+          new Pose2d(new Translation2d(14.25, 4.6), new Rotation2d(Math.PI)),
+          new Pose2d(new Translation2d(10.25, 4.6), new Rotation2d(Math.PI))
+        };
+      }
       public static final class grabberPositions{
-        public static final Pose3d highTargetsXZ = new Pose3d(new Translation3d(16.162,0,0), new Rotation3d());
-        public static final Pose3d middleTargetsXZ = new Pose3d(new Translation3d(15.730,0,0), new Rotation3d());
-        public static final Pose3d lowTargetsXZ = new Pose3d(new Translation3d(15.350,0,0), new Rotation3d());
+        public static final double highTargetsX = 16.162;
+        public static final double middleTargetsX = 15.730;
+        public static final double lowTargetsX = 15.350;
         public static final Pose3d fieldCenterGamePieces[] = {
           new Pose3d(new Translation3d(9.473,4.577,0), new Rotation3d()),
           new Pose3d(new Translation3d(9.473,3.358,0), new Rotation3d()),
@@ -492,7 +535,7 @@ public final class Constants {
         };
       }
 
-      public static double scoringChassisPositionX = 0;
+      public static double scoringChassisPositionX = 14.594;
       public static Pose2d scoringPositions[] = {
         new Pose2d(
           Constants.FieldConstants.Red.scoringChassisPositionX,
@@ -541,13 +584,11 @@ public final class Constants {
         )
       };
 
-      public static Pose2d doubleLoadingZone = new Pose2d(new Translation2d(0, 0), new Rotation2d(0));
-      public static Pose2d singleLoadingZone = new Pose2d(new Translation2d(0, 0), new Rotation2d(0));
-      public static Pose2d chargeStationBottomLeft = new Pose2d(new Translation2d(0, 0), new Rotation2d(0));
-      public static Pose2d chargeStationTopRight = new Pose2d(new Translation2d(0, 0), new Rotation2d(0));
-      public static Pose2d fieldBottomLeft = new Pose2d(new Translation2d(0, 0), new Rotation2d(0));
-      public static Pose2d fieldTopRight = new Pose2d(new Translation2d(0, 0), new Rotation2d(0));
-      public static Pose2d dividerTip = new Pose2d(new Translation2d(0, 0), new Rotation2d(0));
+      public static Pose2d doubleLoadingZone = new Pose2d(new Translation2d(15, 6.75), new Rotation2d(0));
+      public static Pose2d singleLoadingZone = new Pose2d(new Translation2d(14.199, 7), new Rotation2d(Math.PI/2));
+      public static Pose2d chargeStationBottomLeft = new Pose2d(new Translation2d(12.046, 1.522), new Rotation2d(0));
+      public static Pose2d chargeStationTopRight = new Pose2d(new Translation2d(13.265, 3.979), new Rotation2d(0));
+      public static Pose2d dividerTip = new Pose2d(new Translation2d(13.265, 5.487), new Rotation2d(0));
     }
   }
 
