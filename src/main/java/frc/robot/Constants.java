@@ -355,38 +355,6 @@ public final class Constants {
         public static final double FF = 0.0;
       }
     }
-<<<<<<< HEAD
-
-    public static final double extensionEncoderConversionFactor = (Units.inchesToMeters(2.707) * Math.PI) / (36);
-
-    // H! Holds the data for the positions of stuff in the arm
-    public static final double minLength = 0.92804;
-    public static final double maxLength = 1.5494;
-    public static final double wristLength = 0/*0.072327*/;
-    
-
-    public static final double changeXMultiplier = 0.15 / 50;
-    public static final double changeYMultiplier = 0.10 / 50;
-    public static final double changePitchMultiplier = Units.degreesToRadians(15) / 50;
-    public static final double changeRollMultiplier = Units.degreesToRadians(15) / 50;
-
-    //&& x and y max and min from pivot in meters
-    public static final double maxX = 0.535069 + 1.2192;
-    public static final double minX = -0.277731 - 1.2192;
-    public static final double maxY = 1.9812 - 0.476364 ;
-    public static final double minY = 0 - 0.476364;
-
-    public static final int pivotCurrentLimit = 2; // H! This is a temporary change! It was 30 before.
-    public static final int extensionCurrentLimit = 2; // H! This is a temporary change! It was 20 before.
-    public static final int pitchCurrentLimit = 2; // H! This is a temporary change! It was 10 before.
-    public static final int rollCurrentLimit = 2; // H! This is a temporary change! It was 10 before.
-
-    public static final int NEO1650CurrentLimitHard = 2; // H! This is a temporary change! It was 40 before.
-    public static final int NEO550CurrentLimitHard = 2; // H! This is a temporary change! It was 20 before.
-
-    public static final double atSetpointThreshold = 0.005;
-=======
->>>>>>> aed5ef73eba96062d4e53240399a17fd7d24e29e
   }
 
   /**

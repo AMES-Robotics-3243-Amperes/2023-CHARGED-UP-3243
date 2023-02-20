@@ -43,7 +43,7 @@ public class RobotContainer {
   private final DriveSubsystem m_driveSubsystem = new DriveSubsystem(fieldPosManager);
   private final LegAnkleSubsystem m_legAnkleSubsystem = new LegAnkleSubsystem();
   private final ReidPrototypeSubsystem m_reidPrototypeSubsystem = new ReidPrototypeSubsystem();
-  private final ShuffleboardSubsystem m_shuffleboardSubsystem = new ShuffleboardSubsystem(fieldPosManager, m_legAnkleSubsystem, m_driveSubsystem, m_photonVisionSubsystem);
+  private final ShuffleboardSubsystem m_shuffleboardSubsystem = new ShuffleboardSubsystem(fieldPosManager, m_legAnkleSubsystem, m_driveSubsystem, m_photonVisionSubsystem, null);
 
   public final PhotonVisionCommand m_photonVisionCommand = new PhotonVisionCommand(m_photonVisionSubsystem);
   public final ReidPrototypeCommand m_ReidPrototypeCommand = new ReidPrototypeCommand(m_reidPrototypeSubsystem, secondaryController);
