@@ -55,8 +55,6 @@ public class ShuffleboardSubsystem extends SubsystemBase {
     photonVisionSubsystem = photonVision;
     imuSubsystem = IMU;
 
-    //SmartDashboard.putNumber(, 0)
-
   }
 
   @Override
@@ -66,7 +64,19 @@ public class ShuffleboardSubsystem extends SubsystemBase {
     SmartDashboard.putData(field);
     field.setRobotPose(fieldPoseManager.getRobotPose());
 
+
     //&& -----------------Titles of the widgets that get displayed in shuffleboard------------------
+
+    SmartDashboard.putBoolean("doCharge", true);
+
+    SmartDashboard.putNumber("placePiece0", 0);
+    SmartDashboard.putNumber("pickupPiece1", 0);
+    SmartDashboard.putNumber("placePiece1", 0);
+    SmartDashboard.putNumber("pickupPiece2", 0);
+    SmartDashboard.putNumber("placePiece2", 0 );
+    SmartDashboard.putNumber("pickupPiece3", 0);
+    SmartDashboard.putNumber("placePiece3", 0);
+    SmartDashboard.putNumber("chargePosition", 0);
 
     //&& Shows the command running for LegAnkleSubsystem
     SmartDashboard.putString("legAnkleCommandWidget", legAnkleSubsystem.getCurrentCommand().getName());
@@ -87,6 +97,58 @@ public class ShuffleboardSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("chargeStationAngleWidget", imuSubsystem.getChargeLevel().getDegrees());
 
     //&&---------------------------------------------------------------------------------------------
+
+  }
+
+  public enum ShuffleBoardInput{
+    piece0Place, piece1Pickup, piece1Place, piece2Pickup, piece2Place, piece3Pickup, piece3Place, goChargeStation, chargeStationPosition
+  }
+  
+  public boolean ShuffleBoardBooleanInput(ShuffleBoardInput shuffleInput) {
+    switch (shuffleInput) {
+      case goChargeStation:
+        
+       return SmartDashboard.getBoolean("doCharge", true);
+    
+      default:
+        return false;
+    }
+  }
+
+  public double ShuffleBoardNumberInput(ShuffleBoardInput shuffleInput){
+    switch (shuffleInput) {
+      case piece0Place:
+
+       return SmartDashboard.getNumber("placePiece0", 0);
+        
+      case piece1Pickup:
+
+       return SmartDashboard.getNumber("pickupPiece1", 0);
+
+      case piece1Place:
+
+       return SmartDashboard.getNumber("placePiece1", 0);
+
+      case piece2Pickup:
+
+       return SmartDashboard.getNumber("pickupPiece2", 0);
+
+      case piece2Place:
+
+       return SmartDashboard.getNumber("placePiece2", 0);
+
+      case piece3Pickup:
+
+       return SmartDashboard.getNumber("pickupPiece3", 0);
+
+      case piece3Place:
+       
+       return SmartDashboard.getNumber("placePiece3", 0);
+
+      default:
+       return -1;
+        
+    }
 
   }
 }
