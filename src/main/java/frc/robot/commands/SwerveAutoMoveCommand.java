@@ -72,9 +72,10 @@ public class SwerveAutoMoveCommand extends CommandBase {
                                ProfiledPIDController thetaController, Supplier<Rotation2d> desiredRotation,
                                Consumer<SwerveModuleState[]> outputModuleStates, boolean lazy,
                                Subsystem... requirements) {
-    this(trajectory, pose, kinematics, new HolonomicDriveController(requireNonNullParam(xController, "xController",
-      "SwerveControllerCommand"), requireNonNullParam(yController, "yController", "SwerveControllerCommand"),
-      requireNonNullParam(thetaController, "thetaController", "SwerveControllerCommand")), desiredRotation,
+    this(trajectory, pose, kinematics,
+      new HolonomicDriveController(requireNonNullParam(xController, "xController", "SwerveControllerCommand"),
+        requireNonNullParam(yController, "yController", "SwerveControllerCommand"),
+        requireNonNullParam(thetaController, "thetaController", "SwerveControllerCommand")), desiredRotation,
       outputModuleStates, lazy, requirements);
   }
 
@@ -107,8 +108,8 @@ public class SwerveAutoMoveCommand extends CommandBase {
                                Consumer<SwerveModuleState[]> outputModuleStates, boolean lazy,
                                Subsystem... requirements) {
     this(trajectory, pose, kinematics, xController, yController, thetaController,
-      () -> trajectory.getStates().get(trajectory.getStates().size() - 1).poseMeters.getRotation(),
-      outputModuleStates, lazy, requirements);
+      () -> trajectory.getStates().get(trajectory.getStates().size() - 1).poseMeters.getRotation(), outputModuleStates,
+      lazy, requirements);
   }
 
   /**
@@ -157,13 +158,14 @@ public class SwerveAutoMoveCommand extends CommandBase {
    * @param trajectory         the {@link Trajectory} to follow
    * @param thetaPidController the {@link ProfiledPIDController} to control correcting angular movement
    *                           (this is required because pid controllers can't be made continuous statically)
+   * @param lazy               makes the command shorter but less precise if true
    */
   public SwerveAutoMoveCommand(DriveSubsystem subsystem, Trajectory trajectory,
                                ProfiledPIDController thetaPidController, boolean lazy) {
     this(trajectory, subsystem::getPose, DriveConstants.ChassisKinematics.kDriveKinematics,
       DriveConstants.AutoConstants.movementPidControllerInitial,
-      DriveConstants.AutoConstants.movementPidControllerInitial, thetaPidController, subsystem::setModuleStates, lazy
-      , subsystem);
+      DriveConstants.AutoConstants.movementPidControllerInitial, thetaPidController, subsystem::setModuleStates, lazy,
+      subsystem);
   }
 
   /**
@@ -176,14 +178,15 @@ public class SwerveAutoMoveCommand extends CommandBase {
    * @param pose               the {@link Pose2d} to follow
    * @param thetaPidController the {@link ProfiledPIDController} to control correcting angular movement
    *                           (this is required because pid controllers can't be made continuous statically)
+   * @param lazy               makes the command shorter but less precise if true
    */
   public SwerveAutoMoveCommand(DriveSubsystem subsystem, Pose2d pose, ProfiledPIDController thetaPidController,
                                boolean lazy) {
     this(TrajectoryGenerator.generateTrajectory(subsystem.getPose(), List.of(), pose,
-      DriveConstants.AutoConstants.trajectoryConfig), subsystem::getPose,
+        DriveConstants.AutoConstants.trajectoryConfig), subsystem::getPose,
       DriveConstants.ChassisKinematics.kDriveKinematics, DriveConstants.AutoConstants.movementPidControllerInitial,
-      DriveConstants.AutoConstants.movementPidControllerInitial, thetaPidController, subsystem::setModuleStates, lazy
-      , subsystem);
+      DriveConstants.AutoConstants.movementPidControllerInitial, thetaPidController, subsystem::setModuleStates, lazy,
+      subsystem);
   }
 
   public Trajectory.State getDesiredState() {

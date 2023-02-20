@@ -163,4 +163,14 @@ public class DriveSubsystem extends SubsystemBase {
   public boolean getMotorsOkTemperature() {
     return !(m_frontLeft.isTooHot() || m_frontRight.isTooHot() || m_rearLeft.isTooHot() || m_rearRight.isTooHot());
   }
+
+  /**
+   * <>
+   *
+   * @return charge station level (see {@link IMUSubsystem}'s charge station level method
+   * for more specific details
+   */
+  public Rotation2d getChargeLevel() {
+    return m_imuSubsystem.getChargeLevel();
+  }
 }

@@ -175,7 +175,7 @@ public class FieldPosManager {
      * @param scoringZoneID is an integer which determines the scoring zone if scoringPosition is passed in to the 'element' parameter
      * @return the position of the requested field element as a Pose2d.
      */
-    public Pose2d get2dFieldPose(fieldSpot2d spot, boolean ofCurrentAlliance, int positionID){
+    public Pose2d get2dFieldObjectPose(fieldSpot2d spot, boolean ofCurrentAlliance, int positionID){
         if (allianceColor != DriverStation.Alliance.Invalid && allianceColor != null){
             if ((ofCurrentAlliance && allianceColor==DriverStation.Alliance.Red) || (!ofCurrentAlliance && allianceColor==DriverStation.Alliance.Blue)){
                 // :D red alliance poses
@@ -247,31 +247,31 @@ public class FieldPosManager {
      * @param positionID is an integer which determines the scoring zone as well as picks 1-4 of the field center game pieces
      * @return the position of the requested field element as a Pose3d.
      */
-    public Pose3d get3dFieldPose(fieldSpot3d spot, boolean ofCurrentAlliance, int positionID){
+    public Pose3d get3dFieldObjectPose(fieldSpot3d spot, boolean ofCurrentAlliance, int positionID){
         if (allianceColor != DriverStation.Alliance.Invalid && allianceColor != null){
             if ((ofCurrentAlliance && allianceColor==DriverStation.Alliance.Red) || (!ofCurrentAlliance && allianceColor==DriverStation.Alliance.Blue)){
                 // :D red alliance poses
                 switch (spot){
                     case highGrabberScoring:
                         return new Pose3d(
-                            Constants.FieldConstants.Red.grabberPositions.highTargetsXZ.getX(),
+                            Constants.FieldConstants.Red.grabberPositions.highTargetsX,
                             Constants.FieldConstants.targetPositionsY[positionID],
-                            Constants.FieldConstants.Red.grabberPositions.highTargetsXZ.getZ(),
-                            Constants.FieldConstants.Red.grabberPositions.highTargetsXZ.getRotation()
+                            Constants.FieldConstants.targetPositionsHiZ[positionID],
+                            new Rotation3d()
                         );
                     case middleGrabberScoring:
                         return new Pose3d(
-                            Constants.FieldConstants.Red.grabberPositions.middleTargetsXZ.getX(),
+                            Constants.FieldConstants.Red.grabberPositions.middleTargetsX,
                             Constants.FieldConstants.targetPositionsY[positionID],
-                            Constants.FieldConstants.Red.grabberPositions.middleTargetsXZ.getZ(),
-                            Constants.FieldConstants.Red.grabberPositions.middleTargetsXZ.getRotation()
+                            Constants.FieldConstants.targetPositionsMidZ[positionID],
+                            new Rotation3d()
                         );
                     case lowGrabberScoring:
                         return new Pose3d(
-                            Constants.FieldConstants.Red.grabberPositions.lowTargetsXZ.getX(),
+                            Constants.FieldConstants.Red.grabberPositions.lowTargetsX,
                             Constants.FieldConstants.targetPositionsY[positionID],
-                            Constants.FieldConstants.Red.grabberPositions.lowTargetsXZ.getZ(),
-                            Constants.FieldConstants.Red.grabberPositions.lowTargetsXZ.getRotation()
+                            Constants.FieldConstants.targetPositionsLowZ,
+                            new Rotation3d()
                         );
                     case centerFieldGamePieces:
                         return Constants.FieldConstants.Red.grabberPositions.fieldCenterGamePieces[positionID];
@@ -284,24 +284,24 @@ public class FieldPosManager {
                 switch (spot){
                     case highGrabberScoring:
                         return new Pose3d(
-                            Constants.FieldConstants.Blue.grabberPositions.highTargetsXZ.getX(),
+                            Constants.FieldConstants.Blue.grabberPositions.highTargetsX,
                             Constants.FieldConstants.targetPositionsY[positionID],
-                            Constants.FieldConstants.Blue.grabberPositions.highTargetsXZ.getZ(),
-                            Constants.FieldConstants.Blue.grabberPositions.highTargetsXZ.getRotation()
+                            Constants.FieldConstants.targetPositionsHiZ[positionID],
+                            new Rotation3d()
                         );
                     case middleGrabberScoring:
                         return new Pose3d(
-                            Constants.FieldConstants.Blue.grabberPositions.middleTargetsXZ.getX(),
+                            Constants.FieldConstants.Blue.grabberPositions.middleTargetsX,
                             Constants.FieldConstants.targetPositionsY[positionID],
-                            Constants.FieldConstants.Blue.grabberPositions.middleTargetsXZ.getZ(),
-                            Constants.FieldConstants.Blue.grabberPositions.middleTargetsXZ.getRotation()
+                            Constants.FieldConstants.targetPositionsMidZ[positionID],
+                            new Rotation3d()
                         );
                     case lowGrabberScoring:
                         return new Pose3d(
-                            Constants.FieldConstants.Blue.grabberPositions.lowTargetsXZ.getX(),
+                            Constants.FieldConstants.Blue.grabberPositions.lowTargetsX,
                             Constants.FieldConstants.targetPositionsY[positionID],
-                            Constants.FieldConstants.Blue.grabberPositions.lowTargetsXZ.getZ(),
-                            Constants.FieldConstants.Blue.grabberPositions.lowTargetsXZ.getRotation()
+                            Constants.FieldConstants.targetPositionsLowZ,
+                            new Rotation3d()
                         );
                     case centerFieldGamePieces:
                         return Constants.FieldConstants.Blue.grabberPositions.fieldCenterGamePieces[positionID];
@@ -317,6 +317,48 @@ public class FieldPosManager {
         }
     }
 
+    /**
+     * A function which gives positions for autonomous paths between scoring zones and on-field game pieces.
+     * @param path is an enum of type FieldPosManager.autoPath which is used to say whether the upper or lower autonomous path is to be taken.
+     * @param ofCurrentAlliance is a boolean which should probably always be true. Detects set alliance and if false, will use opposing alliance's positions
+     * @param pathStep is an int from 0 to 1 of the autonomous path step.
+     * @return Pose2d of a position along an autonomous path we are intending to take
+     */
+    public Pose2d getAutoPose(autoPath path, boolean ofCurrentAlliance, int pathStep){
+        if (allianceColor != DriverStation.Alliance.Invalid && allianceColor != null){
+            if ((ofCurrentAlliance && allianceColor==DriverStation.Alliance.Red) || (!ofCurrentAlliance && allianceColor==DriverStation.Alliance.Blue)){
+                //red
+                switch (path) {
+                    case upperPath:
+                        
+                        return Constants.FieldConstants.Red.autoPositions.upperPath[pathStep];
+                
+                    case lowerPath:
+                        return Constants.FieldConstants.Red.autoPositions.lowerPath[pathStep];
+                
+                    default:
+                        return new Pose2d();
+                }
+            } else {
+                //blue
+                switch (path) {
+                    case upperPath:
+                        
+                        return Constants.FieldConstants.Blue.autoPositions.upperPath[pathStep];
+                
+                    case lowerPath:
+                        return Constants.FieldConstants.Blue.autoPositions.lowerPath[pathStep];
+                
+                    default:
+                        return new Pose2d();
+                }
+            }
+        } else {
+            System.err.println("INVALID ALLIANCE COLOR IN FIELDPOSMANAGER");
+            return null;
+        }
+    }
+
     public enum fieldSpot2d{
         doubleLoadingZone, singleLoadingZone, chargeStationBottomLeft, chargeStationTopRight, scoringPosition
     }
@@ -325,4 +367,16 @@ public class FieldPosManager {
         highGrabberScoring, middleGrabberScoring, lowGrabberScoring, centerFieldGamePieces
     }
 
+    public enum autoPath{
+        upperPath, lowerPath
+    }
+
 }
+
+// auto movement points 
+//  blue
+//   lower path(2.25, 0.9) (6, 0.9)
+//   upper path(2.25, 4.6) (6, 4.6)
+//  red
+//   lower path(14.25, 0.9) (10.5, 0.9)
+//   upper path(14.25, 4.6) (10.5, 4.6)
