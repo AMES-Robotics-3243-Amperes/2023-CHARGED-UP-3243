@@ -8,6 +8,7 @@ import frc.robot.subsystems.LegAnkleSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.PhotonVisionSubsystem;
 import frc.robot.subsystems.IMUSubsystem;
+import frc.robot.subsystems.ReidPrototypeSubsystem;
 
 import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
@@ -40,11 +41,12 @@ public class ShuffleboardSubsystem extends SubsystemBase {
   private DriveSubsystem driveTrainSubsystem;
   private PhotonVisionSubsystem photonVisionSubsystem;
   private IMUSubsystem imuSubsystem;
+  private ReidPrototypeSubsystem reidGrabberSubsystem;
   
 
 
   /** Creates a new ShuffleboardSubsystem. */
-  public ShuffleboardSubsystem(FieldPosManager posManager, LegAnkleSubsystem legAnkle, DriveSubsystem driveTrain, PhotonVisionSubsystem photonVision, IMUSubsystem IMU) {
+  public ShuffleboardSubsystem(FieldPosManager posManager, LegAnkleSubsystem legAnkle, DriveSubsystem driveTrain, PhotonVisionSubsystem photonVision, IMUSubsystem IMU, ReidPrototypeSubsystem grabber) {
 
     //&& Set fieldPoseManager equal to posManager for Field2D widget
     fieldPoseManager = posManager;
@@ -54,6 +56,7 @@ public class ShuffleboardSubsystem extends SubsystemBase {
     driveTrainSubsystem = driveTrain;
     photonVisionSubsystem = photonVision;
     imuSubsystem = IMU;
+    reidGrabberSubsystem = grabber;
 
   }
 
@@ -68,6 +71,8 @@ public class ShuffleboardSubsystem extends SubsystemBase {
     //&& -----------------Titles of the widgets that get displayed in shuffleboard------------------
 
     SmartDashboard.putBoolean("doCharge", true);
+    SmartDashboard.putBoolean("doUpperRoute", true);
+    SmartDashboard.putBoolean("doLowerRoute", true);
 
     SmartDashboard.putNumber("placePiece0", 0);
     SmartDashboard.putNumber("pickupPiece1", 0);
@@ -88,7 +93,9 @@ public class ShuffleboardSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("motorTooHot", driveTrainSubsystem.getMotorsOkTemperature());
 
     //&& TODO: Once Jasper merges into dev, finish creating widget for whether grabber is closed or not
-    SmartDashboard.putBoolean("grabberClosing", false);
+    SmartDashboard.putBoolean("grabberClosing", reidGrabberSubsystem.getGrabberClosing());
+
+    SmartDashboard.putBoolean("grabberOpening", reidGrabberSubsystem.getGrabberOpening());
 
     //&& Shows whether PhotonVision is registering an Apriltag
     SmartDashboard.putBoolean("seeingApriltag", photonVisionSubsystem.seeingApriltag());
@@ -101,7 +108,7 @@ public class ShuffleboardSubsystem extends SubsystemBase {
   }
 
   public enum ShuffleBoardInput{
-    piece0Place, piece1Pickup, piece1Place, piece2Pickup, piece2Place, piece3Pickup, piece3Place, goChargeStation, chargeStationPosition
+    piece0Place, piece1Pickup, piece1Place, piece2Pickup, piece2Place, piece3Pickup, piece3Place, goChargeStation, chargeStationPosition, goUpperRoute, goLowerRoute
   }
   
   public boolean ShuffleBoardBooleanInput(ShuffleBoardInput shuffleInput) {
@@ -114,6 +121,22 @@ public class ShuffleboardSubsystem extends SubsystemBase {
         return false;
     }
   }
+
+  public boolean ShuffleboardBooleanInput(ShuffleBoardInput shuffleInput) {
+    switch (shuffleInput) {
+      case goUpperRoute:
+          
+       return SmartDashboard.getBoolean("doUpperRoute", true);
+       
+      case goLowerRoute:
+     
+       return SmartDashboard.getBoolean("doLowerRoute", true);
+
+      default:
+       return false;
+    }
+  }
+
 
   public double ShuffleBoardNumberInput(ShuffleBoardInput shuffleInput){
     switch (shuffleInput) {

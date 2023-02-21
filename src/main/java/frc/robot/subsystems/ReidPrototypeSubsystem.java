@@ -112,4 +112,13 @@ public class ReidPrototypeSubsystem extends SubsystemBase {
    public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
   }
+
+  public boolean getGrabberOpening() {
+    return opening;
+  }
+
+  public boolean getGrabberClosing() {
+    return closing;
+  }
 }
+
