@@ -39,7 +39,7 @@ public final class Constants {
     public static final double kPositiveEncoderRotationLimit = 0.41;
     public static final double kNegativeEncoderRotationLimit = 0.3;
     public static final int kGrabberMotorId = 16;
-    public static final int kCompliantMotorIdOne = 4;
+    public static final int kCompliantMotorIdOne = 1;
     public static final int kCompliantMotorIdTwo = 10;
     public static final double ktargetAmperage = 4.0;
     public static final int kCurrentLimit = 7;
@@ -301,36 +301,37 @@ public final class Constants {
     public static class MotorIDs {
       public static final int armPivot = 12;
       public static final int armExtension = 7;
-      public static final int WristPitch = 6;
+      public static final int WristPitchRight = 4;
+      public static final int WristPitchLeft = 6;
       public static final int WristRoll = 20;
     }
 
     public static class PID {
       public static class Extension {
-        public static final double P  = 2.0;
+        public static final double P  = 3.5;// H! 2.0
         public static final double I  = 0.0;
+        public static final double D  = 0.0;
+        public static final double FF = 0.01 * 0;
+      }
+
+      public static class Pivot {
+        public static final double P  = 1.0 * 0;// H! 5.0
+        public static final double I  = 0.0;
+        public static final double D  = 0.0;
+        public static final double FF = 0.1 * 0;
+      }
+
+      public static class Pitch {
+        public static final double P  = 0.75;
+        public static final double I  = 0.0125;
         public static final double D  = 0.0;
         public static final double FF = 0.01;
       }
 
-      public static class Pivot {
-        public static final double P  = 5.0;
-        public static final double I  = 0.0;
-        public static final double D  = 0.0;
-        public static final double FF = 0.1;
-      }
-
-      public static class Pitch {
-        public static final double P  = 0.2;
-        public static final double I  = 0.0;
-        public static final double D  = 0.0;
-        public static final double FF = 0.0;
-      }
-
       public static class Roll {
-        public static final double P  = 0.2;
+        public static final double P  = 1.5;
         public static final double I  = 0.0;
-        public static final double D  = 0.0;
+        public static final double D  = 0.01;
         public static final double FF = 0.0;
       }
     }
@@ -338,12 +339,12 @@ public final class Constants {
     public static final double extensionEncoderConversionFactor = (Units.inchesToMeters(2.707) * Math.PI) / (36);
 
     // H! Holds the data for the positions of stuff in the arm
-    public static final double minLength = 0.92804;
+    public static final double minLength = 0.92804 + 0.05;
     public static final double maxLength = 1.5494;
-    public static final double wristLength = Units.inchesToMeters(10)/*0.072327*/;
+    public static final double wristLength = 0/*Units.inchesToMeters(10)/*0.072327*/;
     
 
-    public static final double changeXMultiplier = 0.15 / 50;
+    public static final double changeXMultiplier = 0.10 / 50;
     public static final double changeYMultiplier = 0.10 / 50;
     public static final double changePitchMultiplier = Units.degreesToRadians(15) / 50;
     public static final double changeRollMultiplier = Units.degreesToRadians(15) / 50;
@@ -356,11 +357,11 @@ public final class Constants {
 
     public static final int pivotCurrentLimit = 15; // H! This is a temporary change! It was 30 before.
     public static final int extensionCurrentLimit = 10; // H! This is a temporary change! It was 20 before.
-    public static final int pitchCurrentLimit = 2; // H! This is a temporary change! It was 10 before.
+    public static final int pitchCurrentLimit = 30; // H! This is a temporary change! It was 10 before.
     public static final int rollCurrentLimit = 2; // H! This is a temporary change! It was 10 before.
 
     public static final int NEO1650CurrentLimitHard = 20; // H! This is a temporary change! It was 40 before.
-    public static final int NEO550CurrentLimitHard = 2; // H! This is a temporary change! It was 20 before.
+    public static final int NEO550CurrentLimitHard = 40; // H! This is a temporary change! It was 20 before.
 
     public static final double atSetpointThreshold = 0.005;
   }

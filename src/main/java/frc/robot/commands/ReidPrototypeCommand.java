@@ -51,6 +51,8 @@ public class ReidPrototypeCommand extends CommandBase {
       m_reidPrototypeSubsystem.setCurrentReference(true);
     } else if (m_controller.getAButtonPressed()) {
       m_reidPrototypeSubsystem.setCurrentReference(false);
+    } else if (m_controller.getBackButtonPressed()) {
+      m_reidPrototypeSubsystem.stopGrabber();
     }
   }
  

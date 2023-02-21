@@ -53,7 +53,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   // ++ ----- SUBSYSTEMS -----------
   private final DriveSubsystem m_driveSubsystem = new DriveSubsystem(fieldPosManager);
-  private final LegAnkleSubsystem m_legAnkleSubsystem = new LegAnkleSubsystem();
+  public final LegAnkleSubsystem m_legAnkleSubsystem = new LegAnkleSubsystem();
   private final ReidPrototypeSubsystem m_reidPrototypeSubsystem = new ReidPrototypeSubsystem();
   private final ShuffleboardSubsystem m_shuffleboardSubsystem = new ShuffleboardSubsystem(fieldPosManager, m_legAnkleSubsystem, m_driveSubsystem, null);
 
@@ -69,6 +69,7 @@ public class RobotContainer {
   //private final SwerveTrajectoryFollowCommand m_SwerveTrajectoryFollowCommand;
   private final SwerveTeleopCommand m_SwerveTeleopCommand = new SwerveTeleopCommand(m_driveSubsystem,
     primaryController);
+  private final WristCommand m_WristCommand = new WristCommand(m_legAnkleSubsystem, secondaryController);
 
   //private final PlaceGamePiece m_placeGamePieceCommand;
   /**
@@ -80,8 +81,14 @@ public class RobotContainer {
       DriveConstants.AutoConstants.kThetaControllerConstraints);
     thetaPidController.enableContinuousInput(-Math.PI, Math.PI);
 
-    m_driveSubsystem.setDefaultCommand(m_SwerveTeleopCommand);
+    //m_driveSubsystem.setDefaultCommand(m_SwerveTeleopCommand);
     m_driveSubsystem.resetPose();
+
+
+
+    m_legAnkleSubsystem.setDefaultCommand(m_WristCommand);
+
+    m_reidPrototypeSubsystem.setDefaultCommand(m_ReidPrototypeCommand);
 
     // H! This command is here because it needs thetaPidController to be created for it to be created
     //m_placeGamePieceCommand = new PlaceGamePiece(m_driveSubsystem, m_legAnkleSubsystem, m_reidPrototypeSubsystem,

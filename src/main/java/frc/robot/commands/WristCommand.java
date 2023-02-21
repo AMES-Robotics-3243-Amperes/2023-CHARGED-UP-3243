@@ -30,11 +30,12 @@ public class WristCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_subsystem.moveByXYTheta(m_controller.getLeftX(), -m_controller.getLeftY() , m_controller.getRightY(), m_controller.getRightX());
-    /*
+    //m_subsystem.moveByXYTheta(JoyUtil.posWithDeadzone( m_controller.getLeftX() ), JoyUtil.posWithDeadzone( -m_controller.getLeftY() ), JoyUtil.posWithDeadzone( m_controller.getRightY() ), JoyUtil.posWithDeadzone( -m_controller.getRightX()));
+    m_subsystem.moveManualSetpoints(JoyUtil.posWithDeadzone( m_controller.getLeftX() ), JoyUtil.posWithDeadzone( -m_controller.getLeftY() ), JoyUtil.posWithDeadzone( m_controller.getRightY() ), JoyUtil.posWithDeadzone( -m_controller.getRightX()));
+    
     if (m_controller.getAButton()) {
-      m_subsystem.moveToXYTheta(0.5, 1.3, 0, 0);
-    }*/
+      m_subsystem.resetRoll();
+    }
   }
 
   // Called once the command ends or is interrupted.

@@ -60,6 +60,13 @@ public class ReidPrototypeSubsystem extends SubsystemBase {
     closing = false;
   }
 
+  // H! FOR TESTING PURPOSES
+  public void stopGrabber() {
+    grabberMotor.set(0);
+    compliantMotorZero.set(0);
+    compliantMotorOne.set(0);
+  }
+
   public void setCurrentReference(boolean openGrabber) {
     // ££ Sets the target amperage value and displays that along with the motors current to Smart Dashboard when called
     if (openGrabber) { 
@@ -91,7 +98,7 @@ public class ReidPrototypeSubsystem extends SubsystemBase {
       compliantMotorOne.set(0);
     }
     
-    if (grabberEncoder.getPosition() >= Constants.Grabber.kPositiveEncoderRotationLimit && opening) {
+    /*if (grabberEncoder.getPosition() >= Constants.Grabber.kPositiveEncoderRotationLimit && opening) {
       grabberMotor.set(0);
       currentPIDController.setReference(0, ControlType.kCurrent);
       compliantMotorZero.set(0);
@@ -105,7 +112,7 @@ public class ReidPrototypeSubsystem extends SubsystemBase {
       compliantMotorZero.set(0);
       compliantMotorOne.set(0);
       closing = false;
-    }
+    }*/
   }
 
   @Override
