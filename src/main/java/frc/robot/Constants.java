@@ -332,7 +332,7 @@ public final class Constants {
         public static final double P  = 1.5;
         public static final double I  = 0.0;
         public static final double D  = 0.01;
-        public static final double FF = 0.0;
+        public static final double FF = 0.1;
       }
     }
 
