@@ -17,17 +17,15 @@ public class MoveArmToTarget extends CommandBase {
   private double targetY;
   private double targetPitch;
   private double targetRoll;
-  private int targetIndex;
 
   private boolean isDone;
 
 
   /** Creates a new MoveArmToTarget. */
-  public MoveArmToTarget(int targetIndex, boolean isCube, Constants.Target target, LegAnkleSubsystem legAnkleSubsystem) {
+  public MoveArmToTarget(boolean isCube, Constants.Target target, LegAnkleSubsystem legAnkleSubsystem) {
     this.isCube = isCube;
     this.legAnkleSubsystem = legAnkleSubsystem;
     this.target = target;
-    this.targetIndex = targetIndex;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(legAnkleSubsystem);
 

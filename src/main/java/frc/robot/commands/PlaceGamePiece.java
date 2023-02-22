@@ -5,13 +5,10 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
-import frc.robot.FieldPosManager;
 import frc.robot.JoyUtil;
-import frc.robot.FieldPosManager.fieldSpot2d;
 import frc.robot.commands.PlaceGamePieceCommands.MoveArmToTarget;
 import frc.robot.commands.PlaceGamePieceCommands.MoveRobotToGrid;
 import frc.robot.commands.PlaceGamePieceCommands.ReleaseGameObject;
@@ -31,28 +28,23 @@ public class PlaceGamePiece extends SequentialCommandGroup {
   public ReidPrototypeSubsystem grabberSubsystem;
   public ProfiledPIDController thetaPidController;
   public JoyUtil controller;
-  public FieldPosManager fieldPositionManager;
-  public int poseIndex;
-  public Pose2d targetPose;
 
   private EventLoop rightPOVBindingEventLoop;
   private EventLoop leftPOVBindingEventLoop;
 
   /** Creates a new PlaceGamePiece. */
-  public PlaceGamePiece(FieldPosManager fieldPosManager, DriveSubsystem driveSubsystem, LegAnkleSubsystem legAnkleSubsystem, ReidPrototypeSubsystem grabberSubsystem, ProfiledPIDController thetaPidController, JoyUtil controller, int poseIndex) {
-    this.fieldPositionManager = fieldPosManager;
+  public PlaceGamePiece(DriveSubsystem driveSubsystem, LegAnkleSubsystem legAnkleSubsystem, ReidPrototypeSubsystem grabberSubsystem, ProfiledPIDController thetaPidController, JoyUtil controller, int poseIndex) {
     this.driveSubsystem = driveSubsystem;
     this.legAnkleSubsystem = legAnkleSubsystem;
     this.grabberSubsystem = grabberSubsystem;
     this.thetaPidController = thetaPidController;
     this.controller = controller;
-    this.poseIndex = poseIndex;
     
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands( // H! TODO Make the target pose based on the index passed in and the FieldPositionManager pose array
-      new MoveRobotToGrid(fieldPosManager.get2dFieldPose(FieldPosManager.fieldSpot2d.scoringPosition, true, poseIndex), driveSubsystem, controller, thetaPidController),
-      new MoveArmToTarget(poseIndex, isCube, target, legAnkleSubsystem),
+      new MoveRobotToGrid(null, driveSubsystem, controller, thetaPidController),
+      new MoveArmToTarget(isCube, target, legAnkleSubsystem),
       new ReleaseGameObject(isCube, target, grabberSubsystem)
     );
 
@@ -68,34 +60,18 @@ public class PlaceGamePiece extends SequentialCommandGroup {
 
 
 
-  public PlaceGamePiece(FieldPosManager fieldPosManager, DriveSubsystem driveSubsystem, LegAnkleSubsystem legAnkleSubsystem, ReidPrototypeSubsystem grabberSubsystem, ProfiledPIDController thetaPidController, JoyUtil controller) {
-    this(fieldPosManager, driveSubsystem, legAnkleSubsystem, grabberSubsystem, thetaPidController, controller, fieldPosManager.getNearestScoringZoneIndex() /* H! TODO Needs to be integrated with finding the closest pose */);
+  public PlaceGamePiece(DriveSubsystem driveSubsystem, LegAnkleSubsystem legAnkleSubsystem, ReidPrototypeSubsystem grabberSubsystem, ProfiledPIDController thetaPidController, JoyUtil controller) {
+    this(driveSubsystem, legAnkleSubsystem, grabberSubsystem, thetaPidController, controller, -1 /* H! TODO Needs to be integrated with finding the closest pose */);
   }
 
 
   public void onPOVRight() {
     this.cancel();
-    new PlaceGamePiece(fieldPositionManager, driveSubsystem, legAnkleSubsystem, grabberSubsystem, thetaPidController, controller, negativeSafeMod(poseIndex + 1, 9)).schedule();
+    new PlaceGamePiece(driveSubsystem, legAnkleSubsystem, grabberSubsystem, thetaPidController, controller).schedule();
   }
   
   public void onPOVLeft() {
     this.cancel();
-    new PlaceGamePiece(fieldPositionManager, driveSubsystem, legAnkleSubsystem, grabberSubsystem, thetaPidController, controller, negativeSafeMod(poseIndex - 1, 9)).schedule();
-  }
-
-  /*private static int loopIndex(int min, int max, int x) {
-    if (x > max) {
-      return negativeSafeMod(x - min,  max - min) + max;
-    } else if (x < min) {
-      return negativeSafeMod(x - min,  max - min) + max;
-    }
-    return x;
-  }*/
-
-  private static int negativeSafeMod(int a, int b) {
-    if (a >= 0) {
-      return a % b;
-    }
-    return ((a % b) + b) % b;
+    new PlaceGamePiece(driveSubsystem, legAnkleSubsystem, grabberSubsystem, thetaPidController, controller).schedule();
   }
 }
