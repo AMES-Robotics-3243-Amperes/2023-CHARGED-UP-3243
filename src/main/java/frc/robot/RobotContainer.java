@@ -81,7 +81,7 @@ public class RobotContainer {
       DriveConstants.AutoConstants.kThetaControllerConstraints);
     thetaPidController.enableContinuousInput(-Math.PI, Math.PI);
 
-    //m_driveSubsystem.setDefaultCommand(m_SwerveTeleopCommand);
+    m_driveSubsystem.setDefaultCommand(m_SwerveTeleopCommand);
     m_driveSubsystem.resetPose();
 
 
