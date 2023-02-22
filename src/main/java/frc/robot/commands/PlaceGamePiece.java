@@ -25,7 +25,7 @@ import frc.robot.subsystems.ReidPrototypeSubsystem;
 public class PlaceGamePiece extends SequentialCommandGroup {
 
   public boolean isCube;
-  public Constants.Target target;
+  public FieldPosManager.fieldSpot3d target;
   public DriveSubsystem driveSubsystem;
   public LegAnkleSubsystem legAnkleSubsystem;
   public ReidPrototypeSubsystem grabberSubsystem;
@@ -52,7 +52,7 @@ public class PlaceGamePiece extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands( // H! TODO Make the target pose based on the index passed in and the FieldPositionManager pose array
       new MoveRobotToGrid(fieldPosManager.get2dFieldObjectPose(FieldPosManager.fieldSpot2d.scoringPosition, true, poseIndex), driveSubsystem, controller, thetaPidController),
-      new MoveArmToTarget(poseIndex, isCube, target, legAnkleSubsystem),
+      new MoveArmToTarget(poseIndex, isCube, target, legAnkleSubsystem, fieldPosManager),
       new ReleaseGameObject(isCube, target, grabberSubsystem)
     );
 
