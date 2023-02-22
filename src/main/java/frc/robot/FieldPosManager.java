@@ -150,6 +150,36 @@ public class FieldPosManager {
         }
     }
 
+    /** H! 
+     * Assumes ofCurrentAlliance is true
+     * 
+     * @param robotPose The current robot position
+     * @return the index for the nearest pose that you can score at
+     */
+    public int getNearestScoringZoneIndex(Pose2d robotPose) {
+        return getNearestScoringZoneIndex(robotPose, true);
+    }
+
+    /** H! 
+     * Assumes robotPose is the current robot position
+     * 
+     * @param ofCurrentAlliance The current robot position
+     * @return the index for the nearest pose that you can score at
+     */
+    public int getNearestScoringZoneIndex(boolean ofCurrentAlliance) {
+        return getNearestScoringZoneIndex(getRobotPose(), ofCurrentAlliance);
+    }
+
+    /** H! 
+     * Assumes robotPose is the current robot position, and that ofCurrentAlliance is true
+     * 
+     * @return the index for the nearest pose that you can score at
+     */
+    public int getNearestScoringZoneIndex() {
+        return getNearestScoringZoneIndex(getRobotPose(), true);
+    }
+
+
     /**
      * A function to find the 2d poses as a top-down view of selected field elements.
      * IDs correspond to the target you're looking for, and can be represented by the following diagram of the field,
