@@ -51,7 +51,7 @@ public class PlaceGamePiece extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands( // H! TODO Make the target pose based on the index passed in and the FieldPositionManager pose array
-      new MoveRobotToGrid(fieldPosManager.get2dFieldPose(FieldPosManager.fieldSpot2d.scoringPosition, true, poseIndex), driveSubsystem, controller, thetaPidController),
+      new MoveRobotToGrid(fieldPosManager.get2dFieldObjectPose(FieldPosManager.fieldSpot2d.scoringPosition, true, poseIndex), driveSubsystem, controller, thetaPidController),
       new MoveArmToTarget(poseIndex, isCube, target, legAnkleSubsystem),
       new ReleaseGameObject(isCube, target, grabberSubsystem)
     );
