@@ -308,31 +308,31 @@ public final class Constants {
 
     public static class PID {
       public static class Extension {
-        public static final double P  = 3.5;// H! 2.0
+        public static final double P  = 3.5 * 0;// H! 2.0
         public static final double I  = 0.0;
         public static final double D  = 0.0;
         public static final double FF = 0.01 * 0;
       }
 
       public static class Pivot {
-        public static final double P  = 1.0;// H! 5.0
+        public static final double P  = 1.0 * 0;// H! 5.0
         public static final double I  = 0.0;
         public static final double D  = 0.0;
         public static final double FF = 0.1 * 0;
       }
 
       public static class Pitch {
-        public static final double P  = 0.75;
-        public static final double I  = 0.0125;
+        public static final double P  = 0.75 * 0;
+        public static final double I  = 0.0125 * 0;
         public static final double D  = 0.0;
-        public static final double FF = 0.01;
+        public static final double FF = 0.01 * 0;
       }
 
       public static class Roll {
-        public static final double P  = 1.5;
+        public static final double P  = 1.5 * 0;
         public static final double I  = 0.0;
-        public static final double D  = 0.01;
-        public static final double FF = 0.1;
+        public static final double D  = 0.01 * 0;
+        public static final double FF = 0.1 * 0;
       }
     }
 
@@ -352,15 +352,15 @@ public final class Constants {
     //&& x and y max and min from pivot in meters
     public static final double maxX = 0.535069 + 1.2192;
     public static final double minX = -0.277731 - 1.2192;
-    public static final double maxY = 1.9812 - 0.476364 ;
+    public static final double maxY = 1.9812 - 0.476364;
     public static final double minY = 0 - 0.476364;
 
     public static final int pivotCurrentLimit = 30; // H! This is a temporary change! It was 30 before.
     public static final int extensionCurrentLimit = 10; // H! This is a temporary change! It was 20 before.
-    public static final int pitchCurrentLimit = 15; // H! This is a temporary change! It was 10 before. // :D hi I just changed this from 30 to 15
+    public static final int pitchCurrentLimit = 25; // H! This is a temporary change! It was 10 before. // :D hi I just changed this from 30 to 15
     public static final int rollCurrentLimit = 5; // H! This is a temporary change! It was 10 before. // :D hi I just changed this from 2 to 5
 
-    public static final int NEO1650CurrentLimitHard = 20; // H! This is a temporary change! It was 40 before.
+    public static final int NEO1650CurrentLimitHard = 40; // H! This is a temporary change! It was 40 before.
     public static final int NEO550CurrentLimitHard = 40; // H! This is a temporary change! It was 20 before.
 
     public static final double atSetpointThreshold = 0.005;
