@@ -328,28 +328,28 @@ public final class Constants {
 
     public static class PID {
       public static class Extension {
-        public static final double P = 2.0;
+        public static final double P = 2.0 * 0;
         public static final double I = 0.0;
         public static final double D = 0.0;
-        public static final double FF = 0.01;
+        public static final double FF = 0.01 * 0;
       }
 
       public static class Pivot {
-        public static final double P = 5.0;
+        public static final double P = 5.0 * 0;
         public static final double I = 0.0;
         public static final double D = 0.0;
-        public static final double FF = 0.1;
+        public static final double FF = 0.1 * 0;
       }
 
       public static class Pitch {
-        public static final double P = 0.2;
+        public static final double P = 0.2 * 0;
         public static final double I = 0.0;
         public static final double D = 0.0;
         public static final double FF = 0.0;
       }
 
       public static class Roll {
-        public static final double P = 0.2;
+        public static final double P = 0.2 * 0;
         public static final double I = 0.0;
         public static final double D = 0.0;
         public static final double FF = 0.0;
