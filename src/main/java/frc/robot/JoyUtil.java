@@ -1,13 +1,7 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType; 
-
-import frc.robot.Constants;
 
 /** ++ we'll use this class to write methods that help us process joystick inputs
 * and will mostly be for drive train things, and will include things like:

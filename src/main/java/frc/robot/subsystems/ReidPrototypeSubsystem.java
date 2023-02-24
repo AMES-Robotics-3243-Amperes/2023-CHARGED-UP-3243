@@ -14,14 +14,14 @@ import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.ControlType;
 
-import frc.robot.Constants;
+import static frc.robot.Constants.Grabber.*;
 
 public class ReidPrototypeSubsystem extends SubsystemBase {
 
   // ££ Creates all of the motor and the encoder; defines the PID controller
-  CANSparkMax grabberMotor = new CANSparkMax(Constants.kGrabberMotorId, MotorType.kBrushless);
-  CANSparkMax compliantMotorZero = new CANSparkMax(Constants.kCompliantMotorIdOne, MotorType.kBrushless);
-  CANSparkMax compliantMotorOne = new CANSparkMax(Constants.kCompliantMotorIdTwo, MotorType.kBrushless);
+  CANSparkMax grabberMotor = new CANSparkMax(kGrabberMotorId, MotorType.kBrushless);
+  CANSparkMax compliantMotorZero = new CANSparkMax(kCompliantMotorIdOne, MotorType.kBrushless);
+  CANSparkMax compliantMotorOne = new CANSparkMax(kCompliantMotorIdTwo, MotorType.kBrushless);
   private final SparkMaxAbsoluteEncoder grabberEncoder;
   private final SparkMaxPIDController PIDController;
   private Boolean opening = false;
@@ -30,9 +30,9 @@ public class ReidPrototypeSubsystem extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
   public ReidPrototypeSubsystem() {
     // ££ Creates the PID Controller and the Absolute encoder from the motor and sets the initial current limit
-    grabberMotor.setSecondaryCurrentLimit(Constants.kCurrentLimit);
-    compliantMotorZero.setSecondaryCurrentLimit(Constants.kCurrentLimit);
-    compliantMotorOne.setSecondaryCurrentLimit(Constants.kCurrentLimit);
+    grabberMotor.setSecondaryCurrentLimit(kCurrentLimit);
+    compliantMotorZero.setSecondaryCurrentLimit(kCurrentLimit);
+    compliantMotorOne.setSecondaryCurrentLimit(kCurrentLimit);
     PIDController = grabberMotor.getPIDController();
     grabberEncoder = grabberMotor.getAbsoluteEncoder(Type.kDutyCycle);
     PIDController.setFeedbackDevice(grabberEncoder);  }
@@ -46,8 +46,8 @@ public class ReidPrototypeSubsystem extends SubsystemBase {
   }
 
   public void openGrabber() {
-    setPIDValues(Constants.kPositionP, Constants.kPositionI, Constants.kPositionD, Constants.kPositionFF);
-    PIDController.setReference(Constants.kNegativeEncoderRotationLimit, ControlType.kPosition);
+    setPIDValues(kPositionP, kPositionI, kPositionD, kPositionFF);
+    PIDController.setReference(kNegativeEncoderRotationLimit, ControlType.kPosition);
     compliantMotorZero.set(0);
     compliantMotorOne.set(0);
     opening = true;
@@ -55,10 +55,10 @@ public class ReidPrototypeSubsystem extends SubsystemBase {
   }
 
   public void closeGrabber() {
-    setPIDValues(Constants.kPositionP, Constants.kPositionI, Constants.kPositionD, Constants.kPositionFF);
-    PIDController.setReference(Constants.kPositiveEncoderRotationLimit, ControlType.kPosition);
-    compliantMotorZero.set(Constants.kWheelSpeed);
-    compliantMotorOne.set(Constants.kWheelSpeed);
+    setPIDValues(kPositionP, kPositionI, kPositionD, kPositionFF);
+    PIDController.setReference(kPositiveEncoderRotationLimit, ControlType.kPosition);
+    compliantMotorZero.set(kWheelSpeed);
+    compliantMotorOne.set(kWheelSpeed);
     opening = false;
     closing = true;
   }
@@ -76,9 +76,9 @@ public class ReidPrototypeSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Actual Current", grabberMotor.getOutputCurrent());
     SmartDashboard.putNumber("Absolute Encoder", grabberEncoder.getPosition());
     
-    if (grabberEncoder.getPosition() > (Constants.kPositiveEncoderRotationLimit - 0.02) && !opening) {
-      setPIDValues(Constants.kCurrentP, Constants.kCurrentI, Constants.kCurrentD, Constants.kCurrentFF);
-      PIDController.setReference(Constants.kCurrentTarget, ControlType.kCurrent);
+    if (grabberEncoder.getPosition() > (kPositiveEncoderRotationLimit - 0.02) && !opening) {
+      setPIDValues(kCurrentP, kCurrentI, kCurrentD, kCurrentFF);
+      PIDController.setReference(kCurrentTarget, ControlType.kCurrent);
       compliantMotorZero.set(0);
       compliantMotorOne.set(0);
     }
