@@ -39,11 +39,11 @@ public void initialize() {}
   // Called every time the scheduler runs while the command is scheduled.
 @Override
 public void execute() {
-    if (m_subsystem.targets.isEmpty() != true){
+    if (PhotonVisionSubsystem.targets.isEmpty() != true){
       System.out.print(botPose);
-      botX = m_subsystem.checkRobotPosition().getX();
-      botY = m_subsystem.checkRobotPosition().getY();
-      botSpin = m_subsystem.checkRobotPosition().getRotation().getAngle();
+      botX = PhotonVisionSubsystem.checkRobotPosition().getX();
+      botY = PhotonVisionSubsystem.checkRobotPosition().getY();
+      botSpin = PhotonVisionSubsystem.checkRobotPosition().getRotation().getAngle();
 
 
       SmartDashboard.putNumber("robot X", botX);
