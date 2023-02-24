@@ -28,6 +28,11 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LegAnkleSubsystem;
 import frc.robot.subsystems.ReidPrototypeSubsystem;
 import frc.robot.subsystems.ShuffleboardSubsystem;
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.commands.ReidPrototypeCommand;
+import frc.robot.subsystems.ReidPrototypeSubsystem;
+import edu.wpi.first.wpilibj2.command.Command;
 
 import java.util.List;
 
@@ -115,6 +120,10 @@ public class RobotContainer {
    * joysticks}.
    */
   public void configureBindings() {
+  }
+
+  public void teleopInit() {
+    m_reidPrototypeSubsystem.resetStateValues();
   }
 
   public Command getAutonomousCommand() {

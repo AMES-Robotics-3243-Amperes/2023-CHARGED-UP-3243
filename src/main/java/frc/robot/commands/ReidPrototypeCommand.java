@@ -40,19 +40,13 @@ public class ReidPrototypeCommand extends CommandBase {
   public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
-  // ££ In brevity: If the X button is pressed the compliant motors will spin, if the A button is pressed PID tuning can begin. Tune by changing the values that are passed to setPIDValues()
+  // ££ In brevity: If the X button is pressed the compliant motors will spin, if the B button is pressed the grabber will close, if the Y button is pressed the grabber will open, and if the A button is pressed PID tuning can begin. Tune by changing the values that are passed to setPIDValues()
   @Override
   public void execute() {
     if (m_controller.getLeftBumperPressed()) {
       m_reidPrototypeSubsystem.closeGrabber();
     } else if (m_controller.getRightBumperPressed()) {
       m_reidPrototypeSubsystem.openGrabber();
-    } else if (m_controller.getBButtonPressed()) {
-      m_reidPrototypeSubsystem.setCurrentReference(true);
-    } else if (m_controller.getAButtonPressed()) {
-      m_reidPrototypeSubsystem.setCurrentReference(false);
-    } else if (m_controller.getBackButtonPressed()) {
-      m_reidPrototypeSubsystem.stopGrabber();
     }
   }
  
