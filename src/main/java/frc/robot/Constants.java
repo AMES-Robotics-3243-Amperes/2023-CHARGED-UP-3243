@@ -324,6 +324,8 @@ public final class Constants {
       public static final int armExtension = 7;
       public static final int WristPitch = 6;
       public static final int WristRoll = 20;
+      public static final int relative = 0;
+      public static final int absolute = 0;
     }
 
     public static class PID {
