@@ -2,10 +2,8 @@ package frc.robot.commands;
 
 import frc.robot.subsystems.PhotonVisionSubsystem;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.Subsystem;
 
 /** An example command that uses an example subsystem. */
 public class PhotonVisionCommand extends CommandBase {

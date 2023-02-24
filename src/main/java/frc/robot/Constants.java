@@ -9,7 +9,6 @@ import edu.wpi.first.math.geometry.Pose3d;
 
 import com.revrobotics.CANSparkMax.IdleMode;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -34,16 +33,26 @@ public final class Constants {
   // ££ Constants for the Grabber
   public static final class Grabber {
     public static final int kControllerPort = 0;
-    public static final double kWheelSpeed = 0.2;
-    public static final double kGrabberSpeed = 0.05;
-    public static final double kPositiveEncoderRotationLimit = 0.41;
-    public static final double kNegativeEncoderRotationLimit = 0.3;
+    public static final double kWheelSpeed = 0.3;
+    public static final double kGrabberSpeed = 0.2;
+    public static final double kPositiveEncoderRotationLimit = 0.4;
+    public static final double kNegativeEncoderRotationLimit = 0.25;
     public static final int kGrabberMotorId = 16;
     public static final int kCompliantMotorIdOne = 1;
-    public static final int kCompliantMotorIdTwo = 10;
-    public static final double ktargetAmperage = 4.0;
-    public static final int kCurrentLimit = 7;
+    public static final int kCompliantMotorIdTwo = 60;
+    public static final int kCurrentLimit = 15;
+    public static final int kCurrentTarget = 2;
     public static final int kGearRatio = 25;
+
+    public static final double kPositionP = 7;
+    public static final double kPositionI = 0;
+    public static final double kPositionD = 0;
+    public static final double kPositionFF = 0.03;
+
+    public static final double kCurrentP = 0.03;   
+    public static final double kCurrentI = 0;   
+    public static final double kCurrentD = 0;   
+    public static final double kCurrentFF = 0.01; 
   }
 
   /** ++ constants for DRIVE TRAIN -------------------------------------------*/
