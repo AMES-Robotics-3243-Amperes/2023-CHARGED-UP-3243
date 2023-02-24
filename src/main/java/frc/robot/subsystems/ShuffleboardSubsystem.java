@@ -116,27 +116,19 @@ public class ShuffleboardSubsystem extends SubsystemBase {
       case goChargeStation:
         
        return SmartDashboard.getBoolean("doCharge", true);
+
+      case goUpperRoute:
+
+        return SmartDashboard.getBoolean("doUpperRoute", true);
+
+      case goLowerRoute:
+
+        return SmartDashboard.getBoolean("doLowerRoute", true);
     
       default:
         return false;
     }
   }
-
-  public boolean ShuffleboardBooleanInput(ShuffleBoardInput shuffleInput) {
-    switch (shuffleInput) {
-      case goUpperRoute:
-          
-       return SmartDashboard.getBoolean("doUpperRoute", true);
-       
-      case goLowerRoute:
-     
-       return SmartDashboard.getBoolean("doLowerRoute", true);
-
-      default:
-       return false;
-    }
-  }
-
 
   public double ShuffleBoardNumberInput(ShuffleBoardInput shuffleInput){
     switch (shuffleInput) {
@@ -169,6 +161,7 @@ public class ShuffleboardSubsystem extends SubsystemBase {
        return SmartDashboard.getNumber("placePiece3", 0);
 
       default:
+
        return -1;
         
     }
