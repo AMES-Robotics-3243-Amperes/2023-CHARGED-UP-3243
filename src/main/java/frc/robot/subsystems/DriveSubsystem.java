@@ -44,8 +44,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    m_fieldPosManager.updateFieldPosWithSwerveData(
-      new Pose2d(m_imuSubsystem.getDisplacement(), getHeading()));
+    m_fieldPosManager.updateFieldPosWithSwerveData(new Pose2d(m_imuSubsystem.getDisplacement(), getHeading()));
   }
 
   /**
@@ -88,10 +87,7 @@ public class DriveSubsystem extends SubsystemBase {
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.kMaxMetersPerSecond);
 
     // <> set desired wheel speeds
-    m_frontLeft.setDesiredState(swerveModuleStates[0], false);
-    m_frontRight.setDesiredState(swerveModuleStates[1], false);
-    m_rearLeft.setDesiredState(swerveModuleStates[2], false);
-    m_rearRight.setDesiredState(swerveModuleStates[3], false);
+    setModuleStates(swerveModuleStates, false);
   }
 
   /**
@@ -107,7 +103,7 @@ public class DriveSubsystem extends SubsystemBase {
   /**
    * <> set the swerve modules' desired states
    *
-   * @param desiredStates The desired SwerveModule states.
+   * @param desiredStates the desired SwerveModule states
    */
   public void setModuleStates(SwerveModuleState[] desiredStates) {
     // <> desaturate wheel speeds
@@ -118,6 +114,23 @@ public class DriveSubsystem extends SubsystemBase {
     m_frontRight.setDesiredState(desiredStates[1], true);
     m_rearLeft.setDesiredState(desiredStates[2], true);
     m_rearRight.setDesiredState(desiredStates[3], true);
+  }
+
+  /**
+   * <> set the swerve modules' desired states
+   *
+   * @param desiredStates        the desired SwerveModule states
+   * @param allowLowSpeedTurning if the wheels should turn at low speeds
+   */
+  public void setModuleStates(SwerveModuleState[] desiredStates, boolean allowLowSpeedTurning) {
+    // <> desaturate wheel speeds
+    SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, DriveConstants.kDrivingSpeedDamper);
+
+    // <> set the desired states
+    m_frontLeft.setDesiredState(desiredStates[0], allowLowSpeedTurning);
+    m_frontRight.setDesiredState(desiredStates[1], allowLowSpeedTurning);
+    m_rearLeft.setDesiredState(desiredStates[2], allowLowSpeedTurning);
+    m_rearRight.setDesiredState(desiredStates[3], allowLowSpeedTurning);
   }
 
   /**
