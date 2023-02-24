@@ -142,7 +142,7 @@ public final class Constants {
         public static final int kFrontLeftDrivingCanId = 3;
         public static final int kRearLeftDrivingCanId = 9;
         public static final int kFrontRightDrivingCanId = 5;
-        public static final int kRearRightDrivingCanId = 1;
+        public static final int kRearRightDrivingCanId = 13;
 
         // <> turning ids
         public static final int kFrontLeftTurningCanId = 11;
@@ -363,8 +363,28 @@ public final class Constants {
    * ++ constants for PHOTONVISION -----------------------------------------------------
    */
   public static final class PhotonVision {
-    public static final String cameraName1 = "Microsoft_LifeCam_HD-3000";
+    // :> This fills me with nothing but dread
+    public static final String cameraName1 = "Arducam_OV9281_MMN1";
     public static final String cameraName2 = "Global_Shutter_Camera";
+  }
+  /**  ++ constants for limelight stuff, anything involved with calculations or keys etc */
+  public static final class Limelight {
+    // :> I desperately need to change all of these when they change, these are definitely not the final values
+    // ++ ====== actual limelight values ============
+        /** angle of the limelight; degrees up from horizontal */
+    public static final double limelightAngleOffset = 40.7;
+
+    // ++ ======= field/robot measurements ============ (all in meters)
+    public static final double pole1Height = .865;
+    public static final double pole2Height = 1.17;
+
+    /** ++ this should be the distance of the limelight above the ground */
+    public static final double lemonHeight = 1.41666667; 
+     /** this is the difference in height between the shooter and the hub, in meters */
+     public static final double LemontoPole1Height = pole1Height - lemonHeight;
+     public static final double LemontoPole2Height = pole2Height - lemonHeight;
+
+     // +
   }
 
   /**
