@@ -81,7 +81,7 @@ public class ReidPrototypeSubsystem extends SubsystemBase {
     if (grabberEncoder.getPosition() > (kPositiveEncoderRotationLimit - 0.02) && !opening) {
       setPIDValues(kCurrentP, kCurrentI, kCurrentD, kCurrentFF);
       PIDController.setReference(kCurrentTarget, ControlType.kCurrent);
-      compliantMotorZero.set(0);sr
+      compliantMotorZero.set(0);
       compliantMotorOne.set(0);
     }
   }
