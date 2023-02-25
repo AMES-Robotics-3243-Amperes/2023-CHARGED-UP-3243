@@ -71,14 +71,14 @@ public final class Constants {
       // <> pidf values / min and max outputs
       public static final class PIDF {
 
-        public static final double kDrivingP = 0.35;
+        public static final double kDrivingP = 0.4;
         public static final double kDrivingI = 0;
         public static final double kDrivingD = 0;
         public static final double kDrivingFF = 0;
         public static final double kDrivingMinOutput = -1;
         public static final double kDrivingMaxOutput = 1;
 
-        public static final double kTurningP = 0.4;
+        public static final double kTurningP = 0.45;
         public static final double kTurningI = 0;
         public static final double kTurningD = 0;
         public static final double kTurningFF = 0;
@@ -133,7 +133,7 @@ public final class Constants {
       // <> max speed
       public static final double kMaxMetersPerSecond = 2.5;
       // <> this should be true
-      public static final boolean kGyroReversed = true;
+      public static final boolean kGyroReversed = false;
 
       // <> spark max ids
       public static final class IDs {
@@ -330,28 +330,28 @@ public final class Constants {
 
     public static class PID {
       public static class Extension {
-        public static final double P = 2.0;
+        public static final double P = 2.0 * 0;
         public static final double I = 0.0;
         public static final double D = 0.0;
-        public static final double FF = 0.01;
+        public static final double FF = 0.01 * 0;
       }
 
       public static class Pivot {
-        public static final double P = 5.0;
+        public static final double P = 5.0 * 0;
         public static final double I = 0.0;
         public static final double D = 0.0;
         public static final double FF = 0.1;
       }
 
       public static class Pitch {
-        public static final double P = 0.2;
+        public static final double P = 0.2 * 0;
         public static final double I = 0.0;
         public static final double D = 0.0;
         public static final double FF = 0.0;
       }
 
       public static class Roll {
-        public static final double P = 0.2;
+        public static final double P = 0.2 * 0;
         public static final double I = 0.0;
         public static final double D = 0.0;
         public static final double FF = 0.0;

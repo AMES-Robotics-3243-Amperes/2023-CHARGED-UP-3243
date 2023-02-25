@@ -69,7 +69,8 @@ public class IMUSubsystem extends SubsystemBase {
    * <>
    *
    * @return the calculated angle of the charge station (positive values mean that
-   * turning to face directly 0 degrees and driving forwards will go "up" the charge station)
+   * turning to face directly 0 degrees and having the robot point upwards will
+   * result in a positive angle)
    * @apiNote this assumes that, if the robot were facing 0 degrees,
    * it would only experience a change in pitch when on the charge station:
    * the charge station must be parallel with the gyro's idea of the game field
@@ -80,22 +81,23 @@ public class IMUSubsystem extends SubsystemBase {
     Rotation2d upwardRotation = getInclinationRadians();
 
     // <> extract the signs of the cos and sin of a shifted angle
-    boolean cosPositive = Math.cos(getYaw().getRadians() - Math.PI / 4) >= 0;
-    boolean sinPositive = Math.sin(getYaw().getRadians() - Math.PI / 4) >= 0;
+    boolean cosPositive = Math.cos(getYaw().getRadians() + Math.PI / 4) >= 0;
+    boolean sinPositive = Math.sin(getYaw().getRadians() + Math.PI / 4) >= 0;
 
     // <> and use their signs to figure out what way we're
     // facing and then determine the sign of the charge angle
     if (cosPositive && sinPositive) {
       // <> facing forwards
-      return m_imu.getPitch() >= 0 ? upwardRotation : upwardRotation.times(-1);
+      return m_imu.getPitch() <= 0 ? upwardRotation : upwardRotation.times(-1);
     } else if (!cosPositive && !sinPositive) {
       // <> facing backwards
-      return m_imu.getPitch() < 0 ? upwardRotation : upwardRotation.times(-1);
+      return m_imu.getPitch() > 0 ? upwardRotation : upwardRotation.times(-1);
     } else if (!cosPositive) {
       // <> facing left
       return m_imu.getRoll() >= 0 ? upwardRotation.times(-1) : upwardRotation;
     } else {
       // <> facing right
+
       return m_imu.getRoll() < 0 ? upwardRotation.times(-1) : upwardRotation;
     }
   }
