@@ -79,7 +79,7 @@ public class RobotContainer {
 
     m_photonVisionSubsystem.setDefaultCommand(m_photonVisionCommand);
 
-    m_legAnkleSubsystem.setDefaultCommand(m_legAnkleCommand);
+    m_legAnkleSubsystem.setDefaultCommand(m_WristCommand);
 
     // Configure the trigger bindings
     configureBindings();

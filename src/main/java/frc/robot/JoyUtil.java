@@ -152,82 +152,14 @@ public final class JoyUtil extends XboxController {
 
 
 
-
-
-    // ++ these are the methods called above ===================================================================
-
-    public static double posWithDeadzone(double pos) {
-        // ++ takes input and compares it to deadzone size
-        // returns joystick size if it's greater than the deadzone, 0 otherwise
-
-        return MathUtil.applyDeadband(pos, Constants.Joysticks.deadZoneSize);
-    }
-
-  
-    public static double lowPassFilter(double pos, double prevFilterJoy, double filterStrength) {
-        // ++ this method smoothes out the joystick input so
-        // ++ "prevFilterJoy" is the previous output of this function
-        double filteredSpeed = ((filterStrength * prevFilterJoy) + ((1- filterStrength) * pos));
-        return filteredSpeed;
-    }
-
-
-    public static double joyCurve(double pos) {
-        // ++ this method will take the linear joystick input and puts it into a polynomial curve
-
-        double a = Constants.Joysticks.aCoeff; 
-        double b = Constants.Joysticks.bCoeff;
-        int firstPower = Constants.Joysticks.firstPower;
-        int secondPower = Constants.Joysticks.secondPower; 
-
-        return ( (a * (Math.pow(pos,firstPower))) + (b * (Math.pow(pos,secondPower))) ); 
-    }
-
-    public static double fastMode(double pos, double fastmodeInput) {
-        // ++ this method should return an adjusted joystick position with the fastmode
-        // ++ fastmodeInput is the position of the trigger
-
-        double fastmodeConstant = Constants.Joysticks.fastModeMaxMultiplier;
-        double fastmodeMultiplier = (fastmodeInput * fastmodeConstant) + 1.0;
-        double adjustedPos = pos * fastmodeMultiplier;
-        return adjustedPos;
-
-        /* ss finalMultiplier is the damperStrength scaled by the ((Right Trigger scaled by the fastModeMaxMultiplier) + 1)
-        * for instance, if the damperStrength is 0.5 and the fastModeMaxMultiplier is 3, 
-        * when the Right Trigger is 0, Fast Mode is off and the fastModeMaxMultiplier is nullified,
-        * and the finalMultiplier is just damperStrength
-        * when the Right Trigger is 0.5, fastModeMaxMultiplier is halved (1.5), and adds 1 for 2.5
-        * so damperStrength, the default multiplier, is scaled up by half of the Maximum Multiplier
-        * and when the Right Trigger is 1, it's scaled up by the Maximum.
-        * hope that makes sense
-        * I did this because it's a multiplier and it would sure be a shame 
-        * if nullifying the fastmodemultiplier caused the finalmultiplier to be 0,
-        * disabling non fast mode
-        */
-    }
-
-
-    public double composeDriveJoyFunctions(double rawJoyPos, double prevFilterJoy, double filterStrength, double damperStrength){
-        // ++ IMPORTANT: please note that this function now shouldn't be called outside of this class-- this class used to be
-        // ++ just full of methods, but it's now a wrapper class
-    // prevFilteredY = lowPassFilter(rawJoyPos, prevFilteredY, filterStrength);
-    return adjustedPos;
-  }
-
-  public double getRotationWithAdjustments() {
-    // ++ this gets the position on the rotation axis, then adjusts it to what we need
-    // ++ right now, we need a deadzone and then a low pass filter, but that might change later
-
     // ++ the rotation axis is right x
     double rawJoyPos = getRightX();
     double filterStrength = Constants.Joysticks.rotationLowPassFilterStrength;
     double damperStrength = Constants.DriveTrain.DriveConstants.kAngularSpeedDamper;
     double adjustedPos = (lowPassFilter(posWithDeadzone(rawJoyPos), prevFilteredR, filterStrength) * damperStrength);
-    return adjustedPos;
-  }
+  
 
-  public double composeDriveJoyFunctions(double rawJoyPos, double prevFilterJoy, double filterStrength,
-                                         double damperStrength) {
+  public double composeDriveJoyFunctions(double rawJoyPos, double prevFilterJoy, double filterStrength, double damperStrength) {
     // ++ IMPORTANT: please note that this function now shouldn't be called outside of this class-- this class used
       // to be
     // ++ just full of methods, but it's now a wrapper class
