@@ -78,16 +78,16 @@ public class ShuffleboardSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("pickupPiece1", 0);
     SmartDashboard.putNumber("placePiece1", 0);
     SmartDashboard.putNumber("pickupPiece2", 0);
-    SmartDashboard.putNumber("placePiece2", 0 );
+    SmartDashboard.putNumber("placePiece2", 0);
     SmartDashboard.putNumber("pickupPiece3", 0);
     SmartDashboard.putNumber("placePiece3", 0);
     SmartDashboard.putNumber("chargePosition", 0);
 
     //&& Shows the command running for LegAnkleSubsystem
-    SmartDashboard.putString("legAnkleCommandWidget", legAnkleSubsystem.getCurrentCommand().getName());
+    //SmartDashboard.putString("legAnkleCommandWidget", legAnkleSubsystem.getCurrentCommand().getName());
 
     //&& Shows the command running for DriveTrainSubsystem
-    SmartDashboard.putString("driveTrainCommandWidget", driveTrainSubsystem.getCurrentCommand().getName());
+    //SmartDashboard.putString("driveTrainCommandWidget", driveTrainSubsystem.getCurrentCommand().getName());
 
     //&& Shows whether any of the drivetrain motors are overheating
     SmartDashboard.putBoolean("motorTooHot", driveTrainSubsystem.getMotorsOkTemperature());
@@ -101,7 +101,7 @@ public class ShuffleboardSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("seeingApriltag", photonVisionSubsystem.seeingApriltag());
 
     //&& Shows the angle of the charge station as measured by the gyro
-    SmartDashboard.putNumber("chargeStationAngleWidget", imuSubsystem.getChargeLevel().getDegrees());
+    //SmartDashboard.putNumber("chargeStationAngleWidget", imuSubsystem.getChargeLevel().getDegrees());
 
     //&&---------------------------------------------------------------------------------------------
 

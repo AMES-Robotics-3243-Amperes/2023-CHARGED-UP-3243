@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DriveTrain.DriveConstants;
 import frc.robot.commands.ReidPrototypeCommand;
 import frc.robot.commands.SwerveTeleopCommand;
+import frc.robot.commands.WristCommand;
 import frc.robot.subsystems.LegAnkleSubsystem;
 import frc.robot.subsystems.ReidPrototypeSubsystem;
 import frc.robot.subsystems.ShuffleboardSubsystem;
@@ -47,6 +48,7 @@ public class RobotContainer {
 
   public final PhotonVisionCommand m_photonVisionCommand = new PhotonVisionCommand(m_photonVisionSubsystem);
   public final ReidPrototypeCommand m_ReidPrototypeCommand = new ReidPrototypeCommand(m_reidPrototypeSubsystem, secondaryController);
+  public final WristCommand m_legAnkleCommand = new WristCommand(m_legAnkleSubsystem, secondaryController);
 
 
   // <> this is required for creating new swerve trajectory follow commands
@@ -75,6 +77,8 @@ public class RobotContainer {
     //  thetaPidController);
     
     m_photonVisionSubsystem.setDefaultCommand(m_photonVisionCommand);
+
+    m_legAnkleSubsystem.setDefaultCommand(m_legAnkleCommand);
 
     // Configure the trigger bindings
     configureBindings();

@@ -26,7 +26,7 @@ public class SemiAbsoluteEncoder {
     relative = encoderController.getEncoder();
     absolute = encoderController.getAbsoluteEncoder(Type.kDutyCycle);
 
-    relative.setPosition(absolute.getPosition());
+    relative.setPosition(absolute.getPosition()); 
     
    }
 

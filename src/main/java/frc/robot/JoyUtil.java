@@ -147,7 +147,7 @@ public final class JoyUtil extends XboxController {
         // ++ fastmodeInput is the position of the trigger
 
         double fastmodeConstant = Constants.Joysticks.fastModeMaxMultiplier;
-        double fastmodeMultiplier= (fastmodeInput * fastmodeConstant) + 1.0;
+        double fastmodeMultiplier = (fastmodeInput * fastmodeConstant) + 1.0;
         double adjustedPos = pos * fastmodeMultiplier;
         return adjustedPos;
 
@@ -188,7 +188,7 @@ public final class JoyUtil extends XboxController {
         double withDead = posWithDeadzone(rawJoyPos);
         double withFilter = lowPassFilter(withDead, prevFilterJoy, filterStrength);
         double withCurve = joyCurve(withFilter); 
-        double withSpeedMode = fastMode(withCurve, (getRightTriggerAxis() - (getLeftTriggerAxis() * Constants.Joysticks.slowModeMultiplier)));
+        double withSpeedMode = fastMode(withCurve, (getRightTriggerAxis() - (getLeftTriggerAxis() /*&& * Constants.Joysticks.slowModeMultiplier*/)));
         double withDamper = withSpeedMode * Constants.DriveTrain.DriveConstants.kDrivingSpeedDamper;
 
         double adjustedJoyPos = withDamper;
