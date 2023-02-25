@@ -7,12 +7,6 @@ package frc.robot.commands;
 import frc.robot.subsystems.ReidPrototypeSubsystem;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /** An example command that uses an example subsystem. */
 public class ReidPrototypeCommand extends CommandBase {
@@ -40,17 +34,13 @@ public class ReidPrototypeCommand extends CommandBase {
   public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
-  // ££ In brevity: If the X button is pressed the compliant motors will spin, if the A button is pressed PID tuning can begin. Tune by changing the values that are passed to setPIDValues()
+  // ££ In brevity: If the X button is pressed the compliant motors will spin, if the B button is pressed the grabber will close, if the Y button is pressed the grabber will open, and if the A button is pressed PID tuning can begin. Tune by changing the values that are passed to setPIDValues()
   @Override
   public void execute() {
     if (m_controller.getLeftBumperPressed()) {
       m_reidPrototypeSubsystem.closeGrabber();
     } else if (m_controller.getRightBumperPressed()) {
       m_reidPrototypeSubsystem.openGrabber();
-    } else if (m_controller.getBButtonPressed()) {
-      m_reidPrototypeSubsystem.setCurrentReference(true);
-    } else if (m_controller.getAButtonPressed()) {
-      m_reidPrototypeSubsystem.setCurrentReference(false);
     }
   }
  

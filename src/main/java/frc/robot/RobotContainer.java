@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DriveTrain.DriveConstants;
 import frc.robot.commands.ReidPrototypeCommand;
 import frc.robot.commands.SwerveTeleopCommand;
+import frc.robot.commands.WristCommand;
 import frc.robot.subsystems.LegAnkleSubsystem;
 import frc.robot.subsystems.ReidPrototypeSubsystem;
 import frc.robot.subsystems.ShuffleboardSubsystem;
@@ -41,7 +42,7 @@ public class RobotContainer {
   // ++ ----- SUBSYSTEMS -----------
   public final PhotonVisionSubsystem m_photonVisionSubsystem = new PhotonVisionSubsystem(fieldPosManager);
   private final DriveSubsystem m_driveSubsystem = new DriveSubsystem(fieldPosManager);
-  private final LegAnkleSubsystem m_legAnkleSubsystem = new LegAnkleSubsystem();
+  public final LegAnkleSubsystem m_legAnkleSubsystem = new LegAnkleSubsystem();
   private final ReidPrototypeSubsystem m_reidPrototypeSubsystem = new ReidPrototypeSubsystem();
   private final ShuffleboardSubsystem m_shuffleboardSubsystem = new ShuffleboardSubsystem(fieldPosManager, m_legAnkleSubsystem, m_driveSubsystem, m_photonVisionSubsystem, null, m_reidPrototypeSubsystem);
 
@@ -56,6 +57,7 @@ public class RobotContainer {
   //private final SwerveTrajectoryFollowCommand m_SwerveTrajectoryFollowCommand;
   private final SwerveTeleopCommand m_SwerveTeleopCommand = new SwerveTeleopCommand(m_driveSubsystem,
     primaryController);
+  private final WristCommand m_WristCommand = new WristCommand(m_legAnkleSubsystem, secondaryController);
 
   //private final PlaceGamePiece m_placeGamePieceCommand;
   /**
@@ -69,6 +71,12 @@ public class RobotContainer {
 
     m_driveSubsystem.setDefaultCommand(m_SwerveTeleopCommand);
     m_driveSubsystem.resetPose();
+
+
+
+    m_legAnkleSubsystem.setDefaultCommand(m_WristCommand);
+
+    m_reidPrototypeSubsystem.setDefaultCommand(m_ReidPrototypeCommand);
 
     // H! This command is here because it needs thetaPidController to be created for it to be created
     //m_placeGamePieceCommand = new PlaceGamePiece(m_driveSubsystem, m_legAnkleSubsystem, m_reidPrototypeSubsystem,
@@ -95,6 +103,10 @@ public class RobotContainer {
    * joysticks}.
    */
   public void configureBindings() {
+  }
+
+  public void teleopInit() {
+    m_reidPrototypeSubsystem.resetStateValues();
   }
 
   public Command getAutonomousCommand() {

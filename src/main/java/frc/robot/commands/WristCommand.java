@@ -4,11 +4,8 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.JoyUtil;
-import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.JoyUtil;
 import frc.robot.subsystems.LegAnkleSubsystem;
 
 public class WristCommand extends CommandBase {
@@ -30,11 +27,12 @@ public class WristCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_subsystem.moveByXYTheta(m_controller.getLeftX(), -m_controller.getLeftY() , m_controller.getRightY(), m_controller.getRightX());
-    /*
-    if (m_controller.getAButton()) {
-      m_subsystem.moveToXYTheta(0.5, 1.3, 0, 0);
-    }*/
+    //m_subsystem.moveByXYTheta(JoyUtil.posWithDeadzone( m_controller.getLeftX() ), JoyUtil.posWithDeadzone( -m_controller.getLeftY() ), JoyUtil.posWithDeadzone( m_controller.getRightY() ), JoyUtil.posWithDeadzone( -m_controller.getRightX()));
+    
+    m_subsystem.moveManualSetpoints(JoyUtil.posWithDeadzone( m_controller.getLeftX() )/5, JoyUtil.posWithDeadzone( -m_controller.getLeftY() ), JoyUtil.posWithDeadzone( m_controller.getRightY() ), JoyUtil.posWithDeadzone( -m_controller.getRightX()));
+    
+    m_subsystem.deleteThis_doSetpoint=!m_controller.getAButton();
+      //m_subsystem.resetRoll();
   }
 
   // Called once the command ends or is interrupted.
