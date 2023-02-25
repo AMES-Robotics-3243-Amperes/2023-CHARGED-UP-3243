@@ -173,7 +173,6 @@ public class SwerveModule {
    * @return if either of the motors are too hot
    */
   public boolean isTooHot() {
-    return m_drivingSparkMax.getMotorTemperature() > TempConstants.max1650TempCelsius ||
-      m_turningSparkMax.getMotorTemperature() > TempConstants.max550TempCelsius;
+    return m_drivingSparkMax.getMotorTemperature() > TempConstants.max1650TempCelsius || m_turningSparkMax.getMotorTemperature() > TempConstants.max550TempCelsius;
   }
 }

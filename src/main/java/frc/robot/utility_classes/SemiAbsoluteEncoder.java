@@ -1,15 +1,8 @@
 package frc.robot.utility_classes;
-import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
-import com.revrobotics.SparkMaxRelativeEncoder;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
-
-import edu.wpi.first.wpilibj.CAN;
-import frc.robot.Constants.WristAndArm.MotorIDs;
-import frc.robot.subsystems.LegAnkleSubsystem;
 
 public class SemiAbsoluteEncoder {
 

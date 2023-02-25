@@ -1,7 +1,6 @@
 package frc.robot.utility_classes;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import frc.robot.utility_classes.VisionTargetArea;
 
 public class SimulatedFieldPositions {
     public SimulatedFieldPositions() {}

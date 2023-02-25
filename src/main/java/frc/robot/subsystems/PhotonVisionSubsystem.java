@@ -28,7 +28,7 @@ import frc.robot.FieldPosManager;
 public class PhotonVisionSubsystem extends SubsystemBase {
 
 // :> the = new ArrayList is because the code interprets the array as null otherwise.
-static ArrayList<Transform3d> camsToBot = new ArrayList<Transform3d>(); 
+static ArrayList<Transform3d> camsToBot = new ArrayList<Transform3d>();
 ArrayList<PhotonPipelineResult> results = new ArrayList<PhotonPipelineResult>();
 ArrayList<PhotonCamera> cameras = new ArrayList<PhotonCamera>();
 public static ArrayList<PhotonTrackedTarget> targets = new ArrayList<PhotonTrackedTarget>();
@@ -118,11 +118,11 @@ public static final Transform3d camtoBot2 = new Transform3d(
   /**
    * Get the estimated camera position based on photon target data.
    *
-   * @return Pose3d representing the position of the camera on the field, or null if no valid targets are found
+   * @return {@link Pose3d} representing the position of the camera on the field, or null if no valid targets are found
    */
   public static Pose3d checkRobotPosition(){
     // :> I'm so sorry for all of the for loops it is necessary for the three cameras.
-    if (targets.isEmpty() != true){
+    if (!targets.isEmpty()){
       for (int i = 0; i < 1; i++) {
       cameraToTargets.add(targets.get(i).getBestCameraToTarget());
       }
@@ -133,7 +133,7 @@ public static final Transform3d camtoBot2 = new Transform3d(
       for (int j = 0; j < 1; j++) {
       if (tagPoses.get(j).isPresent()){
         robotPoses.add(PhotonUtils.estimateFieldToRobotAprilTag(cameraToTargets.get(j), tagPoses.get(j).get(), camsToBot.get(j)));
-        // :> The .get(j)s correspond to the for loop but and the other one turns it into a Pose3D instead of an optional Pose3D
+        // :> The .get(j)s correspond to the for loop but the other one turns it into a Pose3D instead of an optional Pose3D
         
         
       }
@@ -161,8 +161,8 @@ public static final Transform3d camtoBot2 = new Transform3d(
 
   /**<h2>Finds the average translation between any number of translations</h2>
    * <p>H!</p>
-   * @param translations The tranlsations to average between
-   * @return The average tranlsation
+   * @param translations The translations to average between
+   * @return The average translation
    */
   private static Translation3d averageTranslation3d(Translation3d... translations) {
     int numArguments = translations.length;
@@ -205,7 +205,7 @@ public static final Transform3d camtoBot2 = new Transform3d(
 
 
  /**
-   * Get the Pose3d associated with a given target location
+   * Get the {@link Pose3d} associated with a given target location
    *
    * @param targetID is the selected target to find the Pose3d of, as an integer from 1 to 8
    * @param offset is the offset as a Pose3d where positive offset is from the target towards the center of the field
@@ -214,7 +214,7 @@ public static final Transform3d camtoBot2 = new Transform3d(
    */
 
    public Pose3d getScoringPose(int targetID, Transform3d offset){
-    Optional<Pose3d> tagPose = m_aprilTagFieldLayout.getTagPose(targetID);;
+    Optional<Pose3d> tagPose = m_aprilTagFieldLayout.getTagPose(targetID);
     Pose3d scorePose;
     if (targetID>4){
       scorePose = tagPose.get().plus(offset.times(-1));
@@ -252,12 +252,6 @@ public void simulationPeriodic() {
 
   //&& TODO: define function that returns true if any of the cameras are seeing an Apriltag
   public boolean seeingApriltag() {
-    if (targets.isEmpty() != true) {
-      return true;
-     } 
-     
-     else {
-      return false;
-      }
+    return !targets.isEmpty();
   }
 }

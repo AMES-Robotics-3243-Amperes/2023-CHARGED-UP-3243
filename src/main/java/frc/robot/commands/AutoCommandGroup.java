@@ -16,6 +16,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.DriveTrain.DriveConstants;
 import frc.robot.FieldPosManager;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.ShuffleboardSubsystem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,17 +27,21 @@ import java.util.List;
 public class AutoCommandGroup extends SequentialCommandGroup {
   protected final DriveSubsystem m_driveSubsystem;
   protected final FieldPosManager m_posManager;
+  protected final ShuffleboardSubsystem m_shuffleboardSubsystem;
 
   /**
    * <> creates a new {@link AutoCommandGroup}
    *
    * @param driveSubsystem the {@link DriveSubsystem} to control for driving
    */
-  public AutoCommandGroup(DriveSubsystem driveSubsystem, FieldPosManager posManager) {
+  public AutoCommandGroup(DriveSubsystem driveSubsystem, ShuffleboardSubsystem shuffleboardSubsystem,
+                          FieldPosManager posManager) {
     m_driveSubsystem = driveSubsystem;
     addRequirements(m_driveSubsystem);
 
     m_posManager = posManager;
+
+    m_shuffleboardSubsystem = shuffleboardSubsystem;
 
     // <> this is for all the auto move commands
     ProfiledPIDController thetaPidController = new ProfiledPIDController(
@@ -48,13 +53,16 @@ public class AutoCommandGroup extends SequentialCommandGroup {
 
     ArrayList<Command> autoCommands = new ArrayList<Command>();
 
-    // TODO: get these correct
-    boolean bottom = true;
-    boolean charge = true;
+    boolean bottom = m_shuffleboardSubsystem.ShuffleBoardBooleanInput(
+      ShuffleboardSubsystem.ShuffleBoardInput.goLowerRoute);
+    boolean charge = m_shuffleboardSubsystem.ShuffleBoardBooleanInput(
+      ShuffleboardSubsystem.ShuffleBoardInput.goChargeStation);
 
     Translation2d nearChargeAvoidIntermediatePoint;
     Translation2d farChargeAvoidIntermediatePoint;
 
+    // <> figure out the intermediate points that will be used to avoid
+    // the charge station when going from one side of it to the other
     if (bottom) {
       nearChargeAvoidIntermediatePoint = m_posManager.getAutoPose(FieldPosManager.autoPath.lowerPath, true, 0)
         .getTranslation();
@@ -67,13 +75,80 @@ public class AutoCommandGroup extends SequentialCommandGroup {
         .getTranslation();
     }
 
-    // TODO: get ids and stuff from ShuffleBoard
+    int piece0DropOffID = (int) m_shuffleboardSubsystem.ShuffleBoardNumberInput(
+      ShuffleboardSubsystem.ShuffleBoardInput.piece0Place);
+    int piece1ID = (int) m_shuffleboardSubsystem.ShuffleBoardNumberInput(
+      ShuffleboardSubsystem.ShuffleBoardInput.piece1Pickup);
+    int piece1DropOffID = (int) m_shuffleboardSubsystem.ShuffleBoardNumberInput(
+      ShuffleboardSubsystem.ShuffleBoardInput.piece1Place);
+    int piece2ID = (int) m_shuffleboardSubsystem.ShuffleBoardNumberInput(
+      ShuffleboardSubsystem.ShuffleBoardInput.piece2Pickup);
+    int piece2DropOffID = (int) m_shuffleboardSubsystem.ShuffleBoardNumberInput(
+      ShuffleboardSubsystem.ShuffleBoardInput.piece2Place);
 
-    int piece0ID = 0;
-    int piece1ID = 0;
-    int piece1DropOffID = 0;
-    int piece2ID = 1;
-    int piece2DropOffID = 1;
+    // <> get the pickup and drop off locations of all the pieces
+    // TODO: shift these so that the robot doesn't drive over the piece
+    Pose2d dropOffPiece0Destination = m_posManager.get3dFieldObjectPose(FieldPosManager.fieldSpot3d.highGrabberScoring,
+      true, piece0DropOffID).toPose2d();
+
+    Pose2d pickupPiece1Position = m_posManager.get3dFieldObjectPose(FieldPosManager.fieldSpot3d.centerFieldGamePieces,
+      true, piece1ID).toPose2d();
+    Pose2d dropOffPiece1Destination = m_posManager.get3dFieldObjectPose(FieldPosManager.fieldSpot3d.highGrabberScoring,
+      true, piece1DropOffID).toPose2d();
+
+    Pose2d pickupPiece2Position = m_posManager.get3dFieldObjectPose(FieldPosManager.fieldSpot3d.centerFieldGamePieces,
+      true, piece2ID).toPose2d();
+    Pose2d dropOffPiece2Destination = m_posManager.get3dFieldObjectPose(FieldPosManager.fieldSpot3d.highGrabberScoring,
+      true, piece2DropOffID).toPose2d();
+
+    // <> only add all the commands if neither of the ids are negative
+    if (piece0DropOffID >= 0) {
+      SwerveAutoMoveCommand goToPieceDropOffCommand = new SwerveAutoMoveCommand(m_driveSubsystem,
+        TrajectoryGenerator.generateTrajectory(m_driveSubsystem.getPose(),
+          List.of(farChargeAvoidIntermediatePoint, nearChargeAvoidIntermediatePoint), dropOffPiece0Destination,
+          DriveConstants.AutoConstants.trajectoryConfig), thetaPidController, false);
+      autoCommands.add(goToPieceDropOffCommand);
+
+      // TODO: add drop-off command (talk to hale i think idk who's doing this)
+    }
+
+    // <> only add all the commands if neither of the ids are negative
+    if (!(piece1ID < 0 || piece1DropOffID < 0)) {
+      SwerveAutoMoveCommand goToPieceCommand = new SwerveAutoMoveCommand(m_driveSubsystem,
+        TrajectoryGenerator.generateTrajectory(m_driveSubsystem.getPose(),
+          List.of(nearChargeAvoidIntermediatePoint, farChargeAvoidIntermediatePoint), pickupPiece1Position,
+          DriveConstants.AutoConstants.trajectoryConfig), thetaPidController, false);
+      autoCommands.add(goToPieceCommand);
+
+      // TODO: add pickup command (talk to hale i think idk who's doing this)
+
+      SwerveAutoMoveCommand goToPieceDropOffCommand = new SwerveAutoMoveCommand(m_driveSubsystem,
+        TrajectoryGenerator.generateTrajectory(m_driveSubsystem.getPose(),
+          List.of(farChargeAvoidIntermediatePoint, nearChargeAvoidIntermediatePoint), dropOffPiece1Destination,
+          DriveConstants.AutoConstants.trajectoryConfig), thetaPidController, false);
+      autoCommands.add(goToPieceDropOffCommand);
+
+      // TODO: add drop-off command (talk to hale i think idk who's doing this)
+    }
+
+    // <> only add all the commands if neither of the ids are negative
+    if (!(piece2ID < 0 || piece2DropOffID < 0)) {
+      SwerveAutoMoveCommand goToPieceCommand = new SwerveAutoMoveCommand(m_driveSubsystem,
+        TrajectoryGenerator.generateTrajectory(m_driveSubsystem.getPose(),
+          List.of(nearChargeAvoidIntermediatePoint, farChargeAvoidIntermediatePoint), pickupPiece2Position,
+          DriveConstants.AutoConstants.trajectoryConfig), thetaPidController, false);
+      autoCommands.add(goToPieceCommand);
+
+      // TODO: add pickup command (talk to hale i think idk who's doing this)
+
+      SwerveAutoMoveCommand goToPieceDropOffCommand = new SwerveAutoMoveCommand(m_driveSubsystem,
+        TrajectoryGenerator.generateTrajectory(m_driveSubsystem.getPose(),
+          List.of(farChargeAvoidIntermediatePoint, nearChargeAvoidIntermediatePoint), dropOffPiece2Destination,
+          DriveConstants.AutoConstants.trajectoryConfig), thetaPidController, false);
+      autoCommands.add(goToPieceDropOffCommand);
+
+      // TODO: add drop-off command (talk to hale i think idk who's doing this)
+    }
 
     if (charge) {
       // TODO: get these correct
@@ -93,35 +168,6 @@ public class AutoCommandGroup extends SequentialCommandGroup {
       }
 
       autoCommands.add(Commands.runOnce(m_driveSubsystem::setX));
-    } else {
-      // TODO: get these correct
-
-      int finalPieceID = 0;
-      int finalPieceDropOffID = 0;
-
-      Pose2d pickupPieceDestination = m_posManager.get3dFieldObjectPose(
-        FieldPosManager.fieldSpot3d.centerFieldGamePieces, true, finalPieceID).toPose2d();
-      Pose2d dropOffPieceDestination = m_posManager.get3dFieldObjectPose(FieldPosManager.fieldSpot3d.highGrabberScoring,
-        true, finalPieceDropOffID).toPose2d();
-
-      // <> only add all the commands if neither of the ids are negative
-      if (!(finalPieceID < 0 || finalPieceDropOffID < 0)) {
-        SwerveAutoMoveCommand goToPieceCommand = new SwerveAutoMoveCommand(m_driveSubsystem,
-          TrajectoryGenerator.generateTrajectory(m_driveSubsystem.getPose(),
-            List.of(nearChargeAvoidIntermediatePoint, farChargeAvoidIntermediatePoint), pickupPieceDestination,
-            DriveConstants.AutoConstants.trajectoryConfig), thetaPidController, false);
-        autoCommands.add(goToPieceCommand);
-
-        // TODO: add pickup command (talk to hale i think idk who's doing this)
-
-        SwerveAutoMoveCommand goToDropOffCommand = new SwerveAutoMoveCommand(m_driveSubsystem,
-          TrajectoryGenerator.generateTrajectory(m_driveSubsystem.getPose(),
-            List.of(farChargeAvoidIntermediatePoint, nearChargeAvoidIntermediatePoint), dropOffPieceDestination,
-            DriveConstants.AutoConstants.trajectoryConfig), thetaPidController, false);
-        autoCommands.add(goToDropOffCommand);
-
-        // TODO: add drop-off command (talk to hale i think idk who's doing this)
-      }
     }
 
     addCommands((Command[]) autoCommands.toArray());

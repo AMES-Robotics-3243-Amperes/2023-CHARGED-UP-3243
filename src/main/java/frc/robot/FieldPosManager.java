@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * ++ This class manages the field locations for the robot. It'll deal with outputs from PhotonVisioin.
+ * ++ This class manages the field locations for the robot. It'll deal with outputs from PhotonVision.
  * It'll also deal with odometry stuff.
  */
 public class FieldPosManager {
@@ -30,14 +30,14 @@ public class FieldPosManager {
 
   public Boolean hasPhotonPose = false;
 
-  // ++ this value is the current target target for the robot scoring position
+  // ++ this value is the current target for the robot scoring position
   public int currentIndex;
 
   /**
    * ++ this array holds the scoring positions based on current alliance
    */
-  public Pose2d alliedScoringPositions[];
-  public Pose2d opposingScoringPositions[];
+  public Pose2d[] alliedScoringPositions;
+  public Pose2d[] opposingScoringPositions;
 
   public FieldPosManager() {
 
@@ -45,7 +45,7 @@ public class FieldPosManager {
 
   /**
    * ++ this sets the scoring positions to the corresponding red or blue alliance points
-   * :D I made a list for the opposiing scoring positions, because it might be useful
+   * :D I made a list for the opposing scoring positions, because it might be useful
    */
   public void setScoringPositions() {
     if (allianceColor != DriverStation.Alliance.Invalid && allianceColor != null) {
@@ -66,7 +66,7 @@ public class FieldPosManager {
    * intended to be used only when updating the robot's pose based on
    * the swerve drive odometry.
    *
-   * @param deltaPose is a Transform2d which transforms the robot's Pose2d
+   * @param deltaPose is a {@link Transform2d} which transforms the robot's Pose2d
    */
   private void transformRobotPose(Transform2d deltaPose) {
     latestRobotPosition.transformBy(deltaPose);
@@ -156,34 +156,38 @@ public class FieldPosManager {
     }
   }
 
-      /** H! 
-     * Assumes ofCurrentAlliance is true
-     * 
-     * @param robotPose The current robot position
-     * @return the index for the nearest pose that you can score at
-     */
-    public int getNearestScoringZoneIndex(Pose2d robotPose) {
-        return getNearestScoringZoneIndex(robotPose, true);
-    }
+  /**
+   * H!
+   * Assumes ofCurrentAlliance is true
+   *
+   * @param robotPose The current robot position
+   * @return the index for the nearest pose that you can score at
+   */
+  public int getNearestScoringZoneIndex(Pose2d robotPose) {
+    return getNearestScoringZoneIndex(robotPose, true);
+  }
 
-    /** H! 
-     * Assumes robotPose is the current robot position
-     * 
-     * @param ofCurrentAlliance The current robot position
-     * @return the index for the nearest pose that you can score at
-     */
-    public int getNearestScoringZoneIndex(boolean ofCurrentAlliance) {
-        return getNearestScoringZoneIndex(getRobotPose(), ofCurrentAlliance);
-    }
+  /**
+   * H!
+   * Assumes robotPose is the current robot position
+   *
+   * @param ofCurrentAlliance The current robot position
+   * @return the index for the nearest pose that you can score at
+   */
+  public int getNearestScoringZoneIndex(boolean ofCurrentAlliance) {
+    return getNearestScoringZoneIndex(getRobotPose(), ofCurrentAlliance);
+  }
 
-    /** H! 
-     * Assumes robotPose is the current robot position, and that ofCurrentAlliance is true
-     * 
-     * @return the index for the nearest pose that you can score at
-     */
-    public int getNearestScoringZoneIndex() {
-        return getNearestScoringZoneIndex(getRobotPose(), true);
-    }
+  /**
+   * H!
+   * Assumes robotPose is the current robot position, and that ofCurrentAlliance is true
+   *
+   * @return the index for the nearest pose that you can score at
+   */
+  public int getNearestScoringZoneIndex() {
+    return getNearestScoringZoneIndex(getRobotPose(), true);
+  }
+
   /**
    * A function to find the 2d poses as a top-down view of selected field elements.
    * IDs correspond to the target you're looking for, and can be represented by the following diagram of the field,
@@ -209,7 +213,7 @@ public class FieldPosManager {
    *                          object whose pose we are looking for.
    * @param ofCurrentAlliance is a boolean which defines whether the field element in question belongs to our
    *                          alliance or the opponent's.
-   * @param scoringZoneID     is an integer which determines the scoring zone if scoringPosition is passed in to the
+   * @param positionID        is an integer which determines the scoring zone if scoringPosition is passed in to the
    *                          'element' parameter
    * @return the position of the requested field element as a Pose2d.
    */
