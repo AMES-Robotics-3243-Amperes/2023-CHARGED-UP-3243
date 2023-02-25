@@ -5,6 +5,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.PhotonVisionSubsystem;
 
+import java.util.Objects;
+
 /**
  * An example command that uses an example subsystem.
  */
@@ -38,10 +40,9 @@ public class PhotonVisionCommand extends CommandBase {
   @Override
   public void execute() {
     if (!PhotonVisionSubsystem.targets.isEmpty()) {
-      System.out.print(botPose);
-      botX = PhotonVisionSubsystem.checkRobotPosition().getX();
-      botY = PhotonVisionSubsystem.checkRobotPosition().getY();
-      botSpin = PhotonVisionSubsystem.checkRobotPosition().getRotation().getAngle();
+      botX = Objects.requireNonNull(PhotonVisionSubsystem.checkRobotPosition()).getX();
+      botY = Objects.requireNonNull(PhotonVisionSubsystem.checkRobotPosition()).getY();
+      botSpin = Objects.requireNonNull(PhotonVisionSubsystem.checkRobotPosition()).getRotation().getAngle();
 
 
       SmartDashboard.putNumber("robot X", botX);

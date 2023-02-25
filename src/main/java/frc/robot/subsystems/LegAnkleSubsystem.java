@@ -125,7 +125,6 @@ public class LegAnkleSubsystem extends SubsystemBase {
     
     wristRoll.setInverted(true);
 
-
     armExtensionEncoder.setPosition(1.0/*minLength*/);
     armPivotEncoder.setPosition(0.25);
 
@@ -133,25 +132,11 @@ public class LegAnkleSubsystem extends SubsystemBase {
     //wristRollEncoder.setZeroOffset(0);
     //wristRollEncoder.setZeroOffset(wristRollEncoder.getPosition() - 0.5);
     wristRollEncoder.setZeroOffset(.163);
-    
 
-    //System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-    //System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-    //System.out.println(wristRollEncoder.getZeroOffset());
-    //System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-    //System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-
-    
-
-    
-
-    // H! These should really be in constants, but that's a future me problem
     setPIDFValues(pidArmExtension, PID.Extension.P, PID.Extension.I, PID.Extension.D, PID.Extension.FF);
     setPIDFValues(pidArmPivot,     PID.Pivot.P,     PID.Pivot.I,     PID.Pivot.D,     PID.Pivot.FF); 
     setPIDFValues(pidWristPitch,   PID.Pitch.P,     PID.Pitch.I,     PID.Pitch.D,     PID.Pitch.FF); 
-    setPIDFValues(pidWristRoll,    PID.Roll.P,      PID.Roll.I,      PID.Roll.D,      PID.Roll.FF); 
-
-
+    setPIDFValues(pidWristRoll,    PID.Roll.P,      PID.Roll.I,      PID.Roll.D,      PID.Roll.FF);
     
     // H! Set soft current limits
     armPivot.setSmartCurrentLimit(pivotCurrentLimit);
@@ -207,13 +192,13 @@ public class LegAnkleSubsystem extends SubsystemBase {
 
 
   /** H! Moves the arm-wrist assembly by a given position difference
+   *
    * @param x The difference in distance in front of the pivot
    * @param y The difference in distance above the target
    * @param pitch The difference in pitch to approach at
    * @param roll The difference in roll to approach at
   */
   public void moveByXYTheta(double x, double y, double pitch, double roll) {
-    //System.out.println(x);
     moveToXYTheta(
       targetX + (Math.abs(x) < 0.01 ? 0 : x * Constants.WristAndArm.changeXMultiplier),
       targetY + (Math.abs(y) < 0.01 ? 0 : y * Constants.WristAndArm.changeYMultiplier),
@@ -222,7 +207,8 @@ public class LegAnkleSubsystem extends SubsystemBase {
     );
   }
 
-  /** H! Moves the arm-wrist assembly to a given position and rotation. 
+  /** H! Moves the arm-wrist assembly to a given position and rotation.
+   *
    * @param xIn The target distance in front of the pivot
    * @param yIn The target distance above the pivot
    * @param pitchIn The target pitch to approach at

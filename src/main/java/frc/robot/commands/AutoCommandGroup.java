@@ -105,7 +105,7 @@ public class AutoCommandGroup extends SequentialCommandGroup {
     if (piece0DropOffID >= 0) {
       SwerveAutoMoveCommand goToPieceDropOffCommand = new SwerveAutoMoveCommand(m_driveSubsystem,
         TrajectoryGenerator.generateTrajectory(m_driveSubsystem.getPose(),
-          List.of(farChargeAvoidIntermediatePoint, nearChargeAvoidIntermediatePoint), dropOffPiece0Destination,
+          List.of(), dropOffPiece0Destination,
           DriveConstants.AutoConstants.trajectoryConfig), thetaPidController, false);
       autoCommands.add(goToPieceDropOffCommand);
 
