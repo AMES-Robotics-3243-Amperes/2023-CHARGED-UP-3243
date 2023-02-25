@@ -30,7 +30,6 @@ public class RobotContainer {
   public static JoyUtil primaryController = new JoyUtil(Constants.Joysticks.primaryControllerID);
   public static JoyUtil secondaryController = new JoyUtil(Constants.Joysticks.secondaryControllerID);
 
-
   // <> --- FIELD POS MANAGER ---
   public static FieldPosManager fieldPosManager = new FieldPosManager();
 
@@ -38,21 +37,18 @@ public class RobotContainer {
   // ++ ----- SUBSYSTEMS -----------
   public final PhotonVisionSubsystem m_photonVisionSubsystem = new PhotonVisionSubsystem(fieldPosManager);
   public final LegAnkleSubsystem m_legAnkleSubsystem = new LegAnkleSubsystem();
-  public final PhotonVisionCommand m_photonVisionCommand = new PhotonVisionCommand(m_photonVisionSubsystem);
   private final DriveSubsystem m_driveSubsystem = new DriveSubsystem(fieldPosManager);
   private final ReidPrototypeSubsystem m_reidPrototypeSubsystem = new ReidPrototypeSubsystem();
-  public final ReidPrototypeCommand m_ReidPrototypeCommand = new ReidPrototypeCommand(m_reidPrototypeSubsystem,
-    secondaryController);
   private final ShuffleboardSubsystem m_shuffleboardSubsystem = new ShuffleboardSubsystem(fieldPosManager,
     m_legAnkleSubsystem, m_driveSubsystem, m_photonVisionSubsystem, null, m_reidPrototypeSubsystem);
-  // <> this is required for creating new swerve trajectory follow commands
-  private final ProfiledPIDController thetaPidController;
 
   // ++ ----- COMMANDS -------------
-  //private final SwerveTrajectoryFollowCommand m_SwerveTrajectoryFollowCommand;
   private final SwerveTeleopCommand m_SwerveTeleopCommand = new SwerveTeleopCommand(m_driveSubsystem,
     primaryController);
   private final WristCommand m_WristCommand = new WristCommand(m_legAnkleSubsystem, secondaryController);
+  public final ReidPrototypeCommand m_ReidPrototypeCommand = new ReidPrototypeCommand(m_reidPrototypeSubsystem,
+    secondaryController);
+  public final PhotonVisionCommand m_photonVisionCommand = new PhotonVisionCommand(m_photonVisionSubsystem);
 
   //private final PlaceGamePiece m_placeGamePieceCommand;
 
@@ -60,14 +56,13 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    thetaPidController = new ProfiledPIDController(DriveConstants.AutoConstants.kTurningP,
+    // <> this is required for creating new swerve trajectory follow commands
+    ProfiledPIDController thetaPidController = new ProfiledPIDController(DriveConstants.AutoConstants.kTurningP,
       DriveConstants.AutoConstants.kTurningI, DriveConstants.AutoConstants.kTurningD,
       DriveConstants.AutoConstants.kThetaControllerConstraints);
     thetaPidController.enableContinuousInput(-Math.PI, Math.PI);
 
     m_driveSubsystem.setDefaultCommand(m_SwerveTeleopCommand);
-    m_driveSubsystem.resetPose();
-
 
     m_legAnkleSubsystem.setDefaultCommand(m_WristCommand);
 
@@ -78,8 +73,6 @@ public class RobotContainer {
     //  thetaPidController);
 
     m_photonVisionSubsystem.setDefaultCommand(m_photonVisionCommand);
-
-    m_legAnkleSubsystem.setDefaultCommand(m_WristCommand);
 
     // Configure the trigger bindings
     configureBindings();
@@ -100,8 +93,7 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
-  public void configureBindings() {
-  }
+  public void configureBindings() {}
 
   public void teleopInit() {
     m_reidPrototypeSubsystem.resetStateValues();

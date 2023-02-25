@@ -64,6 +64,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+
+    m_robotContainer.m_legAnkleSubsystem.updatePIDValues();
   }
 
   /** This function is called periodically during autonomous. */

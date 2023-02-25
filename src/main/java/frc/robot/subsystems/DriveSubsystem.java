@@ -9,7 +9,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveTrain.DriveConstants;
 import frc.robot.FieldPosManager;
@@ -58,36 +57,24 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   /**
-   * <> resets the odometry to 0, 0, 0
-   */
-  public void resetPose() {
-    m_fieldPosManager.resetRobotPos();
-  }
-
-  /**
    * <> drive the robot
    *
    * @param xSpeed        Speed of the robot in the x direction (forward).
    * @param ySpeed        Speed of the robot in the y direction (sideways).
-   * @param rot           Angular rate of the robot.
+   * @param rotationSpeed Angular rate of the robot.
    * @param fieldRelative Whether the provided x and y speeds are relative to the
    *                      field.
    */
-  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
-    SmartDashboard.putNumber("Drive Speed", xSpeed);
-
+  public void drive(double xSpeed, double ySpeed, double rotationSpeed, boolean fieldRelative) {
     // <> apply dampers defined in constants
     xSpeed *= DriveConstants.kDrivingSpeedDamper;
     ySpeed *= DriveConstants.kDrivingSpeedDamper;
-    rot *= DriveConstants.kAngularSpeedDamper;
+    rotationSpeed *= DriveConstants.kAngularSpeedDamper;
 
-    // <> adjust the inputs if field relative is true
+    // <> convert passed in speeds to SwerveModuleState[]
     SwerveModuleState[] swerveModuleStates = DriveConstants.ChassisKinematics.kDriveKinematics.toSwerveModuleStates(
-      fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getHeading()) : new ChassisSpeeds(
-        xSpeed, ySpeed, rot));
-
-    // <> desaturate wheel speeds
-    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.kMaxMetersPerSecond);
+      fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotationSpeed,
+        getHeading()) : new ChassisSpeeds(xSpeed, ySpeed, rotationSpeed));
 
     // <> set desired wheel speeds
     setModuleStates(swerveModuleStates, false);
@@ -109,14 +96,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @param desiredStates the desired SwerveModule states
    */
   public void setModuleStates(SwerveModuleState[] desiredStates) {
-    // <> desaturate wheel speeds
-    SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, DriveConstants.kDrivingSpeedDamper);
-
-    // <> set the desired states
-    m_frontLeft.setDesiredState(desiredStates[0], true);
-    m_frontRight.setDesiredState(desiredStates[1], true);
-    m_rearLeft.setDesiredState(desiredStates[2], true);
-    m_rearRight.setDesiredState(desiredStates[3], true);
+    setModuleStates(desiredStates, true);
   }
 
   /**
@@ -127,7 +107,7 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public void setModuleStates(SwerveModuleState[] desiredStates, boolean allowLowSpeedTurning) {
     // <> desaturate wheel speeds
-    SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, DriveConstants.kDrivingSpeedDamper);
+    SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, DriveConstants.kMaxMetersPerSecond);
 
     // <> set the desired states
     m_frontLeft.setDesiredState(desiredStates[0], allowLowSpeedTurning);
@@ -153,22 +133,6 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public Rotation2d getHeading() {
     return m_imuSubsystem.getYaw();
-  }
-
-  public void stopModules() {
-    m_frontLeft.stop();
-    m_frontRight.stop();
-    m_rearLeft.stop();
-    m_rearRight.stop();
-  }
-
-  /**
-   * <>
-   *
-   * @return robot's turn rate in degrees per second
-   */
-  public double getTurnRate() {
-    return m_imuSubsystem.getTurnRate();
   }
 
   /**

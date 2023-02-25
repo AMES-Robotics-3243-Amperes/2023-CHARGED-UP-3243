@@ -23,6 +23,14 @@ public final class JoyUtil extends XboxController {
   // ++  rumble stuff ----------------
   double prevFilteredY;
   double prevFilteredR;
+  // ++ the rotation axis is right x
+  double rawJoyPos = getRightX();
+  double filterStrength = Constants.Joysticks.rotationLowPassFilterStrength;
+  double damperStrength = Constants.DriveTrain.DriveConstants.kAngularSpeedDamper;
+
+
+  // ++ end rumble stuff ------------
+  double adjustedPos = (lowPassFilter(posWithDeadzone(rawJoyPos), prevFilteredR, filterStrength) * damperStrength);
 
   /**
    * creates a new JoyUtil joystick.
@@ -47,9 +55,6 @@ public final class JoyUtil extends XboxController {
     return filteredSpeed;
   }
 
-
-  // ++ end rumble stuff ------------
-
   public static double joyCurve(double pos) {
     // ++ this method will take the linear joystick input and puts it into a polynomial curve
 
@@ -61,32 +66,17 @@ public final class JoyUtil extends XboxController {
     return ((a * (Math.pow(pos, firstPower))) + (b * (Math.pow(pos, secondPower))));
   }
 
-  public static double fastMode(double pos, double fastmodeInput) {
-    // ++ this method should return an adjusted joystick position with the fastmode
-    // ++ fastmodeInput is the position of the trigger
-
-    double fastmodeConstant = Constants.Joysticks.fastModeMaxMultiplier;
-    double fastmodeMultiplier = (fastmodeInput * fastmodeConstant) + 1.0;
-    double adjustedPos = pos * fastmodeMultiplier;
-    return adjustedPos;
-
-    /* ss finalMultiplier is the damperStrength scaled by the ((Right Trigger scaled by the fastModeMaxMultiplier) + 1)
-     * for instance, if the damperStrength is 0.5 and the fastModeMaxMultiplier is 3,
-     * when the Right Trigger is 0, Fast Mode is off and the fastModeMaxMultiplier is nullified,
-     * and the finalMultiplier is just damperStrength
-     * when the Right Trigger is 0.5, fastModeMaxMultiplier is halved (1.5), and adds 1 for 2.5
-     * so damperStrength, the default multiplier, is scaled up by half of the Maximum Multiplier
-     * and when the Right Trigger is 1, it's scaled up by the Maximum.
-     * hope that makes sense
-     * I did this because it's a multiplier and it would sure be a shame
-     * if nullifying the fastmodemultiplier caused the finalmultiplier to be 0,
-     * disabling non-fast mode
-     */
+  public static double fastMode(double pos, double leftTrigger, double rightTrigger) {
+    return pos * (1 - leftTrigger * Constants.Joysticks.slowModeMultiplier + rightTrigger * Constants.Joysticks.fastModeMaxMultiplier);
   }
 
   public void rumbleLeft(double strength) {
     setRumble(RumbleType.kLeftRumble, strength);
   }
+  //meah for mayor
+
+
+  // ++ these are the methods called above ===================================================================
 
   public void rumbleRight(double strength) {
     setRumble(RumbleType.kRightRumble, strength);
@@ -106,9 +96,6 @@ public final class JoyUtil extends XboxController {
   }
   //meah for mayor
 
-
-  // ++ these are the methods called above ===================================================================
-
   public void zeroPreviousFiltered() {
     // ++ this zeroes all the previous filtered values
     prevFilteredX = 0.0;
@@ -116,52 +103,44 @@ public final class JoyUtil extends XboxController {
     prevFilteredR = 0.0;
   }
 
-  // ++ these methods make it so you don't have to pass anything in when you call them, you just call the
-  // ++ method that corresponds with the joystick you want. It also keeps track of the previous filtered value
-  public double getDriveStraightWithAdjustments() {
-    double rawJoyPos = getLeftY(); // + (getDPadX());
-    double filterStrength = Constants.Joysticks.driveLowPassFilterStrength;
-    double damperStrength = Constants.DriveTrain.DriveConstants.kDrivingSpeedDamper;
-    double adjustedPos = composeDriveJoyFunctions(rawJoyPos, prevFilteredX, filterStrength, damperStrength);
+  /**
+   * <> this was pain to edit from last year send help
+   *
+   * @return the value of the left joystick's y (assumed usage is for driving)
+   */
+  public double getLeftJoystickYWithAdjustments() {
+    double rawJoyPos = getLeftY();
+    double adjustedPos = composeDriveJoyFunctions(rawJoyPos);
+    double filteredPos = lowPassFilter(adjustedPos, prevFilteredX, Constants.Joysticks.driveLowPassFilterStrength);
 
-    // prevFilteredX = lowPassFilter(rawJoyPos, prevFilteredX, filterStrength);
-    return adjustedPos;
+    prevFilteredX = filteredPos;
+    return filteredPos;
   }
 
-  public double getDriveStrafeWithAdjustments() {
-    double rawJoyPos = -getLeftX(); // + (getDPadY());
-    double filterStrength = Constants.Joysticks.driveLowPassFilterStrength;
-    double damperStrength = Constants.DriveTrain.DriveConstants.kDrivingSpeedDamper;
-    double adjustedPos = composeDriveJoyFunctions(rawJoyPos, prevFilteredY, filterStrength, damperStrength);
+  public double getLeftJoystickXWithAdjustments() {
+    double rawJoyPos = getLeftX();
+    double adjustedPos = composeDriveJoyFunctions(rawJoyPos);
+    double filteredPos = lowPassFilter(adjustedPos, prevFilteredY, Constants.Joysticks.driveLowPassFilterStrength);
 
-        // prevFilteredY = lowPassFilter(rawJoyPos, prevFilteredY, filterStrength);
-        return adjustedPos;
-    }
-    public double getRotationWithAdjustments() {
-        // ++ this gets the position on the rotation axis, then adjusts it to what we need
-        // ++ right now, we need a deadzone and then a low pass filter, but that might change later
-        
-        // ++ the rotation axis is right x
-        double rawJoyPos = getRightX();
-        double filterStrength = Constants.Joysticks.rotationLowPassFilterStrength;
-        double damperStrength = Constants.DriveTrain.DriveConstants.kAngularSpeedDamper;
-        double adjustedPos = ( lowPassFilter( posWithDeadzone(rawJoyPos), prevFilteredR, filterStrength) * damperStrength );
-        return adjustedPos;
-    }
-    //meah for mayor
+    prevFilteredY = filteredPos;
+    return filteredPos;
+  }
 
-
+  public double getRightJoystickXWithAdjustments() {
+    // ++ this gets the position on the rotation axis, then adjusts it to what we need
+    // ++ right now, we need a deadzone and then a low pass filter, but that might change later
 
     // ++ the rotation axis is right x
     double rawJoyPos = getRightX();
     double filterStrength = Constants.Joysticks.rotationLowPassFilterStrength;
     double damperStrength = Constants.DriveTrain.DriveConstants.kAngularSpeedDamper;
     double adjustedPos = (lowPassFilter(posWithDeadzone(rawJoyPos), prevFilteredR, filterStrength) * damperStrength);
-  
+    return adjustedPos;
+  }
 
-  public double composeDriveJoyFunctions(double rawJoyPos, double prevFilterJoy, double filterStrength, double damperStrength) {
+  public double composeDriveJoyFunctions(double rawJoyPos) {
     // ++ IMPORTANT: please note that this function now shouldn't be called outside of this class-- this class used
-      // to be
+    // to be
     // ++ just full of methods, but it's now a wrapper class
 
     /* ++ this method will compose all the previous joy functions, so
@@ -179,11 +158,10 @@ public final class JoyUtil extends XboxController {
      * but deadzone should probably stay first, and dampening should probably stay last
      */
 
-        double withDead = posWithDeadzone(rawJoyPos);
-        double withFilter = lowPassFilter(withDead, prevFilterJoy, filterStrength);
-        double withCurve = joyCurve(withFilter); 
-        double withSpeedMode = fastMode(withCurve, (getRightTriggerAxis() - (getLeftTriggerAxis() /*&& * Constants.Joysticks.slowModeMultiplier*/)));
-        double withDamper = withSpeedMode * Constants.DriveTrain.DriveConstants.kDrivingSpeedDamper;
+    double withDead = posWithDeadzone(rawJoyPos);
+    double withCurve = joyCurve(withDead);
+    double withSpeedMode = fastMode(withCurve, getLeftTriggerAxis(), getRightTriggerAxis());
+    double withDamper = withSpeedMode * Constants.DriveTrain.DriveConstants.kDrivingSpeedDamper;
 
     double adjustedJoyPos = withDamper;
 

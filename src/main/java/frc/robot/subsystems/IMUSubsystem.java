@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 /**
- * <> A wrapper for a {@link AHRS} with a bunch of useful stuff
+ * <> A wrapper for an {@link AHRS} with a bunch of useful stuff
  */
 public class IMUSubsystem extends SubsystemBase {
   private final AHRS m_imu = new AHRS();
@@ -47,18 +47,9 @@ public class IMUSubsystem extends SubsystemBase {
   /**
    * <>
    *
-   * @return robot's turn rate in degrees per second
-   */
-  public double getTurnRate() {
-    return m_imu.getRate() * (Constants.DriveTrain.DriveConstants.kGyroReversed ? -1.0 : 1.0);
-  }
-
-  /**
-   * <>
-   *
    * @return the upwards angle of the robot
    */
-  public Rotation2d getInclinationRadians() {
+  public Rotation2d getVerticalInclination() {
     double tanRoll = Math.tan(Math.toRadians(m_imu.getRoll()));
     double tanPitch = Math.tan(Math.toRadians(m_imu.getPitch()));
 
@@ -77,7 +68,7 @@ public class IMUSubsystem extends SubsystemBase {
   public Rotation2d getChargeLevel() {
     // <> this is the raw angle we use to determine the amount the station is leaning,
     // but we need to determine what way it's leaning another way
-    Rotation2d upwardRotation = getInclinationRadians();
+    Rotation2d upwardRotation = getVerticalInclination();
 
     // <> extract the signs of the cos and sin of a shifted angle
     boolean cosPositive = Math.cos(getYaw().getRadians() + Math.PI / 4) >= 0;
@@ -96,7 +87,6 @@ public class IMUSubsystem extends SubsystemBase {
       return m_imu.getRoll() >= 0 ? upwardRotation.times(-1) : upwardRotation;
     } else {
       // <> facing right
-
       return m_imu.getRoll() < 0 ? upwardRotation.times(-1) : upwardRotation;
     }
   }

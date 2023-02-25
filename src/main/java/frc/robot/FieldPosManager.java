@@ -73,14 +73,6 @@ public class FieldPosManager {
   }
 
   /**
-   * :D sets the robot pose to default (all zero values)
-   * SHOULD ONLY BE USED FOR DEBUGGING
-   */
-  public void resetRobotPos() {
-    latestRobotPosition = new Pose2d();
-  }
-
-  /**
    * :D This is a function intended ONLY to be used by the drive subsystem.
    * It finds how much the odometry pose has changed since the last periodic loop.
    * Ideally, replace the swerve's rotation data with imu rotation data
