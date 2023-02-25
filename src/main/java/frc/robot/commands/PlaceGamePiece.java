@@ -37,8 +37,12 @@ public class PlaceGamePiece extends SequentialCommandGroup {
   private EventLoop rightPOVBindingEventLoop;
   private EventLoop leftPOVBindingEventLoop;
 
-  /** Creates a new PlaceGamePiece. */
-  public PlaceGamePiece(FieldPosManager fieldPosManager, DriveSubsystem driveSubsystem, LegAnkleSubsystem legAnkleSubsystem, ReidPrototypeSubsystem grabberSubsystem, ProfiledPIDController thetaPidController, JoyUtil controller, int poseIndex) {
+  /**
+   * Creates a new PlaceGamePiece.
+   */
+  public PlaceGamePiece(FieldPosManager fieldPosManager, DriveSubsystem driveSubsystem,
+                        LegAnkleSubsystem legAnkleSubsystem, ReidPrototypeSubsystem grabberSubsystem,
+                        ProfiledPIDController thetaPidController, JoyUtil controller, int poseIndex) {
     this.fieldPositionManager = fieldPosManager;
     this.driveSubsystem = driveSubsystem;
     this.legAnkleSubsystem = legAnkleSubsystem;
@@ -46,16 +50,17 @@ public class PlaceGamePiece extends SequentialCommandGroup {
     this.thetaPidController = thetaPidController;
     this.controller = controller;
     this.poseIndex = poseIndex;
-    
+
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands( // H! TODO Make the target pose based on the index passed in and the FieldPositionManager pose array
-      new MoveRobotToGrid(fieldPosManager.get2dFieldObjectPose(FieldPosManager.fieldSpot2d.scoringPosition, true, poseIndex), driveSubsystem, controller, thetaPidController),
+      new MoveRobotToGrid(
+        fieldPosManager.get2dFieldObjectPose(FieldPosManager.fieldSpot2d.scoringPosition, true, poseIndex),
+        driveSubsystem, controller, thetaPidController),
       new MoveArmToTarget(poseIndex, isCube, target, legAnkleSubsystem),
-      new ReleaseGameObject(isCube, target, grabberSubsystem)
-    );
+      new ReleaseGameObject(isCube, target, grabberSubsystem));
 
-    
+
     // H! Binds onPOVRight to starting pov right
     rightPOVBindingEventLoop = new EventLoop();
     controller.povRight(rightPOVBindingEventLoop).rising().ifHigh(this::onPOVRight);
@@ -66,20 +71,24 @@ public class PlaceGamePiece extends SequentialCommandGroup {
   }
 
 
-
-  public PlaceGamePiece(FieldPosManager fieldPosManager, DriveSubsystem driveSubsystem, LegAnkleSubsystem legAnkleSubsystem, ReidPrototypeSubsystem grabberSubsystem, ProfiledPIDController thetaPidController, JoyUtil controller) {
-    this(fieldPosManager, driveSubsystem, legAnkleSubsystem, grabberSubsystem, thetaPidController, controller, fieldPosManager.getNearestScoringZoneIndex() /* H! TODO Needs to be integrated with finding the closest pose */);
+  public PlaceGamePiece(FieldPosManager fieldPosManager, DriveSubsystem driveSubsystem,
+                        LegAnkleSubsystem legAnkleSubsystem, ReidPrototypeSubsystem grabberSubsystem,
+                        ProfiledPIDController thetaPidController, JoyUtil controller) {
+    this(fieldPosManager, driveSubsystem, legAnkleSubsystem, grabberSubsystem, thetaPidController, controller,
+      fieldPosManager.getNearestScoringZoneIndex() /* H! TODO Needs to be integrated with finding the closest pose */);
   }
 
+  private static int negativeSafeMod(int a, int b) {
+    if (a >= 0) {
+      return a % b;
+    }
+    return ((a % b) + b) % b;
+  }
 
   public void onPOVRight() {
     this.cancel();
-    new PlaceGamePiece(fieldPositionManager, driveSubsystem, legAnkleSubsystem, grabberSubsystem, thetaPidController, controller, negativeSafeMod(poseIndex + 1, 9)).schedule();
-  }
-  
-  public void onPOVLeft() {
-    this.cancel();
-    new PlaceGamePiece(fieldPositionManager, driveSubsystem, legAnkleSubsystem, grabberSubsystem, thetaPidController, controller, negativeSafeMod(poseIndex - 1, 9)).schedule();
+    new PlaceGamePiece(fieldPositionManager, driveSubsystem, legAnkleSubsystem, grabberSubsystem, thetaPidController,
+      controller, negativeSafeMod(poseIndex + 1, 9)).schedule();
   }
 
   /*private static int loopIndex(int min, int max, int x) {
@@ -91,10 +100,9 @@ public class PlaceGamePiece extends SequentialCommandGroup {
     return x;
   }*/
 
-  private static int negativeSafeMod(int a, int b) {
-    if (a >= 0) {
-      return a % b;
-    }
-    return ((a % b) + b) % b;
+  public void onPOVLeft() {
+    this.cancel();
+    new PlaceGamePiece(fieldPositionManager, driveSubsystem, legAnkleSubsystem, grabberSubsystem, thetaPidController,
+      controller, negativeSafeMod(poseIndex - 1, 9)).schedule();
   }
 }

@@ -4,30 +4,31 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.SparkMaxAbsoluteEncoder;
+import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import com.revrobotics.SparkMaxPIDController;
-import com.revrobotics.CANSparkMax.ControlType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.Grabber.*;
 
 public class ReidPrototypeSubsystem extends SubsystemBase {
 
+  private final SparkMaxAbsoluteEncoder grabberEncoder;
+  private final SparkMaxPIDController PIDController;
   // ££ Creates all of the motor and the encoder; defines the PID controller
   CANSparkMax grabberMotor = new CANSparkMax(kGrabberMotorId, MotorType.kBrushless);
   CANSparkMax compliantMotorZero = new CANSparkMax(kCompliantMotorIdOne, MotorType.kBrushless);
   CANSparkMax compliantMotorOne = new CANSparkMax(kCompliantMotorIdTwo, MotorType.kBrushless);
-  private final SparkMaxAbsoluteEncoder grabberEncoder;
-  private final SparkMaxPIDController PIDController;
   private Boolean opening = false;
   private Boolean closing = false;
- 
-  /** Creates a new ExampleSubsystem. */
+
+  /**
+   * Creates a new ReidPrototypeSubsystem.
+   */
   public ReidPrototypeSubsystem() {
     // ££ Creates the PID Controller and the Absolute encoder from the motor and sets the initial current limit
     grabberMotor.setSecondaryCurrentLimit(kCurrentLimit);
@@ -35,7 +36,8 @@ public class ReidPrototypeSubsystem extends SubsystemBase {
     compliantMotorOne.setSecondaryCurrentLimit(kCurrentLimit);
     PIDController = grabberMotor.getPIDController();
     grabberEncoder = grabberMotor.getAbsoluteEncoder(Type.kDutyCycle);
-    PIDController.setFeedbackDevice(grabberEncoder);  }
+    PIDController.setFeedbackDevice(grabberEncoder);
+  }
 
   public void resetStateValues() {
     grabberMotor.set(0);
@@ -75,7 +77,7 @@ public class ReidPrototypeSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Actual Current", grabberMotor.getOutputCurrent());
     SmartDashboard.putNumber("Absolute Encoder", grabberEncoder.getPosition());
-    
+
     if (grabberEncoder.getPosition() > (kPositiveEncoderRotationLimit - 0.02) && !opening) {
       setPIDValues(kCurrentP, kCurrentI, kCurrentD, kCurrentFF);
       PIDController.setReference(kCurrentTarget, ControlType.kCurrent);
@@ -85,7 +87,7 @@ public class ReidPrototypeSubsystem extends SubsystemBase {
   }
 
   @Override
-   public void simulationPeriodic() {
+  public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
   }
 

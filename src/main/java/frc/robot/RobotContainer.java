@@ -5,19 +5,15 @@
 package frc.robot;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import frc.robot.commands.PhotonVisionCommand;
-import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.PhotonVisionSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DriveTrain.DriveConstants;
+import frc.robot.commands.PhotonVisionCommand;
 import frc.robot.commands.ReidPrototypeCommand;
 import frc.robot.commands.SwerveTeleopCommand;
 import frc.robot.commands.WristCommand;
-import frc.robot.subsystems.LegAnkleSubsystem;
-import frc.robot.subsystems.ReidPrototypeSubsystem;
-import frc.robot.subsystems.ShuffleboardSubsystem;
+import frc.robot.subsystems.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -33,7 +29,7 @@ public class RobotContainer {
   // ++ CONTROLLER STUFF ---------------------
   public static JoyUtil primaryController = new JoyUtil(Constants.Joysticks.primaryControllerID);
   public static JoyUtil secondaryController = new JoyUtil(Constants.Joysticks.secondaryControllerID);
- 
+
 
   // <> --- FIELD POS MANAGER ---
   public static FieldPosManager fieldPosManager = new FieldPosManager();
@@ -41,15 +37,14 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   // ++ ----- SUBSYSTEMS -----------
   public final PhotonVisionSubsystem m_photonVisionSubsystem = new PhotonVisionSubsystem(fieldPosManager);
-  private final DriveSubsystem m_driveSubsystem = new DriveSubsystem(fieldPosManager);
   public final LegAnkleSubsystem m_legAnkleSubsystem = new LegAnkleSubsystem();
-  private final ReidPrototypeSubsystem m_reidPrototypeSubsystem = new ReidPrototypeSubsystem();
-  private final ShuffleboardSubsystem m_shuffleboardSubsystem = new ShuffleboardSubsystem(fieldPosManager, m_legAnkleSubsystem, m_driveSubsystem, m_photonVisionSubsystem, null, m_reidPrototypeSubsystem);
-
   public final PhotonVisionCommand m_photonVisionCommand = new PhotonVisionCommand(m_photonVisionSubsystem);
-  public final ReidPrototypeCommand m_ReidPrototypeCommand = new ReidPrototypeCommand(m_reidPrototypeSubsystem, secondaryController);
-
-
+  private final DriveSubsystem m_driveSubsystem = new DriveSubsystem(fieldPosManager);
+  private final ReidPrototypeSubsystem m_reidPrototypeSubsystem = new ReidPrototypeSubsystem();
+  public final ReidPrototypeCommand m_ReidPrototypeCommand = new ReidPrototypeCommand(m_reidPrototypeSubsystem,
+    secondaryController);
+  private final ShuffleboardSubsystem m_shuffleboardSubsystem = new ShuffleboardSubsystem(fieldPosManager,
+    m_legAnkleSubsystem, m_driveSubsystem, m_photonVisionSubsystem, null, m_reidPrototypeSubsystem);
   // <> this is required for creating new swerve trajectory follow commands
   private final ProfiledPIDController thetaPidController;
 
@@ -60,6 +55,7 @@ public class RobotContainer {
   private final WristCommand m_WristCommand = new WristCommand(m_legAnkleSubsystem, secondaryController);
 
   //private final PlaceGamePiece m_placeGamePieceCommand;
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -73,7 +69,6 @@ public class RobotContainer {
     m_driveSubsystem.resetPose();
 
 
-
     m_legAnkleSubsystem.setDefaultCommand(m_WristCommand);
 
     m_reidPrototypeSubsystem.setDefaultCommand(m_ReidPrototypeCommand);
@@ -81,13 +76,14 @@ public class RobotContainer {
     // H! This command is here because it needs thetaPidController to be created for it to be created
     //m_placeGamePieceCommand = new PlaceGamePiece(m_driveSubsystem, m_legAnkleSubsystem, m_reidPrototypeSubsystem,
     //  thetaPidController);
-    
+
     m_photonVisionSubsystem.setDefaultCommand(m_photonVisionCommand);
 
     // Configure the trigger bindings
     configureBindings();
   }
-//maya stop letting me steal your computer (++ wow, you wrote that in front of me. bold) i know :)
+  //maya stop letting me steal your computer (++ wow, you wrote that in front of me. bold) i know :)
+
   /**
    * Use this method to define your trigger->command mappings. Triggers can be
    * created via the

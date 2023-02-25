@@ -68,9 +68,8 @@ public class IMUSubsystem extends SubsystemBase {
   /**
    * <>
    *
-   * @return the calculated angle of the charge station (positive values mean that
-   * turning to face directly 0 degrees and having the robot point upwards will
-   * result in a positive angle)
+   * @return the calculated angle of the charge station (turning to face directly
+   * 0 degrees and having the robot point upwards will result in a positive angle)
    * @apiNote this assumes that, if the robot were facing 0 degrees,
    * it would only experience a change in pitch when on the charge station:
    * the charge station must be parallel with the gyro's idea of the game field
