@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.FieldPosManager;
 import frc.robot.JoyUtil;
-import frc.robot.FieldPosManager.fieldSpot2d;
 import frc.robot.commands.PlaceGamePieceCommands.MoveArmToTarget;
 import frc.robot.commands.PlaceGamePieceCommands.MoveRobotToGrid;
 import frc.robot.commands.PlaceGamePieceCommands.ReleaseGameObject;
