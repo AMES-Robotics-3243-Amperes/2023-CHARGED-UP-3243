@@ -48,12 +48,12 @@ public class LegAnkleSubsystem extends SubsystemBase {
   private SparkMaxAbsoluteEncoder wristRollEncoder = wristRoll.getAbsoluteEncoder(Type.kDutyCycle);
 
   private double targetX = 0.0;
-  private double targetY = 1.1;
+  private double targetY = 1.2;
   private double targetPitch = 0.0;
   private double targetRoll = 0.0;
 
   private double targetPivotSetpoint = 0.25;
-  private double targetExtensionSetpoint = 1.0;
+  private double targetExtensionSetpoint = 1.2;
   private double targetPitchSetpoint = 0.0;
   private double targetRollSetpoint = 0.0;
 
@@ -128,8 +128,10 @@ public class LegAnkleSubsystem extends SubsystemBase {
     wristRoll.setInverted(true);
 
 
-    armExtensionEncoder.setPosition(1.0/*minLength*/);
+    armExtensionEncoder.setPosition(1.2/*minLength*/);
     armPivotEncoder.setPosition(0.25);
+    wristPitchEncoderLeft.setPosition(0.25);
+    wristPitchEncoderRight.setPosition(0.25);
 
     // H! Used to reset the absolute encoder. Do not run this unless that's what you want to do
     //wristRollEncoder.setZeroOffset(0);
@@ -248,7 +250,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
     }*/
     
     double targetArmLength = (targetY + Constants.WristAndArm.wristLength * Math.sin(targetPitch)) / Math.sin(targetArmAngle);
-    double targetWristAngle = targetPitch - targetArmAngle;
+    double targetWristAngle = Math.PI + targetPitch - targetArmAngle;
     double targetWristRoll = targetRoll;
 
     // H! Convert angles to motor rotations
@@ -301,7 +303,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
       armExtensionEncoder.setPosition(minLength);
     }
 
-    System.out.println(extensionLimitSwitch.get());
+    //System.out.println(extensionLimitSwitch.get());
     
 
     
@@ -325,7 +327,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
     }
     
     double targetArmLength = (targetY + Constants.WristAndArm.wristLength * Math.sin(targetPitch)) / Math.sin(targetArmAngle);
-    double targetWristAngle = targetPitch - targetArmAngle;
+    double targetWristAngle = Math.PI - targetArmAngle + targetPitch;
     double targetWristRoll = targetRoll;
 
     // H! Convert angles to motor rotations

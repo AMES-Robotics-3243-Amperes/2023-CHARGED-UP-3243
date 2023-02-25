@@ -349,7 +349,7 @@ public final class Constants {
 
     // H! Holds the data for the positions of stuff in the arm
     public static final double minLength = 0.92804 + 0.05;
-    public static final double maxLength = 1.5494;
+    public static final double maxLength = Units.inchesToMeters(63);
     public static final double wristLength = 0/*Units.inchesToMeters(10)/*0.072327*/;
     
 
