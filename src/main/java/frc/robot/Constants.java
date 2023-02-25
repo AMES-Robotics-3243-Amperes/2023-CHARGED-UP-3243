@@ -26,7 +26,7 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
 
   /**
-   * H! Enum for the diferent target heights
+   * H! Enum for the different target heights
    */
   public static enum Target {
     HIGH_TARGET, MID_TARGET, LOW_TARGET
@@ -275,7 +275,7 @@ public final class Constants {
      */
     public static final double driveLowPassFilterStrength = 0.91;
     public static final double rotationLowPassFilterStrength = 0.2;
-    // ++ we probably don't want the speed damcursjdjdjdpers as finals incase we want a fastmode/to change them later
+    // ++ we probably don't want the speed damcursjdjdjdpers as finals in case we want a fastmode/to change them later
     public static final double driveSpeedDamper = 0.9;
     public static final double rotationDamper = 0.8;
 
@@ -479,10 +479,10 @@ public final class Constants {
    */ // ---------------------------------------------------
   // :D these constants are very nasty, beware! Also don't reformat this!!! >:(
   public static final class FieldConstants {
-    public static final double targetPositionsY[] = {4.983, 4.424, 3.866, 3.307, 2.748, 2.189, 1.630, 1.072, 0.513};
-    public static final double targetPositionsHiZ[] = {1.373, 1.0727, 1.373, 1.373, 1.0727, 1.373, 1.373, 1.0727,
+    public static final double[] targetPositionsY = {4.983, 4.424, 3.866, 3.307, 2.748, 2.189, 1.630, 1.072, 0.513};
+    public static final double[] targetPositionsHiZ = {1.373, 1.0727, 1.373, 1.373, 1.0727, 1.373, 1.373, 1.0727,
                                                        1.373};
-    public static final double targetPositionsMidZ[] = {1.068, 0.7687, 1.068, 1.068, 0.7687, 1.068, 1.068, 0.7687,
+    public static final double[] targetPositionsMidZ = {1.068, 0.7687, 1.068, 1.068, 0.7687, 1.068, 1.068, 0.7687,
                                                         1.068};
     public static final double targetPositionsLowZ = 0.203;
     public static Pose2d fieldBottomLeft = new Pose2d(new Translation2d(0, 0), new Rotation2d(0));
@@ -491,7 +491,7 @@ public final class Constants {
     public static final class Blue {
       // :D position of the robot's chassis:
       public static double scoringChassisPositionX = 1.806;
-      public static Pose2d scoringPositions[] = {new Pose2d(Constants.FieldConstants.Blue.scoringChassisPositionX,
+      public static Pose2d[] scoringPositions = {new Pose2d(Constants.FieldConstants.Blue.scoringChassisPositionX,
         Constants.FieldConstants.targetPositionsY[0], new Rotation2d(Math.PI)), new Pose2d(
         Constants.FieldConstants.Blue.scoringChassisPositionX, Constants.FieldConstants.targetPositionsY[1],
         new Rotation2d(Math.PI)), new Pose2d(Constants.FieldConstants.Blue.scoringChassisPositionX,
@@ -512,9 +512,9 @@ public final class Constants {
       public static Pose2d dividerTip = new Pose2d(new Translation2d(3.276, 5.487), new Rotation2d(0));
 
       public static final class autoPositions {
-        public static final Pose2d lowerPath[] = {new Pose2d(new Translation2d(2.25, 0.75),
+        public static final Pose2d[] lowerPath = {new Pose2d(new Translation2d(2.25, 0.75),
           new Rotation2d(0)), new Pose2d(new Translation2d(6, 0.75), new Rotation2d(0))};
-        public static final Pose2d upperPath[] = {new Pose2d(new Translation2d(2.25, 4.6),
+        public static final Pose2d[] upperPath = {new Pose2d(new Translation2d(2.25, 4.6),
           new Rotation2d(0)), new Pose2d(new Translation2d(6, 4.6), new Rotation2d(0))};
       }
 
@@ -522,7 +522,7 @@ public final class Constants {
         public static final double highTargetsX = 0.379;
         public static final double middleTargetsX = 0.811;
         public static final double lowTargetsX = 1.185;
-        public static final Pose3d fieldCenterGamePieces[] = {new Pose3d(new Translation3d(7.068, 4.577, 0),
+        public static final Pose3d[] fieldCenterGamePieces = {new Pose3d(new Translation3d(7.068, 4.577, 0),
           new Rotation3d()), new Pose3d(new Translation3d(7.068, 3.358, 0), new Rotation3d()), new Pose3d(
           new Translation3d(7.068, 2.138, 0), new Rotation3d()), new Pose3d(new Translation3d(7.068, 0.919, 0),
           new Rotation3d())};
@@ -532,7 +532,7 @@ public final class Constants {
 
     public static final class Red {
       public static double scoringChassisPositionX = 14.594;
-      public static Pose2d scoringPositions[] = {new Pose2d(Constants.FieldConstants.Red.scoringChassisPositionX,
+      public static Pose2d[] scoringPositions = {new Pose2d(Constants.FieldConstants.Red.scoringChassisPositionX,
         Constants.FieldConstants.targetPositionsY[0], new Rotation2d()), new Pose2d(
         Constants.FieldConstants.Red.scoringChassisPositionX, Constants.FieldConstants.targetPositionsY[1],
         new Rotation2d()), new Pose2d(Constants.FieldConstants.Red.scoringChassisPositionX,
@@ -553,9 +553,9 @@ public final class Constants {
       public static Pose2d dividerTip = new Pose2d(new Translation2d(13.265, 5.487), new Rotation2d(0));
 
       public static final class autoPositions {
-        public static final Pose2d lowerPath[] = {new Pose2d(new Translation2d(14.25, 0.75),
+        public static final Pose2d[] lowerPath = {new Pose2d(new Translation2d(14.25, 0.75),
           new Rotation2d(Math.PI)), new Pose2d(new Translation2d(10.5, 0.75), new Rotation2d(Math.PI))};
-        public static final Pose2d upperPath[] = {new Pose2d(new Translation2d(14.25, 4.6),
+        public static final Pose2d[] upperPath = {new Pose2d(new Translation2d(14.25, 4.6),
           new Rotation2d(Math.PI)), new Pose2d(new Translation2d(10.25, 4.6), new Rotation2d(Math.PI))};
       }
 
@@ -563,7 +563,7 @@ public final class Constants {
         public static final double highTargetsX = 16.162;
         public static final double middleTargetsX = 15.730;
         public static final double lowTargetsX = 15.350;
-        public static final Pose3d fieldCenterGamePieces[] = {new Pose3d(new Translation3d(9.473, 4.577, 0),
+        public static final Pose3d[] fieldCenterGamePieces = {new Pose3d(new Translation3d(9.473, 4.577, 0),
           new Rotation3d()), new Pose3d(new Translation3d(9.473, 3.358, 0), new Rotation3d()), new Pose3d(
           new Translation3d(9.473, 2.138, 0), new Rotation3d()), new Pose3d(new Translation3d(9.473, 0.919, 0),
           new Rotation3d())};

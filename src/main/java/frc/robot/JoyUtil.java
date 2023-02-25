@@ -18,7 +18,7 @@ public final class JoyUtil extends XboxController {
 
 
     /** creates a new JoyUtil joystick.
-     * @param controllerID
+     * @param controllerID the ID of the controller
      */
     public JoyUtil(int controllerID) {
         super(controllerID);
@@ -118,7 +118,7 @@ public final class JoyUtil extends XboxController {
 
   
     public static double lowPassFilter(double pos, double prevFilterJoy, double filterStrength) {
-        // ++ this method smoothes out the joystick input so
+        // ++ this method smooths out the joystick input so
         // ++ "prevFilterJoy" is the previous output of this function
         double filteredSpeed = ((filterStrength * prevFilterJoy) + ((1- filterStrength) * pos));
         return filteredSpeed;
@@ -153,9 +153,9 @@ public final class JoyUtil extends XboxController {
         * so damperStrength, the default multiplier, is scaled up by half of the Maximum Multiplier
         * and when the Right Trigger is 1, it's scaled up by the Maximum.
         * hope that makes sense
-        * I did this because it's a multiplier and it would sure be a shame 
+        * I did this because it's a multiplier and it would sure be a shame
         * if nullifying the fastmodemultiplier caused the finalmultiplier to be 0,
-        * disabling non fast mode
+        * disabling non-fast mode
         */
     }
 
@@ -187,10 +187,10 @@ public final class JoyUtil extends XboxController {
 
         double adjustedJoyPos = withDamper;
 
-        // ++ I decided to make seperate variables for everything to make it a little more readable /\
+        // ++ I decided to make separate variables for everything to make it a little more readable /\
 
         return adjustedJoyPos;
-        /* ++ we return [above variable] becasue that was the last thing done to the input; 
+        /* ++ we return [above variable] because that was the last thing done to the input;
         it'll need to be changed if/when more functions are added */
     }
 

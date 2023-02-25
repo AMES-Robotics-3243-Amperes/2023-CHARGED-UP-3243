@@ -30,7 +30,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
   private int counter = 0;
   
   private SparkMaxPIDController pidArmPivot;
-  private SparkMaxPIDController pidArmExtention;
+  private SparkMaxPIDController pidArmExtension;
   private SparkMaxPIDController pidWristPitch;
   private SparkMaxPIDController pidWristRoll;
   
@@ -108,7 +108,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
 
 
     pidArmPivot = armPivot.getPIDController();
-    pidArmExtention = armExtension.getPIDController();
+    pidArmExtension = armExtension.getPIDController();
     pidWristPitch = wristPitchRight.getPIDController();
     pidWristRoll = wristRoll.getPIDController();
 
@@ -146,7 +146,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
     
 
     // H! These should really be in constants, but that's a future me problem
-    setPIDFValues(pidArmExtention, PID.Extension.P, PID.Extension.I, PID.Extension.D, PID.Extension.FF); 
+    setPIDFValues(pidArmExtension, PID.Extension.P, PID.Extension.I, PID.Extension.D, PID.Extension.FF);
     setPIDFValues(pidArmPivot,     PID.Pivot.P,     PID.Pivot.I,     PID.Pivot.D,     PID.Pivot.FF); 
     setPIDFValues(pidWristPitch,   PID.Pitch.P,     PID.Pitch.I,     PID.Pitch.D,     PID.Pitch.FF); 
     setPIDFValues(pidWristRoll,    PID.Roll.P,      PID.Roll.I,      PID.Roll.D,      PID.Roll.FF); 
@@ -175,7 +175,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
 
 
   public void updatePIDValues() {
-    setPIDFValues(pidArmExtention, 
+    setPIDFValues(pidArmExtension,
       extensionPValue.getDouble(PID.Extension.P), 
       extensionIValue.getDouble(PID.Extension.I), 
       extensionDValue.getDouble(PID.Extension.D), 
@@ -206,11 +206,11 @@ public class LegAnkleSubsystem extends SubsystemBase {
 
 
 
-  /** H! Moves the arm-wrist assembly by a given position diference 
-   * @param x The diference in distance in front of the pivot
-   * @param y The diference in distance above the target
-   * @param pitch The diference in pitch to approach at
-   * @param roll The diference in roll to aproach at
+  /** H! Moves the arm-wrist assembly by a given position difference
+   * @param x The difference in distance in front of the pivot
+   * @param y The difference in distance above the target
+   * @param pitch The difference in pitch to approach at
+   * @param roll The difference in roll to approach at
   */
   public void moveByXYTheta(double x, double y, double pitch, double roll) {
     //System.out.println(x);
@@ -223,10 +223,10 @@ public class LegAnkleSubsystem extends SubsystemBase {
   }
 
   /** H! Moves the arm-wrist assembly to a given position and rotation. 
-   * @param x The target distance in front of the pivot
-   * @param y The target distance above the pivot
-   * @param pitch The target pitch to approach at
-   * @param roll The target roll to aproach at
+   * @param xIn The target distance in front of the pivot
+   * @param yIn The target distance above the pivot
+   * @param pitchIn The target pitch to approach at
+   * @param rollIn The target roll to approach at
    * @return Whether the arm is in a small range of the target
   */
   public boolean moveToXYTheta(double xIn, double yIn, double pitchIn, double rollIn) {
@@ -344,7 +344,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
 
     if (PIDControl && deleteThis_doSetpoint) {
       pidArmPivot.setReference(targetArmAngle, CANSparkMax.ControlType.kPosition);
-      pidArmExtention.setReference(targetArmLength, CANSparkMax.ControlType.kPosition);
+      pidArmExtension.setReference(targetArmLength, CANSparkMax.ControlType.kPosition);
       pidWristPitch.setReference(targetWristAngle, CANSparkMax.ControlType.kPosition);
       pidWristRoll.setReference(targetWristRoll, CANSparkMax.ControlType.kPosition);
     }
@@ -372,7 +372,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
 
 
   private static double clamp(double min,  double max, double x) {
-    return x>max?max:(x<min?min:x); // H! I have written the most unreadable line of code of my entire life. Witness the result.
+    return x>max?max:(Math.max(x, min)); // H! I have written the most unreadable line of code of my entire life. Witness the result.
   }
 
   private static void setPIDFValues(SparkMaxPIDController pidController, double p, double i, double d, double f) {

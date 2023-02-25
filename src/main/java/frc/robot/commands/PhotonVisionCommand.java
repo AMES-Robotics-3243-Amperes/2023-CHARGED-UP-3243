@@ -1,11 +1,13 @@
 package frc.robot.commands;
 
-import frc.robot.subsystems.PhotonVisionSubsystem;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.PhotonVisionSubsystem;
 
-/** An example command that uses an example subsystem. */
+/**
+ * An example command that uses an example subsystem.
+ */
 public class PhotonVisionCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final PhotonVisionSubsystem m_subsystem;
@@ -14,8 +16,6 @@ public class PhotonVisionCommand extends CommandBase {
   double botX;
   double botY;
   double botSpin;
-
-  
 
 
   /**
@@ -30,14 +30,14 @@ public class PhotonVisionCommand extends CommandBase {
   }
 
 
-// Called when the command is initially scheduled.
-@Override
-public void initialize() {}
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
-@Override
-public void execute() {
-    if (PhotonVisionSubsystem.targets.isEmpty() != true){
+  @Override
+  public void execute() {
+    if (!PhotonVisionSubsystem.targets.isEmpty()) {
       System.out.print(botPose);
       botX = PhotonVisionSubsystem.checkRobotPosition().getX();
       botY = PhotonVisionSubsystem.checkRobotPosition().getY();

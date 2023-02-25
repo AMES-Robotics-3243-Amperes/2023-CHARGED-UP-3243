@@ -60,11 +60,7 @@ public class LimelightSubsystem extends SubsystemBase{
     // ++ NOTE: "ta" returns "1.0" if it sees ANY number of valid targets
       // ++ for example, it would still return "1.0" if it sees 3 valid targets
     double tvOutput = tv.getDouble(0.0);
-    if (tvOutput == 1.0){
-      return true;
-    } else {
-      return false;
-    }
+    return tvOutput == 1.0;
   }
 
   private static double findDistanceFromPole1() {
