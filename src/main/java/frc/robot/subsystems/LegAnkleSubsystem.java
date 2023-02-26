@@ -113,8 +113,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
     pidWristRoll = wristRoll.getPIDController();
 
     // :D I added this in
-    // TODO: make this all nice with constants and stuff
-    pidArmPivot.setOutputRange(-0.65, 0.65);
+    pidArmPivot.setOutputRange(-pivotOutputRange, pivotOutputRange);
 
     pidWristRoll.setFeedbackDevice(wristRollEncoder);
 
@@ -125,13 +124,15 @@ public class LegAnkleSubsystem extends SubsystemBase {
     
     wristRoll.setInverted(true);
 
+    // :D TODO: hale, can we make these into constants? I think it's more accurate to say that these are the starting positions
     armExtensionEncoder.setPosition(1.0/*minLength*/);
     armPivotEncoder.setPosition(0.25);
 
     // H! Used to reset the absolute encoder. Do not run this unless that's what you want to do
     //wristRollEncoder.setZeroOffset(0);
     //wristRollEncoder.setZeroOffset(wristRollEncoder.getPosition() - 0.5);
-    wristRollEncoder.setZeroOffset(.163);
+    // :D hi I turned this into a constant
+    wristRollEncoder.setZeroOffset(wristRollEncoderSetZeroOffset);
 
     setPIDFValues(pidArmExtension, PID.Extension.P, PID.Extension.I, PID.Extension.D, PID.Extension.FF);
     setPIDFValues(pidArmPivot,     PID.Pivot.P,     PID.Pivot.I,     PID.Pivot.D,     PID.Pivot.FF); 
