@@ -255,9 +255,6 @@ public class SwerveAutoMoveCommand extends CommandBase {
     boolean xCorrect = xError < DriveConstants.AutoConstants.positionLeniencyMeters;
     boolean yCorrect = yError < DriveConstants.AutoConstants.positionLeniencyMeters;
 
-    SmartDashboard.putNumber("desired x", desiredTranslation.getX());
-    SmartDashboard.putNumber("desired y", desiredTranslation.getY());
-
     if (trajectoryIsFinished()) {
       m_controller = new HolonomicDriveController(DriveConstants.AutoConstants.movementPidControllerTrajectoryEnd,
         DriveConstants.AutoConstants.movementPidControllerTrajectoryEnd, m_controller.getThetaController());

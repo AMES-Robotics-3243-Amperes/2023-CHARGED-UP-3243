@@ -43,7 +43,7 @@ public class BalanceCommand extends CommandBase {
     }
 
     double pidOutput = m_pidController.calculate(m_subsystem.getChargeLevel().getDegrees());
-    m_subsystem.drive(0, -pidOutput, 0, true);
+    m_subsystem.drive(-pidOutput, 0, 0, true);
   }
 
   // Called once the command ends or is interrupted.

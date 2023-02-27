@@ -1,13 +1,15 @@
 package frc.robot.commands;
 
-import frc.robot.subsystems.PhotonVisionSubsystem;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.subsystems.PhotonVisionSubsystem;
 
-/** An example command that uses an example subsystem. */
+import java.util.Objects;
+
+/**
+ * An example command that uses an example subsystem.
+ */
 public class PhotonVisionCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final PhotonVisionSubsystem m_subsystem;
@@ -16,8 +18,6 @@ public class PhotonVisionCommand extends CommandBase {
   double botX;
   double botY;
   double botSpin;
-
-  
 
 
   /**
@@ -32,18 +32,17 @@ public class PhotonVisionCommand extends CommandBase {
   }
 
 
-// Called when the command is initially scheduled.
-@Override
-public void initialize() {}
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
-@Override
-public void execute() {
-    if (PhotonVisionSubsystem.targets.isEmpty() != true){
-      System.out.print(botPose);
-      botX = PhotonVisionSubsystem.checkRobotPosition().getX();
-      botY = PhotonVisionSubsystem.checkRobotPosition().getY();
-      botSpin = PhotonVisionSubsystem.checkRobotPosition().getRotation().getAngle();
+  @Override
+  public void execute() {
+    if (!PhotonVisionSubsystem.targets.isEmpty()) {
+      botX = Objects.requireNonNull(PhotonVisionSubsystem.checkRobotPosition()).getX();
+      botY = Objects.requireNonNull(PhotonVisionSubsystem.checkRobotPosition()).getY();
+      botSpin = Objects.requireNonNull(PhotonVisionSubsystem.checkRobotPosition()).getRotation().getAngle();
 
 
       SmartDashboard.putNumber("robot X", botX);

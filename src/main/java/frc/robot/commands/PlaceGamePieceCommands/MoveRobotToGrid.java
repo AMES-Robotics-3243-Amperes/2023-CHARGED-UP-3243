@@ -32,7 +32,7 @@ public class MoveRobotToGrid extends SwerveAutoMoveCommand {
 
   @Override
   public boolean isFinished() {
-    // H! Only end the command if the a button is pressed to confirm it
+    // H! Only end the command if the button is pressed to confirm it
     return super.isFinished() & controller.getAButton();
   }
   
