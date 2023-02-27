@@ -24,7 +24,7 @@ import frc.robot.subsystems.ReidPrototypeSubsystem;
 public class PlaceGamePiece extends SequentialCommandGroup {
 
   public boolean isCube;
-  public Constants.Target target;
+  public FieldPosManager.fieldSpot3d target;
   public DriveSubsystem driveSubsystem;
   public LegAnkleSubsystem legAnkleSubsystem;
   public ReidPrototypeSubsystem grabberSubsystem;

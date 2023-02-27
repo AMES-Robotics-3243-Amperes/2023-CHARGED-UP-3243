@@ -4,14 +4,17 @@
 
 package frc.robot.commands.PlaceGamePieceCommands;
 
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
+import frc.robot.FieldPosManager;
 import frc.robot.subsystems.LegAnkleSubsystem;
 
 public class MoveArmToTarget extends CommandBase {
   private boolean isCube;
   private LegAnkleSubsystem legAnkleSubsystem;
-  private Constants.Target target;
+  private FieldPosManager.fieldSpot3d target;
 
   private double targetX;
   private double targetY;
@@ -23,7 +26,7 @@ public class MoveArmToTarget extends CommandBase {
 
 
   /** Creates a new MoveArmToTarget. */
-  public MoveArmToTarget(int targetIndex, boolean isCube, Constants.Target target, LegAnkleSubsystem legAnkleSubsystem) {
+  public MoveArmToTarget(int targetIndex, boolean isCube, FieldPosManager.fieldSpot3d target, LegAnkleSubsystem legAnkleSubsystem, FieldPosManager fieldPosManager) {
     this.isCube = isCube;
     this.legAnkleSubsystem = legAnkleSubsystem;
     this.target = target;
@@ -31,55 +34,11 @@ public class MoveArmToTarget extends CommandBase {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(legAnkleSubsystem);
 
-
     // H! Get the target positions
-    if (isCube) {
-      switch (target) {
-        case HIGH_TARGET:
-          targetX = Constants.AutomationConfigure.Cube.HighTarget.armX;
-          targetY = Constants.AutomationConfigure.Cube.HighTarget.armY;
-          targetPitch = Constants.AutomationConfigure.Cube.HighTarget.armPitch;
-          targetRoll = Constants.AutomationConfigure.Cube.HighTarget.armRoll;
-          break;
-          
-        case MID_TARGET:
-          targetX = Constants.AutomationConfigure.Cube.MidTarget.armX;
-          targetY = Constants.AutomationConfigure.Cube.MidTarget.armY;
-          targetPitch = Constants.AutomationConfigure.Cube.MidTarget.armPitch;
-          targetRoll = Constants.AutomationConfigure.Cube.MidTarget.armRoll;
-          break;
-
-        case LOW_TARGET:
-          targetX = Constants.AutomationConfigure.Cube.LowTarget.armX;
-          targetY = Constants.AutomationConfigure.Cube.LowTarget.armY;
-          targetPitch = Constants.AutomationConfigure.Cube.LowTarget.armPitch;
-          targetRoll = Constants.AutomationConfigure.Cube.LowTarget.armRoll;
-          break;
-      }
-    } else {
-      switch (target) {
-        case HIGH_TARGET:
-          targetX = Constants.AutomationConfigure.Cone.HighTarget.armX;
-          targetY = Constants.AutomationConfigure.Cone.HighTarget.armY;
-          targetPitch = Constants.AutomationConfigure.Cone.HighTarget.armPitch;
-          targetRoll = Constants.AutomationConfigure.Cone.HighTarget.armRoll;
-          break;
-          
-        case MID_TARGET:
-          targetX = Constants.AutomationConfigure.Cone.MidTarget.armX;
-          targetY = Constants.AutomationConfigure.Cone.MidTarget.armY;
-          targetPitch = Constants.AutomationConfigure.Cone.MidTarget.armPitch;
-          targetRoll = Constants.AutomationConfigure.Cone.MidTarget.armRoll;
-          break;
-
-        case LOW_TARGET:
-          targetX = Constants.AutomationConfigure.Cone.LowTarget.armX;
-          targetY = Constants.AutomationConfigure.Cone.LowTarget.armY;
-          targetPitch = Constants.AutomationConfigure.Cone.LowTarget.armPitch;
-          targetRoll = Constants.AutomationConfigure.Cone.LowTarget.armRoll;
-          break;
-      }
-    }
+    Pose3d targetPose = fieldPosManager.get3dFieldObjectPose(target, isCube, targetIndex);
+    Translation3d positionDif = targetPose.getTranslation().minus(new Pose3d(fieldPosManager.getRobotPose()).getTranslation());
+    //targetX = positionDif.
+    
   }
 
   // Called when the command is initially scheduled.

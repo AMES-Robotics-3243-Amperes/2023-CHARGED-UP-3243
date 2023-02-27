@@ -6,15 +6,16 @@ package frc.robot.commands.PlaceGamePieceCommands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
+import frc.robot.FieldPosManager;
 import frc.robot.subsystems.ReidPrototypeSubsystem;
 
 public class ReleaseGameObject extends CommandBase {
   private boolean isCube;
   private ReidPrototypeSubsystem grabberSubsystem;
-  private Constants.Target target;
+  private FieldPosManager.fieldSpot3d target;
 
   /** Creates a new ReleaseGameObject. */
-  public ReleaseGameObject(boolean isCube, Constants.Target target, ReidPrototypeSubsystem grabberSubsystem) {
+  public ReleaseGameObject(boolean isCube, FieldPosManager.fieldSpot3d target, ReidPrototypeSubsystem grabberSubsystem) {
     this.isCube = isCube;
     this.grabberSubsystem = grabberSubsystem;
     this.target = target;

@@ -319,18 +319,16 @@ public final class Constants {
     public static final double minX = -0.277731 - 1.2192;
     public static final double maxY = 1.9812 - 0.476364;
     public static final double minY = 0 - 0.476364;
-    public static final int pivotCurrentLimit = 40; // H! This is a temporary change! It was 30 before. // :D hi I
-    // just changed this from 30 to 40
-    public static final int extensionCurrentLimit = 20; // H! This is a temporary change! It was 20 before. // :D hi
-    // I just changed this from 10 to 30
-    public static final int pitchCurrentLimit = 20; // H! This is a temporary change! It was 10 before. // :D hi I
-    // just changed this from 30 to 15
-    public static final int rollCurrentLimit = 5; // H! This is a temporary change! It was 10 before. // :D hi I just
-    public static final int NEO1650CurrentLimitHard = 60; // H! This is a temporary change! It was 40 before. // :D
-    // hi I just changed this from 20 to 60
+    public static final int pivotCurrentLimit = 40; // H! This is a temporary change! It was 30 before. // :D hi I just changed this from 30 to 40
+    public static final int extensionCurrentLimit = 20; // H! This is a temporary change! It was 20 before. // :D hi I just changed this from 10 to 30
+    public static final int pitchCurrentLimit = 20; // H! This is a temporary change! It was 10 before. // :D hi I just changed this from 30 to 15
+    public static final int rollCurrentLimit = 5; // H! This is a temporary change! It was 10 before. // :D hi I just changed this from 2 to 5
+    public static final int NEO1650CurrentLimitHard = 60; // H! This is a temporary change! It was 40 before. // :D hi I just changed this from 20 to 60
     public static final int NEO550CurrentLimitHard = 40; // H! This is a temporary change! It was 20 before.
-    // changed this from 2 to 5
     public static final double atSetpointThreshold = 0.005;
+
+    public static final double pivotOutputRange = 0.65;
+    public static final double wristRollEncoderSetZeroOffset = 0.163;
 
     /**
      * H! This class just holds all the motor ids
@@ -347,17 +345,17 @@ public final class Constants {
 
     public static class PID {
       public static class Extension {
-        public static final double P = 4.5;// H! 2.0
-        public static final double I = 0.0;
-        public static final double D = 0.0;
-        public static final double FF = 0.01 * 0;
+        public static final double P  = 4.5;// H! 2.0
+        public static final double I  = 0.0;
+        public static final double D  = 0.0;
+        public static final double FF = 0.01;
       }
 
       public static class Pivot {
-        public static final double P = 5.0;// H! 5.0
-        public static final double I = 0.0;
-        public static final double D = 0.0;
-        public static final double FF = 0.1 * 0;
+        public static final double P  = 5.0;// H! 5.0
+        public static final double I  = 0.0;
+        public static final double D  = 0.0;
+        public static final double FF = 0.1;
       }
 
       public static class Pitch {

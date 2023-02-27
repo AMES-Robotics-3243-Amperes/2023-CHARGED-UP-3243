@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,6 +21,8 @@ import java.util.List;
 public class FieldPosManager {
 
   public DriverStation.Alliance allianceColor;
+
+  private Field2d field2d = new Field2d();
 
   public Pose2d latestRobotPosition = new Pose2d();
 
@@ -109,6 +112,11 @@ public class FieldPosManager {
    */
   public Pose2d getRobotPose() {
     return latestRobotPosition;
+  }
+
+  public Field2d getField2d(){
+    field2d.setRobotPose(latestRobotPosition);
+    return field2d;
   }
 
   /**
