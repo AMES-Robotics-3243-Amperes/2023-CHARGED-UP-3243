@@ -317,31 +317,31 @@ public final class Constants {
 
     public static class PID {
       public static class Extension {
-        public static final double P  = 3.5 * 0;// H! 2.0
+        public static final double P  = 3.5;// H! 2.0
         public static final double I  = 0.0;
         public static final double D  = 0.0;
-        public static final double FF = 0.01 * 0;
+        public static final double FF = 0.01;
       }
 
       public static class Pivot {
-        public static final double P  = 1.0 * 0;// H! 5.0
+        public static final double P  = 1.0;// H! 5.0
         public static final double I  = 0.0;
         public static final double D  = 0.0;
-        public static final double FF = 0.1 * 0;
+        public static final double FF = 0.1;
       }
 
       public static class Pitch {
-        public static final double P  = 0.75 * 0;
-        public static final double I  = 0.0125 * 0;
+        public static final double P  = 0.75;
+        public static final double I  = 0.0125;
         public static final double D  = 0.0;
-        public static final double FF = 0.01 * 0;
+        public static final double FF = 0.01;
       }
 
       public static class Roll {
-        public static final double P  = 1.5 * 0;
+        public static final double P  = 1.5;
         public static final double I  = 0.0;
-        public static final double D  = 0.01 * 0;
-        public static final double FF = 0.1 * 0;
+        public static final double D  = 0.01;
+        public static final double FF = 0.1;
       }
     }
 
@@ -350,7 +350,7 @@ public final class Constants {
     // H! Holds the data for the positions of stuff in the arm
     public static final double minLength = 0.92804 + 0.05;
     public static final double maxLength = Units.inchesToMeters(63);
-    public static final double wristLength = 0/*Units.inchesToMeters(10)/*0.072327*/;
+    public static final double wristLength = Units.inchesToMeters(10)/*0.072327*/;
     
 
     public static final double changeXMultiplier = 0.10 / 50;
@@ -366,7 +366,7 @@ public final class Constants {
 
     public static final int pivotCurrentLimit = 30; // H! This is a temporary change! It was 30 before.
     public static final int extensionCurrentLimit = 10; // H! This is a temporary change! It was 20 before.
-    public static final int pitchCurrentLimit = 25; // H! This is a temporary change! It was 10 before. // :D hi I just changed this from 30 to 15
+    public static final int pitchCurrentLimit = 35; // H! This is a temporary change! It was 10 before. // :D hi I just changed this from 30 to 15
     public static final int rollCurrentLimit = 5; // H! This is a temporary change! It was 10 before. // :D hi I just changed this from 2 to 5
 
     public static final int NEO1650CurrentLimitHard = 40; // H! This is a temporary change! It was 40 before.

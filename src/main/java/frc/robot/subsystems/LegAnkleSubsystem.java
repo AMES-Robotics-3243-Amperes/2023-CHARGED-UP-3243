@@ -13,6 +13,7 @@ import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -139,17 +140,12 @@ public class LegAnkleSubsystem extends SubsystemBase {
     wristRollEncoder.setZeroOffset(.163);
     
 
-    //System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-    //System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-    //System.out.println(wristRollEncoder.getZeroOffset());
-    //System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-    //System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
 
     
 
     
 
-    // H! These should really be in constants, but that's a future me problem
+    // H! Set the PID values initially
     setPIDFValues(pidArmExtention, PID.Extension.P, PID.Extension.I, PID.Extension.D, PID.Extension.FF); 
     setPIDFValues(pidArmPivot,     PID.Pivot.P,     PID.Pivot.I,     PID.Pivot.D,     PID.Pivot.FF); 
     setPIDFValues(pidWristPitch,   PID.Pitch.P,     PID.Pitch.I,     PID.Pitch.D,     PID.Pitch.FF); 
@@ -174,7 +170,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
 
 
   public void resetRoll() {
-    targetRoll = Math.PI;
+    targetRoll = 0;
   }
 
 
@@ -219,10 +215,10 @@ public class LegAnkleSubsystem extends SubsystemBase {
   public void moveByXYTheta(double x, double y, double pitch, double roll) {
     //System.out.println(x);
     moveToXYTheta(
-      targetX + (Math.abs(x) < 0.01 ? 0 : x * Constants.WristAndArm.changeXMultiplier),
-      targetY + (Math.abs(y) < 0.01 ? 0 : y * Constants.WristAndArm.changeYMultiplier),
-      targetPitch + (Math.abs(pitch) < 0.01 ? 0 : pitch * Constants.WristAndArm.changePitchMultiplier),
-      targetRoll + (Math.abs(roll) < 0.01 ? 0 : roll * Constants.WristAndArm.changeRollMultiplier)
+      targetX + (Math.abs(x) < 0.01 ? 0 : x * changeXMultiplier),
+      targetY + (Math.abs(y) < 0.01 ? 0 : y * changeYMultiplier),
+      targetPitch + (Math.abs(pitch) < 0.01 ? 0 : pitch * changePitchMultiplier),
+      targetRoll + (Math.abs(roll) < 0.01 ? 0 : roll * changeRollMultiplier)
     );
   }
 
@@ -241,7 +237,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
     targetRoll = rollIn; 
 
     // H! Inverse kinematics: see more detailed math here: https://www.desmos.com/calculator/l89yzwijul 
-    double targetArmAngle = Math.atan2(targetY + Constants.WristAndArm.wristLength * Math.sin(targetPitch),   targetX + Constants.WristAndArm.wristLength * Math.cos(targetPitch) );
+    double targetArmAngle = Math.atan2(targetY - Constants.WristAndArm.wristLength * Math.sin(targetPitch),   targetX - Constants.WristAndArm.wristLength * Math.cos(targetPitch) );
 
     /*if (targetY + Constants.WristAndArm.wristLength * Math.sin(targetPitch) >= 0) {
       targetArmAngle = Math.atan((targetX + Constants.WristAndArm.wristLength * Math.cos(targetPitch)) / -(targetY + Constants.WristAndArm.wristLength * Math.sin(targetPitch))) + Math.PI / 2;
@@ -249,7 +245,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
       targetArmAngle = Math.atan(-(targetY + Constants.WristAndArm.wristLength * Math.sin(targetPitch))  /  (targetX + Constants.WristAndArm.wristLength * Math.cos(targetPitch))) + 3 * Math.PI / 2;
     }*/
     
-    double targetArmLength = (targetY + Constants.WristAndArm.wristLength * Math.sin(targetPitch)) / Math.sin(targetArmAngle);
+    double targetArmLength = (targetY - Constants.WristAndArm.wristLength * Math.sin(targetPitch)) / Math.sin(targetArmAngle);
     double targetWristAngle = Math.PI + targetPitch - targetArmAngle;
     double targetWristRoll = targetRoll;
 
@@ -309,7 +305,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
     
     
     //armExtensionEncoder.setPosition(minLength);
-
+    
     SmartDashboard.putNumber("targetX", targetX);
     SmartDashboard.putNumber("targetY", targetY);
     SmartDashboard.putNumber("targetPitch", targetPitch);
@@ -318,15 +314,15 @@ public class LegAnkleSubsystem extends SubsystemBase {
 
     // This method will be called once per scheduler run
     // H! Inverse kinematics: see more detailed math here: https://www.desmos.com/calculator/l89yzwijul \
-    double targetArmAngle;
-
-    if (targetY + Constants.WristAndArm.wristLength * Math.sin(targetPitch) >= 0) {
-      targetArmAngle = Math.atan((targetX + Constants.WristAndArm.wristLength * Math.cos(targetPitch)) / -(targetY + Constants.WristAndArm.wristLength * Math.sin(targetPitch))) + Math.PI / 2;
+    double targetArmAngle = Math.atan2(targetY - Constants.WristAndArm.wristLength * Math.sin(targetPitch),   targetX - Constants.WristAndArm.wristLength * Math.cos(targetPitch) );
+    /*
+    if (targetY - Constants.WristAndArm.wristLength * Math.sin(targetPitch) >= 0) {
+      targetArmAngle = Math.atan((targetX - Constants.WristAndArm.wristLength * Math.cos(targetPitch)) / -(targetY - Constants.WristAndArm.wristLength * Math.sin(targetPitch))) + Math.PI / 2;
     } else {
-      targetArmAngle = Math.atan(-(targetY + Constants.WristAndArm.wristLength * Math.sin(targetPitch))  /  (targetX + Constants.WristAndArm.wristLength * Math.cos(targetPitch))) + 3 * Math.PI / 2;
-    }
+      targetArmAngle = Math.atan(-(targetY - Constants.WristAndArm.wristLength * Math.sin(targetPitch))  /  (targetX - Constants.WristAndArm.wristLength * Math.cos(targetPitch))) + 3 * Math.PI / 2;
+    }*/
     
-    double targetArmLength = (targetY + Constants.WristAndArm.wristLength * Math.sin(targetPitch)) / Math.sin(targetArmAngle);
+    double targetArmLength = (targetY - Constants.WristAndArm.wristLength * Math.sin(targetPitch)) / Math.sin(targetArmAngle);
     double targetWristAngle = Math.PI - targetArmAngle + targetPitch;
     double targetWristRoll = targetRoll;
 
