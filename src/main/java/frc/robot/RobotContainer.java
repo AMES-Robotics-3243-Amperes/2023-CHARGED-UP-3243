@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DriveTrain.DriveConstants;
-import frc.robot.commands.PhotonVisionCommand;
 import frc.robot.commands.ReidPrototypeCommand;
 import frc.robot.commands.SwerveTeleopCommand;
 import frc.robot.commands.WristCommand;
@@ -48,7 +47,6 @@ public class RobotContainer {
   private final WristCommand m_WristCommand = new WristCommand(m_legAnkleSubsystem, secondaryController);
   public final ReidPrototypeCommand m_ReidPrototypeCommand = new ReidPrototypeCommand(m_reidPrototypeSubsystem,
     secondaryController);
-  public final PhotonVisionCommand m_photonVisionCommand = new PhotonVisionCommand(m_photonVisionSubsystem);
 
   //private final PlaceGamePiece m_placeGamePieceCommand;
 
@@ -71,8 +69,6 @@ public class RobotContainer {
     // H! This command is here because it needs thetaPidController to be created for it to be created
     //m_placeGamePieceCommand = new PlaceGamePiece(m_driveSubsystem, m_legAnkleSubsystem, m_reidPrototypeSubsystem,
     //  thetaPidController);
-
-    m_photonVisionSubsystem.setDefaultCommand(m_photonVisionCommand);
 
     // Configure the trigger bindings
     configureBindings();

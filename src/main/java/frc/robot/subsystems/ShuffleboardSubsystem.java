@@ -22,7 +22,6 @@ public class ShuffleboardSubsystem extends SubsystemBase {
   static SimpleWidget legAnkleCommandWidget;
   static SimpleWidget driveTrainWidget;
   static SimpleWidget chargeStationAngleWidget;
-  final Field2d field = new Field2d();
   private SendableChooser<Pose2d> m_autoFirstComponent = new SendableChooser<>();
   private FieldPosManager fieldPoseManager;
 
@@ -55,8 +54,7 @@ public class ShuffleboardSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     //&& Field 2D widget
-    SmartDashboard.putData(field);
-    field.setRobotPose(fieldPoseManager.getRobotPose());
+    SmartDashboard.putData(fieldPoseManager.getField2d());
 
 
     //&& -----------------Titles of the widgets that get displayed in shuffleboard------------------
