@@ -387,7 +387,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
 
 
   private static double clamp(double min,  double max, double x) {
-    return x>max?max:(Math.max(x, min)); // H! I have written the most unreadable line of code of my entire life. Witness the result.
+    return x > max ? max : Math.max(x, min);
   }
 
   private static void setPIDFValues(SparkMaxPIDController pidController, double p, double i, double d, double f) {
