@@ -345,17 +345,17 @@ public final class Constants {
 
     public static class PID {
       public static class Extension {
-        public static final double P = 4.5;// H! 2.0
-        public static final double I = 0.0;
-        public static final double D = 0.0;
-        public static final double FF = 0.01 * 0;
+        public static final double P  = 4.5;// H! 2.0
+        public static final double I  = 0.0;
+        public static final double D  = 0.0;
+        public static final double FF = 0.01;
       }
 
       public static class Pivot {
-        public static final double P = 5.0;// H! 5.0
-        public static final double I = 0.0;
-        public static final double D = 0.0;
-        public static final double FF = 0.1 * 0;
+        public static final double P  = 5.0;// H! 5.0
+        public static final double I  = 0.0;
+        public static final double D  = 0.0;
+        public static final double FF = 0.1;
       }
 
       public static class Pitch {
