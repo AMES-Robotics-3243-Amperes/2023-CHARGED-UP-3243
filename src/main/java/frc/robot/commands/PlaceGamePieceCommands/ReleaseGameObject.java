@@ -6,15 +6,15 @@ package frc.robot.commands.PlaceGamePieceCommands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.subsystems.ReidPrototypeSubsystem;
+import frc.robot.subsystems.GrabberSubsystem;
 
 public class ReleaseGameObject extends CommandBase {
   private boolean isCube;
-  private ReidPrototypeSubsystem grabberSubsystem;
+  private GrabberSubsystem grabberSubsystem;
   private Constants.Target target;
 
   /** Creates a new ReleaseGameObject. */
-  public ReleaseGameObject(boolean isCube, Constants.Target target, ReidPrototypeSubsystem grabberSubsystem) {
+  public ReleaseGameObject(boolean isCube, Constants.Target target, GrabberSubsystem grabberSubsystem) {
     this.isCube = isCube;
     this.grabberSubsystem = grabberSubsystem;
     this.target = target;
@@ -42,7 +42,4 @@ public class ReleaseGameObject extends CommandBase {
     return false; // H! TODO Implement finding out whether the grabber is open and make this dependent on it
   }
 
-  protected void onConfirmed() {
-    grabberSubsystem.openGrabber(); // H!
-  }
 }

@@ -34,17 +34,37 @@ public final class Constants {
 
   // ££ Constants for the Grabber
   public static final class Grabber {
-    public static final int kControllerPort = 0;
-    public static final double kWheelSpeed = 0.2;
-    public static final double kGrabberSpeed = 0.05;
-    public static final double kPositiveEncoderRotationLimit = 0.41;
-    public static final double kNegativeEncoderRotationLimit = 0.3;
-    public static final int kGrabberMotorId = 16;
-    public static final int kCompliantMotorIdOne = 4;
-    public static final int kCompliantMotorIdTwo = 10;
-    public static final double ktargetAmperage = 4.0;
-    public static final int kCurrentLimit = 7;
-    public static final int kGearRatio = 25;
+    // ++ IDs for the motors:
+    public static final int grabberOpenerMotorID = 16;
+    public static final int wheelMotorOneID = 4;
+    public static final int wheelMotorTwoID = 10;
+
+    // // ++ motor spin speeds
+    // public static final double wheelMotorSpeed = 0.2;
+    // public static final double openCloseSpeed = 0.05;
+
+    // ++ grabber maximum/minimum positions
+    public static final double maximumGrabberLimit = 0.41;
+    public static final double minimumGrabberLimit = 0.3;
+
+    // ++ current limits
+    public static final int hardOpenerMotorCurrentLimit = 30; 
+    public static final int hardWheelMotorCurrentLimit = 30;
+    public static final int softOpenerMotorCurrentLimit = 7; // ++ this will have to be changed to adequately compress game pieces
+    public static final int softWheelMotorCurrentLimit = 10; // ++ will have to be experimentally tuned
+
+    // ++ gear ratios
+    public static final double grabberMotorOpenerGearRatio = (1/1); // ++ find actual values!
+    public static final double wheelMotorGearRatio = (1/1);
+
+    // ++ PID values
+    public static final double openerMotorPGain = 0.0;
+    public static final double openerMotorIGain = 0.0;
+    public static final double openerMotorDGain = 0.0;
+
+    public static final double wheelMotorPGain = 0.0;
+    public static final double wheelMotorIGain = 0.0;
+    public static final double wheelMotorDGain = 0.0;
   }
 
   /**

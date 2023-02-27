@@ -8,7 +8,7 @@ import frc.robot.subsystems.LegAnkleSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.PhotonVisionSubsystem;
 import frc.robot.subsystems.IMUSubsystem;
-import frc.robot.subsystems.ReidPrototypeSubsystem;
+import frc.robot.subsystems.GrabberSubsystem;
 
 import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
@@ -41,12 +41,12 @@ public class ShuffleboardSubsystem extends SubsystemBase {
   private DriveSubsystem driveTrainSubsystem;
   private PhotonVisionSubsystem photonVisionSubsystem;
   private IMUSubsystem imuSubsystem;
-  private ReidPrototypeSubsystem reidGrabberSubsystem;
+  private GrabberSubsystem reidGrabberSubsystem;
   
 
 
   /** Creates a new ShuffleboardSubsystem. */
-  public ShuffleboardSubsystem(FieldPosManager posManager, LegAnkleSubsystem legAnkle, DriveSubsystem driveTrain, PhotonVisionSubsystem photonVision, IMUSubsystem IMU, ReidPrototypeSubsystem grabber) {
+  public ShuffleboardSubsystem(FieldPosManager posManager, LegAnkleSubsystem legAnkle, DriveSubsystem driveTrain, PhotonVisionSubsystem photonVision, IMUSubsystem IMU, GrabberSubsystem grabber) {
 
     //&& Set fieldPoseManager equal to posManager for Field2D widget
     fieldPoseManager = posManager;
@@ -93,9 +93,9 @@ public class ShuffleboardSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("motorTooHot", driveTrainSubsystem.getMotorsOkTemperature());
 
     //&& TODO: Once Jasper merges into dev, finish creating widget for whether grabber is closed or not
-    SmartDashboard.putBoolean("grabberClosing", reidGrabberSubsystem.getGrabberClosing());
+    // SmartDashboard.putBoolean("grabberClosing", reidGrabberSubsystem.getGrabberClosing());
 
-    SmartDashboard.putBoolean("grabberOpening", reidGrabberSubsystem.getGrabberOpening());
+    // SmartDashboard.putBoolean("grabberOpening", reidGrabberSubsystem.getGrabberOpening());
 
     //&& Shows whether PhotonVision is registering an Apriltag
     SmartDashboard.putBoolean("seeingApriltag", photonVisionSubsystem.seeingApriltag());
