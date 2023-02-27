@@ -151,7 +151,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
     
 
     // H! Set the PID values initially
-    setPIDFValues(pidArmExtention, PID.Extension.P, PID.Extension.I, PID.Extension.D, PID.Extension.FF); 
+    setPIDFValues(pidArmExtension, PID.Extension.P, PID.Extension.I, PID.Extension.D, PID.Extension.FF); 
     setPIDFValues(pidArmPivot,     PID.Pivot.P,     PID.Pivot.I,     PID.Pivot.D,     PID.Pivot.FF); 
     setPIDFValues(pidWristPitch,   PID.Pitch.P,     PID.Pitch.I,     PID.Pitch.D,     PID.Pitch.FF); 
     setPIDFValues(pidWristRoll,    PID.Roll.P,      PID.Roll.I,      PID.Roll.D,      PID.Roll.FF);
