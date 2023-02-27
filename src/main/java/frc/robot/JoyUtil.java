@@ -55,15 +55,20 @@ public final class JoyUtil extends XboxController {
     return filteredSpeed;
   }
 
+  private static double rawCurve(double pos) {
+    return Constants.Joysticks.aCoeff * (Math.pow(pos,
+      Constants.Joysticks.firstPower)) + Constants.Joysticks.bCoeff * (Math.pow(pos, Constants.Joysticks.secondPower));
+  }
+
   public static double joyCurve(double pos) {
-    // ++ this method will take the linear joystick input and puts it into a polynomial curve
+    // <> apply curve
+    double valueCurved = rawCurve(pos);
 
-    double a = Constants.Joysticks.aCoeff;
-    double b = Constants.Joysticks.bCoeff;
-    int firstPower = Constants.Joysticks.firstPower;
-    int secondPower = Constants.Joysticks.secondPower;
+    // <> make possible to input small values
+    double valueAdjusted = valueCurved - (pos >= 0 ? rawCurve(Constants.Joysticks.deadZoneSize) : rawCurve(
+      -Constants.Joysticks.deadZoneSize));
 
-    return ((a * (Math.pow(pos, firstPower))) + (b * (Math.pow(pos, secondPower))));
+    return valueAdjusted;
   }
 
   public static double fastMode(double pos, double leftTrigger, double rightTrigger) {
@@ -127,15 +132,12 @@ public final class JoyUtil extends XboxController {
   }
 
   public double getRightJoystickXWithAdjustments() {
-    // ++ this gets the position on the rotation axis, then adjusts it to what we need
-    // ++ right now, we need a deadzone and then a low pass filter, but that might change later
-
-    // ++ the rotation axis is right x
     double rawJoyPos = getRightX();
-    double filterStrength = Constants.Joysticks.rotationLowPassFilterStrength;
-    double damperStrength = Constants.DriveTrain.DriveConstants.kAngularSpeedDamper;
-    double adjustedPos = (lowPassFilter(posWithDeadzone(rawJoyPos), prevFilteredR, filterStrength) * damperStrength);
-    return adjustedPos;
+    double adjustedPos = composeDriveJoyFunctions(rawJoyPos);
+    double filteredPos = lowPassFilter(adjustedPos, prevFilteredR, Constants.Joysticks.driveLowPassFilterStrength);
+
+    prevFilteredR = filteredPos;
+    return filteredPos;
   }
 
   public double composeDriveJoyFunctions(double rawJoyPos) {
@@ -163,13 +165,9 @@ public final class JoyUtil extends XboxController {
     double withSpeedMode = fastMode(withCurve, getLeftTriggerAxis(), getRightTriggerAxis());
     double withDamper = withSpeedMode * Constants.DriveTrain.DriveConstants.kDrivingSpeedDamper;
 
-    double adjustedJoyPos = withDamper;
-
     // ++ I decided to make separate variables for everything to make it a little more readable /\
 
-    return adjustedJoyPos;
-        /* ++ we return [above variable] because that was the last thing done to the input;
-        it'll need to be changed if/when more functions are added */
+    return withDamper;
   }
 
 

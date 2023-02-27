@@ -4,7 +4,6 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveTrain.DriveConstants;
 import frc.robot.JoyUtil;
@@ -38,7 +37,7 @@ public class SwerveTeleopCommand extends CommandBase {
   public void execute() {
     // <> drive the drivetrain with the controller's input
     m_DriveSubsystem.drive(controller.getLeftJoystickYWithAdjustments(), -controller.getLeftJoystickXWithAdjustments(),
-      MathUtil.applyDeadband(controller.getRightX(), 0.09), DriveConstants.kFieldRelative);
+      controller.getRightJoystickXWithAdjustments(), DriveConstants.kFieldRelative);
   }
 
   // Called once the command ends or is interrupted.
