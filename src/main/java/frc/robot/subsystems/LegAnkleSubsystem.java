@@ -23,6 +23,8 @@ import static frc.robot.Constants.WristAndArm.*;
 
 public class LegAnkleSubsystem extends SubsystemBase {
 
+  public boolean deleteThis_doSetpoint = true;
+
   private boolean PIDControl = true;
 
   private boolean manualSetpoints = true;
@@ -114,6 +116,10 @@ public class LegAnkleSubsystem extends SubsystemBase {
     pidArmExtention = armExtension.getPIDController();
     pidWristPitch = wristPitchRight.getPIDController();
     pidWristRoll = wristRoll.getPIDController();
+
+    // :D I added this in
+    // TODO: make this all nice with constants and stuff
+    pidArmPivot.setOutputRange(-0.65, 0.65);
 
     pidWristRoll.setFeedbackDevice(wristRollEncoder);
 
@@ -353,7 +359,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("targetWristRoll", targetWristRoll);
     //Shuffleboard.put("-------------------------------");
 
-    if (PIDControl) {
+    if (PIDControl && deleteThis_doSetpoint) {
       pidArmPivot.setReference(targetArmAngle, CANSparkMax.ControlType.kPosition);
       pidArmExtention.setReference(targetArmLength, CANSparkMax.ControlType.kPosition);
       pidWristPitch.setReference(targetWristAngle, CANSparkMax.ControlType.kPosition);
