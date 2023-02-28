@@ -488,7 +488,7 @@ public final class Constants {
 
     public static final class Blue {
       // :D position of the robot's chassis:
-      public static double scoringChassisPositionX = 1.806;
+      public static double scoringChassisPositionX = 1.85;
       public static Pose2d[] scoringPositions = {new Pose2d(Constants.FieldConstants.Blue.scoringChassisPositionX,
         Constants.FieldConstants.targetPositionsY[0], new Rotation2d(Math.PI)), new Pose2d(
         Constants.FieldConstants.Blue.scoringChassisPositionX, Constants.FieldConstants.targetPositionsY[1],
@@ -529,7 +529,7 @@ public final class Constants {
     }
 
     public static final class Red {
-      public static double scoringChassisPositionX = 14.594;
+      public static double scoringChassisPositionX = 14.697;
       public static Pose2d[] scoringPositions = {new Pose2d(Constants.FieldConstants.Red.scoringChassisPositionX,
         Constants.FieldConstants.targetPositionsY[0], new Rotation2d()), new Pose2d(
         Constants.FieldConstants.Red.scoringChassisPositionX, Constants.FieldConstants.targetPositionsY[1],
