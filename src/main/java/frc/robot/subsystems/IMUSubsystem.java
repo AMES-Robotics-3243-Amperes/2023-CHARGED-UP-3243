@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 /**
- * <> A wrapper for a {@link AHRS} with a bunch of useful stuff
+ * <> A wrapper for an {@link AHRS} with a bunch of useful stuff
  */
 public class IMUSubsystem extends SubsystemBase {
   private final AHRS m_imu = new AHRS();
@@ -47,18 +47,9 @@ public class IMUSubsystem extends SubsystemBase {
   /**
    * <>
    *
-   * @return robot's turn rate in degrees per second
-   */
-  public double getTurnRate() {
-    return m_imu.getRate() * (Constants.DriveTrain.DriveConstants.kGyroReversed ? -1.0 : 1.0);
-  }
-
-  /**
-   * <>
-   *
    * @return the upwards angle of the robot
    */
-  public Rotation2d getInclinationRadians() {
+  public Rotation2d getVerticalInclination() {
     double tanRoll = Math.tan(Math.toRadians(m_imu.getRoll()));
     double tanPitch = Math.tan(Math.toRadians(m_imu.getPitch()));
 
@@ -68,8 +59,8 @@ public class IMUSubsystem extends SubsystemBase {
   /**
    * <>
    *
-   * @return the calculated angle of the charge station (positive values mean that
-   * turning to face directly 0 degrees and driving forwards will go "up" the charge station)
+   * @return the calculated angle of the charge station (turning to face directly
+   * 0 degrees and having the robot point upwards will result in a positive angle)
    * @apiNote this assumes that, if the robot were facing 0 degrees,
    * it would only experience a change in pitch when on the charge station:
    * the charge station must be parallel with the gyro's idea of the game field
@@ -77,20 +68,20 @@ public class IMUSubsystem extends SubsystemBase {
   public Rotation2d getChargeLevel() {
     // <> this is the raw angle we use to determine the amount the station is leaning,
     // but we need to determine what way it's leaning another way
-    Rotation2d upwardRotation = getInclinationRadians();
+    Rotation2d upwardRotation = getVerticalInclination();
 
     // <> extract the signs of the cos and sin of a shifted angle
-    boolean cosPositive = Math.cos(getYaw().getRadians() - Math.PI / 4) >= 0;
-    boolean sinPositive = Math.sin(getYaw().getRadians() - Math.PI / 4) >= 0;
+    boolean cosPositive = Math.cos(getYaw().getRadians() + Math.PI / 4) >= 0;
+    boolean sinPositive = Math.sin(getYaw().getRadians() + Math.PI / 4) >= 0;
 
     // <> and use their signs to figure out what way we're
     // facing and then determine the sign of the charge angle
     if (cosPositive && sinPositive) {
       // <> facing forwards
-      return m_imu.getPitch() >= 0 ? upwardRotation : upwardRotation.times(-1);
+      return m_imu.getPitch() <= 0 ? upwardRotation : upwardRotation.times(-1);
     } else if (!cosPositive && !sinPositive) {
       // <> facing backwards
-      return m_imu.getPitch() < 0 ? upwardRotation : upwardRotation.times(-1);
+      return m_imu.getPitch() > 0 ? upwardRotation : upwardRotation.times(-1);
     } else if (!cosPositive) {
       // <> facing left
       return m_imu.getRoll() >= 0 ? upwardRotation.times(-1) : upwardRotation;

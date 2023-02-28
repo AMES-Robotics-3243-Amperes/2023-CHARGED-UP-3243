@@ -5,18 +5,14 @@
 package frc.robot;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import frc.robot.commands.PhotonVisionCommand;
-import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.PhotonVisionSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DriveTrain.DriveConstants;
 import frc.robot.commands.GrabberCommand;
 import frc.robot.commands.SwerveTeleopCommand;
-import frc.robot.subsystems.LegAnkleSubsystem;
-import frc.robot.subsystems.GrabberSubsystem;
-import frc.robot.subsystems.ShuffleboardSubsystem;
+import frc.robot.commands.WristCommand;
+import frc.robot.subsystems.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -32,7 +28,6 @@ public class RobotContainer {
   // ++ CONTROLLER STUFF ---------------------
   public static JoyUtil primaryController = new JoyUtil(Constants.Joysticks.primaryControllerID);
   public static JoyUtil secondaryController = new JoyUtil(Constants.Joysticks.secondaryControllerID);
- 
 
   // <> --- FIELD POS MANAGER ---
   public static FieldPosManager fieldPosManager = new FieldPosManager();
@@ -40,46 +35,49 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   // ++ ----- SUBSYSTEMS -----------
   public final PhotonVisionSubsystem m_photonVisionSubsystem = new PhotonVisionSubsystem(fieldPosManager);
+  public final LegAnkleSubsystem m_legAnkleSubsystem = new LegAnkleSubsystem();
   private final DriveSubsystem m_driveSubsystem = new DriveSubsystem(fieldPosManager);
-  private final LegAnkleSubsystem m_legAnkleSubsystem = new LegAnkleSubsystem();
-  private final GrabberSubsystem m_reidPrototypeSubsystem = new GrabberSubsystem();
-  private final ShuffleboardSubsystem m_shuffleboardSubsystem = new ShuffleboardSubsystem(fieldPosManager, m_legAnkleSubsystem, m_driveSubsystem, m_photonVisionSubsystem, null, m_reidPrototypeSubsystem);
+  private final GrabberSubsystem m_GrabberSubsystem = new GrabberSubsystem();
+  private final ShuffleboardSubsystem m_shuffleboardSubsystem = new ShuffleboardSubsystem(fieldPosManager, m_legAnkleSubsystem, m_driveSubsystem, m_photonVisionSubsystem, null, m_GrabberSubsystem);
 
-  public final PhotonVisionCommand m_photonVisionCommand = new PhotonVisionCommand(m_photonVisionSubsystem);
-  public final GrabberCommand m_ReidPrototypeCommand = new GrabberCommand(m_reidPrototypeSubsystem, secondaryController);
 
 
   // <> this is required for creating new swerve trajectory follow commands
   private final ProfiledPIDController thetaPidController;
 
   // ++ ----- COMMANDS -------------
-  //private final SwerveTrajectoryFollowCommand m_SwerveTrajectoryFollowCommand;
   private final SwerveTeleopCommand m_SwerveTeleopCommand = new SwerveTeleopCommand(m_driveSubsystem,
     primaryController);
+  private final WristCommand m_WristCommand = new WristCommand(m_legAnkleSubsystem, secondaryController);
+  public final GrabberCommand m_GrabberCommand = new GrabberCommand(m_GrabberSubsystem, secondaryController);
 
   //private final PlaceGamePiece m_placeGamePieceCommand;
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    // <> this is required for creating new swerve trajectory follow commands
     thetaPidController = new ProfiledPIDController(DriveConstants.AutoConstants.kTurningP,
       DriveConstants.AutoConstants.kTurningI, DriveConstants.AutoConstants.kTurningD,
       DriveConstants.AutoConstants.kThetaControllerConstraints);
     thetaPidController.enableContinuousInput(-Math.PI, Math.PI);
 
     m_driveSubsystem.setDefaultCommand(m_SwerveTeleopCommand);
-    m_driveSubsystem.resetPose();
+
+    m_legAnkleSubsystem.setDefaultCommand(m_WristCommand);
+
+    m_GrabberSubsystem.setDefaultCommand(m_GrabberCommand);
 
     // H! This command is here because it needs thetaPidController to be created for it to be created
-    //m_placeGamePieceCommand = new PlaceGamePiece(m_driveSubsystem, m_legAnkleSubsystem, m_reidPrototypeSubsystem,
+    //m_placeGamePieceCommand = new PlaceGamePiece(m_driveSubsystem, m_legAnkleSubsystem, GrabberSubsystem,
     //  thetaPidController);
-    
-    m_photonVisionSubsystem.setDefaultCommand(m_photonVisionCommand);
 
     // Configure the trigger bindings
     configureBindings();
   }
-//maya stop letting me steal your computer (++ wow, you wrote that in front of me. bold) i know :)
+  //maya stop letting me steal your computer (++ wow, you wrote that in front of me. bold) i know :)
+
   /**
    * Use this method to define your trigger->command mappings. Triggers can be
    * created via the
@@ -94,7 +92,10 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
-  public void configureBindings() {
+  public void configureBindings() {}
+
+  public void teleopInit() {
+
   }
 
   public Command getAutonomousCommand() {

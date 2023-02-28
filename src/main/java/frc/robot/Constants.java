@@ -26,7 +26,7 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
 
   /**
-   * H! Enum for the diferent target heights
+   * H! Enum for the different target heights
    */
   public static enum Target {
     HIGH_TARGET, MID_TARGET, LOW_TARGET
@@ -91,14 +91,14 @@ public final class Constants {
       // <> pidf values / min and max outputs
       public static final class PIDF {
 
-        public static final double kDrivingP = 0.35;
+        public static final double kDrivingP = 0.4;
         public static final double kDrivingI = 0;
         public static final double kDrivingD = 0;
         public static final double kDrivingFF = 0;
         public static final double kDrivingMinOutput = -1;
         public static final double kDrivingMaxOutput = 1;
 
-        public static final double kTurningP = 0.4;
+        public static final double kTurningP = 0.45;
         public static final double kTurningI = 0;
         public static final double kTurningD = 0;
         public static final double kTurningFF = 0;
@@ -153,7 +153,7 @@ public final class Constants {
       // <> max speed
       public static final double kMaxMetersPerSecond = 2.5;
       // <> this should be true
-      public static final boolean kGyroReversed = true;
+      public static final boolean kGyroReversed = false;
 
       // <> spark max ids
       public static final class IDs {
@@ -285,7 +285,7 @@ public final class Constants {
      */
     public static final double driveLowPassFilterStrength = 0.91;
     public static final double rotationLowPassFilterStrength = 0.2;
-    // ++ we probably don't want the speed damcursjdjdjdpers as finals incase we want a fastmode/to change them later
+    // ++ we probably don't want the speed damcursjdjdjdpers as finals in case we want a fastmode/to change them later
     public static final double driveSpeedDamper = 0.9;
     public static final double rotationDamper = 0.8;
 
@@ -314,12 +314,14 @@ public final class Constants {
    * ++ constants for WRIST and ARM ----------------------------------------------------
    */
   public static final class WristAndArm {
+
     public static final double extensionEncoderConversionFactor = (Units.inchesToMeters(2.707) * Math.PI) / (36);
+    public static final double pitchEncoderConversionFactor = 1/60;
     // H! Holds the data for the positions of stuff in the arm
-    public static final double minLength = 0.92804;
+    public static final double minLength = 0.92804 + 0.05;
     public static final double maxLength = 1.5494;
-    public static final double wristLength = 0/*0.072327*/;
-    public static final double changeXMultiplier = 0.15 / 50;
+    public static final double wristLength = Units.inchesToMeters(5)/*0.072327*/;
+    public static final double changeXMultiplier = 0.10 / 50;
     public static final double changeYMultiplier = 0.10 / 50;
     public static final double changePitchMultiplier = Units.degreesToRadians(15) / 50;
     public static final double changeRollMultiplier = Units.degreesToRadians(15) / 50;
@@ -328,13 +330,16 @@ public final class Constants {
     public static final double minX = -0.277731 - 1.2192;
     public static final double maxY = 1.9812 - 0.476364;
     public static final double minY = 0 - 0.476364;
-    public static final int pivotCurrentLimit = 2; // H! This is a temporary change! It was 30 before.
-    public static final int extensionCurrentLimit = 2; // H! This is a temporary change! It was 20 before.
-    public static final int pitchCurrentLimit = 2; // H! This is a temporary change! It was 10 before.
-    public static final int rollCurrentLimit = 2; // H! This is a temporary change! It was 10 before.
-    public static final int NEO1650CurrentLimitHard = 2; // H! This is a temporary change! It was 40 before.
-    public static final int NEO550CurrentLimitHard = 2; // H! This is a temporary change! It was 20 before.
+    public static final int pivotCurrentLimit = 39; // H! This is a temporary change! It was 30 before. // :D hi I just changed this from 30 to 40
+    public static final int extensionCurrentLimit = 25; // H! This is a temporary change! It was 20 before. // :D hi I just changed this from 10 to 30
+    public static final int pitchCurrentLimit = 29; // H! This is a temporary change! It was 10 before. // :D hi I just changed this from 30 to 15
+    public static final int rollCurrentLimit = 5; // H! This is a temporary change! It was 10 before. // :D hi I just changed this from 2 to 5
+    public static final int NEO1650CurrentLimitHard = 40; // H! This is a temporary change! It was 40 before. // :D hi I just changed this from 20 to 60
+    public static final int NEO550CurrentLimitHard = 30; // H! This is a temporary change! It was 20 before.
     public static final double atSetpointThreshold = 0.005;
+
+    public static final double pivotOutputRange = 0.65;
+    public static final double wristRollEncoderSetZeroOffset = 0.163;
 
     /**
      * H! This class just holds all the motor ids
@@ -342,37 +347,54 @@ public final class Constants {
     public static class MotorIDs {
       public static final int armPivot = 12;
       public static final int armExtension = 7;
-      public static final int WristPitch = 6;
+      public static final int WristPitchRight = 4;
+      public static final int WristPitchLeft = 6;
       public static final int WristRoll = 20;
+      public static final int relative = 0;
+      public static final int absolute = 0;
+    }
+
+    public static class StartingPosition {
+      public static final double x = 0.0;
+      public static final double y = 1.2;
+      public static final double pitch = 0.0;
+      public static final double roll = 0.0;
+    }
+
+    public static class StartingSetpoints {
+      public static final double x = 0.05;
+      public static final double y = 1.2;
+      public static final double pitch = 0.0;
+      public static final double roll = 0.0;
     }
 
     public static class PID {
       public static class Extension {
-        public static final double P = 2.0;
-        public static final double I = 0.0;
-        public static final double D = 0.0;
+        public static final double P  = 4.5;// H! 2.0
+        public static final double I  = 0.0;
+        public static final double D  = 0.0;
         public static final double FF = 0.01;
       }
 
       public static class Pivot {
-        public static final double P = 5.0;
-        public static final double I = 0.0;
-        public static final double D = 0.0;
+        public static final double P  = 5.0;// H! 5.0
+        public static final double I  = 0.0;
+        public static final double D  = 0.0;
         public static final double FF = 0.1;
       }
 
       public static class Pitch {
-        public static final double P = 0.2;
-        public static final double I = 0.0;
+        public static final double P = 0.75;
+        public static final double I = 0.0125;
         public static final double D = 0.0;
-        public static final double FF = 0.0;
+        public static final double FF = 0.01;
       }
 
       public static class Roll {
-        public static final double P = 0.2;
+        public static final double P = 1.5;
         public static final double I = 0.0;
-        public static final double D = 0.0;
-        public static final double FF = 0.0;
+        public static final double D = 0.01;
+        public static final double FF = 0.1;
       }
     }
   }
@@ -381,8 +403,37 @@ public final class Constants {
    * ++ constants for PHOTONVISION -----------------------------------------------------
    */
   public static final class PhotonVision {
-    public static final String cameraName1 = "Microsoft_LifeCam_HD-3000";
+    // :> This fills me with nothing but dread
+    public static final String cameraName1 = "Arducam_OV9281_MMN1";
     public static final String cameraName2 = "Global_Shutter_Camera";
+  }
+
+  /**
+   * ++ constants for limelight stuff, anything involved with calculations or keys etc
+   */
+  public static final class Limelight {
+    // :> I desperately need to change all of these when they change, these are definitely not the final values
+    // ++ ====== actual limelight values ============
+    /**
+     * angle of the limelight; degrees up from horizontal
+     */
+    public static final double limelightAngleOffset = 40.7;
+
+    // ++ ======= field/robot measurements ============ (all in meters)
+    public static final double pole1Height = .865;
+    public static final double pole2Height = 1.17;
+
+    /**
+     * ++ this should be the distance of the limelight above the ground
+     */
+    public static final double lemonHeight = 1.41666667;
+    /**
+     * this is the difference in height between the shooter and the hub, in meters
+     */
+    public static final double LemontoPole1Height = pole1Height - lemonHeight;
+    public static final double LemontoPole2Height = pole2Height - lemonHeight;
+
+    // +
   }
 
   /**
@@ -446,202 +497,100 @@ public final class Constants {
 
   }
 
-  /** ++ field measurement constants */ // ---------------------------------------------------
+  /**
+   * ++ field measurement constants
+   */ // ---------------------------------------------------
   // :D these constants are very nasty, beware! Also don't reformat this!!! >:(
   public static final class FieldConstants {
+    public static final double[] targetPositionsY = {4.983, 4.424, 3.866, 3.307, 2.748, 2.189, 1.630, 1.072, 0.513};
+    public static final double[] targetPositionsHiZ = {1.373, 1.0727, 1.373, 1.373, 1.0727, 1.373, 1.373, 1.0727,
+                                                       1.373};
+    public static final double[] targetPositionsMidZ = {1.068, 0.7687, 1.068, 1.068, 0.7687, 1.068, 1.068, 0.7687,
+                                                        1.068};
+    public static final double targetPositionsLowZ = 0.203;
     public static Pose2d fieldBottomLeft = new Pose2d(new Translation2d(0, 0), new Rotation2d(0));
     public static Pose2d fieldTopRight = new Pose2d(new Translation2d(16.485, 8.102), new Rotation2d(0));
-    public static final double targetPositionsY[] = {
-      4.983,
-      4.424,
-      3.866,
-      3.307,
-      2.748,
-      2.189,
-      1.630,
-      1.072,
-      0.513
-    };
-    public static final double targetPositionsHiZ[] = {
-      1.373,
-      1.0727,
-      1.373,
-      1.373,
-      1.0727,
-      1.373,
-      1.373,
-      1.0727,
-      1.373
-    };
-    public static final double targetPositionsMidZ[] = {
-      1.068,
-      0.7687,
-      1.068,
-      1.068,
-      0.7687,
-      1.068,
-      1.068,
-      0.7687,
-      1.068
-    };
-    public static final double targetPositionsLowZ = 0.203;
-    public static final class Blue{
-      public static final class autoPositions{
-        public static final Pose2d lowerPath[] = {
-          new Pose2d(new Translation2d(2.25, 0.75), new Rotation2d(0)),
-          new Pose2d(new Translation2d(6, 0.75), new Rotation2d(0))
-        };
-        public static final Pose2d upperPath[] = {
-          new Pose2d(new Translation2d(2.25, 4.6), new Rotation2d(0)),
-          new Pose2d(new Translation2d(6, 4.6), new Rotation2d(0))
-        };
-      }
-      public static final class grabberPositions{
-        public static final double highTargetsX = 0.379;
-        public static final double middleTargetsX = 0.811;
-        public static final double lowTargetsX = 1.185;
-        public static final Pose3d fieldCenterGamePieces[] = {
-          new Pose3d(new Translation3d(7.068,4.577,0), new Rotation3d()),
-          new Pose3d(new Translation3d(7.068,3.358,0), new Rotation3d()),
-          new Pose3d(new Translation3d(7.068,2.138,0), new Rotation3d()),
-          new Pose3d(new Translation3d(7.068,0.919,0), new Rotation3d())
-        };
-      }
-      
+
+    public static final class Blue {
       // :D position of the robot's chassis:
       public static double scoringChassisPositionX = 1.806;
-      public static Pose2d scoringPositions[] = {
-        new Pose2d(
-          Constants.FieldConstants.Blue.scoringChassisPositionX,
-          Constants.FieldConstants.targetPositionsY[0],
-          new Rotation2d(Math.PI)
-        ),
-        new Pose2d(
-          Constants.FieldConstants.Blue.scoringChassisPositionX,
-          Constants.FieldConstants.targetPositionsY[1],
-          new Rotation2d(Math.PI)
-        ),
-        new Pose2d(
-          Constants.FieldConstants.Blue.scoringChassisPositionX,
-          Constants.FieldConstants.targetPositionsY[2],
-          new Rotation2d(Math.PI)
-        ),
-        new Pose2d(
-          Constants.FieldConstants.Blue.scoringChassisPositionX,
-          Constants.FieldConstants.targetPositionsY[3],
-          new Rotation2d(Math.PI)
-        ),
-        new Pose2d(
-          Constants.FieldConstants.Blue.scoringChassisPositionX,
-          Constants.FieldConstants.targetPositionsY[4],
-          new Rotation2d(Math.PI)
-        ),
-        new Pose2d(
-          Constants.FieldConstants.Blue.scoringChassisPositionX,
-          Constants.FieldConstants.targetPositionsY[5],
-          new Rotation2d(Math.PI)
-        ),
-        new Pose2d(
-          Constants.FieldConstants.Blue.scoringChassisPositionX,
-          Constants.FieldConstants.targetPositionsY[6],
-          new Rotation2d(Math.PI)
-        ),
-        new Pose2d(
-          Constants.FieldConstants.Blue.scoringChassisPositionX,
-          Constants.FieldConstants.targetPositionsY[7],
-          new Rotation2d(Math.PI)
-        ),
-        new Pose2d(
-          Constants.FieldConstants.Blue.scoringChassisPositionX,
-          Constants.FieldConstants.targetPositionsY[8],
-          new Rotation2d(Math.PI)
-        )
-      };
-
+      public static Pose2d[] scoringPositions = {new Pose2d(Constants.FieldConstants.Blue.scoringChassisPositionX,
+        Constants.FieldConstants.targetPositionsY[0], new Rotation2d(Math.PI)), new Pose2d(
+        Constants.FieldConstants.Blue.scoringChassisPositionX, Constants.FieldConstants.targetPositionsY[1],
+        new Rotation2d(Math.PI)), new Pose2d(Constants.FieldConstants.Blue.scoringChassisPositionX,
+        Constants.FieldConstants.targetPositionsY[2], new Rotation2d(Math.PI)), new Pose2d(
+        Constants.FieldConstants.Blue.scoringChassisPositionX, Constants.FieldConstants.targetPositionsY[3],
+        new Rotation2d(Math.PI)), new Pose2d(Constants.FieldConstants.Blue.scoringChassisPositionX,
+        Constants.FieldConstants.targetPositionsY[4], new Rotation2d(Math.PI)), new Pose2d(
+        Constants.FieldConstants.Blue.scoringChassisPositionX, Constants.FieldConstants.targetPositionsY[5],
+        new Rotation2d(Math.PI)), new Pose2d(Constants.FieldConstants.Blue.scoringChassisPositionX,
+        Constants.FieldConstants.targetPositionsY[6], new Rotation2d(Math.PI)), new Pose2d(
+        Constants.FieldConstants.Blue.scoringChassisPositionX, Constants.FieldConstants.targetPositionsY[7],
+        new Rotation2d(Math.PI)), new Pose2d(Constants.FieldConstants.Blue.scoringChassisPositionX,
+        Constants.FieldConstants.targetPositionsY[8], new Rotation2d(Math.PI))};
       public static Pose2d doubleLoadingZone = new Pose2d(new Translation2d(1.4, 6.75), new Rotation2d(Math.PI));
-      public static Pose2d singleLoadingZone = new Pose2d(new Translation2d(2.342, 7), new Rotation2d(Math.PI/2));
+      public static Pose2d singleLoadingZone = new Pose2d(new Translation2d(2.342, 7), new Rotation2d(Math.PI / 2));
       public static Pose2d chargeStationBottomLeft = new Pose2d(new Translation2d(3.276, 1.522), new Rotation2d(0));
       public static Pose2d chargeStationTopRight = new Pose2d(new Translation2d(4.495, 3.979), new Rotation2d(0));
       public static Pose2d dividerTip = new Pose2d(new Translation2d(3.276, 5.487), new Rotation2d(0));
-      
+
+      public static final class autoPositions {
+        public static final Pose2d[] lowerPath = {new Pose2d(new Translation2d(2.25, 0.75),
+          new Rotation2d(0)), new Pose2d(new Translation2d(6, 0.75), new Rotation2d(0))};
+        public static final Pose2d[] upperPath = {new Pose2d(new Translation2d(2.25, 4.6),
+          new Rotation2d(0)), new Pose2d(new Translation2d(6, 4.6), new Rotation2d(0))};
+      }
+
+      public static final class grabberPositions {
+        public static final double highTargetsX = 0.379;
+        public static final double middleTargetsX = 0.811;
+        public static final double lowTargetsX = 1.185;
+        public static final Pose3d[] fieldCenterGamePieces = {new Pose3d(new Translation3d(7.068, 4.577, 0),
+          new Rotation3d()), new Pose3d(new Translation3d(7.068, 3.358, 0), new Rotation3d()), new Pose3d(
+          new Translation3d(7.068, 2.138, 0), new Rotation3d()), new Pose3d(new Translation3d(7.068, 0.919, 0),
+          new Rotation3d())};
+      }
+
     }
-    public static final class Red{
-      public static final class autoPositions{
-        public static final Pose2d lowerPath[] = {
-          new Pose2d(new Translation2d(14.25, 0.75), new Rotation2d(Math.PI)),
-          new Pose2d(new Translation2d(10.5, 0.75), new Rotation2d(Math.PI))
-        };
-        public static final Pose2d upperPath[] = {
-          new Pose2d(new Translation2d(14.25, 4.6), new Rotation2d(Math.PI)),
-          new Pose2d(new Translation2d(10.25, 4.6), new Rotation2d(Math.PI))
-        };
-      }
-      public static final class grabberPositions{
-        public static final double highTargetsX = 16.162;
-        public static final double middleTargetsX = 15.730;
-        public static final double lowTargetsX = 15.350;
-        public static final Pose3d fieldCenterGamePieces[] = {
-          new Pose3d(new Translation3d(9.473,4.577,0), new Rotation3d()),
-          new Pose3d(new Translation3d(9.473,3.358,0), new Rotation3d()),
-          new Pose3d(new Translation3d(9.473,2.138,0), new Rotation3d()),
-          new Pose3d(new Translation3d(9.473,0.919,0), new Rotation3d())
-        };
-      }
 
+    public static final class Red {
       public static double scoringChassisPositionX = 14.594;
-      public static Pose2d scoringPositions[] = {
-        new Pose2d(
-          Constants.FieldConstants.Red.scoringChassisPositionX,
-          Constants.FieldConstants.targetPositionsY[0],
-          new Rotation2d()
-        ),
-        new Pose2d(
-          Constants.FieldConstants.Red.scoringChassisPositionX,
-          Constants.FieldConstants.targetPositionsY[1],
-          new Rotation2d()
-        ),
-        new Pose2d(
-          Constants.FieldConstants.Red.scoringChassisPositionX,
-          Constants.FieldConstants.targetPositionsY[2],
-          new Rotation2d()
-        ),
-        new Pose2d(
-          Constants.FieldConstants.Red.scoringChassisPositionX,
-          Constants.FieldConstants.targetPositionsY[3],
-          new Rotation2d()
-        ),
-        new Pose2d(
-          Constants.FieldConstants.Red.scoringChassisPositionX,
-          Constants.FieldConstants.targetPositionsY[4],
-          new Rotation2d()
-        ),
-        new Pose2d(
-          Constants.FieldConstants.Red.scoringChassisPositionX,
-          Constants.FieldConstants.targetPositionsY[5],
-          new Rotation2d()
-        ),
-        new Pose2d(
-          Constants.FieldConstants.Red.scoringChassisPositionX,
-          Constants.FieldConstants.targetPositionsY[6],
-          new Rotation2d()
-        ),
-        new Pose2d(
-          Constants.FieldConstants.Red.scoringChassisPositionX,
-          Constants.FieldConstants.targetPositionsY[7],
-          new Rotation2d()
-        ),
-        new Pose2d(
-          Constants.FieldConstants.Red.scoringChassisPositionX,
-          Constants.FieldConstants.targetPositionsY[8],
-          new Rotation2d()
-        )
-      };
-
+      public static Pose2d[] scoringPositions = {new Pose2d(Constants.FieldConstants.Red.scoringChassisPositionX,
+        Constants.FieldConstants.targetPositionsY[0], new Rotation2d()), new Pose2d(
+        Constants.FieldConstants.Red.scoringChassisPositionX, Constants.FieldConstants.targetPositionsY[1],
+        new Rotation2d()), new Pose2d(Constants.FieldConstants.Red.scoringChassisPositionX,
+        Constants.FieldConstants.targetPositionsY[2], new Rotation2d()), new Pose2d(
+        Constants.FieldConstants.Red.scoringChassisPositionX, Constants.FieldConstants.targetPositionsY[3],
+        new Rotation2d()), new Pose2d(Constants.FieldConstants.Red.scoringChassisPositionX,
+        Constants.FieldConstants.targetPositionsY[4], new Rotation2d()), new Pose2d(
+        Constants.FieldConstants.Red.scoringChassisPositionX, Constants.FieldConstants.targetPositionsY[5],
+        new Rotation2d()), new Pose2d(Constants.FieldConstants.Red.scoringChassisPositionX,
+        Constants.FieldConstants.targetPositionsY[6], new Rotation2d()), new Pose2d(
+        Constants.FieldConstants.Red.scoringChassisPositionX, Constants.FieldConstants.targetPositionsY[7],
+        new Rotation2d()), new Pose2d(Constants.FieldConstants.Red.scoringChassisPositionX,
+        Constants.FieldConstants.targetPositionsY[8], new Rotation2d())};
       public static Pose2d doubleLoadingZone = new Pose2d(new Translation2d(15, 6.75), new Rotation2d(0));
-      public static Pose2d singleLoadingZone = new Pose2d(new Translation2d(14.199, 7), new Rotation2d(Math.PI/2));
+      public static Pose2d singleLoadingZone = new Pose2d(new Translation2d(14.199, 7), new Rotation2d(Math.PI / 2));
       public static Pose2d chargeStationBottomLeft = new Pose2d(new Translation2d(12.046, 1.522), new Rotation2d(0));
       public static Pose2d chargeStationTopRight = new Pose2d(new Translation2d(13.265, 3.979), new Rotation2d(0));
       public static Pose2d dividerTip = new Pose2d(new Translation2d(13.265, 5.487), new Rotation2d(0));
+
+      public static final class autoPositions {
+        public static final Pose2d[] lowerPath = {new Pose2d(new Translation2d(14.25, 0.75),
+          new Rotation2d(Math.PI)), new Pose2d(new Translation2d(10.5, 0.75), new Rotation2d(Math.PI))};
+        public static final Pose2d[] upperPath = {new Pose2d(new Translation2d(14.25, 4.6),
+          new Rotation2d(Math.PI)), new Pose2d(new Translation2d(10.25, 4.6), new Rotation2d(Math.PI))};
+      }
+
+      public static final class grabberPositions {
+        public static final double highTargetsX = 16.162;
+        public static final double middleTargetsX = 15.730;
+        public static final double lowTargetsX = 15.350;
+        public static final Pose3d[] fieldCenterGamePieces = {new Pose3d(new Translation3d(9.473, 4.577, 0),
+          new Rotation3d()), new Pose3d(new Translation3d(9.473, 3.358, 0), new Rotation3d()), new Pose3d(
+          new Translation3d(9.473, 2.138, 0), new Rotation3d()), new Pose3d(new Translation3d(9.473, 0.919, 0),
+          new Rotation3d())};
+      }
     }
   }
 

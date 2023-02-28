@@ -239,11 +239,6 @@ public class SwerveAutoMoveCommand extends CommandBase {
     Translation2d desiredTranslation = desiredState.poseMeters.getTranslation();
     Rotation2d desiredRotation = m_desiredRotation.get();
 
-    // <> make the desired rotation the same
-    if (DriveConstants.kGyroReversed) {
-      desiredRotation.times(-1);
-    }
-
     Pose2d currentPose = m_pose.get();
 
     double angleError = Math.abs(desiredRotation.minus(currentPose.getRotation()).getDegrees()) % 360;
@@ -255,9 +250,9 @@ public class SwerveAutoMoveCommand extends CommandBase {
     boolean xCorrect = xError < DriveConstants.AutoConstants.positionLeniencyMeters;
     boolean yCorrect = yError < DriveConstants.AutoConstants.positionLeniencyMeters;
 
-    SmartDashboard.putNumber("desired x", desiredTranslation.getX());
-    SmartDashboard.putNumber("desired y", desiredTranslation.getY());
-
+    // generally keeping the same pid controller makes the robot go
+    // extremely slow as it reaches the end, so we swap the drive
+    // controller
     if (trajectoryIsFinished()) {
       m_controller = new HolonomicDriveController(DriveConstants.AutoConstants.movementPidControllerTrajectoryEnd,
         DriveConstants.AutoConstants.movementPidControllerTrajectoryEnd, m_controller.getThetaController());
