@@ -404,7 +404,7 @@ public final class Constants {
    */
   public static final class PhotonVision {
     // :> This fills me with nothing but dread
-    public static final String cameraName1 = "Arducam_OV9281_MMN1";
+    public static final String cameraName1 = "Forward_Global_Camera";
     public static final String cameraName2 = "Global_Shutter_Camera";
   }
 

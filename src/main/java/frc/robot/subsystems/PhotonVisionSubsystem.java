@@ -35,10 +35,10 @@ public class PhotonVisionSubsystem extends SubsystemBase {
   //public static final string cameraName = "Microsoft_LifeCam_HD-3000";
   // :D this is a Transform3d that tracks the transformation from the camera to the robot
   public static final Transform3d camToBot1 = new Transform3d(
-    new Pose3d(Units.inchesToMeters(14), 0, Units.inchesToMeters(6), new Rotation3d(0, 0, 0)), new Pose3d());
+    new Pose3d(Units.inchesToMeters(14), 0, Units.inchesToMeters(22.5), new Rotation3d(0, 0, 0)), new Pose3d());
   public static final Transform3d camToBot2 = new Transform3d(
-    new Pose3d(Units.inchesToMeters(-2), Units.inchesToMeters(-13), Units.inchesToMeters(12.5),
-      new Rotation3d(0, 0, Units.degreesToRadians(-140))), new Pose3d());
+    new Pose3d(Units.inchesToMeters(-2), Units.inchesToMeters(0), Units.inchesToMeters(14.5),
+      new Rotation3d(0, 0, Units.degreesToRadians(180))), new Pose3d());
   public static ArrayList<PhotonTrackedTarget> targets = new ArrayList<PhotonTrackedTarget>();
   public static ArrayList<Optional<Pose3d>> tagPoses = new ArrayList<Optional<Pose3d>>();
   public static ArrayList<Pose3d> robotPoses = new ArrayList<Pose3d>();
