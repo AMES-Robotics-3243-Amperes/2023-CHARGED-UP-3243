@@ -39,7 +39,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
 
   protected MotorPos IK(double x, double y, double pitch, double roll) {
     // H! Inverse kinematics: see more detailed math here: https://www.desmos.com/calculator/l89yzwijul \
-    double targetArmAngle = Math.atan2(targetY - Constants.WristAndArm.wristLength * Math.sin(targetPitch),   targetX - Constants.WristAndArm.wristLength * Math.cos(targetPitch) );
+    double targetArmAngle = Math.atan2(y - Constants.WristAndArm.wristLength * Math.sin(pitch),   x - Constants.WristAndArm.wristLength * Math.cos(pitch) );
     /*
     if (targetY - Constants.WristAndArm.wristLength * Math.sin(targetPitch) >= 0) {
       targetArmAngle = Math.atan((targetX - Constants.WristAndArm.wristLength * Math.cos(targetPitch)) / -(targetY - Constants.WristAndArm.wristLength * Math.sin(targetPitch))) + Math.PI / 2;
@@ -47,9 +47,9 @@ public class LegAnkleSubsystem extends SubsystemBase {
       targetArmAngle = Math.atan(-(targetY - Constants.WristAndArm.wristLength * Math.sin(targetPitch))  /  (targetX - Constants.WristAndArm.wristLength * Math.cos(targetPitch))) + 3 * Math.PI / 2;
     }*/
     
-    double targetArmLength = (targetY - Constants.WristAndArm.wristLength * Math.sin(targetPitch)) / Math.sin(targetArmAngle);
-    double targetWristAngle = Math.PI - targetArmAngle + targetPitch;
-    double targetWristRoll = targetRoll;
+    double targetArmLength = (y - Constants.WristAndArm.wristLength * Math.sin(targetPitch)) / Math.sin(targetArmAngle);
+    double targetWristAngle = Math.PI - targetArmAngle + pitch;
+    double targetWristRoll = roll;
 
     // H! Convert angles to motor rotations
     targetArmAngle /= 2 * Math.PI;
@@ -58,7 +58,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
 
     targetWristRoll += 0.5;
 
-    return new MotorPos(targetArmAngle, targetArmAngle, targetPitch, targetWristRoll);
+    return new MotorPos(targetArmLength, targetArmAngle, targetWristAngle, targetWristRoll);
   }
 
 
