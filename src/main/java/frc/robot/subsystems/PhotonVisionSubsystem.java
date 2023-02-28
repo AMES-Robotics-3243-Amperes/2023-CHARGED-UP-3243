@@ -1,13 +1,5 @@
 package frc.robot.subsystems;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Optional;
-
-import org.photonvision.PhotonCamera;
-import org.photonvision.PhotonUtils;
-import org.photonvision.targeting.PhotonPipelineResult;
-import org.photonvision.targeting.PhotonTrackedTarget;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.VecBuilder;
@@ -20,126 +12,89 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.FieldPosManager;
+import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonUtils;
+import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.Optional;
 
 public class PhotonVisionSubsystem extends SubsystemBase {
-
-// :> the = new ArrayList is because the code interprets the array as null otherwise.
-static ArrayList<Transform3d> camsToBot = new ArrayList<Transform3d>();
-ArrayList<PhotonPipelineResult> results = new ArrayList<PhotonPipelineResult>();
-ArrayList<PhotonCamera> cameras = new ArrayList<PhotonCamera>();
-public static ArrayList<PhotonTrackedTarget> targets = new ArrayList<PhotonTrackedTarget>();
-static ArrayList<Transform3d> cameraToTargets = new ArrayList<Transform3d>();
-public static ArrayList<Optional<Pose3d>> tagPoses = new ArrayList<Optional<Pose3d>>();
-public static ArrayList<Pose3d> robotPoses = new ArrayList<Pose3d>();
-
-
-PhotonCamera m_camera;
-PhotonCamera m_camera2;
-PhotonCamera m_camera3;
-FieldPosManager m_field;
-
-  private final Field2d m_field2d = new Field2d();
 
   // :D these are values that should be in constants after testing
   public static final String cameraName = Constants.PhotonVision.cameraName1;
   public static final String camera2Name = Constants.PhotonVision.cameraName2;
-  // :> BIG NOTE: Arducam_OV9281_MMN2 is the name of the camera but that is not what it looks for. It is looking for what photonvision reads
-
   //public static final string cameraName = "Microsoft_LifeCam_HD-3000";
   // :D this is a Transform3d that tracks the transformation from the camera to the robot
   public static final Transform3d camToBot1 = new Transform3d(
-    new Pose3d(
-
-      Units.inchesToMeters(14),
-      0,
-      Units.inchesToMeters(6),
-      new Rotation3d(0,0,0)
-    
-    ),
-    
-    new Pose3d()
-  );
-public static final Transform3d camtoBot2 = new Transform3d(
-  new Pose3d(
-  Units.inchesToMeters(-2),
-  Units.inchesToMeters(-13),
-  Units.inchesToMeters(12.5),
-  new Rotation3d(0,0, Units.degreesToRadians(-140))
-
-  ),
-  new Pose3d()
-);
+    new Pose3d(Units.inchesToMeters(14), 0, Units.inchesToMeters(22.5), new Rotation3d(0, 0, 0)), new Pose3d());
+  public static final Transform3d camToBot2 = new Transform3d(
+    new Pose3d(Units.inchesToMeters(-2), Units.inchesToMeters(0), Units.inchesToMeters(14.5),
+      new Rotation3d(0, 0, Units.degreesToRadians(180))), new Pose3d());
+  public static ArrayList<PhotonTrackedTarget> targets = new ArrayList<PhotonTrackedTarget>();
+  public static ArrayList<Optional<Pose3d>> tagPoses = new ArrayList<Optional<Pose3d>>();
+  public static ArrayList<Pose3d> robotPoses = new ArrayList<Pose3d>();
+  // :> the = new ArrayList is because the code interprets the array as null otherwise.
+  static List<Transform3d> camsToBot = Arrays.asList(camToBot1, camToBot2);
+  static ArrayList<Transform3d> cameraToTargets = new ArrayList<Transform3d>();
+  // :D a field layout stores all the vision targets on the field
+  static AprilTagFieldLayout m_aprilTagFieldLayout;
+  ArrayList<PhotonPipelineResult> results = new ArrayList<PhotonPipelineResult>();
+  List<PhotonCamera> cameras = Arrays.asList(new PhotonCamera(Constants.PhotonVision.cameraName1), new PhotonCamera(Constants.PhotonVision.cameraName2));
+  // :> BIG NOTE: Arducam_OV9281_MMN2 is the name of the camera but that is not what it looks for. It is looking for
+  // what photonvision reads
 
 
   // :D end constants
-
-  // :D a field layout stores all the vision targets on the field
-  static AprilTagFieldLayout m_aprilTagFieldLayout;
-
+  FieldPosManager m_field;
 
 
   public PhotonVisionSubsystem(FieldPosManager field) {
     m_field = field;
-    camsToBot.add(camToBot1);
-    camsToBot.add(camtoBot2);
     // :D instantiate the camera and load the field layout
-    m_camera = new PhotonCamera(cameraName);
-    m_camera2 = new PhotonCamera(camera2Name);
-    cameras.add(m_camera);
-    cameras.add(m_camera2);
-    try{
+
+    try {
       m_aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
-    } catch (IOException err){
+    } catch (IOException err) {
       throw new RuntimeException();
     }
   }
-
-  /**
-   * Get the target data from camera.
-   *
-   * @return best PhotonTrackedTarget seen by m_camera or null if no targets are found
-   */
-  //public PhotonTrackedTarget returnBestTarget(){
-    //// :D getting an object (of type var, eugh) which contains the data for all the photon targets visible by the camera
-    //var results = m_camera.getLatestResult();
-    //// :D now getting the "best" target, as ruled by photonlib, to pull data from later
-    //if (results.hasTargets()) {
-      //PhotonTrackedTarget target = results.getBestTarget();
-      //return target;
-    //}
-    //return null;
-  //}
-
 
   /**
    * Get the estimated camera position based on photon target data.
    *
    * @return {@link Pose3d} representing the position of the camera on the field, or null if no valid targets are found
    */
-  public static Pose3d checkRobotPosition(){
+  public static Pose3d checkRobotPosition() {
     // :> I'm so sorry for all of the for loops it is necessary for the three cameras.
-    if (!targets.isEmpty()){
-      for (int i = 0; i < 1; i++) {
-      cameraToTargets.add(targets.get(i).getBestCameraToTarget());
+    // <> why do these loops only get the first item???
+    if (!targets.isEmpty()) {
+      for (int i = 0; i < 2; i++) {
+        cameraToTargets.add(targets.get(i).getBestCameraToTarget());
       }
-      // :D Optional allows us to account for the case when the robot sees a fiducial that is not on the field layout file (ids 1-8)
-      for (int i = 0; i < 1; i++) {
-      tagPoses.add(m_aprilTagFieldLayout.getTagPose(targets.get(i).getFiducialId()));
+
+      for (int i = 0; i < 2; i++) {
+        tagPoses.add(m_aprilTagFieldLayout.getTagPose(targets.get(i).getFiducialId()));
       }
-      for (int j = 0; j < 1; j++) {
-      if (tagPoses.get(j).isPresent()){
-        robotPoses.add(PhotonUtils.estimateFieldToRobotAprilTag(cameraToTargets.get(j), tagPoses.get(j).get(), camsToBot.get(j)));
-        // :> The .get(j)s correspond to the for loop but the other one turns it into a Pose3D instead of an optional Pose3D
-        
-        
+
+      for (int j = 0; j < 2; j++) {
+        if (tagPoses.get(j).isPresent()) {
+          robotPoses.add(
+            PhotonUtils.estimateFieldToRobotAprilTag(cameraToTargets.get(j), tagPoses.get(j).get(), camsToBot.get(j)));
+          // :> The .get(j)s correspond to the for loop but the other one turns it into a Pose3D instead of an optional Pose3D
+        }
       }
-    }
-    Pose3d averageRobotPoses = averagePose3d(robotPoses.toArray(new Pose3d[robotPoses.size()]));
-    return averageRobotPoses;
+
+      Pose3d averageRobotPoses = averagePose3d((Pose3d[]) robotPoses.toArray());
+      return averageRobotPoses;
     }
     return null;
   }
@@ -159,8 +114,10 @@ public static final Transform3d camtoBot2 = new Transform3d(
   }
 
 
-  /**<h2>Finds the average translation between any number of translations</h2>
+  /**
+   * <h2>Finds the average translation between any number of translations</h2>
    * <p>H!</p>
+   *
    * @param translations The translations to average between
    * @return The average translation
    */
@@ -170,8 +127,10 @@ public static final Transform3d camtoBot2 = new Transform3d(
     Translation3d averageTranslation = new Translation3d();
 
     for (Translation3d translation : translations) {
-      averageTranslation = averageTranslation.plus( translation.div(numArguments) );
+      averageTranslation = averageTranslation.plus(translation);
     }
+
+    averageTranslation = averageTranslation.div(numArguments);
 
     return averageTranslation;
   }
@@ -201,56 +160,48 @@ public static final Transform3d camtoBot2 = new Transform3d(
   }
 
 
-
-
-
- /**
+  /**
    * Get the {@link Pose3d} associated with a given target location
    *
    * @param targetID is the selected target to find the Pose3d of, as an integer from 1 to 8
-   * @param offset is the offset as a Pose3d where positive offset is from the target towards the center of the field
-   * 
+   * @param offset   is the offset as a Pose3d where positive offset is from the target towards the center of the field
    * @return Pose3d representing the position of a scoring position on the field
    */
 
-   public Pose3d getScoringPose(int targetID, Transform3d offset){
+  public Pose3d getScoringPose(int targetID, Transform3d offset) {
     Optional<Pose3d> tagPose = m_aprilTagFieldLayout.getTagPose(targetID);
     Pose3d scorePose;
-    if (targetID>4){
+    if (targetID > 4) {
       scorePose = tagPose.get().plus(offset.times(-1));
     } else {
       scorePose = tagPose.get().plus(offset);
     }
     return scorePose;
-}
-
-@Override
-public void periodic() {
-
-  for (int i = 0; i < 1; i++) {
-    PhotonPipelineResult r=cameras.get(i).getLatestResult();
-    if (r.hasTargets()) {
-      results.add(r);
-      targets.add(results.get(i).getBestTarget());
-    }
   }
 
-    // :D create a SmartDashboard widget for the field positions
-    SmartDashboard.putData("field", m_field2d);
+  @Override
+  public void periodic() {
+
+    for (int i = 0; i < 2; i++) {
+      PhotonPipelineResult r = cameras.get(i).getLatestResult();
+      if (r.hasTargets()) {
+        results.add(r);
+        targets.add(results.get(i).getBestTarget());
+      }
+    }
 
     // This method will be called once per scheduler run
-    if (targets.isEmpty() != true){
-      m_field.updateFieldPosWithPhotonVisionPose(checkRobotPosition().toPose2d());
+    if (!targets.isEmpty()) {
+      m_field.updateFieldPosWithPhotonVisionPose(Objects.requireNonNull(checkRobotPosition()).toPose2d());
     }
     targets.clear();
   }
 
-@Override
-public void simulationPeriodic() {
+  @Override
+  public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
   }
 
-  //&& TODO: define function that returns true if any of the cameras are seeing an Apriltag
   public boolean seeingApriltag() {
     return !targets.isEmpty();
   }

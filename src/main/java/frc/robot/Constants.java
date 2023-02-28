@@ -34,27 +34,37 @@ public final class Constants {
 
   // ££ Constants for the Grabber
   public static final class Grabber {
-    public static final int kControllerPort = 0;
-    public static final double kWheelSpeed = 0.3;
-    public static final double kGrabberSpeed = 0.2;
-    public static final double kPositiveEncoderRotationLimit = 0.4;
-    public static final double kNegativeEncoderRotationLimit = 0.25;
-    public static final int kGrabberMotorId = 16;
-    public static final int kCompliantMotorIdOne = 1;
-    public static final int kCompliantMotorIdTwo = 60;
-    public static final int kCurrentLimit = 15;
-    public static final int kCurrentTarget = 2;
-    public static final int kGearRatio = 25;
+    // ++ IDs for the motors:
+    public static final int grabberOpenerMotorID = 16;
+    public static final int wheelMotorOneID = 4;
+    public static final int wheelMotorTwoID = 10;
 
-    public static final double kPositionP = 7;
-    public static final double kPositionI = 0;
-    public static final double kPositionD = 0;
-    public static final double kPositionFF = 0.03;
+    // // ++ motor spin speeds
+    // public static final double wheelMotorSpeed = 0.2;
+    // public static final double openCloseSpeed = 0.05;
 
-    public static final double kCurrentP = 0.03;
-    public static final double kCurrentI = 0;
-    public static final double kCurrentD = 0;
-    public static final double kCurrentFF = 0.01;
+    // ++ grabber maximum/minimum positions
+    public static final double maximumGrabberLimit = 0.41;
+    public static final double minimumGrabberLimit = 0.3;
+
+    // ++ current limits
+    public static final int hardOpenerMotorCurrentLimit = 30; 
+    public static final int hardWheelMotorCurrentLimit = 30;
+    public static final int softOpenerMotorCurrentLimit = 7; // ++ this will have to be changed to adequately compress game pieces
+    public static final int softWheelMotorCurrentLimit = 10; // ++ will have to be experimentally tuned
+
+    // ++ gear ratios
+    public static final double grabberMotorOpenerGearRatio = (1/1); // ++ find actual values! // :D by the way, the absolute encoder is on the ouput shaft of the grabber, so the conversion is 1:1
+    public static final double wheelMotorGearRatio = (1/1);
+
+    // ++ PID values
+    public static final double openerMotorPGain = 0.06;
+    public static final double openerMotorIGain = 0.0;
+    public static final double openerMotorDGain = 0.0;
+
+    public static final double wheelMotorPGain = 0.0;
+    public static final double wheelMotorIGain = 0.0;
+    public static final double wheelMotorDGain = 0.0;
   }
 
   /**
@@ -138,10 +148,10 @@ public final class Constants {
       // <> if the driving is field relative
       public static final boolean kFieldRelative = true;
       // <> speed damper (flat constant supplied speed is multiplied by)
-      public static final double kDrivingSpeedDamper = 12; // <> meters per second
-      public static final double kAngularSpeedDamper = 2.6 * Math.PI; // <> radians per second
+      public static final double kDrivingSpeedDamper = 1; // <> meters per second
+      public static final double kAngularSpeedDamper = 0.8 * Math.PI; // <> radians per second
       // <> max speed
-      public static final double kMaxMetersPerSecond = 2.5;
+      public static final double kMaxMetersPerSecond = 0.5;
       // <> this should be true
       public static final boolean kGyroReversed = false;
 
@@ -269,21 +279,24 @@ public final class Constants {
     public static final int secondaryControllerID = 1;
 
     // ++ OTHER JOYSTICK CONSTANTS --
-    public static final double deadZoneSize = 0.12;
+    public static final double deadZoneSize = 0.1;
+
     /**
      * ++ lowPassFilterStrength should be between 0 & 1. The closer it is to 1, the smoother acceleration will be.
      */
-    public static final double driveLowPassFilterStrength = 0.91;
-    public static final double rotationLowPassFilterStrength = 0.2;
+    public static final double driveLowPassFilterStrength = 0.75;
+    public static final double rotationLowPassFilterStrength = 0.6;
+
     // ++ we probably don't want the speed damcursjdjdjdpers as finals in case we want a fastmode/to change them later
-    public static final double driveSpeedDamper = 0.9;
-    public static final double rotationDamper = 0.8;
+    public static final double driveSpeedDamper = 1;
+    public static final double rotationDamper = 1;
 
     // ss This is the multiplier for Fast Mode
     // explained in JoyUtil.java
-    public static final double fastModeMaxMultiplier = 0.5;
-    // :> Slow mode multiplier
-    public static final double slowModeMultiplier = 3;
+    public static final double fastModeMaxMultiplier = 1;
+
+    // <> keep below 1
+    public static final double slowModeMultiplier = 0.9;
 
     /**
      * ++ the damper for the D-Pad inputs
@@ -306,10 +319,11 @@ public final class Constants {
   public static final class WristAndArm {
 
     public static final double extensionEncoderConversionFactor = (Units.inchesToMeters(2.707) * Math.PI) / (36);
+    public static final double pitchEncoderConversionFactor = 1/60;
     // H! Holds the data for the positions of stuff in the arm
     public static final double minLength = 0.92804 + 0.05;
     public static final double maxLength = 1.5494;
-    public static final double wristLength = 0/*Units.inchesToMeters(10)/*0.072327*/;
+    public static final double wristLength = Units.inchesToMeters(5)/*0.072327*/;
     public static final double changeXMultiplier = 0.10 / 50;
     public static final double changeYMultiplier = 0.10 / 50;
     public static final double changePitchMultiplier = Units.degreesToRadians(15) / 50;
@@ -319,18 +333,16 @@ public final class Constants {
     public static final double minX = -0.277731 - 1.2192;
     public static final double maxY = 1.9812 - 0.476364;
     public static final double minY = 0 - 0.476364;
-    public static final int pivotCurrentLimit = 40; // H! This is a temporary change! It was 30 before. // :D hi I
-    // just changed this from 30 to 40
-    public static final int extensionCurrentLimit = 20; // H! This is a temporary change! It was 20 before. // :D hi
-    // I just changed this from 10 to 30
-    public static final int pitchCurrentLimit = 20; // H! This is a temporary change! It was 10 before. // :D hi I
-    // just changed this from 30 to 15
-    public static final int rollCurrentLimit = 5; // H! This is a temporary change! It was 10 before. // :D hi I just
-    public static final int NEO1650CurrentLimitHard = 60; // H! This is a temporary change! It was 40 before. // :D
-    // hi I just changed this from 20 to 60
-    public static final int NEO550CurrentLimitHard = 40; // H! This is a temporary change! It was 20 before.
-    // changed this from 2 to 5
+    public static final int pivotCurrentLimit = 39; // H! This is a temporary change! It was 30 before. // :D hi I just changed this from 30 to 40
+    public static final int extensionCurrentLimit = 25; // H! This is a temporary change! It was 20 before. // :D hi I just changed this from 10 to 30
+    public static final int pitchCurrentLimit = 29; // H! This is a temporary change! It was 10 before. // :D hi I just changed this from 30 to 15
+    public static final int rollCurrentLimit = 5; // H! This is a temporary change! It was 10 before. // :D hi I just changed this from 2 to 5
+    public static final int NEO1650CurrentLimitHard = 40; // H! This is a temporary change! It was 40 before. // :D hi I just changed this from 20 to 60
+    public static final int NEO550CurrentLimitHard = 30; // H! This is a temporary change! It was 20 before.
     public static final double atSetpointThreshold = 0.005;
+
+    public static final double pivotOutputRange = 0.65;
+    public static final double wristRollEncoderSetZeroOffset = 0.163;
 
     /**
      * H! This class just holds all the motor ids
@@ -345,19 +357,33 @@ public final class Constants {
       public static final int absolute = 0;
     }
 
+    public static class StartingPosition {
+      public static final double x = 0.0;
+      public static final double y = 1.2;
+      public static final double pitch = 0.0;
+      public static final double roll = 0.0;
+    }
+
+    public static class StartingSetpoints {
+      public static final double x = 0.05;
+      public static final double y = 1.2;
+      public static final double pitch = 0.0;
+      public static final double roll = 0.0;
+    }
+
     public static class PID {
       public static class Extension {
-        public static final double P = 4.5;// H! 2.0
-        public static final double I = 0.0;
-        public static final double D = 0.0;
+        public static final double P  = 4.5 * 0;// H! 2.0
+        public static final double I  = 0.0;
+        public static final double D  = 0.0;
         public static final double FF = 0.01 * 0;
       }
 
       public static class Pivot {
-        public static final double P = 5.0;// H! 5.0
-        public static final double I = 0.0;
-        public static final double D = 0.0;
-        public static final double FF = 0.1 * 0;
+        public static final double P  = 5.0;// H! 5.0
+        public static final double I  = 0.0;
+        public static final double D  = 0.0;
+        public static final double FF = 0.1;
       }
 
       public static class Pitch {
@@ -381,7 +407,7 @@ public final class Constants {
    */
   public static final class PhotonVision {
     // :> This fills me with nothing but dread
-    public static final String cameraName1 = "Arducam_OV9281_MMN1";
+    public static final String cameraName1 = "Forward_Global_Camera";
     public static final String cameraName2 = "Global_Shutter_Camera";
   }
 
@@ -490,7 +516,7 @@ public final class Constants {
 
     public static final class Blue {
       // :D position of the robot's chassis:
-      public static double scoringChassisPositionX = 1.806;
+      public static double scoringChassisPositionX = 1.85;
       public static Pose2d[] scoringPositions = {new Pose2d(Constants.FieldConstants.Blue.scoringChassisPositionX,
         Constants.FieldConstants.targetPositionsY[0], new Rotation2d(Math.PI)), new Pose2d(
         Constants.FieldConstants.Blue.scoringChassisPositionX, Constants.FieldConstants.targetPositionsY[1],
@@ -531,7 +557,7 @@ public final class Constants {
     }
 
     public static final class Red {
-      public static double scoringChassisPositionX = 14.594;
+      public static double scoringChassisPositionX = 14.697;
       public static Pose2d[] scoringPositions = {new Pose2d(Constants.FieldConstants.Red.scoringChassisPositionX,
         Constants.FieldConstants.targetPositionsY[0], new Rotation2d()), new Pose2d(
         Constants.FieldConstants.Red.scoringChassisPositionX, Constants.FieldConstants.targetPositionsY[1],

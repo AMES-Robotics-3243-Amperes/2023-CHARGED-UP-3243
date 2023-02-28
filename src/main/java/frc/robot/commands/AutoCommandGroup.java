@@ -11,11 +11,13 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveTrain.DriveConstants;
 import frc.robot.FieldPosManager;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.LegAnkleSubsystem;
 import frc.robot.subsystems.ShuffleboardSubsystem;
 
 import java.util.ArrayList;
@@ -26,6 +28,7 @@ import java.util.List;
  */
 public class AutoCommandGroup extends SequentialCommandGroup {
   protected final DriveSubsystem m_driveSubsystem;
+  protected final LegAnkleSubsystem m_legAnkleSubsystem;
   protected final FieldPosManager m_posManager;
   protected final ShuffleboardSubsystem m_shuffleboardSubsystem;
 
@@ -34,10 +37,11 @@ public class AutoCommandGroup extends SequentialCommandGroup {
    *
    * @param driveSubsystem the {@link DriveSubsystem} to control for driving
    */
-  public AutoCommandGroup(DriveSubsystem driveSubsystem, ShuffleboardSubsystem shuffleboardSubsystem,
-                          FieldPosManager posManager) {
+  public AutoCommandGroup(DriveSubsystem driveSubsystem, LegAnkleSubsystem legAnkleSubsystem,
+                          ShuffleboardSubsystem shuffleboardSubsystem, FieldPosManager posManager) {
     m_driveSubsystem = driveSubsystem;
-    addRequirements(m_driveSubsystem);
+    m_legAnkleSubsystem = legAnkleSubsystem;
+    addRequirements(m_driveSubsystem, legAnkleSubsystem);
 
     m_posManager = posManager;
 
@@ -52,6 +56,8 @@ public class AutoCommandGroup extends SequentialCommandGroup {
     thetaPidController.enableContinuousInput(-Math.PI, Math.PI);
 
     ArrayList<Command> autoCommands = new ArrayList<Command>();
+
+    autoCommands.add(new InstantCommand(() -> m_legAnkleSubsystem.moveByXYTheta(0, 0.1, 0, 0)));
 
     boolean bottom = m_shuffleboardSubsystem.ShuffleBoardBooleanInput(
       ShuffleboardSubsystem.ShuffleBoardInput.goLowerRoute);
@@ -104,8 +110,7 @@ public class AutoCommandGroup extends SequentialCommandGroup {
     // <> only add all the commands if neither of the ids are negative
     if (piece0DropOffID >= 0) {
       SwerveAutoMoveCommand goToPieceDropOffCommand = new SwerveAutoMoveCommand(m_driveSubsystem,
-        TrajectoryGenerator.generateTrajectory(m_driveSubsystem.getPose(),
-          List.of(farChargeAvoidIntermediatePoint, nearChargeAvoidIntermediatePoint), dropOffPiece0Destination,
+        TrajectoryGenerator.generateTrajectory(m_driveSubsystem.getPose(), List.of(), dropOffPiece0Destination,
           DriveConstants.AutoConstants.trajectoryConfig), thetaPidController, false);
       autoCommands.add(goToPieceDropOffCommand);
 

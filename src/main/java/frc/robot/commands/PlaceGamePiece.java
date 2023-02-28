@@ -16,7 +16,7 @@ import frc.robot.commands.PlaceGamePieceCommands.MoveRobotToGrid;
 import frc.robot.commands.PlaceGamePieceCommands.ReleaseGameObject;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LegAnkleSubsystem;
-import frc.robot.subsystems.ReidPrototypeSubsystem;
+import frc.robot.subsystems.GrabberSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -24,10 +24,10 @@ import frc.robot.subsystems.ReidPrototypeSubsystem;
 public class PlaceGamePiece extends SequentialCommandGroup {
 
   public boolean isCube;
-  public Constants.Target target;
+  public FieldPosManager.fieldSpot3d target;
   public DriveSubsystem driveSubsystem;
   public LegAnkleSubsystem legAnkleSubsystem;
-  public ReidPrototypeSubsystem grabberSubsystem;
+  public GrabberSubsystem grabberSubsystem;
   public ProfiledPIDController thetaPidController;
   public JoyUtil controller;
   public FieldPosManager fieldPositionManager;
@@ -41,7 +41,7 @@ public class PlaceGamePiece extends SequentialCommandGroup {
    * Creates a new PlaceGamePiece.
    */
   public PlaceGamePiece(FieldPosManager fieldPosManager, DriveSubsystem driveSubsystem,
-                        LegAnkleSubsystem legAnkleSubsystem, ReidPrototypeSubsystem grabberSubsystem,
+                        LegAnkleSubsystem legAnkleSubsystem, GrabberSubsystem grabberSubsystem,
                         ProfiledPIDController thetaPidController, JoyUtil controller, int poseIndex) {
     this.fieldPositionManager = fieldPosManager;
     this.driveSubsystem = driveSubsystem;
@@ -57,7 +57,7 @@ public class PlaceGamePiece extends SequentialCommandGroup {
       new MoveRobotToGrid(
         fieldPosManager.get2dFieldObjectPose(FieldPosManager.fieldSpot2d.scoringPosition, true, poseIndex),
         driveSubsystem, controller, thetaPidController),
-      new MoveArmToTarget(poseIndex, isCube, target, legAnkleSubsystem),
+      new MoveArmToTarget(poseIndex, isCube, target, legAnkleSubsystem, fieldPosManager),
       new ReleaseGameObject(isCube, target, grabberSubsystem));
 
 
@@ -72,7 +72,7 @@ public class PlaceGamePiece extends SequentialCommandGroup {
 
 
   public PlaceGamePiece(FieldPosManager fieldPosManager, DriveSubsystem driveSubsystem,
-                        LegAnkleSubsystem legAnkleSubsystem, ReidPrototypeSubsystem grabberSubsystem,
+                        LegAnkleSubsystem legAnkleSubsystem, GrabberSubsystem grabberSubsystem,
                         ProfiledPIDController thetaPidController, JoyUtil controller) {
     this(fieldPosManager, driveSubsystem, legAnkleSubsystem, grabberSubsystem, thetaPidController, controller,
       fieldPosManager.getNearestScoringZoneIndex() /* H! TODO Needs to be integrated with finding the closest pose */);

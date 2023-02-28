@@ -9,7 +9,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.DriverStation;
-import frc.robot.subsystems.PhotonVisionSubsystem;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,7 +20,9 @@ import java.util.List;
  */
 public class FieldPosManager {
 
-  public DriverStation.Alliance allianceColor = DriverStation.getAlliance();
+  public DriverStation.Alliance allianceColor;
+
+  private Field2d field2d = new Field2d();
 
   public Pose2d latestRobotPosition = new Pose2d();
 
@@ -40,7 +42,7 @@ public class FieldPosManager {
   public Pose2d[] opposingScoringPositions;
 
   public FieldPosManager() {
-
+    setScoringPositions();
   }
 
   /**
@@ -48,6 +50,7 @@ public class FieldPosManager {
    * :D I made a list for the opposing scoring positions, because it might be useful
    */
   public void setScoringPositions() {
+    allianceColor = DriverStation.getAlliance();
     if (allianceColor != DriverStation.Alliance.Invalid && allianceColor != null) {
       if (allianceColor == DriverStation.Alliance.Red) {
         alliedScoringPositions = Constants.FieldConstants.Red.scoringPositions;
@@ -73,14 +76,6 @@ public class FieldPosManager {
   }
 
   /**
-   * :D sets the robot pose to default (all zero values)
-   * SHOULD ONLY BE USED FOR DEBUGGING
-   */
-  public void resetRobotPos() {
-    latestRobotPosition = new Pose2d();
-  }
-
-  /**
    * :D This is a function intended ONLY to be used by the drive subsystem.
    * It finds how much the odometry pose has changed since the last periodic loop.
    * Ideally, replace the swerve's rotation data with imu rotation data
@@ -90,7 +85,7 @@ public class FieldPosManager {
    */
 
   public void updateFieldPosWithSwerveData(Pose2d swervePose) {
-    if (hasPhotonPose) {
+    if (!hasPhotonPose) {
       previousOdometryPose = latestOdometryPose;
       latestOdometryPose = swervePose;
       Transform2d transform = latestOdometryPose.minus(previousOdometryPose);
@@ -106,7 +101,7 @@ public class FieldPosManager {
    * @param photonPose is the position as reported by the PhotonVisionSubsystem.
    */
   public void updateFieldPosWithPhotonVisionPose(Pose2d photonPose) {
-    setRobotPose(PhotonVisionSubsystem.checkRobotPosition().toPose2d());
+    setRobotPose(photonPose);
     hasPhotonPose = true;
   }
 
@@ -117,6 +112,11 @@ public class FieldPosManager {
    */
   public Pose2d getRobotPose() {
     return latestRobotPosition;
+  }
+
+  public Field2d getField2d(){
+    field2d.setRobotPose(latestRobotPosition);
+    return field2d;
   }
 
   /**
@@ -146,8 +146,8 @@ public class FieldPosManager {
 
     } else {
       Pose2d nearestOppPose = robotPose.nearest(opposeScorePoses);
-      for (int i = 0; i < alliedScoringPositions.length; i++) {
-        if (alliedScoringPositions[i] == nearestOppPose) {
+      for (int i = 0; i < opposingScoringPositions.length; i++) {
+        if (opposingScoringPositions[i] == nearestOppPose) {
           return i;
         }
       }
@@ -419,11 +419,3 @@ public class FieldPosManager {
   }
 
 }
-
-// auto movement points 
-//  blue
-//   lower path(2.25, 0.9) (6, 0.9)
-//   upper path(2.25, 4.6) (6, 4.6)
-//  red
-//   lower path(14.25, 0.9) (10.5, 0.9)
-//   upper path(14.25, 4.6) (10.5, 4.6)

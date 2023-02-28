@@ -4,9 +4,7 @@
 
 package frc.robot.subsystems;
 
-//&& import edu.wpi.first.math.geometry.Pose2d;
-//&& import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -23,26 +21,28 @@ public class ShuffleboardSubsystem extends SubsystemBase {
   static SimpleWidget legAnkleCommandWidget;
   static SimpleWidget driveTrainWidget;
   static SimpleWidget chargeStationAngleWidget;
-  final Field2d field = new Field2d();
+  private SendableChooser<Pose2d> m_autoFirstComponent = new SendableChooser<>();
   private FieldPosManager fieldPoseManager;
 
   private DriveSubsystem driveTrainSubsystem;
   private PhotonVisionSubsystem photonVisionSubsystem;
-  private ReidPrototypeSubsystem reidGrabberSubsystem;
+  private IMUSubsystem imuSubsystem;
+  private GrabberSubsystem GrabberSubsystem;
 
 
   /**
    * Creates a new ShuffleboardSubsystem.
    */
   public ShuffleboardSubsystem(FieldPosManager posManager, LegAnkleSubsystem legAnkle, DriveSubsystem driveTrain,
-  PhotonVisionSubsystem photonVision, IMUSubsystem IMU, ReidPrototypeSubsystem grabber) {
+                               PhotonVisionSubsystem photonVision, IMUSubsystem IMU, GrabberSubsystem grabber) {
 
     //&& Set fieldPoseManager equal to posManager for Field2D widget
     fieldPoseManager = posManager;
 
     driveTrainSubsystem = driveTrain;
     photonVisionSubsystem = photonVision;
-    reidGrabberSubsystem = grabber;
+    imuSubsystem = IMU;
+    GrabberSubsystem = grabber;
 
   }
 
@@ -50,8 +50,7 @@ public class ShuffleboardSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     //&& Field 2D widget
-    SmartDashboard.putData(field);
-    field.setRobotPose(fieldPoseManager.getRobotPose());
+    SmartDashboard.putData(fieldPoseManager.getField2d());
 
 
     //&& -----------------Titles of the widgets that get displayed in shuffleboard------------------
@@ -79,9 +78,7 @@ public class ShuffleboardSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("motorTooHot", driveTrainSubsystem.getMotorsOkTemperature());
 
     //&& TODO: Once Jasper merges into dev, finish creating widget for whether grabber is closed or not
-    SmartDashboard.putBoolean("grabberClosing", reidGrabberSubsystem.getGrabberClosing());
 
-    SmartDashboard.putBoolean("grabberOpening", reidGrabberSubsystem.getGrabberOpening());
 
     //&& Shows whether PhotonVision is registering an Apriltag
     SmartDashboard.putBoolean("seeingApriltag", photonVisionSubsystem.seeingApriltag());
