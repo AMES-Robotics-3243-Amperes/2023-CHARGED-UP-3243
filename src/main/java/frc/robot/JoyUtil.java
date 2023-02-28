@@ -150,7 +150,7 @@ public final class JoyUtil extends XboxController {
     }
     //meah for mayor
 
-
+ 
 
     // ++ the rotation axis is right x
     double rawJoyPos = getRightX();

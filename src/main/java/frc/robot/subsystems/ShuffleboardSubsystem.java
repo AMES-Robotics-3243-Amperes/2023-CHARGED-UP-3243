@@ -4,11 +4,12 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.math.geometry.Pose2d;
+//&& import edu.wpi.first.math.geometry.Pose2d;
+//&& import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+
 import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.FieldPosManager;
@@ -23,13 +24,10 @@ public class ShuffleboardSubsystem extends SubsystemBase {
   static SimpleWidget driveTrainWidget;
   static SimpleWidget chargeStationAngleWidget;
   final Field2d field = new Field2d();
-  private SendableChooser<Pose2d> m_autoFirstComponent = new SendableChooser<>();
   private FieldPosManager fieldPoseManager;
 
-  private LegAnkleSubsystem legAnkleSubsystem;
   private DriveSubsystem driveTrainSubsystem;
   private PhotonVisionSubsystem photonVisionSubsystem;
-  private IMUSubsystem imuSubsystem;
   private ReidPrototypeSubsystem reidGrabberSubsystem;
 
 
@@ -37,16 +35,13 @@ public class ShuffleboardSubsystem extends SubsystemBase {
    * Creates a new ShuffleboardSubsystem.
    */
   public ShuffleboardSubsystem(FieldPosManager posManager, LegAnkleSubsystem legAnkle, DriveSubsystem driveTrain,
-                               PhotonVisionSubsystem photonVision, IMUSubsystem IMU, ReidPrototypeSubsystem grabber) {
+  PhotonVisionSubsystem photonVision, IMUSubsystem IMU, ReidPrototypeSubsystem grabber) {
 
     //&& Set fieldPoseManager equal to posManager for Field2D widget
     fieldPoseManager = posManager;
 
-    //&& Sets the subsystems used in the widgets equal to their names
-    legAnkleSubsystem = legAnkle;
     driveTrainSubsystem = driveTrain;
     photonVisionSubsystem = photonVision;
-    imuSubsystem = IMU;
     reidGrabberSubsystem = grabber;
 
   }
