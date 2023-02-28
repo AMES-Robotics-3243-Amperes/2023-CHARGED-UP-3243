@@ -3,6 +3,15 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.LegAnkleSubsystem;
+import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.PhotonVisionSubsystem;
+import frc.robot.subsystems.IMUSubsystem;
+import frc.robot.subsystems.GrabberSubsystem;
+
+import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
+import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
@@ -29,14 +38,14 @@ public class ShuffleboardSubsystem extends SubsystemBase {
   private DriveSubsystem driveTrainSubsystem;
   private PhotonVisionSubsystem photonVisionSubsystem;
   private IMUSubsystem imuSubsystem;
-  private ReidPrototypeSubsystem reidGrabberSubsystem;
+  private GrabberSubsystem GrabberSubsystem;
 
 
   /**
    * Creates a new ShuffleboardSubsystem.
    */
   public ShuffleboardSubsystem(FieldPosManager posManager, LegAnkleSubsystem legAnkle, DriveSubsystem driveTrain,
-                               PhotonVisionSubsystem photonVision, IMUSubsystem IMU, ReidPrototypeSubsystem grabber) {
+                               PhotonVisionSubsystem photonVision, IMUSubsystem IMU, GrabberSubsystem grabber) {
 
     //&& Set fieldPoseManager equal to posManager for Field2D widget
     fieldPoseManager = posManager;
@@ -46,7 +55,7 @@ public class ShuffleboardSubsystem extends SubsystemBase {
     driveTrainSubsystem = driveTrain;
     photonVisionSubsystem = photonVision;
     imuSubsystem = IMU;
-    reidGrabberSubsystem = grabber;
+    GrabberSubsystem = grabber;
 
   }
 
@@ -82,9 +91,7 @@ public class ShuffleboardSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("motorTooHot", driveTrainSubsystem.getMotorsOkTemperature());
 
     //&& TODO: Once Jasper merges into dev, finish creating widget for whether grabber is closed or not
-    SmartDashboard.putBoolean("grabberClosing", reidGrabberSubsystem.getGrabberClosing());
 
-    SmartDashboard.putBoolean("grabberOpening", reidGrabberSubsystem.getGrabberOpening());
 
     //&& Shows whether PhotonVision is registering an Apriltag
     SmartDashboard.putBoolean("seeingApriltag", photonVisionSubsystem.seeingApriltag());

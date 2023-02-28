@@ -346,7 +346,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     MotorPos targetPosition = IK(targetX, targetY, targetPitch, targetRoll);
 
-
+    manualSetpoints = true;
     if (manualSetpoints) {
       targetPosition.pivot = targetPivotSetpoint;
       targetPosition.extension = targetExtensionSetpoint;
@@ -385,15 +385,6 @@ public class LegAnkleSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("wristPitchLength", wristPitchEncoderRight.getPosition());
     SmartDashboard.putNumber("wristRollLength", wristRollEncoder.getPosition());
   }
-
-
-
-
-
-
-
-
-
 
   private static double clamp(double min,  double max, double x) {
     return x > max ? max : Math.max(x, min);

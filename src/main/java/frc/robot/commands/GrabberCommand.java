@@ -4,27 +4,26 @@
 
 package frc.robot.commands;
 
+import frc.robot.subsystems.GrabberSubsystem;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.ReidPrototypeSubsystem;
+import frc.robot.subsystems.GrabberSubsystem;
 
-/**
- * An example command that uses an example subsystem.
- */
-public class ReidPrototypeCommand extends CommandBase {
+/** GrabberCommand controls the grabber. */
+public class GrabberCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   // ££ Defines the subsystem and the controller
-  private final ReidPrototypeSubsystem m_reidPrototypeSubsystem;
+  private final GrabberSubsystem m_GrabberSubsystem;
   private final XboxController m_controller;
 
   /**
-   * Creates a new ExampleCommand.
+   * Creates a new GrabberCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ReidPrototypeCommand(ReidPrototypeSubsystem subsystem, XboxController controller) {
+  public GrabberCommand(GrabberSubsystem subsystem, XboxController controller) {
     // Assigns the subsystem and the controller values
-    m_reidPrototypeSubsystem = subsystem;
+    m_GrabberSubsystem = subsystem;
     m_controller = controller;
 
     // Use addRequirements() here to declare subsystem dependencies.
@@ -33,24 +32,31 @@ public class ReidPrototypeCommand extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
 
-  // Called every time the scheduler runs while the command is scheduled.
-  // ££ In brevity: If the X button is pressed the compliant motors will spin, if the B button is pressed the grabber
-  // will close, if the Y button is pressed the grabber will open, and if the A button is pressed PID tuning can
-  // begin. Tune by changing the values that are passed to setPIDValues()
-  @Override
-  public void execute() {
-    if (m_controller.getLeftBumperPressed()) {
-      m_reidPrototypeSubsystem.closeGrabber();
-    } else if (m_controller.getRightBumperPressed()) {
-      m_reidPrototypeSubsystem.openGrabber();
-    }
+    // ++ set the PID values of the grabber
+    m_GrabberSubsystem.setGrabberPIDValues();
+    
   }
 
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
+
+    // ++ set speeds based on controller readings TEMPORARY, FOR TESTING
+    m_GrabberSubsystem.setGrabberPosition( m_controller.getLeftX() );
+    m_GrabberSubsystem.setGrabberWheelSpeeds( m_controller.getRightTriggerAxis() * 0.05);
+    
+
+  }
+
+ 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_GrabberSubsystem.setGrabberWheelSpeeds(0.0);
+    m_GrabberSubsystem.setGrabberWheelSpeeds(0.0);
+  }
 
   // Returns true when the command should end.
   @Override

@@ -44,7 +44,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    m_fieldPosManager.updateFieldPosWithSwerveData(new Pose2d(m_imuSubsystem.getDisplacement(), getHeading()));
+    m_fieldPosManager.updateFieldPosWithSwerveData(new Pose2d(m_imuSubsystem.getDisplacement(), m_imuSubsystem.getYaw()));
   }
 
   /**
