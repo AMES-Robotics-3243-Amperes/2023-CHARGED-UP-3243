@@ -65,8 +65,11 @@ public final class JoyUtil extends XboxController {
     double valueCurved = rawCurve(pos);
 
     // <> make possible to input small values
-    double valueAdjusted = valueCurved - (pos >= 0 ? rawCurve(Constants.Joysticks.deadZoneSize) : rawCurve(
+    double valueAdjusted = valueCurved - (valueCurved >= 0 ? rawCurve(Constants.Joysticks.deadZoneSize) : rawCurve(
       -Constants.Joysticks.deadZoneSize));
+    if (valueCurved == 0) {
+      valueAdjusted = 0;
+    }
 
     return valueAdjusted;
   }
