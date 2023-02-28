@@ -34,27 +34,37 @@ public final class Constants {
 
   // ££ Constants for the Grabber
   public static final class Grabber {
-    public static final int kControllerPort = 0;
-    public static final double kWheelSpeed = 0.3;
-    public static final double kGrabberSpeed = 0.2;
-    public static final double kPositiveEncoderRotationLimit = 0.4;
-    public static final double kNegativeEncoderRotationLimit = 0.25;
-    public static final int kGrabberMotorId = 16;
-    public static final int kCompliantMotorIdOne = 1;
-    public static final int kCompliantMotorIdTwo = 60;
-    public static final int kCurrentLimit = 15;
-    public static final int kCurrentTarget = 2;
-    public static final int kGearRatio = 25;
+    // ++ IDs for the motors:
+    public static final int grabberOpenerMotorID = 16;
+    public static final int wheelMotorOneID = 4;
+    public static final int wheelMotorTwoID = 10;
 
-    public static final double kPositionP = 7;
-    public static final double kPositionI = 0;
-    public static final double kPositionD = 0;
-    public static final double kPositionFF = 0.03;
+    // // ++ motor spin speeds
+    // public static final double wheelMotorSpeed = 0.2;
+    // public static final double openCloseSpeed = 0.05;
 
-    public static final double kCurrentP = 0.03;
-    public static final double kCurrentI = 0;
-    public static final double kCurrentD = 0;
-    public static final double kCurrentFF = 0.01;
+    // ++ grabber maximum/minimum positions
+    public static final double maximumGrabberLimit = 0.41;
+    public static final double minimumGrabberLimit = 0.3;
+
+    // ++ current limits
+    public static final int hardOpenerMotorCurrentLimit = 30; 
+    public static final int hardWheelMotorCurrentLimit = 30;
+    public static final int softOpenerMotorCurrentLimit = 7; // ++ this will have to be changed to adequately compress game pieces
+    public static final int softWheelMotorCurrentLimit = 10; // ++ will have to be experimentally tuned
+
+    // ++ gear ratios
+    public static final double grabberMotorOpenerGearRatio = (1/1); // ++ find actual values!
+    public static final double wheelMotorGearRatio = (1/1);
+
+    // ++ PID values
+    public static final double openerMotorPGain = 0.0;
+    public static final double openerMotorIGain = 0.0;
+    public static final double openerMotorDGain = 0.0;
+
+    public static final double wheelMotorPGain = 0.0;
+    public static final double wheelMotorIGain = 0.0;
+    public static final double wheelMotorDGain = 0.0;
   }
 
   /**
@@ -306,10 +316,11 @@ public final class Constants {
   public static final class WristAndArm {
 
     public static final double extensionEncoderConversionFactor = (Units.inchesToMeters(2.707) * Math.PI) / (36);
+    public static final double pitchEncoderConversionFactor = 1/60;
     // H! Holds the data for the positions of stuff in the arm
     public static final double minLength = 0.92804 + 0.05;
     public static final double maxLength = 1.5494;
-    public static final double wristLength = 0/*Units.inchesToMeters(10)/*0.072327*/;
+    public static final double wristLength = Units.inchesToMeters(5)/*0.072327*/;
     public static final double changeXMultiplier = 0.10 / 50;
     public static final double changeYMultiplier = 0.10 / 50;
     public static final double changePitchMultiplier = Units.degreesToRadians(15) / 50;
@@ -319,12 +330,12 @@ public final class Constants {
     public static final double minX = -0.277731 - 1.2192;
     public static final double maxY = 1.9812 - 0.476364;
     public static final double minY = 0 - 0.476364;
-    public static final int pivotCurrentLimit = 40; // H! This is a temporary change! It was 30 before. // :D hi I just changed this from 30 to 40
-    public static final int extensionCurrentLimit = 20; // H! This is a temporary change! It was 20 before. // :D hi I just changed this from 10 to 30
-    public static final int pitchCurrentLimit = 20; // H! This is a temporary change! It was 10 before. // :D hi I just changed this from 30 to 15
+    public static final int pivotCurrentLimit = 39; // H! This is a temporary change! It was 30 before. // :D hi I just changed this from 30 to 40
+    public static final int extensionCurrentLimit = 25; // H! This is a temporary change! It was 20 before. // :D hi I just changed this from 10 to 30
+    public static final int pitchCurrentLimit = 29; // H! This is a temporary change! It was 10 before. // :D hi I just changed this from 30 to 15
     public static final int rollCurrentLimit = 5; // H! This is a temporary change! It was 10 before. // :D hi I just changed this from 2 to 5
-    public static final int NEO1650CurrentLimitHard = 60; // H! This is a temporary change! It was 40 before. // :D hi I just changed this from 20 to 60
-    public static final int NEO550CurrentLimitHard = 40; // H! This is a temporary change! It was 20 before.
+    public static final int NEO1650CurrentLimitHard = 40; // H! This is a temporary change! It was 40 before. // :D hi I just changed this from 20 to 60
+    public static final int NEO550CurrentLimitHard = 30; // H! This is a temporary change! It was 20 before.
     public static final double atSetpointThreshold = 0.005;
 
     public static final double pivotOutputRange = 0.65;
@@ -341,6 +352,20 @@ public final class Constants {
       public static final int WristRoll = 20;
       public static final int relative = 0;
       public static final int absolute = 0;
+    }
+
+    public static class StartingPosition {
+      public static final double x = 0.0;
+      public static final double y = 1.2;
+      public static final double pitch = 0.0;
+      public static final double roll = 0.0;
+    }
+
+    public static class StartingSetpoints {
+      public static final double x = 0.05;
+      public static final double y = 1.2;
+      public static final double pitch = 0.0;
+      public static final double roll = 0.0;
     }
 
     public static class PID {
