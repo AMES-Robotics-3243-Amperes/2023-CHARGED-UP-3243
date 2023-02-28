@@ -29,6 +29,8 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+
+    m_robotContainer.m_legAnkleSubsystem.updatePIDValues();
   }
 
   /**
@@ -82,7 +84,7 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
-    m_robotContainer.m_legAnkleSubsystem.updatePIDValues();
+    
     m_robotContainer.teleopInit();
   }
 

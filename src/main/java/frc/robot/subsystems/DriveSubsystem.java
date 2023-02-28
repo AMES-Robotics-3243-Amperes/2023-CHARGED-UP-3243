@@ -132,7 +132,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @return the robot's heading
    */
   public Rotation2d getHeading() {
-    return m_imuSubsystem.getYaw();
+    return m_fieldPosManager.getRobotPose().getRotation();
   }
 
   /**

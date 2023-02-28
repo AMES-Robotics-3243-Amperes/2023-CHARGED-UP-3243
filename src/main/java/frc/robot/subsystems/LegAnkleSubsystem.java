@@ -23,6 +23,47 @@ import static frc.robot.Constants.WristAndArm.*;
 
 public class LegAnkleSubsystem extends SubsystemBase {
 
+  protected class MotorPos {
+    public double extension;
+    public double pivot;
+    public double pitch;
+    public double roll; 
+
+    public MotorPos(double extension, double pivot, double pitch, double roll) {
+      this.extension = extension;
+      this.pivot = pivot;
+      this.pitch = pitch;
+      this.roll = roll;
+    }
+  }
+
+  protected MotorPos IK(double x, double y, double pitch, double roll) {
+    // H! Inverse kinematics: see more detailed math here: https://www.desmos.com/calculator/l89yzwijul \
+    double targetArmAngle = Math.atan2(targetY - Constants.WristAndArm.wristLength * Math.sin(targetPitch),   targetX - Constants.WristAndArm.wristLength * Math.cos(targetPitch) );
+    /*
+    if (targetY - Constants.WristAndArm.wristLength * Math.sin(targetPitch) >= 0) {
+      targetArmAngle = Math.atan((targetX - Constants.WristAndArm.wristLength * Math.cos(targetPitch)) / -(targetY - Constants.WristAndArm.wristLength * Math.sin(targetPitch))) + Math.PI / 2;
+    } else {
+      targetArmAngle = Math.atan(-(targetY - Constants.WristAndArm.wristLength * Math.sin(targetPitch))  /  (targetX - Constants.WristAndArm.wristLength * Math.cos(targetPitch))) + 3 * Math.PI / 2;
+    }*/
+    
+    double targetArmLength = (targetY - Constants.WristAndArm.wristLength * Math.sin(targetPitch)) / Math.sin(targetArmAngle);
+    double targetWristAngle = Math.PI - targetArmAngle + targetPitch;
+    double targetWristRoll = targetRoll;
+
+    // H! Convert angles to motor rotations
+    targetArmAngle /= 2 * Math.PI;
+    targetWristAngle /= 2 * Math.PI;
+    targetWristRoll /= 2* Math.PI;
+
+    targetWristRoll += 0.5;
+
+    return new MotorPos(targetArmAngle, targetArmAngle, targetPitch, targetWristRoll);
+  }
+
+
+
+
   public boolean deleteThis_doSetpoint = true;
 
   private boolean PIDControl = true;
@@ -50,15 +91,16 @@ public class LegAnkleSubsystem extends SubsystemBase {
   private RelativeEncoder wristPitchEncoderLeft = wristPitchLeft.getEncoder(/*Type.kDutyCycle*/);
   private SparkMaxAbsoluteEncoder wristRollEncoder = wristRoll.getAbsoluteEncoder(Type.kDutyCycle);
 
-  private double targetX = 0.0;
-  private double targetY = 1.2;
-  private double targetPitch = 0.0;
-  private double targetRoll = 0.0;
+  private double targetX = StartingSetpoints.x;
+  private double targetY = StartingSetpoints.y;
+  private double targetPitch = StartingSetpoints.pitch;
+  private double targetRoll = StartingSetpoints.roll;
 
-  private double targetPivotSetpoint = 0.25;
-  private double targetExtensionSetpoint = 1.2;
-  private double targetPitchSetpoint = 0.0;
-  private double targetRollSetpoint = 0.0;
+  private MotorPos startingPosition = IK(targetX, targetY, targetPitch, targetRoll);
+  private double targetPivotSetpoint = startingPosition.pivot;
+  private double targetExtensionSetpoint = startingPosition.extension;
+  private double targetPitchSetpoint = startingPosition.pitch;
+  private double targetRollSetpoint = startingPosition.roll;
 
   // H! FOR TESTING PURPOSES
   private ShuffleboardTab tab = Shuffleboard.getTab("Arm Testing");
@@ -126,23 +168,24 @@ public class LegAnkleSubsystem extends SubsystemBase {
 
     armExtensionEncoder.setPositionConversionFactor(extensionEncoderConversionFactor);
     //armPivotEncoder.setPositionConversionFactor(1/10);//(1 / 100) * (24/54) * (21/32) = 0.00291666666
-    wristPitchEncoderRight.setPositionConversionFactor(1/60);
-    wristPitchEncoderLeft.setPositionConversionFactor(1/60);
+    wristPitchEncoderRight.setPositionConversionFactor(pitchEncoderConversionFactor);
+    wristPitchEncoderLeft.setPositionConversionFactor(pitchEncoderConversionFactor);
     
     
     
     wristRoll.setInverted(true);
 
-    // :D TODO: hale, can we make these into constants? I think it's more accurate to say that these are the starting positions
-    armExtensionEncoder.setPosition(1.0/*minLength*/);
-    armPivotEncoder.setPosition(0.25);
-    wristPitchEncoderLeft.setPosition(0.25);
-    wristPitchEncoderRight.setPosition(0.25);
+    
+    MotorPos startingMotorPosition = IK(StartingPosition.x, StartingPosition.y, StartingPosition.pitch, StartingPosition.roll);
+    armExtensionEncoder.setPosition(startingMotorPosition.extension/*minLength*/);
+    armPivotEncoder.setPosition(startingMotorPosition.pivot);
+    wristPitchEncoderLeft.setPosition(startingMotorPosition.pitch);
+    wristPitchEncoderRight.setPosition(startingMotorPosition.pitch);
 
     // H! Used to reset the absolute encoder. Do not run this unless that's what you want to do
     //wristRollEncoder.setZeroOffset(0);
     //wristRollEncoder.setZeroOffset(wristRollEncoder.getPosition() - 0.5);
-    // :D hi I turned this into a constant
+    // :D hi I turned this into a constant // H! Great!
     wristRollEncoder.setZeroOffset(wristRollEncoderSetZeroOffset);
 
 
@@ -240,30 +283,14 @@ public class LegAnkleSubsystem extends SubsystemBase {
     targetPitch = pitchIn;
     targetRoll = rollIn; 
 
-    // H! Inverse kinematics: see more detailed math here: https://www.desmos.com/calculator/l89yzwijul 
-    double targetArmAngle = Math.atan2(targetY - Constants.WristAndArm.wristLength * Math.sin(targetPitch),   targetX - Constants.WristAndArm.wristLength * Math.cos(targetPitch) );
-
-    /*if (targetY + Constants.WristAndArm.wristLength * Math.sin(targetPitch) >= 0) {
-      targetArmAngle = Math.atan((targetX + Constants.WristAndArm.wristLength * Math.cos(targetPitch)) / -(targetY + Constants.WristAndArm.wristLength * Math.sin(targetPitch))) + Math.PI / 2;
-    } else {
-      targetArmAngle = Math.atan(-(targetY + Constants.WristAndArm.wristLength * Math.sin(targetPitch))  /  (targetX + Constants.WristAndArm.wristLength * Math.cos(targetPitch))) + 3 * Math.PI / 2;
-    }*/
-    
-    double targetArmLength = (targetY - Constants.WristAndArm.wristLength * Math.sin(targetPitch)) / Math.sin(targetArmAngle);
-    double targetWristAngle = Math.PI + targetPitch - targetArmAngle;
-    double targetWristRoll = targetRoll;
-
-    // H! Convert angles to motor rotations
-    targetArmAngle /= 2 * Math.PI;
-    targetWristAngle /= 2 * Math.PI;
-    targetWristRoll /= 2 * Math.PI;
+    MotorPos targetMotorPositions = IK(targetX, targetY, targetPitch, targetRoll);
 
     // H! Return whether it's in the right position
     return (
-      Math.abs( armPivotEncoder.getPosition() - targetArmAngle ) < atSetpointThreshold &&
-      Math.abs( armExtensionEncoder.getPosition() - targetArmLength ) < atSetpointThreshold &&
-      Math.abs( wristPitchEncoderRight.getPosition() - targetWristAngle ) < atSetpointThreshold &&
-      Math.abs( wristRollEncoder.getPosition() - targetWristRoll ) < atSetpointThreshold
+      Math.abs( armPivotEncoder.getPosition() - targetMotorPositions.pivot ) < atSetpointThreshold &&
+      Math.abs( armExtensionEncoder.getPosition() - targetMotorPositions.extension ) < atSetpointThreshold &&
+      Math.abs( wristPitchEncoderRight.getPosition() - targetMotorPositions.pitch ) < atSetpointThreshold &&
+      Math.abs( wristRollEncoder.getPosition() - targetMotorPositions.roll ) < atSetpointThreshold
     );
 
   }
@@ -317,51 +344,33 @@ public class LegAnkleSubsystem extends SubsystemBase {
     //SmartDashboard.putNumber("###############################");
 
     // This method will be called once per scheduler run
-    // H! Inverse kinematics: see more detailed math here: https://www.desmos.com/calculator/l89yzwijul \
-    double targetArmAngle = Math.atan2(targetY - Constants.WristAndArm.wristLength * Math.sin(targetPitch),   targetX - Constants.WristAndArm.wristLength * Math.cos(targetPitch) );
-    /*
-    if (targetY - Constants.WristAndArm.wristLength * Math.sin(targetPitch) >= 0) {
-      targetArmAngle = Math.atan((targetX - Constants.WristAndArm.wristLength * Math.cos(targetPitch)) / -(targetY - Constants.WristAndArm.wristLength * Math.sin(targetPitch))) + Math.PI / 2;
-    } else {
-      targetArmAngle = Math.atan(-(targetY - Constants.WristAndArm.wristLength * Math.sin(targetPitch))  /  (targetX - Constants.WristAndArm.wristLength * Math.cos(targetPitch))) + 3 * Math.PI / 2;
-    }*/
-    
-    double targetArmLength = (targetY - Constants.WristAndArm.wristLength * Math.sin(targetPitch)) / Math.sin(targetArmAngle);
-    double targetWristAngle = Math.PI - targetArmAngle + targetPitch;
-    double targetWristRoll = targetRoll;
-
-    // H! Convert angles to motor rotations
-    targetArmAngle /= 2 * Math.PI;
-    targetWristAngle /= 2 * Math.PI;
-    targetWristRoll /= 2* Math.PI;
+    MotorPos targetPosition = IK(targetX, targetY, targetPitch, targetRoll);
 
 
     if (manualSetpoints) {
-      targetArmAngle = targetPivotSetpoint;
-      targetArmLength = targetExtensionSetpoint;
-      targetWristAngle = targetPitchSetpoint;
-      targetWristRoll = targetRollSetpoint;
+      targetPosition.pivot = targetPivotSetpoint;
+      targetPosition.extension = targetExtensionSetpoint;
+      targetPosition.pitch = targetPitchSetpoint;
+      targetPosition.roll = targetRollSetpoint;
     }
-
     manualSetpoints = false;
 
 
-    targetWristRoll += 0.5;
 
     // H! Prevent arm from extending too much or too little
-    targetArmLength = clamp(minLength, maxLength, targetArmLength);
+    targetPosition.extension = clamp(minLength, maxLength, targetPosition.extension);
 
-    SmartDashboard.putNumber("targetArmAngle", targetArmAngle);
-    SmartDashboard.putNumber("targetArmLength", targetArmLength);
-    SmartDashboard.putNumber("targetWristAngle", targetWristAngle);
-    SmartDashboard.putNumber("targetWristRoll", targetWristRoll);
+    SmartDashboard.putNumber("targetArmAngle", targetPosition.pivot);
+    SmartDashboard.putNumber("targetArmLength", targetPosition.extension);
+    SmartDashboard.putNumber("targetWristAngle", targetPosition.pitch);
+    SmartDashboard.putNumber("targetWristRoll", targetPosition.roll);
     //Shuffleboard.put("-------------------------------");
 
     if (PIDControl && deleteThis_doSetpoint) {
-      pidArmPivot.setReference(targetArmAngle, CANSparkMax.ControlType.kPosition);
-      pidArmExtension.setReference(targetArmLength, CANSparkMax.ControlType.kPosition);
-      pidWristPitch.setReference(targetWristAngle, CANSparkMax.ControlType.kPosition);
-      pidWristRoll.setReference(targetWristRoll, CANSparkMax.ControlType.kPosition);
+      pidArmPivot.setReference(targetPosition.pivot, CANSparkMax.ControlType.kPosition);
+      pidArmExtension.setReference(targetPosition.extension, CANSparkMax.ControlType.kPosition);
+      pidWristPitch.setReference(targetPosition.pitch, CANSparkMax.ControlType.kPosition);
+      pidWristRoll.setReference(targetPosition.roll, CANSparkMax.ControlType.kPosition);
     }
     PIDControl = true;
     

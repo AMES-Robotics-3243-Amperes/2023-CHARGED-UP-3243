@@ -5,11 +5,14 @@
 package frc.robot;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DriveTrain.DriveConstants;
-import frc.robot.commands.ReidPrototypeCommand;
+import frc.robot.commands.GrabberCommand;
 import frc.robot.commands.SwerveTeleopCommand;
 import frc.robot.commands.WristCommand;
 import frc.robot.subsystems.*;
@@ -29,6 +32,9 @@ public class RobotContainer {
   public static JoyUtil primaryController = new JoyUtil(Constants.Joysticks.primaryControllerID);
   public static JoyUtil secondaryController = new JoyUtil(Constants.Joysticks.secondaryControllerID);
 
+  public static JoystickButton doubleSquareButton = new JoystickButton(primaryController,
+    XboxController.Button.kBack.value);
+
   // <> --- FIELD POS MANAGER ---
   public static FieldPosManager fieldPosManager = new FieldPosManager();
 
@@ -37,16 +43,19 @@ public class RobotContainer {
   public final PhotonVisionSubsystem m_photonVisionSubsystem = new PhotonVisionSubsystem(fieldPosManager);
   public final LegAnkleSubsystem m_legAnkleSubsystem = new LegAnkleSubsystem();
   private final DriveSubsystem m_driveSubsystem = new DriveSubsystem(fieldPosManager);
-  private final ReidPrototypeSubsystem m_reidPrototypeSubsystem = new ReidPrototypeSubsystem();
-  private final ShuffleboardSubsystem m_shuffleboardSubsystem = new ShuffleboardSubsystem(fieldPosManager,
-    m_legAnkleSubsystem, m_driveSubsystem, m_photonVisionSubsystem, null, m_reidPrototypeSubsystem);
+  private final GrabberSubsystem m_GrabberSubsystem = new GrabberSubsystem();
+  private final ShuffleboardSubsystem m_shuffleboardSubsystem = new ShuffleboardSubsystem(fieldPosManager, m_legAnkleSubsystem, m_driveSubsystem, m_photonVisionSubsystem, null, m_GrabberSubsystem);
+
+
+
+  // <> this is required for creating new swerve trajectory follow commands
+  private final ProfiledPIDController thetaPidController;
 
   // ++ ----- COMMANDS -------------
   private final SwerveTeleopCommand m_SwerveTeleopCommand = new SwerveTeleopCommand(m_driveSubsystem,
     primaryController);
   private final WristCommand m_WristCommand = new WristCommand(m_legAnkleSubsystem, secondaryController);
-  public final ReidPrototypeCommand m_ReidPrototypeCommand = new ReidPrototypeCommand(m_reidPrototypeSubsystem,
-    secondaryController);
+  public final GrabberCommand m_GrabberCommand = new GrabberCommand(m_GrabberSubsystem, secondaryController);
 
   //private final PlaceGamePiece m_placeGamePieceCommand;
 
@@ -55,7 +64,7 @@ public class RobotContainer {
    */
   public RobotContainer() {
     // <> this is required for creating new swerve trajectory follow commands
-    ProfiledPIDController thetaPidController = new ProfiledPIDController(DriveConstants.AutoConstants.kTurningP,
+    thetaPidController = new ProfiledPIDController(DriveConstants.AutoConstants.kTurningP,
       DriveConstants.AutoConstants.kTurningI, DriveConstants.AutoConstants.kTurningD,
       DriveConstants.AutoConstants.kThetaControllerConstraints);
     thetaPidController.enableContinuousInput(-Math.PI, Math.PI);
@@ -64,10 +73,10 @@ public class RobotContainer {
 
     m_legAnkleSubsystem.setDefaultCommand(m_WristCommand);
 
-    m_reidPrototypeSubsystem.setDefaultCommand(m_ReidPrototypeCommand);
+    m_GrabberSubsystem.setDefaultCommand(m_GrabberCommand);
 
     // H! This command is here because it needs thetaPidController to be created for it to be created
-    //m_placeGamePieceCommand = new PlaceGamePiece(m_driveSubsystem, m_legAnkleSubsystem, m_reidPrototypeSubsystem,
+    //m_placeGamePieceCommand = new PlaceGamePiece(m_driveSubsystem, m_legAnkleSubsystem, GrabberSubsystem,
     //  thetaPidController);
 
     // Configure the trigger bindings
@@ -89,10 +98,12 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
-  public void configureBindings() {}
+  public void configureBindings() {
+    doubleSquareButton.onTrue(new InstantCommand(m_driveSubsystem::setX));
+  }
 
   public void teleopInit() {
-    m_reidPrototypeSubsystem.resetStateValues();
+
   }
 
   public Command getAutonomousCommand() {
