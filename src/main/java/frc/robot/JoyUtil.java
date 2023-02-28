@@ -124,7 +124,7 @@ public final class JoyUtil extends XboxController {
   public double getRightJoystickXWithAdjustments() {
     double rawJoyPos = getRightX();
     double adjustedPos = composeDriveJoyFunctions(rawJoyPos);
-    double filteredPos = lowPassFilter(adjustedPos, prevFilteredR, Constants.Joysticks.driveLowPassFilterStrength);
+    double filteredPos = lowPassFilter(adjustedPos, prevFilteredR, Constants.Joysticks.rotationLowPassFilterStrength);
 
     prevFilteredR = filteredPos;
     return filteredPos;
