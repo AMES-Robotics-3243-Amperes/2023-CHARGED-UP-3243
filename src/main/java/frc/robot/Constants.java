@@ -54,11 +54,11 @@ public final class Constants {
     public static final int softWheelMotorCurrentLimit = 10; // ++ will have to be experimentally tuned
 
     // ++ gear ratios
-    public static final double grabberMotorOpenerGearRatio = (1/1); // ++ find actual values!
+    public static final double grabberMotorOpenerGearRatio = (1/1); // ++ find actual values! // :D by the way, the absolute encoder is on the ouput shaft of the grabber, so the conversion is 1:1
     public static final double wheelMotorGearRatio = (1/1);
 
     // ++ PID values
-    public static final double openerMotorPGain = 0.0;
+    public static final double openerMotorPGain = 0.06;
     public static final double openerMotorIGain = 0.0;
     public static final double openerMotorDGain = 0.0;
 
