@@ -10,27 +10,14 @@ import edu.wpi.first.wpilibj.XboxController;
  */
 public final class JoyUtil extends XboxController {
 
-
   // ++ WE HAVE A BUNCH OF FUNCTIONS HERE, AND WE NEED TO APPLY THEM IN THE RIGHT ORDER
   // ++ check the "composeDriveJoyFunctions" method at the bottom to see the order this should be done in
   // ++ (((I'm not putting it here to avoid multiple versions of the "correct" order)))
 
-
-  // ++ these are the methods used to
+  // <> these are used for low pass filter
   double prevFilteredX;
-
-
-  // ++  rumble stuff ----------------
   double prevFilteredY;
   double prevFilteredR;
-  // ++ the rotation axis is right x
-  double rawJoyPos = getRightX();
-  double filterStrength = Constants.Joysticks.rotationLowPassFilterStrength;
-  double damperStrength = Constants.DriveTrain.DriveConstants.kAngularSpeedDamper;
-
-
-  // ++ end rumble stuff ------------
-  double adjustedPos = (lowPassFilter(posWithDeadzone(rawJoyPos), prevFilteredR, filterStrength) * damperStrength);
 
   /**
    * creates a new JoyUtil joystick.
@@ -42,17 +29,13 @@ public final class JoyUtil extends XboxController {
   }
 
   public static double posWithDeadzone(double pos) {
-    // ++ takes input and compares it to deadzone size
-    // returns joystick size if it's greater than the deadzone, 0 otherwise
-
     return MathUtil.applyDeadband(pos, Constants.Joysticks.deadZoneSize);
   }
 
   public static double lowPassFilter(double pos, double prevFilterJoy, double filterStrength) {
     // ++ this method smooths out the joystick input so
     // ++ "prevFilterJoy" is the previous output of this function
-    double filteredSpeed = ((filterStrength * prevFilterJoy) + ((1 - filterStrength) * pos));
-    return filteredSpeed;
+    return filterStrength * prevFilterJoy + (1 - filterStrength) * pos;
   }
 
   private static double rawCurve(double pos) {
@@ -67,6 +50,7 @@ public final class JoyUtil extends XboxController {
     // <> make possible to input small values
     double valueAdjusted = valueCurved - (valueCurved >= 0 ? rawCurve(Constants.Joysticks.deadZoneSize) : rawCurve(
       -Constants.Joysticks.deadZoneSize));
+
     if (Math.abs(pos) <= Constants.Joysticks.deadZoneSize) {
       valueAdjusted = 0;
     }
@@ -75,7 +59,10 @@ public final class JoyUtil extends XboxController {
   }
 
   public static double fastMode(double pos, double leftTrigger, double rightTrigger) {
-    return pos * (1 - leftTrigger * Constants.Joysticks.slowModeMultiplier + rightTrigger * Constants.Joysticks.fastModeMaxMultiplier);
+    double adjustment =
+      1 - leftTrigger * Constants.Joysticks.slowModeMultiplier + rightTrigger * Constants.Joysticks.fastModeMaxMultiplier;
+
+    return pos * adjustment;
   }
 
   public void rumbleLeft(double strength) {
@@ -180,11 +167,9 @@ public final class JoyUtil extends XboxController {
    * @return D-Pad x component
    */
   public double getDPadX() {
-    if (getPOV() != -1) {
-      return Math.cos(Math.toRadians(getPOV() - 90.0)) * Constants.Joysticks.dPadDamper;
-    } else {
-      return 0.0;
-    }
+    double pov = getPOV();
+
+    return (pov != -1) ? Math.cos(Math.toRadians(pov - 90.0)) * Constants.Joysticks.dPadDamper : 0;
   }
 
   /**
@@ -193,10 +178,8 @@ public final class JoyUtil extends XboxController {
    * @return D-Pad y component
    */
   public double getDPadY() {
-    if (getPOV() != -1) {
-      return Math.sin(Math.toRadians(getPOV() - 90.0)) * Constants.Joysticks.dPadDamper;
-    } else {
-      return 0.0;
-    }
+    double pov = getPOV();
+
+    return (pov != -1) ? Math.sin(Math.toRadians(pov - 90.0)) * Constants.Joysticks.dPadDamper : 0;
   }
 }
