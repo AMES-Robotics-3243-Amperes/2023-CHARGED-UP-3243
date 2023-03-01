@@ -96,6 +96,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
   private RelativeEncoder armExtensionEncoder = armExtension.getEncoder(/*Type.kDutyCycle*/);
   private RelativeEncoder wristPitchEncoderRight = wristPitchRight.getEncoder(/*Type.kDutyCycle*/);
   private RelativeEncoder wristPitchEncoderLeft = wristPitchLeft.getEncoder(/*Type.kDutyCycle*/);
+  private RelativeEncoder wristRollSparkMAXEncoder;
   private SemiAbsoluteEncoder wristRollEncoder = new SemiAbsoluteEncoder(wristRoll);
 
   private double targetX = StartingSetpoints.x;
@@ -197,7 +198,8 @@ public class LegAnkleSubsystem extends SubsystemBase {
     // :D hi I turned this into a constant // H! Great!
     wristRollEncoder.setZeroOffset(wristRollEncoderSetZeroOffset);
 
-    pidWristRoll.setFeedbackDevice(wristRollEncoder.getSparkMAXEncoder());
+    wristRollSparkMAXEncoder = wristRollEncoder.getSparkMAXEncoder();
+    pidWristRoll.setFeedbackDevice(wristRollSparkMAXEncoder);
 
     wristRollEncoder.setPositionConversionFactor(1/75);
 
