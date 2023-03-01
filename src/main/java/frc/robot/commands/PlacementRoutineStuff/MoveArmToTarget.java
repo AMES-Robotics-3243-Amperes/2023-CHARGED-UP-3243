@@ -6,6 +6,7 @@ package frc.robot.commands.PlacementRoutineStuff;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.FieldPosManager;
@@ -21,19 +22,29 @@ public class MoveArmToTarget extends CommandBase {
   private double targetPitch = 0;
   private double targetRoll = 0;
   private int targetIndex;
+  private FieldPosManager fieldPosManager;
+  private XboxController controller;
 
   private boolean isDone;
 
 
   /** Creates a new MoveArmToTarget. */
-  public MoveArmToTarget(int targetIndex, boolean isCube, FieldPosManager.fieldSpot3d target, LegAnkleSubsystem legAnkleSubsystem, FieldPosManager fieldPosManager) {
+  public MoveArmToTarget(int targetIndex, boolean isCube, FieldPosManager.fieldSpot3d target, LegAnkleSubsystem legAnkleSubsystem, FieldPosManager fieldPosManager, XboxController controller) {
     this.isCube = isCube;
     this.legAnkleSubsystem = legAnkleSubsystem;
     this.target = target;
     this.targetIndex = targetIndex;
+    this.fieldPosManager = fieldPosManager;
+    this.controller = controller;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(legAnkleSubsystem);
 
+    setTargetPositions();
+    
+  }
+
+
+  public void setTargetPositions() {
     // H! Get the scoring target positions
     Pose3d scoringPos = fieldPosManager.get3dFieldObjectPose(target, isCube, targetIndex);
     Translation3d robotPosToScoringPos = scoringPos.getTranslation().minus(new Pose3d(fieldPosManager.getRobotPose()).getTranslation());
@@ -44,8 +55,11 @@ public class MoveArmToTarget extends CommandBase {
     // ++ the X direction is in the length of the field 
     targetX = pivotToScoringPos.getX();
     targetY = pivotToScoringPos.getZ();
-    
   }
+
+  
+
+
 
   // Called when the command is initially scheduled.
   @Override
@@ -55,6 +69,7 @@ public class MoveArmToTarget extends CommandBase {
   @Override
   public void execute() {
     isDone = legAnkleSubsystem.moveToXYTheta(targetX, targetY, targetPitch, targetRoll);
+
   }
 
   // Called once the command ends or is interrupted.
