@@ -10,21 +10,19 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.GrabberSubsystem;
 
 /** GrabberCommand controls the grabber. */
-public class GrabberCommand extends CommandBase {
+public class GrabberOpenCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   // ££ Defines the subsystem and the controller
   private final GrabberSubsystem m_GrabberSubsystem;
-  private final XboxController m_controller;
 
   /**
-   * Creates a new GrabberCommand.
+   * Creates a new GrabberOpenCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public GrabberCommand(GrabberSubsystem subsystem, XboxController controller) {
+  public GrabberOpenCommand(GrabberSubsystem subsystem) {
     // Assigns the subsystem and the controller values
     m_GrabberSubsystem = subsystem;
-    m_controller = controller;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
@@ -43,10 +41,9 @@ public class GrabberCommand extends CommandBase {
   @Override
   public void execute() {
 
-    // ++ set speeds based on controller readings TEMPORARY, FOR TESTING
-    m_GrabberSubsystem.setGrabberPosition( m_controller.getLeftX() );
-    m_GrabberSubsystem.setGrabberWheelSpeeds( m_controller.getRightTriggerAxis() * 0.05);
     
+    m_GrabberSubsystem.openGrabber();
+      
 
   }
 
