@@ -54,11 +54,11 @@ public final class Constants {
     public static final int softWheelMotorCurrentLimit = 10; // ++ will have to be experimentally tuned
 
     // ++ gear ratios
-    public static final double grabberMotorOpenerGearRatio = (1/1); // ++ find actual values!
+    public static final double grabberMotorOpenerGearRatio = (1/1); // ++ find actual values! // :D by the way, the absolute encoder is on the ouput shaft of the grabber, so the conversion is 1:1
     public static final double wheelMotorGearRatio = (1/1);
 
     // ++ PID values
-    public static final double openerMotorPGain = 0.0;
+    public static final double openerMotorPGain = 0.06;
     public static final double openerMotorIGain = 0.0;
     public static final double openerMotorDGain = 0.0;
 
@@ -148,10 +148,10 @@ public final class Constants {
       // <> if the driving is field relative
       public static final boolean kFieldRelative = true;
       // <> speed damper (flat constant supplied speed is multiplied by)
-      public static final double kDrivingSpeedDamper = 12; // <> meters per second
-      public static final double kAngularSpeedDamper = 2.6 * Math.PI; // <> radians per second
+      public static final double kDrivingSpeedDamper = 1; // <> meters per second
+      public static final double kAngularSpeedDamper = 0.8 * Math.PI; // <> radians per second
       // <> max speed
-      public static final double kMaxMetersPerSecond = 2.5;
+      public static final double kMaxMetersPerSecond = 0.5;
       // <> this should be true
       public static final boolean kGyroReversed = false;
 
@@ -279,21 +279,24 @@ public final class Constants {
     public static final int secondaryControllerID = 1;
 
     // ++ OTHER JOYSTICK CONSTANTS --
-    public static final double deadZoneSize = 0.12;
+    public static final double deadZoneSize = 0.1;
+
     /**
      * ++ lowPassFilterStrength should be between 0 & 1. The closer it is to 1, the smoother acceleration will be.
      */
-    public static final double driveLowPassFilterStrength = 0.91;
-    public static final double rotationLowPassFilterStrength = 0.2;
+    public static final double driveLowPassFilterStrength = 0.75;
+    public static final double rotationLowPassFilterStrength = 0.6;
+
     // ++ we probably don't want the speed damcursjdjdjdpers as finals in case we want a fastmode/to change them later
-    public static final double driveSpeedDamper = 0.9;
-    public static final double rotationDamper = 0.8;
+    public static final double driveSpeedDamper = 1;
+    public static final double rotationDamper = 1;
 
     // ss This is the multiplier for Fast Mode
     // explained in JoyUtil.java
-    public static final double fastModeMaxMultiplier = 0.5;
-    // :> Slow mode multiplier
-    public static final double slowModeMultiplier = 3;
+    public static final double fastModeMaxMultiplier = 1;
+
+    // <> keep below 1
+    public static final double slowModeMultiplier = 0.9;
 
     /**
      * ++ the damper for the D-Pad inputs
@@ -372,10 +375,10 @@ public final class Constants {
 
     public static class PID {
       public static class Extension {
-        public static final double P  = 4.5;// H! 2.0
+        public static final double P  = 4.5 * 0;// H! 2.0
         public static final double I  = 0.0;
         public static final double D  = 0.0;
-        public static final double FF = 0.01;
+        public static final double FF = 0.01 * 0;
       }
 
       public static class Pivot {
@@ -406,7 +409,7 @@ public final class Constants {
    */
   public static final class PhotonVision {
     // :> This fills me with nothing but dread
-    public static final String cameraName1 = "Arducam_OV9281_MMN1";
+    public static final String cameraName1 = "Forward_Global_Camera";
     public static final String cameraName2 = "Global_Shutter_Camera";
   }
 
@@ -515,7 +518,7 @@ public final class Constants {
 
     public static final class Blue {
       // :D position of the robot's chassis:
-      public static double scoringChassisPositionX = 1.806;
+      public static double scoringChassisPositionX = 1.85;
       public static Pose2d[] scoringPositions = {new Pose2d(Constants.FieldConstants.Blue.scoringChassisPositionX,
         Constants.FieldConstants.targetPositionsY[0], new Rotation2d(Math.PI)), new Pose2d(
         Constants.FieldConstants.Blue.scoringChassisPositionX, Constants.FieldConstants.targetPositionsY[1],
@@ -556,7 +559,7 @@ public final class Constants {
     }
 
     public static final class Red {
-      public static double scoringChassisPositionX = 14.594;
+      public static double scoringChassisPositionX = 14.697;
       public static Pose2d[] scoringPositions = {new Pose2d(Constants.FieldConstants.Red.scoringChassisPositionX,
         Constants.FieldConstants.targetPositionsY[0], new Rotation2d()), new Pose2d(
         Constants.FieldConstants.Red.scoringChassisPositionX, Constants.FieldConstants.targetPositionsY[1],

@@ -30,11 +30,13 @@ public class GrabberSubsystem extends SubsystemBase {
   private SparkMaxPIDController grabberOpenerPID;
 
   // ++ these motors control the spinning wheels on the sides of the grabber
-  private CANSparkMax wheelMotorOne = new CANSparkMax(Constants.Grabber.wheelMotorOneID, MotorType.kBrushless);
-  private CANSparkMax wheelMotorTwo = new CANSparkMax(Constants.Grabber.wheelMotorTwoID, MotorType.kBrushless);
+  //private CANSparkMax wheelMotorOne = new CANSparkMax(Constants.Grabber.wheelMotorOneID, MotorType.kBrushless);
+  //private CANSparkMax wheelMotorTwo = new CANSparkMax(Constants.Grabber.wheelMotorTwoID, MotorType.kBrushless);
+
   // ++ these encoders read compliant wheel motor offsets
-  private RelativeEncoder wheelMotorEncoderOne;
-  private RelativeEncoder wheelMotorEncoderTwo;
+  //private RelativeEncoder wheelMotorEncoderOne;
+  //private RelativeEncoder wheelMotorEncoderTwo;
+
   // ++ create PID objects
   private SparkMaxPIDController wheelMotorOnePID;
   private SparkMaxPIDController wheelMotorTwoPID;
@@ -51,12 +53,12 @@ public class GrabberSubsystem extends SubsystemBase {
     grabberOpenerPID = grabberOpenerMotor.getPIDController();
 
     // ++ initializes wheel objects
-    wheelMotorEncoderOne = wheelMotorOne.getEncoder();
-    wheelMotorEncoderTwo = wheelMotorTwo.getEncoder();
-    wheelMotorEncoderOne.setVelocityConversionFactor(Constants.Grabber.wheelMotorGearRatio);
-    wheelMotorEncoderTwo.setVelocityConversionFactor(Constants.Grabber.wheelMotorGearRatio);
-    wheelMotorOnePID = wheelMotorOne.getPIDController();
-    wheelMotorTwoPID = wheelMotorTwo.getPIDController();
+    //wheelMotorEncoderOne = wheelMotorOne.getEncoder();
+    //wheelMotorEncoderTwo = wheelMotorTwo.getEncoder();
+    //wheelMotorEncoderOne.setVelocityConversionFactor(Constants.Grabber.wheelMotorGearRatio);
+    //wheelMotorEncoderTwo.setVelocityConversionFactor(Constants.Grabber.wheelMotorGearRatio);
+    //wheelMotorOnePID = wheelMotorOne.getPIDController();
+    //wheelMotorTwoPID = wheelMotorTwo.getPIDController();
 
     // setGrabberPIDValues();
 
@@ -65,12 +67,12 @@ public class GrabberSubsystem extends SubsystemBase {
     // ££ sets the current limits
     // ++ soft limits
     grabberOpenerMotor.setSmartCurrentLimit(Constants.Grabber.softOpenerMotorCurrentLimit);
-    wheelMotorOne.setSmartCurrentLimit(Constants.Grabber.softWheelMotorCurrentLimit);
-    wheelMotorTwo.setSmartCurrentLimit(Constants.Grabber.softWheelMotorCurrentLimit);
+    //wheelMotorOne.setSmartCurrentLimit(Constants.Grabber.softWheelMotorCurrentLimit);
+    //wheelMotorTwo.setSmartCurrentLimit(Constants.Grabber.softWheelMotorCurrentLimit);
     // ++ hard limits
     grabberOpenerMotor.setSecondaryCurrentLimit(Constants.Grabber.hardOpenerMotorCurrentLimit);
-    wheelMotorOne.setSecondaryCurrentLimit(Constants.Grabber.hardWheelMotorCurrentLimit);
-    wheelMotorTwo.setSecondaryCurrentLimit(Constants.Grabber.hardWheelMotorCurrentLimit);
+    //wheelMotorOne.setSecondaryCurrentLimit(Constants.Grabber.hardWheelMotorCurrentLimit);
+    //wheelMotorTwo.setSecondaryCurrentLimit(Constants.Grabber.hardWheelMotorCurrentLimit);
 
   }
 
@@ -88,8 +90,8 @@ public class GrabberSubsystem extends SubsystemBase {
 
   /** ++ sets speed of grabber intake wheels */
   public void setGrabberWheelSpeeds (double speed) {
-    wheelMotorOnePID.setReference(speed, ControlType.kVelocity);
-    wheelMotorTwoPID.setReference(speed, ControlType.kVelocity);
+    // wheelMotorOnePID.setReference(speed, ControlType.kVelocity);
+    // wheelMotorTwoPID.setReference(speed, ControlType.kVelocity);
   }
 
   /** ++ sets grabber PID values for all motors. Should be run in grabber command init */
@@ -98,13 +100,13 @@ public class GrabberSubsystem extends SubsystemBase {
     grabberOpenerPID.setI(Constants.Grabber.openerMotorIGain);
     grabberOpenerPID.setD(Constants.Grabber.openerMotorDGain);
 
-    wheelMotorOnePID.setP(Constants.Grabber.wheelMotorPGain);
-    wheelMotorOnePID.setI(Constants.Grabber.wheelMotorIGain);
-    wheelMotorOnePID.setD(Constants.Grabber.wheelMotorDGain);
+    // wheelMotorOnePID.setP(Constants.Grabber.wheelMotorPGain);
+    // wheelMotorOnePID.setI(Constants.Grabber.wheelMotorIGain);
+    // wheelMotorOnePID.setD(Constants.Grabber.wheelMotorDGain);
 
-    wheelMotorTwoPID.setP(Constants.Grabber.wheelMotorPGain);
-    wheelMotorTwoPID.setI(Constants.Grabber.wheelMotorIGain);
-    wheelMotorTwoPID.setD(Constants.Grabber.wheelMotorDGain);
+    // wheelMotorTwoPID.setP(Constants.Grabber.wheelMotorPGain);
+    // wheelMotorTwoPID.setI(Constants.Grabber.wheelMotorIGain);
+    // wheelMotorTwoPID.setD(Constants.Grabber.wheelMotorDGain);
   }
 
 
