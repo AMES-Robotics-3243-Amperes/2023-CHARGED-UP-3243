@@ -414,7 +414,7 @@ public final class Constants {
   public static final class PhotonVision {
     // :> This fills me with nothing but dread
     public static final String cameraName1 = "Forward_Global_Camera";
-    public static final String cameraName2 = "Global_Shutter_Camera";
+    public static final String cameraName2 = "Backward_Global_Camera";
   }
 
   /**

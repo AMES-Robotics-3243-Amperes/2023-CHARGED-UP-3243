@@ -60,7 +60,7 @@ public final class JoyUtil extends XboxController {
 
   public static double fastMode(double pos, double leftTrigger, double rightTrigger) {
     double adjustment =
-      1 - leftTrigger * Constants.Joysticks.slowModeMultiplier + rightTrigger * Constants.Joysticks.fastModeMaxMultiplier;
+      1 - (leftTrigger * Constants.Joysticks.slowModeMultiplier) + (rightTrigger * Constants.Joysticks.fastModeMaxMultiplier);
 
     return pos * adjustment;
   }
