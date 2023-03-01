@@ -54,7 +54,7 @@ public class PlacementRoutine extends SequentialCommandGroup {
       new MoveRobotToGrid(
         fieldPosManager.get2dFieldObjectPose(FieldPosManager.fieldSpot2d.scoringPosition, true, poseIndex),
         driveSubsystem, controller, thetaPidController),
-      new MoveArmToTarget(poseIndex, isCube, target, legAnkleSubsystem, fieldPosManager),
+      new MoveArmToTarget(poseIndex, isCube, target, legAnkleSubsystem, fieldPosManager, controller),
       new ReleaseGameObject(isCube, target, grabberSubsystem));
 
 

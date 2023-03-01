@@ -364,25 +364,25 @@ public final class Constants {
     }
 
     public static class StartingPosition {
-      public static final double x = -0.8636;
-      public static final double y = -0.03048;
+      public static final double x = -0.3;
+      public static final double y = 0.77;
       public static final double pitch = -Math.PI / 2;
       public static final double roll = 0.0;
     }
 
     public static class StartingSetpoints {
-      public static final double x = -0.9;
-      public static final double y = 0.05;
-      public static final double pitch = -Math.PI / 4;
+      public static final double x = -0.2;
+      public static final double y = 0.80;
+      public static final double pitch = -Math.PI / 2;
       public static final double roll = 0.0;
     }
 
     public static class PID {
       public static class Extension {
-        public static final double P  = 0.1;// H! 2.0
+        public static final double P  = 2.0;// H! 2.0
         public static final double I  = 0.0;
         public static final double D  = 0.0;
-        public static final double FF = 0.01 * 0;
+        public static final double FF = 0.01;
       }
 
       public static class Pivot {

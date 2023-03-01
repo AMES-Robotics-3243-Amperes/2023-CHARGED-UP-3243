@@ -136,6 +136,8 @@ public class LegAnkleSubsystem extends SubsystemBase {
 
   /** Creates a new LegAnkleSubsystem. */
   public LegAnkleSubsystem() {
+    armExtension.setInverted(true);
+
     wristPitchLeft.follow(wristPitchRight, true);
 
     extensionPValue = tab.add("Ext P Value", PID.Extension.P).getEntry();
