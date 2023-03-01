@@ -44,8 +44,12 @@ public final class Constants {
     // public static final double openCloseSpeed = 0.05;
 
     // ++ grabber maximum/minimum positions
-    public static final double maximumGrabberLimit = 0.41;
-    public static final double minimumGrabberLimit = 0.3;
+    public static final double maximumGrabberLimit = 0.445;
+    public static final double minimumGrabberLimit = 0.22;
+
+    // :D grabber open/close setpoints
+    public static final double openGrabberSetpoint = 0.22;
+    public static final double closedGrabberSetpoint = 0.445;
 
     // ++ current limits
     public static final int hardOpenerMotorCurrentLimit = 30; 
@@ -58,7 +62,7 @@ public final class Constants {
     public static final double wheelMotorGearRatio = (1/1);
 
     // ++ PID values
-    public static final double openerMotorPGain = 0.06;
+    public static final double openerMotorPGain = 2;
     public static final double openerMotorIGain = 0.0;
     public static final double openerMotorDGain = 0.0;
 
@@ -318,6 +322,8 @@ public final class Constants {
    */
   public static final class WristAndArm {
 
+    public static final Translation3d pivotOffset = new Translation3d(Units.inchesToMeters(32)/2 - .27773100, 0, .44255 + Units.inchesToMeters(2.662500 / 2));
+
     public static final double extensionEncoderConversionFactor = (Units.inchesToMeters(2.707) * Math.PI) / (36);
     public static final double pitchEncoderConversionFactor = 1/60;
     // H! Holds the data for the positions of stuff in the arm
@@ -334,7 +340,7 @@ public final class Constants {
     public static final double maxY = 1.9812 - 0.476364;
     public static final double minY = 0 - 0.476364;
     public static final int pivotCurrentLimit = 39; // H! This is a temporary change! It was 30 before. // :D hi I just changed this from 30 to 40
-    public static final int extensionCurrentLimit = 25; // H! This is a temporary change! It was 20 before. // :D hi I just changed this from 10 to 30
+    public static final int extensionCurrentLimit = 15; // H! This is a temporary change! It was 20 before. // :D hi I just changed this from 10 to 30
     public static final int pitchCurrentLimit = 29; // H! This is a temporary change! It was 10 before. // :D hi I just changed this from 30 to 15
     public static final int rollCurrentLimit = 5; // H! This is a temporary change! It was 10 before. // :D hi I just changed this from 2 to 5
     public static final int NEO1650CurrentLimitHard = 40; // H! This is a temporary change! It was 40 before. // :D hi I just changed this from 20 to 60
@@ -358,32 +364,32 @@ public final class Constants {
     }
 
     public static class StartingPosition {
-      public static final double x = 0.0;
-      public static final double y = 1.2;
-      public static final double pitch = 0.0;
+      public static final double x = -0.3;
+      public static final double y = 0.77;
+      public static final double pitch = -Math.PI / 2;
       public static final double roll = 0.0;
     }
 
     public static class StartingSetpoints {
-      public static final double x = 0.05;
-      public static final double y = 1.2;
-      public static final double pitch = 0.0;
+      public static final double x = -0.2;
+      public static final double y = 0.80;
+      public static final double pitch = -Math.PI / 2;
       public static final double roll = 0.0;
     }
 
     public static class PID {
       public static class Extension {
-        public static final double P  = 4.5 * 0;// H! 2.0
+        public static final double P  = 2.0;// H! 2.0
         public static final double I  = 0.0;
         public static final double D  = 0.0;
-        public static final double FF = 0.01 * 0;
+        public static final double FF = 0.01;
       }
 
       public static class Pivot {
         public static final double P  = 5.0;// H! 5.0
         public static final double I  = 0.0;
         public static final double D  = 0.0;
-        public static final double FF = 0.1;
+        public static final double FF = 0.1 * 0;
       }
 
       public static class Pitch {

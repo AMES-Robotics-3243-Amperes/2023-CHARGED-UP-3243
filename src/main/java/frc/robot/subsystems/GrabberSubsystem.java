@@ -49,8 +49,11 @@ public class GrabberSubsystem extends SubsystemBase {
 
     // ++ initializes opener objects
     grabberOpenerEncoder = grabberOpenerMotor.getAbsoluteEncoder(Type.kDutyCycle);
-    grabberOpenerEncoder.setPositionConversionFactor(Constants.Grabber.grabberMotorOpenerGearRatio);
+//    grabberOpenerEncoder.setPositionConversionFactor(Constants.Grabber.grabberMotorOpenerGearRatio);
     grabberOpenerPID = grabberOpenerMotor.getPIDController();
+    grabberOpenerPID.setFeedbackDevice(grabberOpenerEncoder);
+
+    grabberOpenerEncoder.setZeroOffset(0.5);
 
     // ++ initializes wheel objects
     //wheelMotorEncoderOne = wheelMotorOne.getEncoder();
@@ -74,6 +77,10 @@ public class GrabberSubsystem extends SubsystemBase {
     //wheelMotorOne.setSecondaryCurrentLimit(Constants.Grabber.hardWheelMotorCurrentLimit);
     //wheelMotorTwo.setSecondaryCurrentLimit(Constants.Grabber.hardWheelMotorCurrentLimit);
 
+    grabberOpenerMotor.burnFlash();
+
+    closeGrabber();
+
   }
 
 
@@ -85,7 +92,17 @@ public class GrabberSubsystem extends SubsystemBase {
   /** ++ sets grabber open position */
   public void setGrabberPosition (double position) {
     grabberOpenerPID.setReference(position, ControlType.kPosition);
-  };
+  }
+
+  /** ++ opens grabber */
+  public void openGrabber(){
+    setGrabberPosition(Constants.Grabber.openGrabberSetpoint);
+  }
+
+  /** ++ closes grabber */
+  public void closeGrabber() {
+    setGrabberPosition(Constants.Grabber.closedGrabberSetpoint);
+  }
 
 
   /** ++ sets speed of grabber intake wheels */
@@ -116,7 +133,7 @@ public class GrabberSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     
     // SmartDashboard.putNumber("Actual Current", grabberOpenerMotor.getOutputCurrent());
-    // SmartDashboard.putNumber("Absolute Encoder", grabberOpenerEncoder.getPosition());
+    SmartDashboard.putNumber("Absolute Encoder", grabberOpenerEncoder.getPosition());
     
 
     // ++ grabber position safeties 
