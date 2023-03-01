@@ -33,13 +33,20 @@ public class WristCommand extends CommandBase {
     // -m_controller.getLeftY() ), JoyUtil.posWithDeadzone( m_controller.getRightY() ), JoyUtil.posWithDeadzone(
     // -m_controller.getRightX()));
 
-    m_subsystem.moveManualSetpoints(JoyUtil.posWithDeadzone(m_controller.getLeftX()) / 5,
-      JoyUtil.posWithDeadzone(-m_controller.getLeftY()), JoyUtil.posWithDeadzone(m_controller.getRightY()),
-      JoyUtil.posWithDeadzone(-m_controller.getRightX()));
+
+    //&& Fast/slow mode for the LegAnkle using analog triggers
+    m_subsystem.moveManualSetpoints(
+      JoyUtil.fastMode(JoyUtil.posWithDeadzone(m_controller.getLeftX()) / 5, m_controller.getLeftTriggerAxis(), m_controller.getRightTriggerAxis()),
+      JoyUtil.fastMode(JoyUtil.posWithDeadzone(m_controller.getLeftY()) / 5, m_controller.getLeftTriggerAxis(), m_controller.getRightTriggerAxis()),
+      JoyUtil.fastMode(JoyUtil.posWithDeadzone(m_controller.getRightX()) / 5, m_controller.getLeftTriggerAxis(), m_controller.getRightTriggerAxis()),
+      JoyUtil.fastMode(JoyUtil.posWithDeadzone(m_controller.getRightY()) / 5, m_controller.getLeftTriggerAxis(), m_controller.getRightTriggerAxis())
+      );
 
     m_subsystem.deleteThis_doSetpoint = !m_controller.getAButton();
     //m_subsystem.resetRoll();
+
   }
+
 
   // Called once the command ends or is interrupted.
   @Override

@@ -388,7 +388,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
 
   private static double clamp(double min,  double max, double x) {
     return x > max ? max : Math.max(x, min);
-  }
+   }
 
   private static void setPIDFValues(SparkMaxPIDController pidController, double p, double i, double d, double f) {
     pidController.setP(p);
