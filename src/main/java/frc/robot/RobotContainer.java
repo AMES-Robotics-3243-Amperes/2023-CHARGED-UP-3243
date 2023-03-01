@@ -50,8 +50,6 @@ public class RobotContainer {
   public final LegAnkleSubsystem m_legAnkleSubsystem = new LegAnkleSubsystem();
   private final DriveSubsystem m_driveSubsystem = new DriveSubsystem(fieldPosManager);
   private final GrabberSubsystem m_GrabberSubsystem = new GrabberSubsystem();
-  public final GrabberCommand m_GrabberCommand = new GrabberCommand(m_GrabberSubsystem, secondaryController);
-  public final BalanceCommand m_BalanceCommand = new BalanceCommand(m_driveSubsystem);
   private final ShuffleboardSubsystem m_shuffleboardSubsystem = new ShuffleboardSubsystem(fieldPosManager,
     m_legAnkleSubsystem, m_driveSubsystem, m_photonVisionSubsystem, null, m_GrabberSubsystem);
   // <> this is required for creating new swerve trajectory follow commands
@@ -63,6 +61,7 @@ public class RobotContainer {
   public final GrabberCommand m_GrabberCommand = new GrabberCommand(m_GrabberSubsystem, secondaryController);
   private final GrabberCloseCommand m_grabCloseCommand = new GrabberCloseCommand(m_GrabberSubsystem);
   private final GrabberOpenCommand m_grabOpenCommand = new GrabberOpenCommand(m_GrabberSubsystem);
+  public final BalanceCommand m_BalanceCommand = new BalanceCommand(m_driveSubsystem);
 
   //private final PlaceGamePiece m_placeGamePieceCommand;
 
@@ -106,7 +105,6 @@ public class RobotContainer {
    * joysticks}.
    */
   public void configureBindings() {
-    doubleSquareButton.onTrue(new InstantCommand(m_driveSubsystem::setX));
     openGrabButton.onTrue(m_grabOpenCommand);
     closeGrabButton.onTrue(m_grabCloseCommand);
     primarySelect.onTrue(new InstantCommand(m_driveSubsystem::setX));
