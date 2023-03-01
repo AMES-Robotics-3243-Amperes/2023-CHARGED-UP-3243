@@ -85,7 +85,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
         tagPoses.add(m_aprilTagFieldLayout.getTagPose(targets.get(i).getFiducialId()));
       }
 
-      for (int j = 0; j < targets.size(); j++) {
+      for (int j = 0; j < cameraToTargets.size(); j++) {
         if (tagPoses.get(j).isPresent()) {
           robotPoses.add(
             PhotonUtils.estimateFieldToRobotAprilTag(cameraToTargets.get(j), tagPoses.get(j).get(), camsToBot.get(j)));
@@ -195,6 +195,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
       m_field.updateFieldPosWithPhotonVisionPose(Objects.requireNonNull(checkRobotPosition()).toPose2d());
     }
     targets.clear();
+    results.clear();
   }
 
   @Override
