@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.PlacementRoutineStuff;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -11,9 +11,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.FieldPosManager;
 import frc.robot.JoyUtil;
-import frc.robot.commands.PlaceGamePieceCommands.MoveArmToTarget;
-import frc.robot.commands.PlaceGamePieceCommands.MoveRobotToGrid;
-import frc.robot.commands.PlaceGamePieceCommands.ReleaseGameObject;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LegAnkleSubsystem;
 import frc.robot.subsystems.GrabberSubsystem;
@@ -21,7 +18,7 @@ import frc.robot.subsystems.GrabberSubsystem;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class PlaceGamePiece extends SequentialCommandGroup {
+public class PlacementRoutine extends SequentialCommandGroup {
 
   public boolean isCube;
   public FieldPosManager.fieldSpot3d target;
@@ -40,7 +37,7 @@ public class PlaceGamePiece extends SequentialCommandGroup {
   /**
    * Creates a new PlaceGamePiece.
    */
-  public PlaceGamePiece(FieldPosManager fieldPosManager, DriveSubsystem driveSubsystem,
+  public PlacementRoutine(FieldPosManager fieldPosManager, DriveSubsystem driveSubsystem,
                         LegAnkleSubsystem legAnkleSubsystem, GrabberSubsystem grabberSubsystem,
                         ProfiledPIDController thetaPidController, JoyUtil controller, int poseIndex) {
     this.fieldPositionManager = fieldPosManager;
@@ -71,7 +68,7 @@ public class PlaceGamePiece extends SequentialCommandGroup {
   }
 
 
-  public PlaceGamePiece(FieldPosManager fieldPosManager, DriveSubsystem driveSubsystem,
+  public PlacementRoutine(FieldPosManager fieldPosManager, DriveSubsystem driveSubsystem,
                         LegAnkleSubsystem legAnkleSubsystem, GrabberSubsystem grabberSubsystem,
                         ProfiledPIDController thetaPidController, JoyUtil controller) {
     this(fieldPosManager, driveSubsystem, legAnkleSubsystem, grabberSubsystem, thetaPidController, controller,
@@ -87,7 +84,7 @@ public class PlaceGamePiece extends SequentialCommandGroup {
 
   public void onPOVRight() {
     this.cancel();
-    new PlaceGamePiece(fieldPositionManager, driveSubsystem, legAnkleSubsystem, grabberSubsystem, thetaPidController,
+    new PlacementRoutine(fieldPositionManager, driveSubsystem, legAnkleSubsystem, grabberSubsystem, thetaPidController,
       controller, negativeSafeMod(poseIndex + 1, 9)).schedule();
   }
 
@@ -102,7 +99,7 @@ public class PlaceGamePiece extends SequentialCommandGroup {
 
   public void onPOVLeft() {
     this.cancel();
-    new PlaceGamePiece(fieldPositionManager, driveSubsystem, legAnkleSubsystem, grabberSubsystem, thetaPidController,
+    new PlacementRoutine(fieldPositionManager, driveSubsystem, legAnkleSubsystem, grabberSubsystem, thetaPidController,
       controller, negativeSafeMod(poseIndex - 1, 9)).schedule();
   }
 }
