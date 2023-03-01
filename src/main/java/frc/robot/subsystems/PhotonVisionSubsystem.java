@@ -77,15 +77,15 @@ public class PhotonVisionSubsystem extends SubsystemBase {
     // :> I'm so sorry for all of the for loops it is necessary for the three cameras.
     // <> why do these loops only get the first item???
     if (!targets.isEmpty()) {
-      for (int i = 0; i < 2; i++) {
+      for (int i = 0; i < targets.size(); i++) {
         cameraToTargets.add(targets.get(i).getBestCameraToTarget());
       }
 
-      for (int i = 0; i < 2; i++) {
+      for (int i = 0; i < targets.size(); i++) {
         tagPoses.add(m_aprilTagFieldLayout.getTagPose(targets.get(i).getFiducialId()));
       }
 
-      for (int j = 0; j < 2; j++) {
+      for (int j = 0; j < targets.size(); j++) {
         if (tagPoses.get(j).isPresent()) {
           robotPoses.add(
             PhotonUtils.estimateFieldToRobotAprilTag(cameraToTargets.get(j), tagPoses.get(j).get(), camsToBot.get(j)));
