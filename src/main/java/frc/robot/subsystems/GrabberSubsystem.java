@@ -85,7 +85,17 @@ public class GrabberSubsystem extends SubsystemBase {
   /** ++ sets grabber open position */
   public void setGrabberPosition (double position) {
     grabberOpenerPID.setReference(position, ControlType.kPosition);
-  };
+  }
+
+  /** ++ opens grabber */
+  public void openGrabber(){
+    setGrabberPosition(Constants.Grabber.openGrabberSetpoint);
+  }
+
+  /** ++ closes grabber */
+  public void closeGrabber() {
+    setGrabberPosition(Constants.Grabber.closedGrabberSetpoint);
+  }
 
 
   /** ++ sets speed of grabber intake wheels */

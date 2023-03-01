@@ -44,8 +44,12 @@ public final class Constants {
     // public static final double openCloseSpeed = 0.05;
 
     // ++ grabber maximum/minimum positions
-    public static final double maximumGrabberLimit = 0.41;
-    public static final double minimumGrabberLimit = 0.3;
+    public static final double maximumGrabberLimit = 0.95;
+    public static final double minimumGrabberLimit = 0.81;
+
+    // :D grabber open/close setpoints
+    public static final double openGrabberSetpoint = 0.93;
+    public static final double closedGrabberSetpoint = 0.835;
 
     // ++ current limits
     public static final int hardOpenerMotorCurrentLimit = 30; 
@@ -317,6 +321,8 @@ public final class Constants {
    * ++ constants for WRIST and ARM ----------------------------------------------------
    */
   public static final class WristAndArm {
+
+    public static final Translation3d pivotOffset = new Translation3d(Units.inchesToMeters(32)/2 - .27773100, 0, .44255 + Units.inchesToMeters(2.662500 / 2));
 
     public static final double extensionEncoderConversionFactor = (Units.inchesToMeters(2.707) * Math.PI) / (36);
     public static final double pitchEncoderConversionFactor = 1/60;
