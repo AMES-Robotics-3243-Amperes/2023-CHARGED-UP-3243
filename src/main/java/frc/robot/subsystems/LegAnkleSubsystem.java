@@ -47,7 +47,12 @@ public class LegAnkleSubsystem extends SubsystemBase {
       targetArmAngle = Math.atan(-(targetY - Constants.WristAndArm.wristLength * Math.sin(targetPitch))  /  (targetX - Constants.WristAndArm.wristLength * Math.cos(targetPitch))) + 3 * Math.PI / 2;
     }*/
     
-    double targetArmLength = (y - Constants.WristAndArm.wristLength * Math.sin(targetPitch)) / Math.sin(targetArmAngle);
+    double targetArmLength; 
+    if (targetArmAngle == 0) {
+      targetArmLength = Math.abs(x - Constants.WristAndArm.wristLength * Math.cos(pitch));
+    } else {
+      targetArmLength = (y - Constants.WristAndArm.wristLength * Math.sin(pitch)) / Math.sin(targetArmAngle);
+    }
     double targetWristAngle = Math.PI - targetArmAngle + pitch;
     double targetWristRoll = roll;
 
@@ -326,6 +331,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
 
 
     // H! If the limit switch is triggered, we're at min extension.
+    SmartDashboard.putBoolean("limit switch pressed", extensionLimitSwitch.get());
     if (extensionLimitSwitch.get()) {
       armExtensionEncoder.setPosition(minLength);
     }
@@ -346,7 +352,6 @@ public class LegAnkleSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     MotorPos targetPosition = IK(targetX, targetY, targetPitch, targetRoll);
 
-    manualSetpoints = true;
     if (manualSetpoints) {
       targetPosition.pivot = targetPivotSetpoint;
       targetPosition.extension = targetExtensionSetpoint;
@@ -354,8 +359,6 @@ public class LegAnkleSubsystem extends SubsystemBase {
       targetPosition.roll = targetRollSetpoint;
     }
     manualSetpoints = false;
-
-
 
     // H! Prevent arm from extending too much or too little
     targetPosition.extension = clamp(minLength, maxLength, targetPosition.extension);

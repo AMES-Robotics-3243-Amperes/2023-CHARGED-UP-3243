@@ -57,8 +57,6 @@ public class AutoCommandGroup extends SequentialCommandGroup {
 
     ArrayList<Command> autoCommands = new ArrayList<Command>();
 
-    autoCommands.add(new InstantCommand(() -> m_legAnkleSubsystem.moveByXYTheta(0, 0.1, 0, 0)));
-
     boolean bottom = m_shuffleboardSubsystem.ShuffleBoardBooleanInput(
       ShuffleboardSubsystem.ShuffleBoardInput.goLowerRoute);
     boolean charge = m_shuffleboardSubsystem.ShuffleBoardBooleanInput(
