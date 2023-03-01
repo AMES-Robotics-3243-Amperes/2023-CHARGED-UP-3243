@@ -197,9 +197,11 @@ public class LegAnkleSubsystem extends SubsystemBase {
     // :D hi I turned this into a constant // H! Great!
     wristRollEncoder.setZeroOffset(wristRollEncoderSetZeroOffset);
 
+    wristRollEncoder.setPositionConversionFactor(1/75);
+
     pidWristRoll.setFeedbackDevice(wristRollEncoder.getSparkMAXEncoder());
 
-    wristRollEncoder.setPositionConversionFactor(1/75);
+    
 
     wristRoll.burnFlash();
 
