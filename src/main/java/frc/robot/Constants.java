@@ -44,8 +44,12 @@ public final class Constants {
     // public static final double openCloseSpeed = 0.05;
 
     // ++ grabber maximum/minimum positions
-    public static final double maximumGrabberLimit = 0.41;
-    public static final double minimumGrabberLimit = 0.3;
+    public static final double maximumGrabberLimit = 0.95;
+    public static final double minimumGrabberLimit = 0.81;
+
+    // :D grabber open/close setpoints
+    public static final double openGrabberSetpoint = 0.93;
+    public static final double closedGrabberSetpoint = 0.835;
 
     // ++ current limits
     public static final int hardOpenerMotorCurrentLimit = 30; 
