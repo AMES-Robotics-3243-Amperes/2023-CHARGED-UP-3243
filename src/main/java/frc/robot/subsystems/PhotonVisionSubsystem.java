@@ -81,19 +81,21 @@ public class PhotonVisionSubsystem extends SubsystemBase {
         cameraToTargets.add(targets.get(i).getBestCameraToTarget());
       }
 
-      for (int i = 0; i < targets.size(); i++) {
+      for (int i = 0; i < cameraToTargets.size(); i++) {
         tagPoses.add(m_aprilTagFieldLayout.getTagPose(targets.get(i).getFiducialId()));
       }
 
-      for (int j = 0; j < cameraToTargets.size(); j++) {
+      for (int j = 0; j < tagPoses.size(); j++) {
         if (tagPoses.get(j).isPresent()) {
-          robotPoses.add(
-            PhotonUtils.estimateFieldToRobotAprilTag(cameraToTargets.get(j), tagPoses.get(j).get(), camsToBot.get(j)));
+          for (int k = 0; k < camsToBot.size(); k++) {
+            robotPoses.add(
+              PhotonUtils.estimateFieldToRobotAprilTag(cameraToTargets.get(k), tagPoses.get(j).get(), camsToBot.get(k)));
           // :> The .get(j)s correspond to the for loop but the other one turns it into a Pose3D instead of an optional Pose3D
+          }
         }
       }
 
-      Pose3d averageRobotPoses = averagePose3d((Pose3d[]) robotPoses.toArray());
+      Pose3d averageRobotPoses = averagePose3d(robotPoses.toArray(new Pose3d[0]));
       return averageRobotPoses;
     }
     return null;
@@ -182,11 +184,13 @@ public class PhotonVisionSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
 
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < cameras.size(); i++) {
       PhotonPipelineResult r = cameras.get(i).getLatestResult();
-      if (r.hasTargets()) {
-        results.add(r);
-        targets.add(results.get(i).getBestTarget());
+      for (int j = 0; j < results.size(); j++){
+        if (r.hasTargets()) {
+          results.add(r);
+          targets.add(results.get(j).getBestTarget());
+        }
       }
     }
 
