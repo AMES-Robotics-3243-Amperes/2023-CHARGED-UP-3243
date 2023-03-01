@@ -44,12 +44,12 @@ public final class Constants {
     // public static final double openCloseSpeed = 0.05;
 
     // ++ grabber maximum/minimum positions
-    public static final double maximumGrabberLimit = 0.44;
+    public static final double maximumGrabberLimit = 0.445;
     public static final double minimumGrabberLimit = 0.22;
 
     // :D grabber open/close setpoints
     public static final double openGrabberSetpoint = 0.22;
-    public static final double closedGrabberSetpoint = 0.44;
+    public static final double closedGrabberSetpoint = 0.445;
 
     // ++ current limits
     public static final int hardOpenerMotorCurrentLimit = 30; 
@@ -386,24 +386,24 @@ public final class Constants {
       }
 
       public static class Pivot {
-        public static final double P  = 5.0 * 0;// H! 5.0
+        public static final double P  = 5.0;// H! 5.0
         public static final double I  = 0.0;
         public static final double D  = 0.0;
         public static final double FF = 0.1 * 0;
       }
 
       public static class Pitch {
-        public static final double P = 0.75 * 0;
-        public static final double I = 0.0125 * 0;
+        public static final double P = 0.75;
+        public static final double I = 0.0125;
         public static final double D = 0.0;
-        public static final double FF = 0.01 * 0;
+        public static final double FF = 0.01;
       }
 
       public static class Roll {
-        public static final double P = 1.5 * 0;
+        public static final double P = 1.5;
         public static final double I = 0.0;
-        public static final double D = 0.01 * 0;
-        public static final double FF = 0.1 * 0;
+        public static final double D = 0.01;
+        public static final double FF = 0.1;
       }
     }
   }

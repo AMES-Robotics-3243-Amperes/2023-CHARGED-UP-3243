@@ -19,6 +19,8 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.utility_classes.SemiAbsoluteEncoder;
+
 import static frc.robot.Constants.WristAndArm.*;
 
 public class LegAnkleSubsystem extends SubsystemBase {
@@ -94,7 +96,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
   private RelativeEncoder armExtensionEncoder = armExtension.getEncoder(/*Type.kDutyCycle*/);
   private RelativeEncoder wristPitchEncoderRight = wristPitchRight.getEncoder(/*Type.kDutyCycle*/);
   private RelativeEncoder wristPitchEncoderLeft = wristPitchLeft.getEncoder(/*Type.kDutyCycle*/);
-  private SparkMaxAbsoluteEncoder wristRollEncoder = wristRoll.getAbsoluteEncoder(Type.kDutyCycle);
+  private SemiAbsoluteEncoder wristRollEncoder = new SemiAbsoluteEncoder(wristRoll);
 
   private double targetX = StartingSetpoints.x;
   private double targetY = StartingSetpoints.y;
@@ -169,7 +171,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
     // :D I added this in
     pidArmPivot.setOutputRange(-pivotOutputRange, pivotOutputRange);
 
-    pidWristRoll.setFeedbackDevice(wristRollEncoder);
+    
 
     pidArmPivot.setFeedbackDevice(armPivotEncoder);
 
@@ -195,6 +197,11 @@ public class LegAnkleSubsystem extends SubsystemBase {
     // :D hi I turned this into a constant // H! Great!
     wristRollEncoder.setZeroOffset(wristRollEncoderSetZeroOffset);
 
+    pidWristRoll.setFeedbackDevice(wristRollEncoder.getSparkMAXEncoder());
+
+    wristRollEncoder.setPositionConversionFactor(1/75);
+
+    wristRoll.burnFlash();
 
     
 
@@ -389,6 +396,8 @@ public class LegAnkleSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("armExtensionLength", armExtensionEncoder.getPosition());
     SmartDashboard.putNumber("wristPitchLength", wristPitchEncoderRight.getPosition());
     SmartDashboard.putNumber("wristRollLength", wristRollEncoder.getPosition());
+
+    SmartDashboard.putNumber("Wrist Roll", wristRollEncoder.getSparkMAXEncoder().getPosition());
   }
 
   private static double clamp(double min,  double max, double x) {

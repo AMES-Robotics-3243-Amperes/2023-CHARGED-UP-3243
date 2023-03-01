@@ -11,6 +11,8 @@ public class SemiAbsoluteEncoder {
    private RelativeEncoder relative;
    private SparkMaxAbsoluteEncoder absolute;
 
+   private double conversionFactor = 1;
+
 
    public SemiAbsoluteEncoder(CANSparkMax motorController) {
 
@@ -28,8 +30,19 @@ public class SemiAbsoluteEncoder {
     */
    public double getPosition() {
     
-    return relative.getPosition();
+    return relative.getPosition() * conversionFactor;
+   }
+
+   public RelativeEncoder getSparkMAXEncoder(){
+      return relative;
+   }
+
+   public void setZeroOffset(double offset){
+      absolute.setZeroOffset(offset);
+      relative.setPosition(absolute.getPosition()); 
    }
    
-
+   public void setPositionConversionFactor(double multiplyEncoderBy){
+      conversionFactor = multiplyEncoderBy;
+   }
 }
