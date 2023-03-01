@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.PlaceGamePieceCommands;
+package frc.robot.commands.PlacementRoutineStuff;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -18,8 +18,8 @@ public class MoveArmToTarget extends CommandBase {
 
   private double targetX;
   private double targetY;
-  private double targetPitch;
-  private double targetRoll;
+  private double targetPitch = 0;
+  private double targetRoll = 0;
   private int targetIndex;
 
   private boolean isDone;
@@ -34,10 +34,16 @@ public class MoveArmToTarget extends CommandBase {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(legAnkleSubsystem);
 
-    // H! Get the target positions
-    Pose3d targetPose = fieldPosManager.get3dFieldObjectPose(target, isCube, targetIndex);
-    Translation3d positionDif = targetPose.getTranslation().minus(new Pose3d(fieldPosManager.getRobotPose()).getTranslation());
-    //targetX = positionDif.
+    // H! Get the scoring target positions
+    Pose3d scoringPos = fieldPosManager.get3dFieldObjectPose(target, isCube, targetIndex);
+    Translation3d robotPosToScoringPos = scoringPos.getTranslation().minus(new Pose3d(fieldPosManager.getRobotPose()).getTranslation());
+    Translation3d pivotToScoringPos = robotPosToScoringPos.plus(Constants.WristAndArm.pivotOffset);
+    
+
+    // ++ targets x, y, and z are the components of the translation3D between the arm pivot and the scoring position
+    // ++ the X direction is in the length of the field 
+    targetX = pivotToScoringPos.getX();
+    targetY = pivotToScoringPos.getZ();
     
   }
 
