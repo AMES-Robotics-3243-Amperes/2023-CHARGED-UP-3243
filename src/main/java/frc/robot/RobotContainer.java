@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DriveTrain.DriveConstants;
 import frc.robot.commands.GrabberCommand;
+import frc.robot.commands.GrabberCloseCommand;
+import frc.robot.commands.GrabberOpenCommand;
 import frc.robot.commands.SwerveTeleopCommand;
 import frc.robot.commands.WristCommand;
 import frc.robot.subsystems.*;
@@ -35,6 +37,9 @@ public class RobotContainer {
   public static JoystickButton doubleSquareButton = new JoystickButton(primaryController,
     XboxController.Button.kBack.value);
 
+  public static JoystickButton openGrabButton = new JoystickButton(secondaryController, 5);
+  public static JoystickButton closeGrabButton = new JoystickButton(secondaryController, 6);
+
   // <> --- FIELD POS MANAGER ---
   public static FieldPosManager fieldPosManager = new FieldPosManager();
 
@@ -56,6 +61,8 @@ public class RobotContainer {
     primaryController);
   private final WristCommand m_WristCommand = new WristCommand(m_legAnkleSubsystem, secondaryController);
   public final GrabberCommand m_GrabberCommand = new GrabberCommand(m_GrabberSubsystem, secondaryController);
+  private final GrabberCloseCommand m_grabCloseCommand = new GrabberCloseCommand(m_GrabberSubsystem);
+  private final GrabberOpenCommand m_grabOpenCommand = new GrabberOpenCommand(m_GrabberSubsystem);
 
   //private final PlaceGamePiece m_placeGamePieceCommand;
 
@@ -73,7 +80,7 @@ public class RobotContainer {
 
     m_legAnkleSubsystem.setDefaultCommand(m_WristCommand);
 
-    m_GrabberSubsystem.setDefaultCommand(m_GrabberCommand);
+    //m_GrabberSubsystem.setDefaultCommand(m_grabCloseCommand);
 
     // H! This command is here because it needs thetaPidController to be created for it to be created
     //m_placeGamePieceCommand = new PlaceGamePiece(m_driveSubsystem, m_legAnkleSubsystem, GrabberSubsystem,
@@ -100,6 +107,8 @@ public class RobotContainer {
    */
   public void configureBindings() {
     doubleSquareButton.onTrue(new InstantCommand(m_driveSubsystem::setX));
+    openGrabButton.onTrue(m_grabOpenCommand);
+    closeGrabButton.onTrue(m_grabCloseCommand);
   }
 
   public void teleopInit() {

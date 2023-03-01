@@ -49,8 +49,11 @@ public class GrabberSubsystem extends SubsystemBase {
 
     // ++ initializes opener objects
     grabberOpenerEncoder = grabberOpenerMotor.getAbsoluteEncoder(Type.kDutyCycle);
-    grabberOpenerEncoder.setPositionConversionFactor(Constants.Grabber.grabberMotorOpenerGearRatio);
+//    grabberOpenerEncoder.setPositionConversionFactor(Constants.Grabber.grabberMotorOpenerGearRatio);
     grabberOpenerPID = grabberOpenerMotor.getPIDController();
+    grabberOpenerPID.setFeedbackDevice(grabberOpenerEncoder);
+
+    grabberOpenerEncoder.setZeroOffset(0.5);
 
     // ++ initializes wheel objects
     //wheelMotorEncoderOne = wheelMotorOne.getEncoder();
@@ -73,6 +76,10 @@ public class GrabberSubsystem extends SubsystemBase {
     grabberOpenerMotor.setSecondaryCurrentLimit(Constants.Grabber.hardOpenerMotorCurrentLimit);
     //wheelMotorOne.setSecondaryCurrentLimit(Constants.Grabber.hardWheelMotorCurrentLimit);
     //wheelMotorTwo.setSecondaryCurrentLimit(Constants.Grabber.hardWheelMotorCurrentLimit);
+
+    grabberOpenerMotor.burnFlash();
+
+    closeGrabber();
 
   }
 
@@ -126,7 +133,7 @@ public class GrabberSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     
     // SmartDashboard.putNumber("Actual Current", grabberOpenerMotor.getOutputCurrent());
-    // SmartDashboard.putNumber("Absolute Encoder", grabberOpenerEncoder.getPosition());
+    SmartDashboard.putNumber("Absolute Encoder", grabberOpenerEncoder.getPosition());
     
 
     // ++ grabber position safeties 
