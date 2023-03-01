@@ -58,7 +58,7 @@ public final class Constants {
     public static final double wheelMotorGearRatio = (1/1);
 
     // ++ PID values
-    public static final double openerMotorPGain = 0.06;
+    public static final double openerMotorPGain = 0.06 * 0;
     public static final double openerMotorIGain = 0.0;
     public static final double openerMotorDGain = 0.0;
 
@@ -334,7 +334,7 @@ public final class Constants {
     public static final double maxY = 1.9812 - 0.476364;
     public static final double minY = 0 - 0.476364;
     public static final int pivotCurrentLimit = 39; // H! This is a temporary change! It was 30 before. // :D hi I just changed this from 30 to 40
-    public static final int extensionCurrentLimit = 25; // H! This is a temporary change! It was 20 before. // :D hi I just changed this from 10 to 30
+    public static final int extensionCurrentLimit = 15; // H! This is a temporary change! It was 20 before. // :D hi I just changed this from 10 to 30
     public static final int pitchCurrentLimit = 29; // H! This is a temporary change! It was 10 before. // :D hi I just changed this from 30 to 15
     public static final int rollCurrentLimit = 5; // H! This is a temporary change! It was 10 before. // :D hi I just changed this from 2 to 5
     public static final int NEO1650CurrentLimitHard = 40; // H! This is a temporary change! It was 40 before. // :D hi I just changed this from 20 to 60
@@ -358,22 +358,22 @@ public final class Constants {
     }
 
     public static class StartingPosition {
-      public static final double x = 0.0;
-      public static final double y = 1.2;
-      public static final double pitch = 0.0;
+      public static final double x = -0.8636;
+      public static final double y = -0.03048;
+      public static final double pitch = -Math.PI / 2;
       public static final double roll = 0.0;
     }
 
     public static class StartingSetpoints {
-      public static final double x = 0.05;
-      public static final double y = 1.2;
-      public static final double pitch = 0.0;
+      public static final double x = -0.9;
+      public static final double y = 0.05;
+      public static final double pitch = -Math.PI / 4;
       public static final double roll = 0.0;
     }
 
     public static class PID {
       public static class Extension {
-        public static final double P  = 4.5 * 0;// H! 2.0
+        public static final double P  = 0.1;// H! 2.0
         public static final double I  = 0.0;
         public static final double D  = 0.0;
         public static final double FF = 0.01 * 0;
