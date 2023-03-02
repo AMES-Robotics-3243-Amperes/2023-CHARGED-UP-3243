@@ -16,6 +16,7 @@ import frc.robot.commands.BalanceCommand;
 import frc.robot.commands.GrabberCommand;
 import frc.robot.commands.GrabberCloseCommand;
 import frc.robot.commands.GrabberOpenCommand;
+import frc.robot.commands.MoveLegAnkleToPickupPositionCommand;
 import frc.robot.commands.SwerveTeleopCommand;
 import frc.robot.commands.WristCommand;
 import frc.robot.subsystems.*;
@@ -41,6 +42,8 @@ public class RobotContainer {
   public static JoystickButton openGrabButton = new JoystickButton(secondaryController, 5);
   public static JoystickButton closeGrabButton = new JoystickButton(secondaryController, 6);
 
+  public static JoystickButton defaultPickupButton = new JoystickButton(secondaryController, 3);
+
   // <> --- FIELD POS MANAGER ---
   public static FieldPosManager fieldPosManager = new FieldPosManager();
 
@@ -62,6 +65,7 @@ public class RobotContainer {
   private final GrabberCloseCommand m_grabCloseCommand = new GrabberCloseCommand(m_GrabberSubsystem);
   private final GrabberOpenCommand m_grabOpenCommand = new GrabberOpenCommand(m_GrabberSubsystem);
   public final BalanceCommand m_BalanceCommand = new BalanceCommand(m_driveSubsystem);
+  public final MoveLegAnkleToPickupPositionCommand m_legAnkleToPickupCommand = new MoveLegAnkleToPickupPositionCommand(m_legAnkleSubsystem);
 
   //private final PlaceGamePiece m_placeGamePieceCommand;
 
@@ -108,6 +112,8 @@ public class RobotContainer {
     openGrabButton.onTrue(m_grabOpenCommand);
     closeGrabButton.onTrue(m_grabCloseCommand);
     primarySelect.onTrue(new InstantCommand(m_driveSubsystem::setX));
+    primaryStart.toggleOnTrue(m_BalanceCommand);
+    //defaultPickupButton.onTrue(m_legAnkleToPickupCommand);
     //primaryStart.toggleOnTrue(m_BalanceCommand);
   }
 

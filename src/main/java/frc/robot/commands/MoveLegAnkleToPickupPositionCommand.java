@@ -22,4 +22,10 @@ public class MoveLegAnkleToPickupPositionCommand extends InstantCommand {
   public void initialize() {
     m_subsystem.moveToXYTheta(-0.889, 0, -Math.PI / 2, 0);
   }
+
+  // Returns true when the command should end.
+  @Override
+  public boolean isFinished() {
+    return true;
+  }
 }
