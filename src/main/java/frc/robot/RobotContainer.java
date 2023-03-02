@@ -108,7 +108,7 @@ public class RobotContainer {
     openGrabButton.onTrue(m_grabOpenCommand);
     closeGrabButton.onTrue(m_grabCloseCommand);
     primarySelect.onTrue(new InstantCommand(m_driveSubsystem::setX));
-    primaryStart.toggleOnTrue(m_BalanceCommand);
+    //primaryStart.toggleOnTrue(m_BalanceCommand);
   }
 
   public void teleopInit() {}

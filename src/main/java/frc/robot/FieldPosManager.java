@@ -72,7 +72,7 @@ public class FieldPosManager {
    * @param deltaPose is a {@link Transform2d} which transforms the robot's Pose2d
    */
   private void transformRobotPose(Transform2d deltaPose) {
-    latestRobotPosition.transformBy(deltaPose);
+    latestRobotPosition = latestRobotPosition.transformBy(deltaPose);
   }
 
   /**
@@ -88,7 +88,7 @@ public class FieldPosManager {
     if (!hasPhotonPose) {
       previousOdometryPose = latestOdometryPose;
       latestOdometryPose = swervePose;
-      Transform2d transform = latestOdometryPose.minus(previousOdometryPose);
+      Transform2d transform = new Transform2d(previousOdometryPose, latestOdometryPose);
       transformRobotPose(transform);
     }
     hasPhotonPose = false;
