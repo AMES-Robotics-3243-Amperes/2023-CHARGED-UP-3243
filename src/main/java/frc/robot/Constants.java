@@ -25,6 +25,9 @@ import edu.wpi.first.math.util.Units;
 // ££ I still don't understand why putting k in front of variables is the standard in WPILib
 public final class Constants {
 
+  // <> this is just temporary
+  public static Pose2d robotStartingPosition = new Pose2d(new Translation2d(0, 0), new Rotation2d());
+
   /**
    * H! Enum for the different target heights
    */
