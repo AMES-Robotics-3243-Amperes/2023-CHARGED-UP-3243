@@ -114,6 +114,7 @@ public class RobotContainer {
     primarySelect.onTrue(new InstantCommand(m_driveSubsystem::setX));
     primaryStart.toggleOnTrue(m_BalanceCommand);
     //defaultPickupButton.onTrue(m_legAnkleToPickupCommand);
+    //primaryStart.toggleOnTrue(m_BalanceCommand);
   }
 
   public void teleopInit() {}

@@ -30,7 +30,7 @@ public class SemiAbsoluteEncoder {
     */
    public double getPosition() {
     
-    return relative.getPosition() * conversionFactor;
+    return relative.getPosition();
    }
 
    public RelativeEncoder getSparkMAXEncoder(){
@@ -43,6 +43,6 @@ public class SemiAbsoluteEncoder {
    }
    
    public void setPositionConversionFactor(double multiplyEncoderBy){
-      conversionFactor = multiplyEncoderBy;
+      relative.setPositionConversionFactor(multiplyEncoderBy);
    }
 }

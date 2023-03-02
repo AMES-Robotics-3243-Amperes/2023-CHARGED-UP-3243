@@ -199,9 +199,11 @@ public class LegAnkleSubsystem extends SubsystemBase {
     wristRollEncoder.setZeroOffset(wristRollEncoderSetZeroOffset);
 
     wristRollSparkMAXEncoder = wristRollEncoder.getSparkMAXEncoder();
+    wristRollEncoder.setPositionConversionFactor(1/75);
+
     pidWristRoll.setFeedbackDevice(wristRollSparkMAXEncoder);
 
-    wristRollEncoder.setPositionConversionFactor(1/75);
+    
 
     wristRoll.burnFlash();
 
