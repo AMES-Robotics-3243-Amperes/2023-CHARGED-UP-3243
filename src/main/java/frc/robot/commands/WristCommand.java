@@ -35,11 +35,19 @@ public class WristCommand extends CommandBase {
 
 
     //&& Fast/slow mode for the LegAnkle using analog triggers
-    m_subsystem.moveManualSetpoints(
+    /*m_subsystem.moveManualSetpoints(
       JoyUtil.fastMode(JoyUtil.posWithDeadzone(m_controller.getLeftX()) / 5, m_controller.getLeftTriggerAxis(), m_controller.getRightTriggerAxis()),
       JoyUtil.fastMode(JoyUtil.posWithDeadzone(m_controller.getLeftY()) / 5, m_controller.getLeftTriggerAxis(), m_controller.getRightTriggerAxis()),
       JoyUtil.fastMode(JoyUtil.posWithDeadzone(m_controller.getRightX()) / 5, m_controller.getLeftTriggerAxis(), m_controller.getRightTriggerAxis()),
       JoyUtil.fastMode(JoyUtil.posWithDeadzone(m_controller.getRightY()) / 5, m_controller.getLeftTriggerAxis(), m_controller.getRightTriggerAxis())
+      );*/
+    
+    // H! IK control
+    m_subsystem.moveByXYTheta(
+      JoyUtil.fastMode(JoyUtil.posWithDeadzone(m_controller.getLeftX()) / 3, m_controller.getLeftTriggerAxis(), m_controller.getRightTriggerAxis()),
+      JoyUtil.fastMode(JoyUtil.posWithDeadzone(m_controller.getLeftY()) / 3, m_controller.getLeftTriggerAxis(), m_controller.getRightTriggerAxis()),
+      JoyUtil.fastMode(JoyUtil.posWithDeadzone(m_controller.getRightY()) / 3, m_controller.getLeftTriggerAxis(), m_controller.getRightTriggerAxis()),
+      JoyUtil.fastMode(JoyUtil.posWithDeadzone(m_controller.getRightX()) / 3, m_controller.getLeftTriggerAxis(), m_controller.getRightTriggerAxis())
       );
 
     m_subsystem.deleteThis_doSetpoint = !m_controller.getAButton();
