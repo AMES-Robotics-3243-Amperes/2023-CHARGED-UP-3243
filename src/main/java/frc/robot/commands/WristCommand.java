@@ -35,20 +35,20 @@ public class WristCommand extends CommandBase {
 
 
     //&& Fast/slow mode for the LegAnkle using analog triggers
-    /*m_subsystem.moveManualSetpoints(
-      JoyUtil.fastMode(JoyUtil.posWithDeadzone(m_controller.getLeftX()) / 5, m_controller.getLeftTriggerAxis(), m_controller.getRightTriggerAxis()),
-      JoyUtil.fastMode(JoyUtil.posWithDeadzone(m_controller.getLeftY()) / 5, m_controller.getLeftTriggerAxis(), m_controller.getRightTriggerAxis()),
-      JoyUtil.fastMode(JoyUtil.posWithDeadzone(m_controller.getRightY()), m_controller.getLeftTriggerAxis(), m_controller.getRightTriggerAxis()),
-      JoyUtil.fastMode(JoyUtil.posWithDeadzone(m_controller.getRightX()) * 15,  m_controller.getLeftTriggerAxis(), m_controller.getRightTriggerAxis())
-      );*/
+    m_subsystem.moveManualSetpoints(
+      JoyUtil.fastMode(JoyUtil.posWithDeadzone(m_controller.getLeftX()) / 7, m_controller.getLeftTriggerAxis(), m_controller.getRightTriggerAxis()),
+      JoyUtil.fastMode(JoyUtil.posWithDeadzone(m_controller.getLeftY()) / -5, m_controller.getLeftTriggerAxis(), m_controller.getRightTriggerAxis()),
+      JoyUtil.fastMode(JoyUtil.posWithDeadzone(m_controller.getRightY()) / -2, m_controller.getLeftTriggerAxis(), m_controller.getRightTriggerAxis()),
+      JoyUtil.fastMode(JoyUtil.posWithDeadzone(m_controller.getRightX()) / 7,  m_controller.getLeftTriggerAxis(), m_controller.getRightTriggerAxis())
+      );
     
     // H! IK control
-    m_subsystem.moveByXYTheta(
-      JoyUtil.fastMode(JoyUtil.posWithDeadzone(m_controller.getLeftX()) / 3, m_controller.getLeftTriggerAxis(), m_controller.getRightTriggerAxis()),
-      JoyUtil.fastMode(JoyUtil.posWithDeadzone(m_controller.getLeftY()) / 3, m_controller.getLeftTriggerAxis(), m_controller.getRightTriggerAxis()),
-      JoyUtil.fastMode(JoyUtil.posWithDeadzone(m_controller.getRightY()) / 3, m_controller.getLeftTriggerAxis(), m_controller.getRightTriggerAxis()),
-      JoyUtil.fastMode(JoyUtil.posWithDeadzone(m_controller.getRightX()) / 3, m_controller.getLeftTriggerAxis(), m_controller.getRightTriggerAxis())
-      );
+    // m_subsystem.moveByXYTheta(
+    //   JoyUtil.fastMode(JoyUtil.posWithDeadzone(m_controller.getLeftX()) , m_controller.getLeftTriggerAxis(), m_controller.getRightTriggerAxis()),
+    //   JoyUtil.fastMode(JoyUtil.posWithDeadzone(m_controller.getLeftY()) , m_controller.getLeftTriggerAxis(), m_controller.getRightTriggerAxis()),
+    //   JoyUtil.fastMode(JoyUtil.posWithDeadzone(m_controller.getRightY()), m_controller.getLeftTriggerAxis(), m_controller.getRightTriggerAxis()),
+    //   JoyUtil.fastMode(JoyUtil.posWithDeadzone(m_controller.getRightX()), m_controller.getLeftTriggerAxis(), m_controller.getRightTriggerAxis())
+    //   );
 
     m_subsystem.deleteThis_doSetpoint = !m_controller.getAButton();
     //m_subsystem.resetRoll();

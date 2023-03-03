@@ -4,28 +4,34 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.LegAnkleSubsystem;
 
-public class MoveLegAnkleToPickupPositionCommand extends InstantCommand {
-  LegAnkleSubsystem m_subsystem;
+public class MoveLegAnkleToPickupPositionCommand extends CommandBase {
+  LegAnkleSubsystem m_LegAnkleSubsystem;
 
   public MoveLegAnkleToPickupPositionCommand(LegAnkleSubsystem subsystem) {
-    m_subsystem = subsystem;
+    m_LegAnkleSubsystem = subsystem;
 
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_subsystem);
+    addRequirements(m_LegAnkleSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_subsystem.moveToXYTheta(-0.889, 0, -Math.PI / 2, 0);
+    // ++ set values to measured constants
+    m_LegAnkleSubsystem.moveManualSetpoints(
+      Constants.WristAndArm.pivotPickupPos, 
+      Constants.WristAndArm.extensionPickupPos,
+      Constants.WristAndArm.pitchPickupPos, 
+      Constants.WristAndArm.rollPickupPos);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    return ()
   }
 }

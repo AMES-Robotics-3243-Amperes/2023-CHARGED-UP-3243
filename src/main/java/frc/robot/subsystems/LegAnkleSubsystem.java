@@ -94,7 +94,8 @@ public class LegAnkleSubsystem extends SubsystemBase {
 
   private RelativeEncoder armPivotEncoder = armPivot.getEncoder(/*Type.kDutyCycle*/);
   private RelativeEncoder armExtensionEncoder = armExtension.getEncoder(/*Type.kDutyCycle*/);
-  private RelativeEncoder wristPitchEncoderRight = wristPitchRight.getEncoder(/*Type.kDutyCycle*/);
+  private SemiAbsoluteEncoder wristPitchEncoder = new SemiAbsoluteEncoder(wristPitchRight); // H! TODO which motor controller this is plugged into is unconfimed
+  private RelativeEncoder wristPitchEncoderRight = wristPitchEncoder.getSparkMAXEncoder();
   private RelativeEncoder wristPitchEncoderLeft = wristPitchLeft.getEncoder(/*Type.kDutyCycle*/);
   private RelativeEncoder wristRollSparkMAXEncoder;
   private SemiAbsoluteEncoder wristRollEncoder = new SemiAbsoluteEncoder(wristRoll);
@@ -177,7 +178,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
     pidArmPivot.setFeedbackDevice(armPivotEncoder);
 
     armExtensionEncoder.setPositionConversionFactor(extensionEncoderConversionFactor);
-    //armPivotEncoder.setPositionConversionFactor(1/10);//(1 / 100) * (24/54) * (21/32) = 0.00291666666
+    //armPivotEncoder.setPositionConversionFactor(1/10);//(1 / 100) * (35/50) * (21/32) = 0.00459357
     wristPitchEncoderRight.setPositionConversionFactor(pitchEncoderConversionFactor);
     wristPitchEncoderLeft.setPositionConversionFactor(pitchEncoderConversionFactor);
     
@@ -189,8 +190,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
     MotorPos startingMotorPosition = IK(StartingPosition.x, StartingPosition.y, StartingPosition.pitch, StartingPosition.roll);
     armExtensionEncoder.setPosition(startingMotorPosition.extension/*minLength*/);
     armPivotEncoder.setPosition(startingMotorPosition.pivot);
-    wristPitchEncoderLeft.setPosition(startingMotorPosition.pitch);
-    wristPitchEncoderRight.setPosition(startingMotorPosition.pitch);
+    wristPitchEncoderLeft.setPosition(wristPitchEncoder.getPosition());
 
     // H! Used to reset the absolute encoder. Do not run this unless that's what you want to do
     //wristRollEncoder.setZeroOffset(0);
@@ -307,10 +307,17 @@ public class LegAnkleSubsystem extends SubsystemBase {
     return (
       Math.abs( armPivotEncoder.getPosition() - targetMotorPositions.pivot ) < atSetpointThreshold &&
       Math.abs( armExtensionEncoder.getPosition() - targetMotorPositions.extension ) < atSetpointThreshold &&
-      Math.abs( wristPitchEncoderRight.getPosition() - targetMotorPositions.pitch ) < atSetpointThreshold &&
+      Math.abs( wristPitchEncoder.getPosition() - targetMotorPositions.pitch ) < atSetpointThreshold &&
       Math.abs( wristRollEncoder.getPosition() - targetMotorPositions.roll ) < atSetpointThreshold
     );
 
+  }
+
+
+  public Boolean nearTargetPos() {
+    return (
+
+    );
   }
 
 
@@ -373,8 +380,15 @@ public class LegAnkleSubsystem extends SubsystemBase {
     }
     manualSetpoints = false;
 
+
+    // ++ clamp values to be safe -------------------------------------------
     // H! Prevent arm from extending too much or too little
     targetPosition.extension = clamp(minLength, maxLength, targetPosition.extension);
+    // ++ pivot
+    // targetPosition.pivot = clamp(minPivotPos, maxPivotPos, targetPosition.pivot);
+    // ++ pitch
+    // targetPosition.pitch = clamp (minPitchPos, maxPitchPos, targetPosition.pitch);
+    // ++ ----------------------
 
     SmartDashboard.putNumber("targetArmAngle", targetPosition.pivot);
     SmartDashboard.putNumber("targetArmLength", targetPosition.extension);
@@ -398,12 +412,17 @@ public class LegAnkleSubsystem extends SubsystemBase {
 
     SmartDashboard.putNumber("armPivotLength", armPivotEncoder.getPosition());    
     SmartDashboard.putNumber("armExtensionLength", armExtensionEncoder.getPosition());
-    SmartDashboard.putNumber("wristPitchLength", wristPitchEncoderRight.getPosition());
+    SmartDashboard.putNumber("wristPitchLength", wristPitchEncoder.getPosition());
     SmartDashboard.putNumber("wristRollLength", wristRollEncoder.getPosition());
 
     SmartDashboard.putNumber("Wrist Roll", wristRollEncoder.getSparkMAXEncoder().getPosition());
   }
 
+  /** ++ clamps input between two extreme values
+   * @param min the lower extreme value
+   * @param max the upper extreme value
+   * @param x the input value to be clamped
+   */
   private static double clamp(double min,  double max, double x) {
     return x > max ? max : Math.max(x, min);
    }

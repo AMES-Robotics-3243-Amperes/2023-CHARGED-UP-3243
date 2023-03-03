@@ -25,9 +25,6 @@ import edu.wpi.first.math.util.Units;
 // ££ I still don't understand why putting k in front of variables is the standard in WPILib
 public final class Constants {
 
-  // <> this is just temporary
-  public static Pose2d robotStartingPosition = new Pose2d(new Translation2d(0, 0), new Rotation2d());
-
   /**
    * H! Enum for the different target heights
    */
@@ -57,7 +54,7 @@ public final class Constants {
     // ++ current limits
     public static final int hardOpenerMotorCurrentLimit = 30; 
     public static final int hardWheelMotorCurrentLimit = 30;
-    public static final int softOpenerMotorCurrentLimit = 7; // ++ this will have to be changed to adequately compress game pieces
+    public static final int softOpenerMotorCurrentLimit = 10; // ++ this will have to be changed to adequately compress game pieces
     public static final int softWheelMotorCurrentLimit = 10; // ++ will have to be experimentally tuned
 
     // ++ gear ratios
@@ -155,10 +152,10 @@ public final class Constants {
       // <> if the driving is field relative
       public static final boolean kFieldRelative = true;
       // <> speed damper (flat constant supplied speed is multiplied by)
-      public static final double kDrivingSpeedDamper = 1; // <> meters per second
-      public static final double kAngularSpeedDamper = 0.8 * Math.PI; // <> radians per second
+      public static final double kDrivingSpeedDamper = 1.3; // <> meters per second
+      public static final double kAngularSpeedDamper = 1.6 * Math.PI; // <> radians per second
       // <> max speed
-      public static final double kMaxMetersPerSecond = 0.5;
+      public static final double kMaxMetersPerSecond = 2;
       // <> this should be true
       public static final boolean kGyroReversed = false;
 
@@ -214,7 +211,7 @@ public final class Constants {
       public static final class AutoConstants {
 
         // <> max speeds (only for pathfinding, not controlling)
-        public static final double kMaxMetersPerSecond = 1.8;
+        public static final double kMaxMetersPerSecond = 3;
         public static final double kMaxAngularMetersPerSecond = 1 * Math.PI;
         public static final double kMaxAngularAccelerationMetersPerSecond = 1.4 * Math.PI;
 
@@ -248,7 +245,7 @@ public final class Constants {
 
         // <> leniency for ending SwerveAutoMoveCommands
         public static double angleLeniencyDegrees = 0.8;
-        public static double positionLeniencyMeters = 0.035;
+        public static double positionLeniencyMeters = 0.06;
       }
 
       public static final class BalanceConstants {
@@ -300,10 +297,10 @@ public final class Constants {
 
     // ss This is the multiplier for Fast Mode
     // explained in JoyUtil.java
-    public static final double fastModeMaxMultiplier = 1;
+    public static final double fastModeMaxMultiplier = 0.5;
 
     // <> keep below 1
-    public static final double slowModeMultiplier = 0.9;
+    public static final double slowModeMultiplier = 0.7;
 
     /**
      * ++ the damper for the D-Pad inputs
@@ -328,10 +325,28 @@ public final class Constants {
     public static final Translation3d pivotOffset = new Translation3d(Units.inchesToMeters(32)/2 - .27773100, 0, .44255 + Units.inchesToMeters(2.662500 / 2));
 
     public static final double extensionEncoderConversionFactor = (Units.inchesToMeters(2.707) * Math.PI) / (36);
-    public static final double pitchEncoderConversionFactor = 1/60;
+    public static final double pitchEncoderConversionFactor = 1/120;
     // H! Holds the data for the positions of stuff in the arm
     public static final double minLength = 0.92804 + 0.05;
-    public static final double maxLength = 1.5494;
+    public static final double maxLength = 1.3;//1.5494;
+
+    // ++ pivot limits
+    public static final double maxPivotPos = 1.2;
+    public static final double minPivotPos = 0.46;
+
+    // ++ pitch limits
+    // public static final double maxPitchPos;
+    // public static final double minPitchPos;
+
+    // ++ ------- pickup points -------
+    public static final double pivotPickupPos = minPivotPos;
+    public static final double extensionPickupPos = 0.99;
+    public static final double rollPickupPos = 0.55;
+    public static final double pitchPickupPos = 0.0;
+
+
+
+
     public static final double wristLength = Units.inchesToMeters(5)/*0.072327*/;
     public static final double changeXMultiplier = 0.10 / 50;
     public static final double changeYMultiplier = 0.10 / 50;

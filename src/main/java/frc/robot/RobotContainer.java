@@ -18,6 +18,7 @@ import frc.robot.commands.GrabberCloseCommand;
 import frc.robot.commands.GrabberOpenCommand;
 import frc.robot.commands.MoveLegAnkleToPickupPositionCommand;
 import frc.robot.commands.SwerveTeleopCommand;
+import frc.robot.commands.TempAutoRoutine;
 import frc.robot.commands.WristCommand;
 import frc.robot.subsystems.*;
 
@@ -67,6 +68,8 @@ public class RobotContainer {
   public final BalanceCommand m_BalanceCommand = new BalanceCommand(m_driveSubsystem);
   public final MoveLegAnkleToPickupPositionCommand m_legAnkleToPickupCommand = new MoveLegAnkleToPickupPositionCommand(m_legAnkleSubsystem);
 
+  public final TempAutoRoutine m_auto;
+
   //private final PlaceGamePiece m_placeGamePieceCommand;
 
   /**
@@ -78,6 +81,8 @@ public class RobotContainer {
       DriveConstants.AutoConstants.kTurningI, DriveConstants.AutoConstants.kTurningD,
       DriveConstants.AutoConstants.kThetaControllerConstraints);
     thetaPidController.enableContinuousInput(-Math.PI, Math.PI);
+
+    m_auto = new TempAutoRoutine(fieldPosManager, m_driveSubsystem, thetaPidController, m_photonVisionSubsystem);
 
     m_driveSubsystem.setDefaultCommand(m_SwerveTeleopCommand);
 
@@ -113,7 +118,7 @@ public class RobotContainer {
     closeGrabButton.onTrue(m_grabCloseCommand);
     primarySelect.onTrue(new InstantCommand(m_driveSubsystem::setX));
     primaryStart.toggleOnTrue(m_BalanceCommand);
-    //defaultPickupButton.onTrue(m_legAnkleToPickupCommand);
+    defaultPickupButton.onTrue(m_legAnkleToPickupCommand);
     //primaryStart.toggleOnTrue(m_BalanceCommand);
   }
 

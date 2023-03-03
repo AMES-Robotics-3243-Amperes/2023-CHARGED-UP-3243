@@ -75,19 +75,18 @@ public class PhotonVisionSubsystem extends SubsystemBase {
    */
   public static Pose3d checkRobotPosition() {
     // :> I'm so sorry for all of the for loops it is necessary for the three cameras.
-    // <> why do these loops only get the first item???
     if (!targets.isEmpty()) {
       for (int i = 0; i < targets.size(); i++) {
         cameraToTargets.add(targets.get(i).getBestCameraToTarget());
       }
 
-      for (int i = 0; i < cameraToTargets.size(); i++) {
+      for (int i = 0; i < targets.size(); i++) {
         tagPoses.add(m_aprilTagFieldLayout.getTagPose(targets.get(i).getFiducialId()));
       }
 
       for (int j = 0; j < tagPoses.size(); j++) {
         if (tagPoses.get(j).isPresent()) {
-          for (int k = 0; k < camsToBot.size(); k++) {
+          for (int k = 0; k < cameraToTargets.size(); k++) {
             robotPoses.add(
               PhotonUtils.estimateFieldToRobotAprilTag(cameraToTargets.get(k), tagPoses.get(j).get(), camsToBot.get(k)));
           // :> The .get(j)s correspond to the for loop but the other one turns it into a Pose3D instead of an optional Pose3D
@@ -95,9 +94,13 @@ public class PhotonVisionSubsystem extends SubsystemBase {
         }
       }
 
+      cameraToTargets.clear();
       Pose3d averageRobotPoses = averagePose3d(robotPoses.toArray(new Pose3d[0]));
+      robotPoses.clear();
+      tagPoses.clear();
       return averageRobotPoses;
     }
+    
     return null;
   }
   // :> Behold the cursed functions Hale made to average Pose3Ds 
@@ -186,12 +189,10 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 
     for (int i = 0; i < cameras.size(); i++) {
       PhotonPipelineResult r = cameras.get(i).getLatestResult();
-      for (int j = 0; j < results.size(); j++){
         if (r.hasTargets()) {
           results.add(r);
-          targets.add(results.get(j).getBestTarget());
+          targets.add(r.getBestTarget());
         }
-      }
     }
 
     // This method will be called once per scheduler run

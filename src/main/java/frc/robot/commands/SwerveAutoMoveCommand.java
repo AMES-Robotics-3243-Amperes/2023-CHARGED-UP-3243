@@ -253,10 +253,10 @@ public class SwerveAutoMoveCommand extends CommandBase {
     // generally keeping the same pid controller makes the robot go
     // extremely slow as it reaches the end, so we swap the drive
     // controller
-    if (trajectoryIsFinished()) {
-      m_controller = new HolonomicDriveController(DriveConstants.AutoConstants.movementPidControllerTrajectoryEnd,
-        DriveConstants.AutoConstants.movementPidControllerTrajectoryEnd, m_controller.getThetaController());
-    }
+    //if (trajectoryIsFinished()) {
+    //  m_controller = new HolonomicDriveController(DriveConstants.AutoConstants.movementPidControllerTrajectoryEnd,
+    //    DriveConstants.AutoConstants.movementPidControllerTrajectoryEnd, m_controller.getThetaController());
+    //}
 
     // if the trajectory ended and (lazy or (angleCorrect and xCorrect and yCorrect))
     return trajectoryIsFinished() && (m_lazy || (angleCorrect && xCorrect && yCorrect));
