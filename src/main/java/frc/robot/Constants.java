@@ -153,7 +153,7 @@ public final class Constants {
       public static final boolean kFieldRelative = true;
       // <> speed damper (flat constant supplied speed is multiplied by)
       public static final double kDrivingSpeedDamper = 1.8; // <> meters per second
-      public static final double kAngularSpeedDamper = 1.8 * Math.PI; // <> radians per second
+      public static final double kAngularSpeedDamper = 1 * Math.PI; // <> radians per second
       // <> max speed
       public static final double kMaxMetersPerSecond = 5;
       // <> this should be true
@@ -253,10 +253,10 @@ public final class Constants {
         public static final Rotation2d kMaxBalanceLeniency = Rotation2d.fromDegrees(2);
 
         // <> how long the robot must balance for the command to end
-        public static final double kBalanceTimeSeconds = 1;
+        public static final double kBalanceTimeSeconds = 1.5;
 
         // <> pid stuff while balancing
-        public static final double kP = 0.011;
+        public static final double kP = 0.012;
         public static final double kI = 0;
         public static final double kD = 0;
 
@@ -397,10 +397,10 @@ public final class Constants {
 
     public static class PID {
       public static class Extension {
-        public static final double P  = 2.0;// H! 2.0
+        public static final double P  = 2.0 * 0;// H! 2.0
         public static final double I  = 0.0;
         public static final double D  = 0.0;
-        public static final double FF = 0.01;
+        public static final double FF = 0.01 * 0;
       }
 
       public static class Pivot {

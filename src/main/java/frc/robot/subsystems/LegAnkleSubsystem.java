@@ -94,9 +94,12 @@ public class LegAnkleSubsystem extends SubsystemBase {
 
   private RelativeEncoder armPivotEncoder = armPivot.getEncoder(/*Type.kDutyCycle*/);
   private RelativeEncoder armExtensionEncoder = armExtension.getEncoder(/*Type.kDutyCycle*/);
-  private SemiAbsoluteEncoder wristPitchEncoder = new SemiAbsoluteEncoder(wristPitchRight); // H! TODO which motor controller this is plugged into is unconfimed
-  private RelativeEncoder wristPitchEncoderRight = wristPitchEncoder.getSparkMAXEncoder();
-  private RelativeEncoder wristPitchEncoderLeft = wristPitchLeft.getEncoder(/*Type.kDutyCycle*/);
+  private SemiAbsoluteEncoder wristPitchEncoder = new SemiAbsoluteEncoder(wristPitchLeft); // H! TODO which motor controller this is plugged into is unconfimed
+  private RelativeEncoder wristPitchEncoderLeft = wristPitchEncoder.getSparkMAXEncoder();
+  // H! TODO REMOVE THIS
+  private SparkMaxAbsoluteEncoder wristPitchEncoderLeftAbsolute = wristPitchLeft.getAbsoluteEncoder(Type.kDutyCycle);
+
+  private RelativeEncoder wristPitchEncoderRight = wristPitchRight.getEncoder(/*Type.kDutyCycle*/);
   private RelativeEncoder wristRollSparkMAXEncoder;
   private SemiAbsoluteEncoder wristRollEncoder = new SemiAbsoluteEncoder(wristRoll);
 
@@ -432,6 +435,8 @@ public class LegAnkleSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("armPivotLength", armPivotEncoder.getPosition());    
     SmartDashboard.putNumber("armExtensionLength", armExtensionEncoder.getPosition());
     SmartDashboard.putNumber("wristPitchLength", wristPitchEncoder.getPosition());
+    SmartDashboard.putNumber("wristPitchRelativeLength", wristPitchEncoderLeft.getPosition());
+    SmartDashboard.putNumber("wristPitchAbsoluteLength", wristPitchEncoderLeftAbsolute.getPosition());
     SmartDashboard.putNumber("wristRollLength", wristRollEncoder.getPosition());
 
     SmartDashboard.putNumber("Wrist Roll", wristRollEncoder.getSparkMAXEncoder().getPosition());
