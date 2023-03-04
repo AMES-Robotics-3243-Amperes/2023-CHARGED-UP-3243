@@ -110,10 +110,18 @@ public class DriveSubsystem extends SubsystemBase {
     SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, DriveConstants.kMaxMetersPerSecond);
 
     // <> set the desired states
-    m_frontLeft.setDesiredState(desiredStates[0], allowLowSpeedTurning);
-    m_frontRight.setDesiredState(desiredStates[1], allowLowSpeedTurning);
-    m_rearLeft.setDesiredState(desiredStates[2], allowLowSpeedTurning);
-    m_rearRight.setDesiredState(desiredStates[3], allowLowSpeedTurning);
+    if (!allowLowSpeedTurning && desiredStates[0].speedMetersPerSecond != 0) {
+      m_frontLeft.setDesiredState(desiredStates[0], allowLowSpeedTurning);
+    }
+    if (!allowLowSpeedTurning && desiredStates[1].speedMetersPerSecond != 0) {
+      m_frontRight.setDesiredState(desiredStates[1], allowLowSpeedTurning);
+    }
+    if (!allowLowSpeedTurning && desiredStates[2].speedMetersPerSecond != 0) {
+      m_rearLeft.setDesiredState(desiredStates[2], allowLowSpeedTurning);
+    }
+    if (!allowLowSpeedTurning && desiredStates[3].speedMetersPerSecond != 0) {
+      m_rearRight.setDesiredState(desiredStates[3], allowLowSpeedTurning);
+    }
   }
 
   /**

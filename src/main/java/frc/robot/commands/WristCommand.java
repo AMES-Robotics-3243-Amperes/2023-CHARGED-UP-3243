@@ -32,15 +32,24 @@ public class WristCommand extends CommandBase {
     // m_subsystem.moveByXYTheta(JoyUtil.posWithDeadzone( m_controller.getLeftX() ), JoyUtil.posWithDeadzone(
     // -m_controller.getLeftY() ), JoyUtil.posWithDeadzone( m_controller.getRightY() ), JoyUtil.posWithDeadzone(
     // -m_controller.getRightX()));
+    LegAnkleSubsystem.MotorPos currentTargets = m_subsystem.getManualSetpoints();
+
+    m_subsystem.setManualSetpoints(
+      currentTargets.pivot, 
+      currentTargets.extension, 
+      m_controller.getDPadY() > 0.6 ? (0.55) : ( m_controller.getDPadY() < -0.6 ? (0.8) : currentTargets.pitch), 
+      currentTargets.roll
+    );
+    //System.out.println(m_controller.getDPadY());
 
 
     //&& Fast/slow mode for the LegAnkle using analog triggers
     m_subsystem.moveManualSetpoints(
-      JoyUtil.fastMode(JoyUtil.posWithDeadzone(m_controller.getLeftX()) / 7, m_controller.getLeftTriggerAxis(), m_controller.getRightTriggerAxis()),
-      JoyUtil.fastMode(JoyUtil.posWithDeadzone(m_controller.getLeftY()) / -5, m_controller.getLeftTriggerAxis(), m_controller.getRightTriggerAxis()),
-      JoyUtil.fastMode(JoyUtil.posWithDeadzone(m_controller.getRightY()) / -2, m_controller.getLeftTriggerAxis(), m_controller.getRightTriggerAxis()),
-      JoyUtil.fastMode(JoyUtil.posWithDeadzone(m_controller.getRightX()) / 7,  m_controller.getLeftTriggerAxis(), m_controller.getRightTriggerAxis())
-      );
+      JoyUtil.posWithDeadzone((m_controller.getRightTriggerAxis() - m_controller.getLeftTriggerAxis())) / 7,
+      JoyUtil.posWithDeadzone(m_controller.getLeftY()) / -5,
+      JoyUtil.posWithDeadzone(m_controller.getRightY()) / -2,
+      JoyUtil.posWithDeadzone(0) //(m_controller.getRightX()) / 5
+    );
     
     // H! IK control
     // m_subsystem.moveByXYTheta(
@@ -50,7 +59,7 @@ public class WristCommand extends CommandBase {
     //   JoyUtil.fastMode(JoyUtil.posWithDeadzone(m_controller.getRightX()), m_controller.getLeftTriggerAxis(), m_controller.getRightTriggerAxis())
     //   );
 
-    m_subsystem.deleteThis_doSetpoint = !m_controller.getAButton();
+    m_subsystem.deleteThis_doSetpoint = true;
     //m_subsystem.resetRoll();
 
   }

@@ -25,7 +25,7 @@ import static frc.robot.Constants.WristAndArm.*;
 
 public class LegAnkleSubsystem extends SubsystemBase {
 
-  protected class MotorPos {
+  public class MotorPos {
     public double extension;
     public double pivot;
     public double pitch;
@@ -39,7 +39,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
     }
   }
 
-  protected MotorPos IK(double x, double y, double pitch, double roll) {
+  public MotorPos IK(double x, double y, double pitch, double roll) {
     // H! Inverse kinematics: see more detailed math here: https://www.desmos.com/calculator/l89yzwijul \
     double targetArmAngle = Math.atan2(y - Constants.WristAndArm.wristLength * Math.sin(pitch),   x - Constants.WristAndArm.wristLength * Math.cos(pitch) );
     /*
@@ -315,8 +315,13 @@ public class LegAnkleSubsystem extends SubsystemBase {
 
 
   public Boolean nearTargetPos() {
+    // H! Return whether it's in the right position
+    // H! TODO TEST THIS
     return (
-
+      Math.abs( armPivotEncoder.getPosition() - targetPivotSetpoint ) < atSetpointThreshold &&
+      Math.abs( armExtensionEncoder.getPosition() - targetExtensionSetpoint ) < atSetpointThreshold &&
+      Math.abs( wristPitchEncoder.getPosition() - targetPitchSetpoint ) < atSetpointThreshold &&
+      Math.abs( wristRollEncoder.getPosition() - targetRollSetpoint ) < atSetpointThreshold
     );
   }
 
@@ -339,6 +344,20 @@ public class LegAnkleSubsystem extends SubsystemBase {
     targetRollSetpoint += roll / 100;
 
     manualSetpoints = true;
+  }
+
+  public void setManualSetpoints(double pivot, double extension, double pitch, double roll) {
+    targetPivotSetpoint = pivot;
+    targetExtensionSetpoint = extension;
+    targetPitchSetpoint = pitch;
+    targetRollSetpoint = roll;
+
+    manualSetpoints = true;
+  }
+
+
+  public MotorPos getManualSetpoints() {
+    return new MotorPos(targetExtensionSetpoint, targetPivotSetpoint, targetPitchSetpoint, targetRollSetpoint);
   }
 
 

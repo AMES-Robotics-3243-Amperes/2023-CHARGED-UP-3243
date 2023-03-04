@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -84,8 +85,10 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
+    m_robotContainer.m_SwerveTeleopCommand.setReverse(false);
     
     m_robotContainer.teleopInit();
+    m_robotContainer.m_driveSubsystem.drive(0, 0, 0, true);
   }
 
   /** This function is called periodically during operator control. */

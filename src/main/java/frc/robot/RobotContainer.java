@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -21,6 +22,7 @@ import frc.robot.commands.SwerveTeleopCommand;
 import frc.robot.commands.TempAutoRoutine;
 import frc.robot.commands.WristCommand;
 import frc.robot.subsystems.*;
+// import edu.wpi.first.cscore.CameraServer;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -37,7 +39,7 @@ public class RobotContainer {
   public static JoyUtil primaryController = new JoyUtil(Constants.Joysticks.primaryControllerID);
   public static JoyUtil secondaryController = new JoyUtil(Constants.Joysticks.secondaryControllerID);
 
-  public static JoystickButton primarySelect = new JoystickButton(primaryController, XboxController.Button.kB.value);
+  public static JoystickButton primaryB = new JoystickButton(primaryController, XboxController.Button.kB.value);
   public static JoystickButton primaryStart = new JoystickButton(primaryController, XboxController.Button.kStart.value);
 
   public static JoystickButton openGrabButton = new JoystickButton(secondaryController, 5);
@@ -52,14 +54,14 @@ public class RobotContainer {
   // ++ ----- SUBSYSTEMS -----------
   public final PhotonVisionSubsystem m_photonVisionSubsystem = new PhotonVisionSubsystem(fieldPosManager);
   public final LegAnkleSubsystem m_legAnkleSubsystem = new LegAnkleSubsystem();
-  private final DriveSubsystem m_driveSubsystem = new DriveSubsystem(fieldPosManager);
+  public final DriveSubsystem m_driveSubsystem = new DriveSubsystem(fieldPosManager);
   private final GrabberSubsystem m_GrabberSubsystem = new GrabberSubsystem();
   private final ShuffleboardSubsystem m_shuffleboardSubsystem = new ShuffleboardSubsystem(fieldPosManager,
     m_legAnkleSubsystem, m_driveSubsystem, m_photonVisionSubsystem, null, m_GrabberSubsystem);
   // <> this is required for creating new swerve trajectory follow commands
   private final ProfiledPIDController thetaPidController;
   // ++ ----- COMMANDS -------------
-  private final SwerveTeleopCommand m_SwerveTeleopCommand = new SwerveTeleopCommand(m_driveSubsystem,
+  public final SwerveTeleopCommand m_SwerveTeleopCommand = new SwerveTeleopCommand(m_driveSubsystem,
     primaryController);
   private final WristCommand m_WristCommand = new WristCommand(m_legAnkleSubsystem, secondaryController);
   public final GrabberCommand m_GrabberCommand = new GrabberCommand(m_GrabberSubsystem, secondaryController);
@@ -94,6 +96,10 @@ public class RobotContainer {
     //m_placeGamePieceCommand = new PlaceGamePiece(m_driveSubsystem, m_legAnkleSubsystem, GrabberSubsystem,
     //  thetaPidController);
 
+
+  // ++ driver camera
+  CameraServer.startAutomaticCapture();
+
     // Configure the trigger bindings
     configureBindings();
   }
@@ -116,15 +122,17 @@ public class RobotContainer {
   public void configureBindings() {
     openGrabButton.onTrue(m_grabOpenCommand);
     closeGrabButton.onTrue(m_grabCloseCommand);
-    primarySelect.onTrue(new InstantCommand(m_driveSubsystem::setX));
+    //primarySelect.onTrue(new InstantCommand(m_driveSubsystem::setX));
     primaryStart.toggleOnTrue(m_BalanceCommand);
     defaultPickupButton.onTrue(m_legAnkleToPickupCommand);
     //primaryStart.toggleOnTrue(m_BalanceCommand);
+
+    //primaryB.toggleOnTrue(m_BalanceCommand);
   }
 
   public void teleopInit() {}
 
   public Command getAutonomousCommand() {
-    return null;
+    return m_auto;
   }
 }

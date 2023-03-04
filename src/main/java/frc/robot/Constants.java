@@ -44,17 +44,17 @@ public final class Constants {
     // public static final double openCloseSpeed = 0.05;
 
     // ++ grabber maximum/minimum positions
-    public static final double maximumGrabberLimit = 0.445;
+    public static final double maximumGrabberLimit = 0.48;
     public static final double minimumGrabberLimit = 0.22;
 
     // :D grabber open/close setpoints
     public static final double openGrabberSetpoint = 0.22;
-    public static final double closedGrabberSetpoint = 0.445;
+    public static final double closedGrabberSetpoint = 0.48;
 
     // ++ current limits
     public static final int hardOpenerMotorCurrentLimit = 30; 
     public static final int hardWheelMotorCurrentLimit = 30;
-    public static final int softOpenerMotorCurrentLimit = 10; // ++ this will have to be changed to adequately compress game pieces
+    public static final int softOpenerMotorCurrentLimit = 15; // ++ this will have to be changed to adequately compress game pieces
     public static final int softWheelMotorCurrentLimit = 10; // ++ will have to be experimentally tuned
 
     // ++ gear ratios
@@ -152,10 +152,10 @@ public final class Constants {
       // <> if the driving is field relative
       public static final boolean kFieldRelative = true;
       // <> speed damper (flat constant supplied speed is multiplied by)
-      public static final double kDrivingSpeedDamper = 1.3; // <> meters per second
-      public static final double kAngularSpeedDamper = 1.6 * Math.PI; // <> radians per second
+      public static final double kDrivingSpeedDamper = 1.8; // <> meters per second
+      public static final double kAngularSpeedDamper = 1.8 * Math.PI; // <> radians per second
       // <> max speed
-      public static final double kMaxMetersPerSecond = 2;
+      public static final double kMaxMetersPerSecond = 5;
       // <> this should be true
       public static final boolean kGyroReversed = false;
 
@@ -220,17 +220,17 @@ public final class Constants {
           kMaxAngularMetersPerSecond, kMaxAngularAccelerationMetersPerSecond);
 
         // pid controls
-        public static final double kMovementPInitial = 0.5;
+        public static final double kMovementPInitial = 0.2;
         public static final double kMovementIInitial = 0;
         public static final double kMovementDInitial = 0;
 
-        public static final double kMovementPTrajectoryEnd = 3;
-        public static final double kMovementITrajectoryEnd = 0.5;
-        public static final double kMovementDTrajectoryEnd = 0.1;
+        //public static final double kMovementPTrajectoryEnd = 3;
+        //public static final double kMovementITrajectoryEnd = 0.5;
+        //public static final double kMovementDTrajectoryEnd = 0.1;
 
-        public static final double kTurningP = 1;
+        public static final double kTurningP = 0.7;
         public static final double kTurningI = 0;
-        public static final double kTurningD = 0.0005;
+        public static final double kTurningD = 0.00000002;
 
         // <> config for generated trajectories
         public static final TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
@@ -240,12 +240,12 @@ public final class Constants {
         public static final PIDController movementPidControllerInitial = new PIDController(kMovementPInitial,
           kMovementIInitial, kMovementDInitial);
 
-        public static final PIDController movementPidControllerTrajectoryEnd = new PIDController(
-          kMovementPTrajectoryEnd, kMovementITrajectoryEnd, kMovementDTrajectoryEnd);
+        //public static final PIDController movementPidControllerTrajectoryEnd = new PIDController(
+        //  kMovementPTrajectoryEnd, kMovementITrajectoryEnd, kMovementDTrajectoryEnd);
 
         // <> leniency for ending SwerveAutoMoveCommands
-        public static double angleLeniencyDegrees = 0.8;
-        public static double positionLeniencyMeters = 0.06;
+        public static double angleLeniencyDegrees = 3;
+        public static double positionLeniencyMeters = 0.1;
       }
 
       public static final class BalanceConstants {
@@ -256,7 +256,7 @@ public final class Constants {
         public static final double kBalanceTimeSeconds = 1;
 
         // <> pid stuff while balancing
-        public static final double kP = 0.1;
+        public static final double kP = 0.011;
         public static final double kI = 0;
         public static final double kD = 0;
 
@@ -288,7 +288,7 @@ public final class Constants {
     /**
      * ++ lowPassFilterStrength should be between 0 & 1. The closer it is to 1, the smoother acceleration will be.
      */
-    public static final double driveLowPassFilterStrength = 0.75;
+    public static final double driveLowPassFilterStrength = 0.76;
     public static final double rotationLowPassFilterStrength = 0.6;
 
     // ++ we probably don't want the speed damcursjdjdjdpers as finals in case we want a fastmode/to change them later
@@ -297,7 +297,7 @@ public final class Constants {
 
     // ss This is the multiplier for Fast Mode
     // explained in JoyUtil.java
-    public static final double fastModeMaxMultiplier = 0.5;
+    public static final double fastModeMaxMultiplier = 0.8;
 
     // <> keep below 1
     public static final double slowModeMultiplier = 0.7;
@@ -411,7 +411,7 @@ public final class Constants {
       }
 
       public static class Pitch {
-        public static final double P = 0.74;
+        public static final double P = 0.65;
         public static final double I = 0.0125;
         public static final double D = 0.0;
         public static final double FF = 0.01;
