@@ -277,44 +277,27 @@ public final class Constants {
   /**
    * ++ constants for JOYSTICKS --------------------------------------------
    */
-  public static final class Joysticks {
+  public static class JoyUtilConstants {
+    // <> ports
+    public static int primaryControllerID = 0;
+    public static int secondaryControllerID = 1;
 
-    public static final int primaryControllerID = 0;
-    public static final int secondaryControllerID = 1;
+    // <> size of controller deadzone
+    public static final double kDeadzone = 0.1;
 
-    // ++ OTHER JOYSTICK CONSTANTS --
-    public static final double deadZoneSize = 0.1;
+    // <> max amount controller output can change per second
+    public static final double kRateLimitLeft = 3;
+    public static final double kRateLimitRight = 3;
 
-    /**
-     * ++ lowPassFilterStrength should be between 0 & 1. The closer it is to 1, the smoother acceleration will be.
-     */
-    public static final double driveLowPassFilterStrength = 0.76;
-    public static final double rotationLowPassFilterStrength = 0.6;
+    // <> curve stuff
+    public static final int exponent1 = 1;
+    public static final int exponent2 = 3;
+    public static final double coeff1 = 0.3;
+    public static final double coeff2 = 0.7;
 
-    // ++ we probably don't want the speed damcursjdjdjdpers as finals in case we want a fastmode/to change them later
-    public static final double driveSpeedDamper = 1;
-    public static final double rotationDamper = 1;
-
-    // ss This is the multiplier for Fast Mode
-    // explained in JoyUtil.java
-    public static final double fastModeMaxMultiplier = 0.8;
-
-    // <> keep below 1
-    public static final double slowModeMultiplier = 0.7;
-
-    /**
-     * ++ the damper for the D-Pad inputs
-     */
-    public static final double dPadDamper = 0.7;
-
-    // ++ JOYSTICK CURVE CONSTANTS --
-    public static final double aCoeff = 0.7;
-    public static final int firstPower = 3;
-
-    public static final int secondPower = 1;
-    public static final double bCoeff = (1.0 - aCoeff);
-
-
+    // <> fast and slow mode
+    public static final double leftTriggerSpeedMultiplier = 1.5;
+    public static final double rightTriggerSpeedMultiplier = 0.5;
   }
 
   /**

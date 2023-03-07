@@ -6,11 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DriveTrain.DriveConstants;
 import frc.robot.commands.BalanceCommand;
@@ -36,16 +32,8 @@ import frc.robot.subsystems.*;
 public class RobotContainer {
 
   // ++ CONTROLLER STUFF ---------------------
-  public static JoyUtil primaryController = new JoyUtil(Constants.Joysticks.primaryControllerID);
-  public static JoyUtil secondaryController = new JoyUtil(Constants.Joysticks.secondaryControllerID);
-
-  public static JoystickButton primaryB = new JoystickButton(primaryController, XboxController.Button.kB.value);
-  public static JoystickButton primaryStart = new JoystickButton(primaryController, XboxController.Button.kStart.value);
-
-  public static JoystickButton openGrabButton = new JoystickButton(secondaryController, 5);
-  public static JoystickButton closeGrabButton = new JoystickButton(secondaryController, 6);
-
-  public static JoystickButton defaultPickupButton = new JoystickButton(secondaryController, 3);
+  public static JoyUtil primaryController = new JoyUtil(Constants.JoyUtilConstants.primaryControllerID);
+  public static JoyUtil secondaryController = new JoyUtil(Constants.JoyUtilConstants.secondaryControllerID);
 
   // <> --- FIELD POS MANAGER ---
   public static FieldPosManager fieldPosManager = new FieldPosManager();
@@ -120,14 +108,9 @@ public class RobotContainer {
    * joysticks}.
    */
   public void configureBindings() {
-    openGrabButton.onTrue(m_grabOpenCommand);
-    closeGrabButton.onTrue(m_grabCloseCommand);
-    //primarySelect.onTrue(new InstantCommand(m_driveSubsystem::setX));
-    primaryStart.toggleOnTrue(m_BalanceCommand);
-    defaultPickupButton.onTrue(m_legAnkleToPickupCommand);
-    //primaryStart.toggleOnTrue(m_BalanceCommand);
-
-    //primaryB.toggleOnTrue(m_BalanceCommand);
+    secondaryController.leftBumper().onTrue(m_grabOpenCommand);
+    secondaryController.rightBumper().onTrue(m_grabCloseCommand);
+    secondaryController.x().onTrue(m_legAnkleToPickupCommand);
   }
 
   public void teleopInit() {}

@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.FieldPosManager;
+import frc.robot.JoyUtil;
 import frc.robot.subsystems.LegAnkleSubsystem;
 
 public class MoveArmToTarget extends CommandBase {
@@ -23,13 +24,13 @@ public class MoveArmToTarget extends CommandBase {
   private double targetRoll = 0;
   private int targetIndex;
   private FieldPosManager fieldPosManager;
-  private XboxController controller;
+  private JoyUtil controller;
 
   private boolean isDone;
 
 
   /** Creates a new MoveArmToTarget. */
-  public MoveArmToTarget(int targetIndex, boolean isCube, FieldPosManager.fieldSpot3d target, LegAnkleSubsystem legAnkleSubsystem, FieldPosManager fieldPosManager, XboxController controller) {
+  public MoveArmToTarget(int targetIndex, boolean isCube, FieldPosManager.fieldSpot3d target, LegAnkleSubsystem legAnkleSubsystem, FieldPosManager fieldPosManager, JoyUtil controller) {
     this.isCube = isCube;
     this.legAnkleSubsystem = legAnkleSubsystem;
     this.target = target;
