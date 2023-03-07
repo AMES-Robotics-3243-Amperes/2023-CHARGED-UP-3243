@@ -68,6 +68,13 @@ public class PhotonVisionSubsystem extends SubsystemBase {
     }
   }
 
+  private PhotonTrackedTarget getBestTarget(PhotonCamera cam){
+    PhotonPipelineResult result = cam.getLatestResult();
+
+    return result.getBestTarget();
+  }
+
+
   /**
    * Get the estimated camera position based on photon target data.
    *
@@ -84,14 +91,17 @@ public class PhotonVisionSubsystem extends SubsystemBase {
         tagPoses.add(m_aprilTagFieldLayout.getTagPose(targets.get(i).getFiducialId()));
       }
 
-      for (int j = 0; j < tagPoses.size(); j++) {
-        if (tagPoses.get(j).isPresent()) {
-          for (int k = 0; k < cameraToTargets.size(); k++) {
-            robotPoses.add(
-              PhotonUtils.estimateFieldToRobotAprilTag(cameraToTargets.get(k), tagPoses.get(j).get(), camsToBot.get(k)));
-          // :> The .get(j)s correspond to the for loop but the other one turns it into a Pose3D instead of an optional Pose3D
-          }
-        }
+      for (int i = 0; i < targets.size(); i++) {
+        Transform3d cameraToTarget = targets.get(i).getBestCameraToTarget();
+        Optional<Pose3d> tagPose = m_aprilTagFieldLayout.getTagPose(targets.get(i).getFiducialId());
+        robotPoses.add(PhotonUtils.estimateFieldToRobotAprilTag(cameraToTarget, tagPose.get(), camsToBot.get(i)));
+        // if (tagPoses.get(i).isPresent()) {
+        //   for (int k = 0; k < cameraToTargets.size(); k++) {
+        //     robotPoses.add(
+        //       PhotonUtils.estimateFieldToRobotAprilTag(cameraToTargets.get(k), tagPoses.get(j).get(), camsToBot.get(k)));
+        //   // :> The .get(j)s correspond to the for loop but the other one turns it into a Pose3D instead of an optional Pose3D
+        //   }
+        // }
       }
 
       cameraToTargets.clear();
@@ -173,26 +183,27 @@ public class PhotonVisionSubsystem extends SubsystemBase {
    * @return Pose3d representing the position of a scoring position on the field
    */
 
-  public Pose3d getScoringPose(int targetID, Transform3d offset) {
-    Optional<Pose3d> tagPose = m_aprilTagFieldLayout.getTagPose(targetID);
-    Pose3d scorePose;
-    if (targetID > 4) {
-      scorePose = tagPose.get().plus(offset.times(-1));
-    } else {
-      scorePose = tagPose.get().plus(offset);
-    }
-    return scorePose;
-  }
+  // public Pose3d getScoringPose(int targetID, Transform3d offset) {
+  //   Optional<Pose3d> tagPose = m_aprilTagFieldLayout.getTagPose(targetID);
+  //   Pose3d scorePose;
+  //   if (targetID > 4) {
+  //     scorePose = tagPose.get().plus(offset.times(-1));
+  //   } else {
+  //     scorePose = tagPose.get().plus(offset);
+  //   }
+  //   return scorePose;
+  // }
 
   @Override
   public void periodic() {
 
     for (int i = 0; i < cameras.size(); i++) {
-      PhotonPipelineResult r = cameras.get(i).getLatestResult();
-        if (r.hasTargets()) {
-          results.add(r);
-          targets.add(r.getBestTarget());
-        }
+      targets.add(i, getBestTarget(cameras.get(i)));
+      // PhotonPipelineResult r = cameras.get(i).getLatestResult();
+      //   if (r.hasTargets()) {
+      //     results.add(r);
+      //     targets.add(r.getBestTarget());
+      //   }
     }
 
     // This method will be called once per scheduler run
