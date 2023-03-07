@@ -84,6 +84,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
   private SparkMaxPIDController pidArmPivot;
   private SparkMaxPIDController pidArmExtension;
   private SparkMaxPIDController pidWristPitch;
+  private SparkMaxPIDController pidWristPitchRight;
   private SparkMaxPIDController pidWristRoll;
   
   private CANSparkMax armPivot = new CANSparkMax(MotorIDs.armPivot, MotorType.kBrushless);
@@ -145,8 +146,8 @@ public class LegAnkleSubsystem extends SubsystemBase {
   public LegAnkleSubsystem() {
     armExtension.setInverted(true);
 
-    wristPitchLeft.follow(wristPitchRight, true);
-
+    wristPitchLeft.setInverted(true);
+    wristPitchRight.setInverted(false);
     extensionPValue = tab.add("Ext P Value", PID.Extension.P).getEntry();
     extensionIValue = tab.add("Ext I Value", PID.Extension.I).getEntry();
     extensionDValue = tab.add("Ext D Value", PID.Extension.D).getEntry();
@@ -170,7 +171,8 @@ public class LegAnkleSubsystem extends SubsystemBase {
 
     pidArmPivot = armPivot.getPIDController();
     pidArmExtension = armExtension.getPIDController();
-    pidWristPitch = wristPitchRight.getPIDController();
+    pidWristPitch = wristPitchLeft.getPIDController();
+    pidWristPitchRight = wristPitchRight.getPIDController();
     pidWristRoll = wristRoll.getPIDController();
 
     // :D I added this in
@@ -218,6 +220,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
     setPIDFValues(pidArmExtension, PID.Extension.P, PID.Extension.I, PID.Extension.D, PID.Extension.FF); 
     setPIDFValues(pidArmPivot,     PID.Pivot.P,     PID.Pivot.I,     PID.Pivot.D,     PID.Pivot.FF); 
     setPIDFValues(pidWristPitch,   PID.Pitch.P,     PID.Pitch.I,     PID.Pitch.D,     PID.Pitch.FF); 
+    setPIDFValues(pidWristPitchRight,   PID.Pitch.P,     PID.Pitch.I,     PID.Pitch.D,     PID.Pitch.FF); 
     setPIDFValues(pidWristRoll,    PID.Roll.P,      PID.Roll.I,      PID.Roll.D,      PID.Roll.FF);
     
     // H! Set soft current limits
@@ -257,6 +260,13 @@ public class LegAnkleSubsystem extends SubsystemBase {
     );
 
     setPIDFValues(pidWristPitch, 
+      pitchPValue.getDouble(PID.Pitch.P), 
+      pitchIValue.getDouble(PID.Pitch.I), 
+      pitchDValue.getDouble(PID.Pitch.D), 
+      pitchFFValue.getDouble(PID.Pitch.FF)
+    );
+
+    setPIDFValues(pidWristPitchRight, 
       pitchPValue.getDouble(PID.Pitch.P), 
       pitchIValue.getDouble(PID.Pitch.I), 
       pitchDValue.getDouble(PID.Pitch.D), 
@@ -333,7 +343,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
   public void setMotorSpeeds(double pivot, double extension, double pitch, double roll) {
     armExtension.set(extension / 10);
     armPivot.set(pivot / 10);
-    wristPitchRight.set(pitch / 10);
+    wristPitchLeft.set(pitch / 10);
     wristRoll.set(roll / 10);
 
     PIDControl = false;
@@ -422,6 +432,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
       pidArmPivot.setReference(targetPosition.pivot, CANSparkMax.ControlType.kPosition);
       pidArmExtension.setReference(targetPosition.extension, CANSparkMax.ControlType.kPosition);
       pidWristPitch.setReference(targetPosition.pitch, CANSparkMax.ControlType.kPosition);
+      pidWristPitchRight.setReference(targetPosition.pitch, CANSparkMax.ControlType.kPosition);
       pidWristRoll.setReference(targetPosition.roll, CANSparkMax.ControlType.kPosition);
     }
     PIDControl = true;
@@ -429,7 +440,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
 
     SmartDashboard.putNumber("armPivot", armPivot.getOutputCurrent());    
     SmartDashboard.putNumber("armExtension", armExtension.getOutputCurrent());
-    SmartDashboard.putNumber("wristPitch", wristPitchRight.getOutputCurrent());
+    SmartDashboard.putNumber("wristPitch", wristPitchLeft.getOutputCurrent());
     SmartDashboard.putNumber("wristRoll", wristRoll.getOutputCurrent());
 
     SmartDashboard.putNumber("armPivotLength", armPivotEncoder.getPosition());    

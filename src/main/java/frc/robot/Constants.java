@@ -250,13 +250,13 @@ public final class Constants {
 
       public static final class BalanceConstants {
         // <> the max angle that is considered balanced
-        public static final Rotation2d kMaxBalanceLeniency = Rotation2d.fromDegrees(2);
+        public static final Rotation2d kMaxBalanceLeniency = Rotation2d.fromDegrees(1.5);
 
         // <> how long the robot must balance for the command to end
         public static final double kBalanceTimeSeconds = 1.5;
 
         // <> pid stuff while balancing
-        public static final double kP = 0.012;
+        public static final double kP = 0.0135;
         public static final double kI = 0;
         public static final double kD = 0;
 
@@ -325,7 +325,7 @@ public final class Constants {
     public static final Translation3d pivotOffset = new Translation3d(Units.inchesToMeters(32)/2 - .27773100, 0, .44255 + Units.inchesToMeters(2.662500 / 2));
 
     public static final double extensionEncoderConversionFactor = (Units.inchesToMeters(2.707) * Math.PI) / (36);
-    public static final double pitchEncoderConversionFactor = 1/120;
+    public static final double pitchEncoderConversionFactor = 1/60;
     // H! Holds the data for the positions of stuff in the arm
     public static final double minLength = 0.92804 + 0.05;
     public static final double maxLength = 1.3;//1.5494;
