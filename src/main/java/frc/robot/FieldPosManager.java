@@ -94,8 +94,8 @@ public class FieldPosManager {
    * @param photonPose is the position as reported by the PhotonVisionSubsystem.
    */
   public void updateFieldPosWithPhotonVisionPose(Pose2d photonPose) {
-    // setRobotPose(photonPose);
-    // hasPhotonPose = true;
+     setRobotPose(photonPose);
+     hasPhotonPose = true;
   }
 
   /**

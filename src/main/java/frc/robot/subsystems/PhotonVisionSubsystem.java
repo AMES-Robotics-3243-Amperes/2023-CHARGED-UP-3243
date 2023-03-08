@@ -30,7 +30,7 @@ import java.util.Optional;
 public class PhotonVisionSubsystem extends SubsystemBase {
 
   // :D these are values that should be in constants after testing
-  public static final String cameraName = Constants.PhotonVision.cameraName1;
+  public static final String cameraName = Constants.PhotonVision.cameraName1; // :> These are not needed  and can be cleaned up
   public static final String camera2Name = Constants.PhotonVision.cameraName2;
   //public static final string cameraName = "Microsoft_LifeCam_HD-3000";
   // :D this is a Transform3d that tracks the transformation from the camera to the robot
@@ -40,8 +40,8 @@ public class PhotonVisionSubsystem extends SubsystemBase {
     new Pose3d(Units.inchesToMeters(-2), Units.inchesToMeters(0), Units.inchesToMeters(14.5),
       new Rotation3d(0, 0, Units.degreesToRadians(180))), new Pose3d());
   public static ArrayList<PhotonTrackedTarget> targets = new ArrayList<PhotonTrackedTarget>();
+  // :> robotPoses can be turned into a non static array that is defined right above Check Robot Pose, done
   public static ArrayList<Optional<Pose3d>> tagPoses = new ArrayList<Optional<Pose3d>>();
-  public static ArrayList<Pose3d> robotPoses = new ArrayList<Pose3d>();
   // :> the = new ArrayList is because the code interprets the array as null otherwise.
   static List<Transform3d> camsToBot = Arrays.asList(camToBot1, camToBot2);
   static ArrayList<Transform3d> cameraToTargets = new ArrayList<Transform3d>();
@@ -60,14 +60,15 @@ public class PhotonVisionSubsystem extends SubsystemBase {
   public PhotonVisionSubsystem(FieldPosManager field) {
     m_field = field;
     // :D instantiate the camera and load the field layout
-
+    // :> Clean up this as it isn't acutally doing anything useful currently
     try {
       m_aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
     } catch (IOException err) {
-      throw new RuntimeException();
+      throw new RuntimeException(err);
     }
   }
 
+  // :> Returns the best and all targets it can see and if it doesn't see any it returns null
   private PhotonTrackedTarget getBestTarget(PhotonCamera cam){
     PhotonPipelineResult result = cam.getLatestResult();
 
@@ -91,27 +92,38 @@ public class PhotonVisionSubsystem extends SubsystemBase {
         // tagPoses.add(m_aprilTagFieldLayout.getTagPose(targets.get(i).getFiducialId()));
       // }
 
+      // :> RobotPoses can be defined here, done
+      ArrayList<Pose3d> robotPoses = new ArrayList<Pose3d>();
       for (int i = 0; i < targets.size(); i++) {
         if (targets.get(i) != null) {
-        Transform3d cameraToTarget = targets.get(i).getBestCameraToTarget();
+          Transform3d cameraToTarget = targets.get(i).getBestCameraToTarget();
         
-        Optional<Pose3d> tagPose = m_aprilTagFieldLayout.getTagPose(targets.get(i).getFiducialId());
-        robotPoses.add(PhotonUtils.estimateFieldToRobotAprilTag(cameraToTarget, tagPose.get(), camsToBot.get(i)));
-        // if (tagPoses.get(i).isPresent()) {
-        //   for (int k = 0; k < cameraToTargets.size(); k++) {
-        //     robotPoses.add(
-        //       PhotonUtils.estimateFieldToRobotAprilTag(cameraToTargets.get(k), tagPoses.get(j).get(), camsToBot.get(k)));
-        //   // :> The .get(j)s correspond to the for loop but the other one turns it into a Pose3D instead of an optional Pose3D
-        //   }
-        // }
+          Optional<Pose3d> tagPose = m_aprilTagFieldLayout.getTagPose(targets.get(i).getFiducialId());
+          robotPoses.add(PhotonUtils.estimateFieldToRobotAprilTag(cameraToTarget, tagPose.get(), camsToBot.get(i)));
+          // if (tagPoses.get(i).isPresent()) {
+          //   for (int k = 0; k < cameraToTargets.size(); k++) {
+          //     robotPoses.add(
+          //       PhotonUtils.estimateFieldToRobotAprilTag(cameraToTargets.get(k), tagPoses.get(j).get(), camsToBot.get(k)));
+          //   // :> The .get(j)s correspond to the for loop but the other one turns it into a Pose3D instead of an optional Pose3D
+          //   }
+          // }
         }
       }
 
-      cameraToTargets.clear();
+      // ;> This can be removed and cleaned up, done
+
+      // :> Make an if statement that detects if robot poses is length 1 that way it can save time and only return one instead of doign a bunch of math
+      // :> We need to make a poses .length if statement to make sure that array length is not 0 due to null shenangians in avgPose3d
+      if (robotPoses.size() == 0) {
+        return null;
+      } else if (robotPoses.size( ) == 1) {
+        return robotPoses.get(0);
+      }
       Pose3d averageRobotPoses = averagePose3d(robotPoses.toArray(new Pose3d[0]));
-      robotPoses.clear();
-      tagPoses.clear();
+      //:> This can also be removed with all the other changes, done
+      // :> TagPoses can also be cleaned up as it is not needed in the new code, done
       return averageRobotPoses;
+      // :> It's okay if averagePose3D = null since CRP can be null anyway and it gets passed in to averagerobotposes
     }
     
     return null;
@@ -199,7 +211,6 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-
     for (int i = 0; i < cameras.size(); i++) {
       targets.add(i, getBestTarget(cameras.get(i)));
       // PhotonPipelineResult r = cameras.get(i).getLatestResult();
@@ -211,7 +222,12 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 
     // This method will be called once per scheduler run
     if (!targets.isEmpty()) {
-      m_field.updateFieldPosWithPhotonVisionPose(Objects.requireNonNull(checkRobotPosition()).toPose2d());
+      // :> requirednonNull is a bit redundant sicne .toPose2d() would already throw a null pointer if CRP was null, done
+      // :> Check if cRP returns null that way it doesn't get fed elsewhere and get's handled here and doesn't crash the robot, done
+      Pose3d robotPose = checkRobotPosition();
+      if (robotPose != null) {
+      m_field.updateFieldPosWithPhotonVisionPose(robotPose.toPose2d());
+      }
     }
     targets.clear();
     //results.clear();
