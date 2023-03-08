@@ -63,14 +63,13 @@ public class MoveArmToTarget extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    legAnkleSubsystem.setKinematicPositions(targetX, targetY, targetPitch, targetRoll);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    isDone = legAnkleSubsystem.moveToXYTheta(targetX, targetY, targetPitch, targetRoll);
-
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
@@ -79,6 +78,6 @@ public class MoveArmToTarget extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return isDone;
+    return legAnkleSubsystem.isArmPositioned();
   }
 }

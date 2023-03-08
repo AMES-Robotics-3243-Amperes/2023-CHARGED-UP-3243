@@ -34,7 +34,7 @@ public class WristCommand extends CommandBase {
     // -m_controller.getRightX()));
     LegAnkleSubsystem.MotorPos currentTargets = m_subsystem.getManualSetpoints();
 
-    m_subsystem.setManualSetpoints(
+    m_subsystem.setMotorPositions(
       currentTargets.pivot, 
       currentTargets.extension, 
       m_controller.getDPadY() > 0.6 ? (0.55) : ( m_controller.getDPadY() < -0.6 ? (0.8) : currentTargets.pitch), 
@@ -44,7 +44,7 @@ public class WristCommand extends CommandBase {
 
 
     //&& Fast/slow mode for the LegAnkle using analog triggers
-    m_subsystem.moveManualSetpoints(
+    m_subsystem.changeMotorPositions(
       JoyUtil.posWithDeadzone((m_controller.getRightTriggerAxis() - m_controller.getLeftTriggerAxis())) / 7,
       JoyUtil.posWithDeadzone(m_controller.getLeftY()) / -5,
       JoyUtil.posWithDeadzone(m_controller.getRightY()) / -2,

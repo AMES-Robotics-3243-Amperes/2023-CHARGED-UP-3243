@@ -22,7 +22,7 @@ public class MoveLegAnkleToPickupPositionCommand extends CommandBase {
   @Override
   public void initialize() {
     // ++ set values to measured constants
-    m_LegAnkleSubsystem.moveManualSetpoints(
+    m_LegAnkleSubsystem.changeMotorPositions(
       Constants.WristAndArm.pivotPickupPos, 
       Constants.WristAndArm.extensionPickupPos,
       Constants.WristAndArm.pitchPickupPos, 

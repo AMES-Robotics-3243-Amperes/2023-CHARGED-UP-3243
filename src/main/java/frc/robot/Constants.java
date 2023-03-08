@@ -328,7 +328,7 @@ public final class Constants {
     public static final double pitchEncoderConversionFactor = 1/120;
     // H! Holds the data for the positions of stuff in the arm
     public static final double minLength = 0.92804 + 0.05;
-    public static final double maxLength = 1.3;//1.5494;
+    public static final double maxLength = minLength + Units.inchesToMeters(30);//1.5494;
 
     // ++ pivot limits
     public static final double maxPivotPos = 1.2;
