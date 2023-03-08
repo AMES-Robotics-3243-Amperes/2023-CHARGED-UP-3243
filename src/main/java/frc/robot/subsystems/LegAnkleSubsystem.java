@@ -11,6 +11,7 @@ import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
@@ -25,20 +26,64 @@ import static frc.robot.Constants.WristAndArm.*;
 
 public class LegAnkleSubsystem extends SubsystemBase {
 
+  /**H! Holds a set of motor positions the robot could go to.
+   * 
+   */
   public class MotorPos {
     public double extension;
     public double pivot;
     public double pitch;
     public double roll; 
 
+    /**H! Creates a new motor position given the extension, pivot, pitch, and roll positions.
+     * 
+     * @param extension
+     * @param pivot
+     * @param pitch
+     * @param roll
+     */
     public MotorPos(double extension, double pivot, double pitch, double roll) {
       this.extension = extension;
       this.pivot = pivot;
       this.pitch = pitch;
       this.roll = roll;
     }
+
+    /**H! Gets the x, y, robot relative pitch, and roll
+     * 
+     * @return An array of the x, y, robot relative pitch, and roll
+     */
+    public double[] getKinematicPositions() {
+      return new double[] { 
+        (extension * Math.cos(Units.rotationsToRadians(pivot)))  +  (wristLength * Math.cos(Units.rotationsToRadians(pivot + pitch - 0.5))),
+        (extension * Math.sin(Units.rotationsToRadians(pivot)))  +  (wristLength * Math.sin(Units.rotationsToRadians(pivot + pitch - 0.5))),
+        Units.rotationsToRadians( pivot + pitch - 0.5 ),
+        Units.rotationsToRadians( roll )
+      };
+    }
+
+    /**H! Set the refrences for the pids to this motor position
+     * 
+     */
+    public void applyToMotors() {
+      pidExtension.setReference(extension, CANSparkMax.ControlType.kPosition);
+      pidPivot.setReference(pivot, CANSparkMax.ControlType.kPosition);
+      pidPitch.setReference(pitch, CANSparkMax.ControlType.kPosition);
+      pidRoll.setReference(roll, CANSparkMax.ControlType.kPosition);
+    }
   }
 
+
+  /**Performs inverse kinematics to get motor positions for given robot relative positions
+   * H!
+   * 
+   * @param x The distance in front of the leg pivot
+   * @param y The distance above the leg pivot
+   * @param pitch The pitch relative to the horizontal forward direction in radians
+   * @param roll The roll where 0 is up in radians
+   * 
+   * @return A {@link MotorPos} object with the positions the motors should go to to acomplish this
+   */
   public MotorPos IK(double x, double y, double pitch, double roll) {
     // H! Inverse kinematics: see more detailed math here: https://www.desmos.com/calculator/l89yzwijul \
     double targetArmAngle = Math.atan2(y - Constants.WristAndArm.wristLength * Math.sin(pitch),   x - Constants.WristAndArm.wristLength * Math.cos(pitch) );
@@ -63,6 +108,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
     targetWristAngle /= 2 * Math.PI;
     targetWristRoll /= 2* Math.PI;
 
+    // 0.5 is up for the roll encoder, but 0 for the inverse kinematics
     targetWristRoll += 0.5;
 
     return new MotorPos(targetArmLength, targetArmAngle, targetWristAngle, targetWristRoll);
@@ -73,47 +119,43 @@ public class LegAnkleSubsystem extends SubsystemBase {
 
   public boolean deleteThis_doSetpoint = true;
 
-  private boolean PIDControl = true;
-
-  private boolean manualSetpoints = true;
-
-  private int counter = 0;
-
   private DigitalInput extensionLimitSwitch = new DigitalInput(0);
   
-  private SparkMaxPIDController pidArmPivot;
-  private SparkMaxPIDController pidArmExtension;
-  private SparkMaxPIDController pidWristPitch;
-  private SparkMaxPIDController pidWristPitchRight;
-  private SparkMaxPIDController pidWristRoll;
+  private SparkMaxPIDController pidPivot;
+  private SparkMaxPIDController pidExtension;
+  private SparkMaxPIDController pidPitch;
+  private SparkMaxPIDController pidRoll;
   
-  private CANSparkMax armPivot = new CANSparkMax(MotorIDs.armPivot, MotorType.kBrushless);
-  private CANSparkMax armExtension = new CANSparkMax(MotorIDs.armExtension, MotorType.kBrushless);
-  private CANSparkMax wristPitchRight = new CANSparkMax(MotorIDs.WristPitchRight, MotorType.kBrushless);
-  private CANSparkMax wristPitchLeft = new CANSparkMax(MotorIDs.WristPitchLeft, MotorType.kBrushless);
-  private CANSparkMax wristRoll = new CANSparkMax(MotorIDs.WristRoll, MotorType.kBrushless);
+  private CANSparkMax motorPivot = new CANSparkMax(MotorIDs.armPivot, MotorType.kBrushless);
+  private CANSparkMax motorExtension = new CANSparkMax(MotorIDs.armExtension, MotorType.kBrushless);
+  private CANSparkMax motorPitchRight = new CANSparkMax(MotorIDs.WristPitchRight, MotorType.kBrushless);
+  private CANSparkMax motorPitchLeft = new CANSparkMax(MotorIDs.WristPitchLeft, MotorType.kBrushless);
+  private CANSparkMax motorRoll = new CANSparkMax(MotorIDs.WristRoll, MotorType.kBrushless);
 
-  private RelativeEncoder armPivotEncoder = armPivot.getEncoder(/*Type.kDutyCycle*/);
-  private RelativeEncoder armExtensionEncoder = armExtension.getEncoder(/*Type.kDutyCycle*/);
-  private SemiAbsoluteEncoder wristPitchEncoder = new SemiAbsoluteEncoder(wristPitchLeft); // H! TODO which motor controller this is plugged into is unconfimed
-  private RelativeEncoder wristPitchEncoderLeft = wristPitchEncoder.getSparkMAXEncoder();
-  // H! TODO REMOVE THIS
-  private SparkMaxAbsoluteEncoder wristPitchEncoderLeftAbsolute = wristPitchLeft.getAbsoluteEncoder(Type.kDutyCycle);
+  // H! This whole thing with aliases does actually work, I checked this
 
-  private RelativeEncoder wristPitchEncoderRight = wristPitchRight.getEncoder(/*Type.kDutyCycle*/);
-  private RelativeEncoder wristRollSparkMAXEncoder;
-  private SemiAbsoluteEncoder wristRollEncoder = new SemiAbsoluteEncoder(wristRoll);
+  /**An alias for the motor controller that leads pitch
+   * H!
+   */
+  private CANSparkMax motorPitchLeader = motorPitchRight;
+  /**An alias for the motor controller that follows pitch
+   * H!
+   */
+  private CANSparkMax motorPitchFollower = motorPitchLeft;
 
-  private double targetX = StartingSetpoints.x;
-  private double targetY = StartingSetpoints.y;
-  private double targetPitch = StartingSetpoints.pitch;
-  private double targetRoll = StartingSetpoints.roll;
+  private RelativeEncoder encoderPivot = motorPivot.getEncoder(/*Type.kDutyCycle*/);
+  private RelativeEncoder encoderExtension = motorExtension.getEncoder(/*Type.kDutyCycle*/);
+  private SemiAbsoluteEncoder encoderPitch = new SemiAbsoluteEncoder(motorPitchLeader);
+  private RelativeEncoder encoderPitchRight = motorPitchRight.getEncoder();
+  private RelativeEncoder encoderPitchLeft = motorPitchLeft.getEncoder();
+  private RelativeEncoder encoderRollRelative;
+  private SemiAbsoluteEncoder encoderRoll = new SemiAbsoluteEncoder(motorRoll);
 
-  private MotorPos startingPosition = IK(targetX, targetY, targetPitch, targetRoll);
-  private double targetPivotSetpoint = startingPosition.pivot;
-  private double targetExtensionSetpoint = startingPosition.extension;
-  private double targetPitchSetpoint = startingPosition.pitch;
-  private double targetRollSetpoint = startingPosition.roll;
+  private RelativeEncoder encoderPitchLeader = motorPitchLeader.getEncoder();
+  private RelativeEncoder encoderPitchFollower = motorPitchFollower.getEncoder();
+
+  private final MotorPos startingPosition = IK(StartingPosition.x, StartingPosition.y, StartingPosition.pitch, StartingPosition.roll);
+  private MotorPos targetPosition = startingPosition;
 
   // H! FOR TESTING PURPOSES
   private ShuffleboardTab tab = Shuffleboard.getTab("Arm Testing");
@@ -144,10 +186,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
 
   /** Creates a new LegAnkleSubsystem. */
   public LegAnkleSubsystem() {
-    armExtension.setInverted(true);
-
-    wristPitchLeft.setInverted(true);
-    wristPitchRight.setInverted(false);
+    // H! Make all the PID tuning tabs in shuffleboard
     extensionPValue = tab.add("Ext P Value", PID.Extension.P).getEntry();
     extensionIValue = tab.add("Ext I Value", PID.Extension.I).getEntry();
     extensionDValue = tab.add("Ext D Value", PID.Extension.D).getEntry();
@@ -168,112 +207,112 @@ public class LegAnkleSubsystem extends SubsystemBase {
     rollDValue = tab.add("Rol D Value", PID.Roll.D).getEntry();
     rollFFValue = tab.add("Rol FF Value", PID.Roll.FF).getEntry();
 
+    motorPitchFollower.follow(motorPitchLeader);
 
-    pidArmPivot = armPivot.getPIDController();
-    pidArmExtension = armExtension.getPIDController();
-    pidWristPitch = wristPitchLeft.getPIDController();
-    pidWristPitchRight = wristPitchRight.getPIDController();
-    pidWristRoll = wristRoll.getPIDController();
+    pidPivot = motorPivot.getPIDController();
+    pidExtension = motorExtension.getPIDController();
+    pidPitch = motorPitchLeader.getPIDController();
+    pidRoll = motorRoll.getPIDController();
 
     // :D I added this in
-    pidArmPivot.setOutputRange(-pivotOutputRange, pivotOutputRange);
+    pidPivot.setOutputRange(-pivotOutputRange, pivotOutputRange);
 
     
 
-    pidArmPivot.setFeedbackDevice(armPivotEncoder);
+    pidPivot.setFeedbackDevice(encoderPivot);
 
-    armExtensionEncoder.setPositionConversionFactor(extensionEncoderConversionFactor);
+    // H! Set the position conversion factors. Pivot is commented out because it didn't want to set. It's burned to flash manually
+    encoderExtension.setPositionConversionFactor(extensionEncoderConversionFactor);
     //armPivotEncoder.setPositionConversionFactor(1/10);//(1 / 100) * (35/50) * (21/32) = 0.00459357
-    wristPitchEncoderRight.setPositionConversionFactor(pitchEncoderConversionFactor);
-    wristPitchEncoderLeft.setPositionConversionFactor(pitchEncoderConversionFactor);
+    encoderPitchRight.setPositionConversionFactor(pitchEncoderConversionFactor);
+    encoderPitchLeft.setPositionConversionFactor(pitchEncoderConversionFactor);
     
     
+    motorExtension.setInverted(true);
+    motorRoll.setInverted(true);
     
-    wristRoll.setInverted(true);
 
     
-    MotorPos startingMotorPosition = IK(StartingPosition.x, StartingPosition.y, StartingPosition.pitch, StartingPosition.roll);
-    armExtensionEncoder.setPosition(startingMotorPosition.extension/*minLength*/);
-    armPivotEncoder.setPosition(startingMotorPosition.pivot);
-    wristPitchEncoderLeft.setPosition(wristPitchEncoder.getPosition());
+    //MotorPos startingMotorPosition = IK(StartingPosition.x, StartingPosition.y, StartingPosition.pitch, StartingPosition.roll);
+    encoderExtension.setPosition(startingPosition.extension/*minLength*/);
+    encoderPivot.setPosition(startingPosition.pivot);
+    // H! Set the left pitch encoder 
+    encoderPitchFollower.setPosition(encoderPitch.getPosition());
 
     // H! Used to reset the absolute encoder. Do not run this unless that's what you want to do
     //wristRollEncoder.setZeroOffset(0);
     //wristRollEncoder.setZeroOffset(wristRollEncoder.getPosition() - 0.5);
     // :D hi I turned this into a constant // H! Great!
-    wristRollEncoder.setZeroOffset(wristRollEncoderSetZeroOffset);
+    encoderRoll.setZeroOffset(wristRollEncoderSetZeroOffset);
 
-    wristRollSparkMAXEncoder = wristRollEncoder.getSparkMAXEncoder();
-    wristRollEncoder.setPositionConversionFactor(1/75);
+    encoderRollRelative = encoderRoll.getSparkMAXEncoder();
+    encoderRoll.setPositionConversionFactor(1/75);
 
-    pidWristRoll.setFeedbackDevice(wristRollSparkMAXEncoder);
+    pidRoll.setFeedbackDevice(encoderRollRelative);
 
-    
 
-    wristRoll.burnFlash();
-
-    
-
+    motorRoll.burnFlash();
     
 
     // H! Set the PID values initially
-    setPIDFValues(pidArmExtension, PID.Extension.P, PID.Extension.I, PID.Extension.D, PID.Extension.FF); 
-    setPIDFValues(pidArmPivot,     PID.Pivot.P,     PID.Pivot.I,     PID.Pivot.D,     PID.Pivot.FF); 
-    setPIDFValues(pidWristPitch,   PID.Pitch.P,     PID.Pitch.I,     PID.Pitch.D,     PID.Pitch.FF); 
-    setPIDFValues(pidWristPitchRight,   PID.Pitch.P,     PID.Pitch.I,     PID.Pitch.D,     PID.Pitch.FF); 
-    setPIDFValues(pidWristRoll,    PID.Roll.P,      PID.Roll.I,      PID.Roll.D,      PID.Roll.FF);
+    setPIDFValues(pidExtension, PID.Extension.P, PID.Extension.I, PID.Extension.D, PID.Extension.FF); 
+    setPIDFValues(pidPivot,     PID.Pivot.P,     PID.Pivot.I,     PID.Pivot.D,     PID.Pivot.FF); 
+    setPIDFValues(pidPitch,   PID.Pitch.P,     PID.Pitch.I,     PID.Pitch.D,     PID.Pitch.FF); 
+    setPIDFValues(pidRoll,    PID.Roll.P,      PID.Roll.I,      PID.Roll.D,      PID.Roll.FF);
     
     // H! Set soft current limits
-    armPivot.setSmartCurrentLimit(pivotCurrentLimit);
-    armExtension.setSmartCurrentLimit(extensionCurrentLimit);
-    wristPitchRight.setSmartCurrentLimit(pitchCurrentLimit);
-    wristPitchLeft.setSmartCurrentLimit(pitchCurrentLimit);
-    wristRoll.setSmartCurrentLimit(rollCurrentLimit);
+    motorPivot.setSmartCurrentLimit(pivotCurrentLimit);
+    motorExtension.setSmartCurrentLimit(extensionCurrentLimit);
+    motorPitchRight.setSmartCurrentLimit(pitchCurrentLimit);
+    motorPitchLeft.setSmartCurrentLimit(pitchCurrentLimit);
+    motorRoll.setSmartCurrentLimit(rollCurrentLimit);
 
     // H! Set hard current limits
-    armPivot.setSecondaryCurrentLimit(NEO1650CurrentLimitHard);
-    armExtension.setSecondaryCurrentLimit(NEO1650CurrentLimitHard);
-    wristPitchRight.setSecondaryCurrentLimit(NEO550CurrentLimitHard);
-    wristPitchLeft.setSecondaryCurrentLimit(NEO550CurrentLimitHard);
-    wristRoll.setSecondaryCurrentLimit(NEO550CurrentLimitHard);
+    motorPivot.setSecondaryCurrentLimit(NEO1650CurrentLimitHard);
+    motorExtension.setSecondaryCurrentLimit(NEO1650CurrentLimitHard);
+    motorPitchRight.setSecondaryCurrentLimit(NEO550CurrentLimitHard);
+    motorPitchLeft.setSecondaryCurrentLimit(NEO550CurrentLimitHard);
+    motorRoll.setSecondaryCurrentLimit(NEO550CurrentLimitHard);
   }
 
 
+
+
+
+
+
+
+
+
+
   public void resetRoll() {
-    targetRoll = 0;
+    targetPosition.roll = 0;
   }
 
 
   public void updatePIDValues() {
-    setPIDFValues(pidArmExtension,
+    setPIDFValues(pidExtension,
       extensionPValue.getDouble(PID.Extension.P), 
       extensionIValue.getDouble(PID.Extension.I), 
       extensionDValue.getDouble(PID.Extension.D), 
       extensionFFValue.getDouble(PID.Extension.FF)
     );
 
-    setPIDFValues(pidArmPivot, 
+    setPIDFValues(pidPivot, 
       pivotPValue.getDouble(PID.Pivot.P), 
       pivotIValue.getDouble(PID.Pivot.I), 
       pivotDValue.getDouble(PID.Pivot.D), 
       pivotFFValue.getDouble(PID.Pivot.FF)
     );
 
-    setPIDFValues(pidWristPitch, 
+    setPIDFValues(pidPitch, 
       pitchPValue.getDouble(PID.Pitch.P), 
       pitchIValue.getDouble(PID.Pitch.I), 
       pitchDValue.getDouble(PID.Pitch.D), 
       pitchFFValue.getDouble(PID.Pitch.FF)
     );
 
-    setPIDFValues(pidWristPitchRight, 
-      pitchPValue.getDouble(PID.Pitch.P), 
-      pitchIValue.getDouble(PID.Pitch.I), 
-      pitchDValue.getDouble(PID.Pitch.D), 
-      pitchFFValue.getDouble(PID.Pitch.FF)
-    );
-
-    setPIDFValues(pidWristRoll, 
+    setPIDFValues(pidRoll, 
       rollPValue.getDouble(PID.Roll.P), 
       rollIValue.getDouble(PID.Roll.I), 
       rollDValue.getDouble(PID.Roll.D), 
@@ -281,187 +320,220 @@ public class LegAnkleSubsystem extends SubsystemBase {
     );
   }
 
-
-
-  /** H! Moves the arm-wrist assembly by a given position difference
-   *
-   * @param x The difference in distance in front of the pivot
-   * @param y The difference in distance above the target
-   * @param pitch The difference in pitch to approach at
-   * @param roll The difference in roll to approach at
-  */
-  public void moveByXYTheta(double x, double y, double pitch, double roll) {
-    moveToXYTheta(
-      targetX + (Math.abs(x) < 0.01 ? 0 : x * changeXMultiplier),
-      targetY + (Math.abs(y) < 0.01 ? 0 : y * changeYMultiplier),
-      targetPitch + (Math.abs(pitch) < 0.01 ? 0 : pitch * changePitchMultiplier),
-      targetRoll + (Math.abs(roll) < 0.01 ? 0 : roll * changeRollMultiplier)
-    );
+  /**Set the motor positions the legAnkle will go to 
+   * H!
+   * 
+   * @param newPosition A {@link MotorPos} object with the positions to go to
+   */
+  public void setMotorPositions(MotorPos newPosition) {
+    targetPosition = newPosition;
   }
 
-  /** H! Moves the arm-wrist assembly to a given position and rotation.
-   *
-   * @param xIn The target distance in front of the pivot
-   * @param yIn The target distance above the pivot
-   * @param pitchIn The target pitch to approach at
-   * @param rollIn The target roll to approach at
-   * @return Whether the arm is in a small range of the target
-  */
-  public boolean moveToXYTheta(double xIn, double yIn, double pitchIn, double rollIn) {
-    // H! Prevent the arm from going places it shouldn't with clamps
-    targetX = roundAvoid(clamp(minX, maxX, xIn ), 5);
-    targetY = roundAvoid(clamp(minY, maxY, yIn ), 5);
-    targetPitch = pitchIn;
-    targetRoll = rollIn; 
+  /**Set the motor positions the legAnkle will go to 
+   * H!
+   * 
+   * @param extension The extension to go to
+   * @param pivot The pivot to go to
+   * @param pitch The pitch to go to
+   * @param roll The roll to go to
+   */
+  public void setMotorPositions(double extension, double pivot, double pitch, double roll) {
+    setMotorPositions(new MotorPos(extension, pivot, pitch, roll));
+  }
 
-    MotorPos targetMotorPositions = IK(targetX, targetY, targetPitch, targetRoll);
-
-    // H! Return whether it's in the right position
-    return (
-      Math.abs( armPivotEncoder.getPosition() - targetMotorPositions.pivot ) < atSetpointThreshold &&
-      Math.abs( armExtensionEncoder.getPosition() - targetMotorPositions.extension ) < atSetpointThreshold &&
-      Math.abs( wristPitchEncoder.getPosition() - targetMotorPositions.pitch ) < atSetpointThreshold &&
-      Math.abs( wristRollEncoder.getPosition() - targetMotorPositions.roll ) < atSetpointThreshold
-    );
-
+  /**Moves the motor positions the legAnkle will go to by a given amount
+   * H!
+   * 
+   * @param extension The extension amount to move the setpoint by
+   * @param pivot The pivot amount to move the setpoint by
+   * @param pitch The pitch amount to move the setpoint by
+   * @param roll The roll amount to move the setpoint by
+   */
+  public void changeMotorPositions(double extension, double pivot, double pitch, double roll) {
+    targetPosition.extension += extension;
+    targetPosition.pivot += pivot;
+    targetPosition.pitch += pitch;
+    targetPosition.roll += roll;
   }
 
 
-  public Boolean nearTargetPos() {
+  /**Sets the x, y, robot relative pitch, and roll that the legAnkle will try to go to 
+   * H!
+   * 
+   * @param x The x that the leg ankle will try to go to
+   * @param y The y that the leg ankle will try to go to
+   * @param pitch The robot relative pitch (instead of arm relative pitch) that the leg ankle will try to go to
+   * @param roll The roll that the leg ankle will try to go to
+   */
+  public void setKinematicPositions(double x, double y, double pitch, double roll) {
+    targetPosition = IK(x, y, pitch, roll);
+  }
+
+  /**Changes the x, y, robot relative pitch, and roll that the legAnkle will try to go to by a given amount
+   * H!
+   * 
+   * @param x The change in the x that the leg ankle will try to go to
+   * @param y The change in the y that the leg ankle will try to go to
+   * @param pitch The change in the robot relative pitch (instead of arm relative pitch) that the leg ankle will try to go to
+   * @param roll The change in the roll that the leg ankle will try to go to
+   */
+  public void changeKinematicPositions(double x, double y, double pitch, double roll) {
+    // H! Get the current setpoint positions in x, y, robot relative pitch, and roll
+    double[] currentKinematicPosiitons = targetPosition.getKinematicPositions();
+    
+    setKinematicPositions(
+      currentKinematicPosiitons[0] + x,
+      currentKinematicPosiitons[1] + y,
+      currentKinematicPosiitons[2] + pitch,
+      currentKinematicPosiitons[3] + roll
+    );
+  }
+
+  /**Tells whether the arm is within a small distance of its current setpoint
+   * H!
+   * 
+   * @return A boolean for whether the arm is in a small distance of all of its setpoints.
+   */
+  public boolean isArmPositioned() {
     // H! Return whether it's in the right position
     // H! TODO TEST THIS
     return (
-      Math.abs( armPivotEncoder.getPosition() - targetPivotSetpoint ) < atSetpointThreshold &&
-      Math.abs( armExtensionEncoder.getPosition() - targetExtensionSetpoint ) < atSetpointThreshold &&
-      Math.abs( wristPitchEncoder.getPosition() - targetPitchSetpoint ) < atSetpointThreshold &&
-      Math.abs( wristRollEncoder.getPosition() - targetRollSetpoint ) < atSetpointThreshold
+      Math.abs( encoderPivot.getPosition() - targetPosition.pivot ) < atSetpointThreshold &&
+      Math.abs( encoderExtension.getPosition() - targetPosition.extension ) < atSetpointThreshold &&
+      Math.abs( encoderPitch.getPosition() - targetPosition.pitch ) < atSetpointThreshold &&
+      Math.abs( encoderRoll.getPosition() - targetPosition.roll ) < atSetpointThreshold
     );
   }
 
 
-
+  /**Sets the motor speeds of each motor manually
+   * H!
+   * 
+   * @param pivot The motor value to set the pivot motor to
+   * @param extension The motor value to set the extension motor to
+   * @param pitch The motor value to set the pitch motor to
+   * @param roll The motor value to set the roll motor to
+   * 
+   * @deprecated Using direct motor speeds is unideal, use {@link changeMotorPositions} to change the position the leg will try to go to
+   */
   public void setMotorSpeeds(double pivot, double extension, double pitch, double roll) {
-    armExtension.set(extension / 10);
-    armPivot.set(pivot / 10);
-    wristPitchLeft.set(pitch / 10);
-    wristRoll.set(roll / 10);
-
-    PIDControl = false;
+    motorExtension.set(extension / 10);
+    motorPivot.set(pivot / 10);
+    motorPitchRight.set(pitch / 10);
+    motorRoll.set(roll / 10);
   }
 
 
-  public void moveManualSetpoints(double pivot, double extension, double pitch, double roll) {
-    targetPivotSetpoint += pivot / 100;
-    targetExtensionSetpoint += extension / 100;
-    targetPitchSetpoint += pitch / 100;
-    targetRollSetpoint += roll / 100;
-
-    manualSetpoints = true;
-  }
-
-  public void setManualSetpoints(double pivot, double extension, double pitch, double roll) {
-    targetPivotSetpoint = pivot;
-    targetExtensionSetpoint = extension;
-    targetPitchSetpoint = pitch;
-    targetRollSetpoint = roll;
-
-    manualSetpoints = true;
-  }
-
-
+  /**Returns the current setpoints that the leg ankle is trying to go to
+   * H!
+   * 
+   * @return The current setpoints that the leg ankle is trying to go to in the form of a {@link MotorPos} object
+   */
   public MotorPos getManualSetpoints() {
-    return new MotorPos(targetExtensionSetpoint, targetPivotSetpoint, targetPitchSetpoint, targetRollSetpoint);
+    return targetPosition;
   }
+
+
+
+
+
+
+
 
 
   @Override
   public void periodic() {
+    // This method will be called once per scheduler run
 
-    // H! The counter ensures intensive processes only run every so often
-    counter += 1;
-    counter %= 50;
+    // H! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // H! ~~~~~~~ Debug output ~~~~~~~
+    // H! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    
+    // H! find kinematic position and display it
+    double[] kinematicSetpoints = targetPosition.getKinematicPositions();
+    SmartDashboard.putNumber("targetX", kinematicSetpoints[0]);
+    SmartDashboard.putNumber("targetY", kinematicSetpoints[1]);
+    SmartDashboard.putNumber("targetPitch", kinematicSetpoints[2]);
+    SmartDashboard.putNumber("targetRoll", kinematicSetpoints[3]);
+
+    // H! display the current setpoint positions
+    SmartDashboard.putNumber("targetPivot", targetPosition.pivot);
+    SmartDashboard.putNumber("targetExtension", targetPosition.extension);
+    SmartDashboard.putNumber("targetPitch", targetPosition.pitch);
+    SmartDashboard.putNumber("targetRoll", targetPosition.roll);
+
+    // H! display motor currents
+    SmartDashboard.putNumber("pivotCurrent", motorPivot.getOutputCurrent());    
+    SmartDashboard.putNumber("extensionCurrent", motorExtension.getOutputCurrent());
+    SmartDashboard.putNumber("pitchCurrent", motorPitchRight.getOutputCurrent());
+    SmartDashboard.putNumber("rollCurrent", motorRoll.getOutputCurrent());
+
+    // H! display current positions of the leg ankle
+    SmartDashboard.putNumber("pivotEncoder", encoderPivot.getPosition());    
+    SmartDashboard.putNumber("extensionEncoder", encoderExtension.getPosition());
+    SmartDashboard.putNumber("pitchEncoder", encoderPitch.getPosition());
+    SmartDashboard.putNumber("rollEncoder", encoderRoll.getPosition());
+
+    SmartDashboard.putNumber("rollRelativeEncoder", encoderRoll.getSparkMAXEncoder().getPosition());
 
 
+
+    // H! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // H! ~~~~~~~ Setpoint processing ~~~~~~~
+    // H! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    
     // H! If the limit switch is triggered, we're at min extension.
     SmartDashboard.putBoolean("limit switch pressed", extensionLimitSwitch.get());
     if (extensionLimitSwitch.get()) {
-      armExtensionEncoder.setPosition(minLength);
+      encoderExtension.setPosition(minLength);
     }
-
-    //System.out.println(extensionLimitSwitch.get());
-    
-
-    
-    
-    //armExtensionEncoder.setPosition(minLength);
-    
-    SmartDashboard.putNumber("targetX", targetX);
-    SmartDashboard.putNumber("targetY", targetY);
-    SmartDashboard.putNumber("targetPitch", targetPitch);
-    SmartDashboard.putNumber("targetRoll", targetRoll);
-    //SmartDashboard.putNumber("###############################");
-
-    // This method will be called once per scheduler run
-    MotorPos targetPosition = IK(targetX, targetY, targetPitch, targetRoll);
-
-    if (manualSetpoints) {
-      targetPosition.pivot = targetPivotSetpoint;
-      targetPosition.extension = targetExtensionSetpoint;
-      targetPosition.pitch = targetPitchSetpoint;
-      targetPosition.roll = targetRollSetpoint;
-    }
-    manualSetpoints = false;
-
 
     // ++ clamp values to be safe -------------------------------------------
     // H! Prevent arm from extending too much or too little
     targetPosition.extension = clamp(minLength, maxLength, targetPosition.extension);
+    
     // ++ pivot
     // targetPosition.pivot = clamp(minPivotPos, maxPivotPos, targetPosition.pivot);
     // ++ pitch
     // targetPosition.pitch = clamp (minPitchPos, maxPitchPos, targetPosition.pitch);
     // ++ ----------------------
 
-    SmartDashboard.putNumber("targetArmAngle", targetPosition.pivot);
-    SmartDashboard.putNumber("targetArmLength", targetPosition.extension);
-    SmartDashboard.putNumber("targetWristAngle", targetPosition.pitch);
-    SmartDashboard.putNumber("targetWristRoll", targetPosition.roll);
-    //Shuffleboard.put("-------------------------------");
-
-    if (PIDControl && deleteThis_doSetpoint) {
-      pidArmPivot.setReference(targetPosition.pivot, CANSparkMax.ControlType.kPosition);
-      pidArmExtension.setReference(targetPosition.extension, CANSparkMax.ControlType.kPosition);
-      pidWristPitch.setReference(targetPosition.pitch, CANSparkMax.ControlType.kPosition);
-      pidWristPitchRight.setReference(targetPosition.pitch, CANSparkMax.ControlType.kPosition);
-      pidWristRoll.setReference(targetPosition.roll, CANSparkMax.ControlType.kPosition);
-    }
-    PIDControl = true;
-    
-
-    SmartDashboard.putNumber("armPivot", armPivot.getOutputCurrent());    
-    SmartDashboard.putNumber("armExtension", armExtension.getOutputCurrent());
-    SmartDashboard.putNumber("wristPitch", wristPitchLeft.getOutputCurrent());
-    SmartDashboard.putNumber("wristRoll", wristRoll.getOutputCurrent());
-
-    SmartDashboard.putNumber("armPivotLength", armPivotEncoder.getPosition());    
-    SmartDashboard.putNumber("armExtensionLength", armExtensionEncoder.getPosition());
-    SmartDashboard.putNumber("wristPitchLength", wristPitchEncoder.getPosition());
-    SmartDashboard.putNumber("wristPitchRelativeLength", wristPitchEncoderLeft.getPosition());
-    SmartDashboard.putNumber("wristPitchAbsoluteLength", wristPitchEncoderLeftAbsolute.getPosition());
-    SmartDashboard.putNumber("wristRollLength", wristRollEncoder.getPosition());
-
-    SmartDashboard.putNumber("Wrist Roll", wristRollEncoder.getSparkMAXEncoder().getPosition());
+    // H! Set the position refrences
+    pidPivot.setReference(targetPosition.pivot, CANSparkMax.ControlType.kPosition);
+    pidExtension.setReference(targetPosition.extension, CANSparkMax.ControlType.kPosition);
+    pidPitch.setReference(targetPosition.pitch, CANSparkMax.ControlType.kPosition);
+    pidRoll.setReference(targetPosition.roll, CANSparkMax.ControlType.kPosition);
   }
+
+
+
+
+
+
+
+
+
 
   /** ++ clamps input between two extreme values
    * @param min the lower extreme value
    * @param max the upper extreme value
    * @param x the input value to be clamped
+   * 
+   * @return the value after clamping
    */
   private static double clamp(double min,  double max, double x) {
     return x > max ? max : Math.max(x, min);
-   }
+  }
 
+  /**Sets the PIDF values of a pid controller
+   * H!
+   * 
+   * @param pidController The PID controller to set the values of
+   * @param p The P value to use
+   * @param i The I value to use
+   * @param d The D value to use
+   * @param f The F value to use
+   */
   private static void setPIDFValues(SparkMaxPIDController pidController, double p, double i, double d, double f) {
     pidController.setP(p);
     pidController.setI(i);
@@ -469,6 +541,13 @@ public class LegAnkleSubsystem extends SubsystemBase {
     pidController.setFF(f);
   }
 
+  /**Rounds a number to a given number of places
+   * H!
+   * 
+   * @param value The value to round
+   * @param places The number of places to round to
+   * @return The rounded value
+   */
   public static double roundAvoid(double value, int places) {
     double scale = Math.pow(10, places);
     return Math.round(value * scale) / scale;

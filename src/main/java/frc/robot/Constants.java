@@ -283,21 +283,21 @@ public final class Constants {
     public static int secondaryControllerID = 1;
 
     // <> size of controller deadzone
-    public static final double kDeadzone = 0.1;
+    public static final double kDeadzone = 0.08;
 
     // <> max amount controller output can change per second
-    public static final double kRateLimitLeft = 3;
-    public static final double kRateLimitRight = 3;
+    public static final double kRateLimitLeft = 4;
+    public static final double kRateLimitRight = 3.4;
 
     // <> curve stuff
     public static final int exponent1 = 1;
     public static final int exponent2 = 3;
-    public static final double coeff1 = 0.3;
-    public static final double coeff2 = 0.7;
+    public static final double coeff1 = 0.4;
+    public static final double coeff2 = 0.6;
 
     // <> fast and slow mode
     public static final double leftTriggerSpeedMultiplier = 1.5;
-    public static final double rightTriggerSpeedMultiplier = 0.5;
+    public static final double rightTriggerSpeedMultiplier = 0.4;
   }
 
   /**
@@ -311,7 +311,7 @@ public final class Constants {
     public static final double pitchEncoderConversionFactor = 1/60;
     // H! Holds the data for the positions of stuff in the arm
     public static final double minLength = 0.92804 + 0.05;
-    public static final double maxLength = 1.3;//1.5494;
+    public static final double maxLength = minLength + Units.inchesToMeters(30);//1.5494;
 
     // ++ pivot limits
     public static final double maxPivotPos = 1.2;

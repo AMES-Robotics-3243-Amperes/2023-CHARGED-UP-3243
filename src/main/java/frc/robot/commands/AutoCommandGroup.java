@@ -2,6 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
+/*
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -24,7 +25,7 @@ import java.util.List;
 
 /**
  * <> The command that will be executed during the autonomous period
- */
+ 
 public class AutoCommandGroup extends SequentialCommandGroup {
   protected final DriveSubsystem m_driveSubsystem;
   protected final LegAnkleSubsystem m_legAnkleSubsystem;
@@ -35,7 +36,7 @@ public class AutoCommandGroup extends SequentialCommandGroup {
    * <> creates a new {@link AutoCommandGroup}
    *
    * @param driveSubsystem the {@link DriveSubsystem} to control for driving
-   */
+   
   public AutoCommandGroup(DriveSubsystem driveSubsystem, LegAnkleSubsystem legAnkleSubsystem,
                           ShuffleboardSubsystem shuffleboardSubsystem, FieldPosManager posManager) {
     m_driveSubsystem = driveSubsystem;
@@ -175,3 +176,4 @@ public class AutoCommandGroup extends SequentialCommandGroup {
     addCommands((Command[]) autoCommands.toArray());
   }
 }
+*/

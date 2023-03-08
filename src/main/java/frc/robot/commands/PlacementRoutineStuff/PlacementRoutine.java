@@ -49,6 +49,7 @@ public class PlacementRoutine extends SequentialCommandGroup {
     this.controller = controller;
     this.poseIndex = poseIndex;
 
+    /* 
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands( // H! TODO Make the target pose based on the index passed in and the FieldPositionManager pose array
@@ -66,6 +67,7 @@ public class PlacementRoutine extends SequentialCommandGroup {
     // H! Binds onPOVLeft to starting pov left
     leftPOVBindingEventLoop = new EventLoop();
     controller.povLeft().onTrue(new InstantCommand(this::onPOVLeft));
+    */
   }
 
 

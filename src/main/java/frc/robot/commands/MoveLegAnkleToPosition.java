@@ -34,13 +34,13 @@ public class MoveLegAnkleToPosition extends CommandBase {
 
     targetExtension = currentTargets.extension;
 
-    legAnkleSubsystem.setManualSetpoints(targetPivot, targetExtension, targetPitch, targetRoll);
+    legAnkleSubsystem.setMotorPositions(targetPivot, targetExtension, targetPitch, targetRoll);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    legAnkleSubsystem.setManualSetpoints(targetPivot, targetExtension, targetPitch, targetRoll);
+    legAnkleSubsystem.setMotorPositions(targetPivot, targetExtension, targetPitch, targetRoll);
   }
 
   // Called once the command ends or is interrupted.
@@ -50,6 +50,6 @@ public class MoveLegAnkleToPosition extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return legAnkleSubsystem.nearTargetPos();
+    return legAnkleSubsystem.isArmPositioned();
   }
 }

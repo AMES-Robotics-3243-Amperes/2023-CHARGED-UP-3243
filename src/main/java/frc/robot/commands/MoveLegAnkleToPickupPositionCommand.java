@@ -22,7 +22,7 @@ public class MoveLegAnkleToPickupPositionCommand extends CommandBase {
   @Override
   public void initialize() {
     // ++ set values to measured constants
-    m_LegAnkleSubsystem.moveManualSetpoints(
+    m_LegAnkleSubsystem.changeMotorPositions(
       Constants.WristAndArm.pivotPickupPos, 
       Constants.WristAndArm.extensionPickupPos,
       Constants.WristAndArm.pitchPickupPos, 
@@ -32,6 +32,6 @@ public class MoveLegAnkleToPickupPositionCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_LegAnkleSubsystem.nearTargetPos();
+    return m_LegAnkleSubsystem.isArmPositioned();
   }
 }
