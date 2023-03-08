@@ -83,16 +83,18 @@ public class PhotonVisionSubsystem extends SubsystemBase {
   public static Pose3d checkRobotPosition() {
     // :> I'm so sorry for all of the for loops it is necessary for the three cameras.
     if (!targets.isEmpty()) {
-      for (int i = 0; i < targets.size(); i++) {
-        cameraToTargets.add(targets.get(i).getBestCameraToTarget());
-      }
+      //for (int i = 0; i < targets.size(); i++) {
+        //cameraToTargets.add(targets.get(i).getBestCameraToTarget());
+      //}
+
+      // for (int i = 0; i < targets.size(); i++) {
+        // tagPoses.add(m_aprilTagFieldLayout.getTagPose(targets.get(i).getFiducialId()));
+      // }
 
       for (int i = 0; i < targets.size(); i++) {
-        tagPoses.add(m_aprilTagFieldLayout.getTagPose(targets.get(i).getFiducialId()));
-      }
-
-      for (int i = 0; i < targets.size(); i++) {
+        if (targets.get(i) != null) {
         Transform3d cameraToTarget = targets.get(i).getBestCameraToTarget();
+        
         Optional<Pose3d> tagPose = m_aprilTagFieldLayout.getTagPose(targets.get(i).getFiducialId());
         robotPoses.add(PhotonUtils.estimateFieldToRobotAprilTag(cameraToTarget, tagPose.get(), camsToBot.get(i)));
         // if (tagPoses.get(i).isPresent()) {
@@ -102,6 +104,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
         //   // :> The .get(j)s correspond to the for loop but the other one turns it into a Pose3D instead of an optional Pose3D
         //   }
         // }
+        }
       }
 
       cameraToTargets.clear();
@@ -211,7 +214,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
       m_field.updateFieldPosWithPhotonVisionPose(Objects.requireNonNull(checkRobotPosition()).toPose2d());
     }
     targets.clear();
-    results.clear();
+    //results.clear();
   }
 
   @Override
