@@ -4,24 +4,23 @@
 
 package frc.robot.commands;
 
+import frc.robot.JoyUtil;
 import frc.robot.subsystems.GrabberSubsystem;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.GrabberSubsystem;
 
 /** GrabberCommand controls the grabber. */
 public class GrabberCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   // ££ Defines the subsystem and the controller
   private final GrabberSubsystem m_GrabberSubsystem;
-  private final XboxController m_controller;
+  private final JoyUtil m_controller;
 
   /**
    * Creates a new GrabberCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public GrabberCommand(GrabberSubsystem subsystem, XboxController controller) {
+  public GrabberCommand(GrabberSubsystem subsystem, JoyUtil controller) {
     // Assigns the subsystem and the controller values
     m_GrabberSubsystem = subsystem;
     m_controller = controller;

@@ -7,6 +7,7 @@ package frc.robot.commands.PlacementRoutineStuff;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.event.EventLoop;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.FieldPosManager;
@@ -60,11 +61,11 @@ public class PlacementRoutine extends SequentialCommandGroup {
 
     // H! Binds onPOVRight to starting pov right
     rightPOVBindingEventLoop = new EventLoop();
-    controller.povRight(rightPOVBindingEventLoop).rising().ifHigh(this::onPOVRight);
+    controller.povRight().onTrue(new InstantCommand(this::onPOVRight));
 
     // H! Binds onPOVLeft to starting pov left
     leftPOVBindingEventLoop = new EventLoop();
-    controller.povLeft(leftPOVBindingEventLoop).rising().ifHigh(this::onPOVLeft);
+    controller.povLeft().onTrue(new InstantCommand(this::onPOVLeft));
   }
 
 

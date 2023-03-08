@@ -6,10 +6,8 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
@@ -23,25 +21,18 @@ import java.util.List;
 public class FieldPosManager {
 
   public DriverStation.Alliance allianceColor;
-
-  private Field2d field2d = new Field2d();
-
   public Pose2d latestRobotPosition = new Pose2d();
-
-
   public Pose2d latestOdometryPose = new Pose2d();
   public Pose2d previousOdometryPose = new Pose2d();
-
   public Boolean hasPhotonPose = false;
-
   // ++ this value is the current target for the robot scoring position
   public int currentIndex;
-
   /**
    * ++ this array holds the scoring positions based on current alliance
    */
   public Pose2d[] alliedScoringPositions;
   public Pose2d[] opposingScoringPositions;
+  private Field2d field2d = new Field2d();
 
   public FieldPosManager() {
     setScoringPositions();
@@ -103,8 +94,8 @@ public class FieldPosManager {
    * @param photonPose is the position as reported by the PhotonVisionSubsystem.
    */
   public void updateFieldPosWithPhotonVisionPose(Pose2d photonPose) {
-   // setRobotPose(photonPose);
-   // hasPhotonPose = true;
+    // setRobotPose(photonPose);
+    // hasPhotonPose = true;
   }
 
   /**
@@ -116,11 +107,6 @@ public class FieldPosManager {
     return latestRobotPosition;
   }
 
-  public Field2d getField2d(){
-    field2d.setRobotPose(latestRobotPosition);
-    return field2d;
-  }
-
   /**
    * :D internal function to overwrite the robot's previous pose,
    * intended to be used only when updating the robot's pose based on
@@ -130,6 +116,11 @@ public class FieldPosManager {
    */
   private void setRobotPose(Pose2d pose) {
     latestRobotPosition = pose;
+  }
+
+  public Field2d getField2d() {
+    field2d.setRobotPose(latestRobotPosition);
+    return field2d;
   }
 
   public int getNearestScoringZoneIndex(Pose2d robotPose, boolean ofCurrentAlliance) {

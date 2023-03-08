@@ -4,8 +4,10 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.JoyUtil;
+import frc.robot.Constants.JoyUtilConstants;
 import frc.robot.subsystems.LegAnkleSubsystem;
 
 public class WristCommand extends CommandBase {
@@ -37,18 +39,18 @@ public class WristCommand extends CommandBase {
     m_subsystem.setMotorPositions(
       currentTargets.pivot, 
       currentTargets.extension, 
-      m_controller.getDPadY() > 0.6 ? (0.55) : ( m_controller.getDPadY() < -0.6 ? (0.8) : currentTargets.pitch), 
+      m_controller.getPOVYAxis() > 0.6 ? (0.55) : ( m_controller.getPOVYAxis() < -0.6 ? (0.8) : currentTargets.pitch), 
       currentTargets.roll
     );
     //System.out.println(m_controller.getDPadY());
 
 
     //&& Fast/slow mode for the LegAnkle using analog triggers
-    m_subsystem.changeMotorPositions(
-      JoyUtil.posWithDeadzone((m_controller.getRightTriggerAxis() - m_controller.getLeftTriggerAxis())) / 7,
-      JoyUtil.posWithDeadzone(m_controller.getLeftY()) / -5,
-      JoyUtil.posWithDeadzone(m_controller.getRightY()) / -2,
-      JoyUtil.posWithDeadzone(0) //(m_controller.getRightX()) / 5
+    m_subsystem.moveManualSetpoints(
+      MathUtil.applyDeadband(m_controller.getRightTriggerAxis() - m_controller.getLeftTriggerAxis(), JoyUtilConstants.kDeadzone) / 7,
+      m_controller.getLeftY() / -5,
+      m_controller.getRightY() / -2,
+      0 //(m_controller.getRightX()) / 5
     );
     
     // H! IK control

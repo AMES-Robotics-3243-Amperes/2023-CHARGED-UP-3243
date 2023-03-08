@@ -25,7 +25,7 @@ public class DriveOntoCharge extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_Subsystem.drive(-0.8, 0, 0, true);
+    m_Subsystem.drive(-0.75, 0, 0, true);
   }
 
   // Called once the command ends or is interrupted.
@@ -35,6 +35,6 @@ public class DriveOntoCharge extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(m_Subsystem.getChargeLevel().getDegrees()) > 5.5;
+    return Math.abs(m_Subsystem.getChargeLevel().getDegrees()) > 10;
   }
 }
