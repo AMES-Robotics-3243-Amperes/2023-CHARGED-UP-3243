@@ -10,12 +10,13 @@ import frc.robot.JoyUtil;
 import frc.robot.commands.SwerveAutoMoveCommand;
 import frc.robot.subsystems.DriveSubsystem;
 
+/*
 public class MoveRobotToGrid extends SwerveAutoMoveCommand {
   private DriveSubsystem driveSubsystem;
   private JoyUtil controller;
   private ProfiledPIDController thetaPidController;
 
-  /** Creates a new MoveRobotToGrid. */
+  /** Creates a new MoveRobotToGrid. 
   public MoveRobotToGrid(Pose2d targetPose, DriveSubsystem driveSubsystem, JoyUtil controller, ProfiledPIDController thetaPidController) {
     super(
       driveSubsystem,
@@ -38,3 +39,4 @@ public class MoveRobotToGrid extends SwerveAutoMoveCommand {
   
   
 }
+*/
