@@ -46,7 +46,7 @@ public class WristCommand extends CommandBase {
 
 
     //&& Fast/slow mode for the LegAnkle using analog triggers
-    m_subsystem.moveManualSetpoints(
+    m_subsystem.changeMotorPositions(
       MathUtil.applyDeadband(m_controller.getRightTriggerAxis() - m_controller.getLeftTriggerAxis(), JoyUtilConstants.kDeadzone) / 7,
       m_controller.getLeftY() / -5,
       m_controller.getRightY() / -2,
