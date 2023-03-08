@@ -46,10 +46,10 @@ public class SwerveTeleopCommand extends CommandBase {
     }
 
     // <> drive the drivetrain with the controller's input
-    m_DriveSubsystem.drive(controller.getLeftY() * (reverse ? -1 : 1),
-      controller.getLeftX() * (reverse ? -1 : 1), controller.getRightX() * (reverse ? -1 : 1),
+    m_DriveSubsystem.drive(-controller.getLeftY() * (reverse ? -1 : 1),
+      -controller.getLeftX() * (reverse ? -1 : 1), controller.getRightX(),
       controller.getRightBumper() != DriveConstants.kFieldRelative);
-  }
+  } 
 
   /** 
    * <> sets the reverse value (true if red)
