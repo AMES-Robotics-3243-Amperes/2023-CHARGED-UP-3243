@@ -328,6 +328,7 @@ public final class Constants {
     public static final double pitchPickupPos = 0.0;
 
 
+    public static final double pivotEncoderOffset = 0.28125; // TODO :D check this value
 
 
     public static final double wristLength = Units.inchesToMeters(5)/*0.072327*/;

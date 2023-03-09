@@ -86,7 +86,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
    */
   public MotorPos IK(double x, double y, double pitch, double roll) {
     // H! Inverse kinematics: see more detailed math here: https://www.desmos.com/calculator/l89yzwijul \
-    double targetArmAngle = Math.atan2(y - Constants.WristAndArm.wristLength * Math.sin(pitch),   x - Constants.WristAndArm.wristLength * Math.cos(pitch) );
+    double targetArmAngle = pivotEncoderOffset + Math.atan2(y - Constants.WristAndArm.wristLength * Math.sin(pitch),   x - Constants.WristAndArm.wristLength * Math.cos(pitch) );
     /*
     if (targetY - Constants.WristAndArm.wristLength * Math.sin(targetPitch) >= 0) {
       targetArmAngle = Math.atan((targetX - Constants.WristAndArm.wristLength * Math.cos(targetPitch)) / -(targetY - Constants.WristAndArm.wristLength * Math.sin(targetPitch))) + Math.PI / 2;
@@ -143,7 +143,8 @@ public class LegAnkleSubsystem extends SubsystemBase {
    */
   private CANSparkMax motorPitchFollower = motorPitchLeft;
 
-  private RelativeEncoder encoderPivot = motorPivot.getEncoder(/*Type.kDutyCycle*/);
+  private SparkMaxAbsoluteEncoder encoderPivotAbsolute = motorPivot.getAbsoluteEncoder(Type.kDutyCycle);
+  private RelativeEncoder encoderPivotRelative = motorPivot.getEncoder();
   private RelativeEncoder encoderExtension = motorExtension.getEncoder(/*Type.kDutyCycle*/);
   private SemiAbsoluteEncoder encoderPitch = new SemiAbsoluteEncoder(motorPitchLeader);
   private RelativeEncoder encoderPitchRight = motorPitchRight.getEncoder();
@@ -214,28 +215,32 @@ public class LegAnkleSubsystem extends SubsystemBase {
     pidPitch = motorPitchLeader.getPIDController();
     pidRoll = motorRoll.getPIDController();
 
-    // :D I added this in
-    pidPivot.setOutputRange(-pivotOutputRange, pivotOutputRange);
 
+    // :D I added this in, it limits the output voltage of the motor
+    pidPivot.setOutputRange(-pivotOutputRange, pivotOutputRange);
     
 
-    pidPivot.setFeedbackDevice(encoderPivot);
 
     // H! Set the position conversion factors. Pivot is commented out because it didn't want to set. It's burned to flash manually
     encoderExtension.setPositionConversionFactor(extensionEncoderConversionFactor);
     //armPivotEncoder.setPositionConversionFactor(1/10);//(1 / 100) * (35/50) * (21/32) = 0.00459357
+    encoderPivotAbsolute.setPositionConversionFactor(0.65625); // TODO :D Check this value
     encoderPitchRight.setPositionConversionFactor(pitchEncoderConversionFactor);
     encoderPitchLeft.setPositionConversionFactor(pitchEncoderConversionFactor);
     
     
     motorExtension.setInverted(true);
     motorRoll.setInverted(true);
+    motorPivot.setInverted(true);
     
 
     
     //MotorPos startingMotorPosition = IK(StartingPosition.x, StartingPosition.y, StartingPosition.pitch, StartingPosition.roll);
     encoderExtension.setPosition(startingPosition.extension/*minLength*/);
-    encoderPivot.setPosition(startingPosition.pivot);
+    //encoderPivotRelative.setPosition(startingPosition.pivot); // :D I commented this out because we are using a semiabsolute encoder now
+    encoderPivotAbsolute.setZeroOffset(0.196875); // TODO :D check this value
+    // :D ^ this is in between the extreme values, so that the seam has the pivot facing where it physically can't go
+    // :D the straight up direction is 0.43 on the absolute encoder
     // H! Set the left pitch encoder 
     encoderPitchFollower.setPosition(encoderPitch.getPosition());
 
@@ -248,10 +253,15 @@ public class LegAnkleSubsystem extends SubsystemBase {
     encoderRollRelative = encoderRoll.getSparkMAXEncoder();
     encoderRoll.setPositionConversionFactor(1/75);
 
+
     pidRoll.setFeedbackDevice(encoderRollRelative);
+
+    pidPivot.setFeedbackDevice(encoderPivotAbsolute);
+
 
 
     motorRoll.burnFlash();
+    motorPivot.burnFlash();
     
 
     // H! Set the PID values initially
@@ -398,7 +408,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
     // H! Return whether it's in the right position
     // H! TODO TEST THIS
     return (
-      Math.abs( encoderPivot.getPosition() - targetPosition.pivot ) < atSetpointThreshold &&
+      Math.abs( encoderPivotRelative.getPosition() - targetPosition.pivot ) < atSetpointThreshold &&
       Math.abs( encoderExtension.getPosition() - targetPosition.extension ) < atSetpointThreshold &&
       Math.abs( encoderPitch.getPosition() - targetPosition.pitch ) < atSetpointThreshold &&
       Math.abs( encoderRoll.getPosition() - targetPosition.roll ) < atSetpointThreshold
@@ -469,7 +479,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("rollCurrent", motorRoll.getOutputCurrent());
 
     // H! display current positions of the leg ankle
-    SmartDashboard.putNumber("pivotEncoder", encoderPivot.getPosition());    
+    SmartDashboard.putNumber("pivotEncoder", encoderPivotRelative.getPosition());    
     SmartDashboard.putNumber("extensionEncoder", encoderExtension.getPosition());
     SmartDashboard.putNumber("pitchEncoder", encoderPitch.getPosition());
     SmartDashboard.putNumber("rollEncoder", encoderRoll.getPosition());
@@ -499,10 +509,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
     // ++ ----------------------
 
     // H! Set the position refrences
-    pidPivot.setReference(targetPosition.pivot, CANSparkMax.ControlType.kPosition);
-    pidExtension.setReference(targetPosition.extension, CANSparkMax.ControlType.kPosition);
-    pidPitch.setReference(targetPosition.pitch, CANSparkMax.ControlType.kPosition);
-    pidRoll.setReference(targetPosition.roll, CANSparkMax.ControlType.kPosition);
+    targetPosition.applyToMotors();
   }
 
 
