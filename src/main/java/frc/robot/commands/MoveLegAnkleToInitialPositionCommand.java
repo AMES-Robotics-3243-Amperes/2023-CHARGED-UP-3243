@@ -7,10 +7,10 @@ package frc.robot.commands;
 import frc.robot.Constants;
 import frc.robot.subsystems.LegAnkleSubsystem;
 
-public class MoveLegAnkleToPickupPositionCommand extends MoveLegAnkleToPositionCommand {
+public class MoveLegAnkleToInitialPositionCommand extends MoveLegAnkleToPositionCommand {
   /** Creates a new MoveLegAnkleToPickupPositionCommand. */
-  public MoveLegAnkleToPickupPositionCommand(LegAnkleSubsystem legAnkleSubsystem) {
-    super(legAnkleSubsystem, Constants.AutomationConfiguration.legAnklePickupPosition);
+  public MoveLegAnkleToInitialPositionCommand(LegAnkleSubsystem legAnkleSubsystem) {
+    super(legAnkleSubsystem, Constants.AutomationConfiguration.initialLegAnklePosiitonMovement);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 }
