@@ -8,7 +8,12 @@ import frc.robot.Constants;
 import frc.robot.subsystems.LegAnkleSubsystem;
 
 public class MoveLegAnkleToPickupPositionCommand extends MoveLegAnkleToPositionCommand {
-  /** Creates a new MoveLegAnkleToPickupPositionCommand. */
+  /** Creates a new MoveLegAnkleToPickupPositionCommand. 
+   * 
+   * This will move the leg ankle to the pickup position. It will end when it is in an acceptable margin of the setpoints.
+   * 
+   * @param legAnkleSubsystem The {@link LegAnkleSubsystem} that this is controlling.
+  */
   public MoveLegAnkleToPickupPositionCommand(LegAnkleSubsystem legAnkleSubsystem) {
     super(legAnkleSubsystem, Constants.AutomationConfiguration.legAnklePickupPosition);
     // Use addRequirements() here to declare subsystem dependencies.

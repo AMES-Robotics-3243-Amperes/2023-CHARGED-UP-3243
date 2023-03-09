@@ -19,7 +19,17 @@ public class MoveLegAnkleToPositionCommand extends CommandBase {
   
   
 
-  /** Creates a new MoveLegAnkleToExtension. */
+  /**Creates a new MoveLegAnkleToPositionCommand. 
+   * H!
+   * 
+   * This will move the leg ankle to the positions entered when scheduled. It will end when it is in an acceptable margin of the setpoints.
+   * 
+   * @param legAnkleSubsystem The {@link LegAnkleSubsystem} that this is controlling.
+   * @param targetExtension The extension value to go to.
+   * @param targetPivot The pivot value to go to.
+   * @param targetPitch The pitch value to go to.
+   * @param targetRoll The roll value to go to.
+  */
   public MoveLegAnkleToPositionCommand(LegAnkleSubsystem legAnkleSubsystem, double targetExtension, double targetPivot, double targetPitch, double targetRoll) {
     this.targetExtension = targetExtension;
     this.targetPivot = targetPivot;
@@ -31,10 +41,25 @@ public class MoveLegAnkleToPositionCommand extends CommandBase {
     addRequirements(legAnkleSubsystem);
   }
 
+  /**Creates a new MoveLegAnkleToPositionCommand. 
+   * H!
+   * 
+   * This will move the leg ankle to the positions entered when scheduled. It will end when it is in an acceptable margin of the setpoints.
+   * 
+   * @param legAnkleSubsystem The {@link LegAnkleSubsystem} that this is controlling.
+   * @param target A {@link LegAnklePosition} containing the positions to move to.
+  */
   public MoveLegAnkleToPositionCommand(LegAnkleSubsystem legAnkleSubsystem, LegAnklePosition target) {
     this(legAnkleSubsystem, target.extension, target.pivot, target.pitch, target.roll);
   }
 
+  /**Creates a new MoveLegAnkleToPositionCommand. 
+   * H!
+   * 
+   * This constructor will not set the target positions, so use it at your own risk!
+   * 
+   * @param legAnkleSubsystem The {@link LegAnkleSubsystem} that this is controlling.
+  */
   protected MoveLegAnkleToPositionCommand(LegAnkleSubsystem legAnkleSubsystem) {
     this.legAnkleSubsystem = legAnkleSubsystem;
 

@@ -8,7 +8,12 @@ import frc.robot.Constants;
 import frc.robot.subsystems.LegAnkleSubsystem;
 
 public class MoveLegAnkleToInitialPositionCommand extends MoveLegAnkleToPositionCommand {
-  /** Creates a new MoveLegAnkleToPickupPositionCommand. */
+  /** Creates a new MoveLegAnkleToPickupPositionCommand. 
+   * 
+   * This will move the leg ankle to the inital position, to disengage the pawl. It will end when it is in an acceptable margin of the setpoints.
+   * 
+   * @param legAnkleSubsystem The {@link LegAnkleSubsystem} that this is controlling.
+  */
   public MoveLegAnkleToInitialPositionCommand(LegAnkleSubsystem legAnkleSubsystem) {
     super(legAnkleSubsystem, Constants.AutomationConfiguration.initialLegAnklePosiitonMovement);
     // Use addRequirements() here to declare subsystem dependencies.

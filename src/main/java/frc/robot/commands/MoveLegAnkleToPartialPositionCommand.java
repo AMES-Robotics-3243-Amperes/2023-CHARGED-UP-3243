@@ -8,7 +8,18 @@ import frc.robot.subsystems.LegAnkleSubsystem;
 import frc.robot.utility_classes.LegAnklePosition;
 
 public class MoveLegAnkleToPartialPositionCommand extends MoveLegAnkleToPositionCommand {
-  /** Creates a new MoveLegAnkleToPartialAxes. */
+
+  /**Creates a new MoveLegAnkleToPositionCommand. 
+   * H!
+   * 
+   * This will move the leg ankle to the positions entered when scheduled. It will end when it is in an acceptable margin of the setpoints. You can also enter null for the values and it will not affect that axis.
+   * 
+   * @param legAnkleSubsystem The {@link LegAnkleSubsystem} that this is controlling.
+   * @param targetExtension The extension value to go to, or null if you'd like it to not affect this axis.
+   * @param targetPivot The pivot value to go to, or null if you'd like it to not affect this axis.
+   * @param targetPitch The pitch value to go to, or null if you'd like it to not affect this axis.
+   * @param targetRoll The roll value to go to, or null if you'd like it to not affect this axis.
+  */
   public MoveLegAnkleToPartialPositionCommand(LegAnkleSubsystem legAnkleSubsystem, Double targetExtension, Double targetPivot, Double targetPitch, Double targetRoll) {
     super(legAnkleSubsystem);
 
