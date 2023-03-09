@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.JoyUtil;
 import frc.robot.Constants.JoyUtilConstants;
 import frc.robot.subsystems.LegAnkleSubsystem;
+import frc.robot.utility_classes.LegAnklePosition;
 
 public class WristCommand extends CommandBase {
   /**
@@ -34,7 +35,7 @@ public class WristCommand extends CommandBase {
     // m_subsystem.moveByXYTheta(JoyUtil.posWithDeadzone( m_controller.getLeftX() ), JoyUtil.posWithDeadzone(
     // -m_controller.getLeftY() ), JoyUtil.posWithDeadzone( m_controller.getRightY() ), JoyUtil.posWithDeadzone(
     // -m_controller.getRightX()));
-    LegAnkleSubsystem.MotorPos currentTargets = m_subsystem.getManualSetpoints();
+    LegAnklePosition currentTargets = m_subsystem.getManualSetpoints();
 
     m_subsystem.setMotorPositions(
       currentTargets.pivot, 

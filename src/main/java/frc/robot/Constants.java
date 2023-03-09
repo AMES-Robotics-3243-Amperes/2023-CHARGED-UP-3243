@@ -12,6 +12,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import frc.robot.subsystems.LegAnkleSubsystem;
+import frc.robot.utility_classes.LegAnklePosition;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -458,9 +460,29 @@ public final class Constants {
   /**
    * H! Constants for what automation stuff needs to do --------------------------------
    */
-  public static final class AutomationConfigure {
+  public static final class AutomationConfiguration {
+    /**The position the leg ankle will try to move to at the beginning of the match
+     * H!
+     */
+    public static final LegAnklePosition initialLegAnklePosiitonMovement = LegAnkleSubsystem.IK(
+      -0.2,
+      0.80,
+      -Math.PI / 2,
+      0.0
+    );
+
+    /**The position of the leg ankle to easily pick up game pieces
+     * H!
+     */
+    public static final LegAnklePosition legAnklePickupPosition = new LegAnklePosition(
+      0, 
+      0, 
+      0, 
+      0
+    );
+
     // H! TODO: None of these constants are right
-    public static final class Cone {
+    /*public static final class Cone {
       public static final class HighTarget {
         public static final double armX = 0.0;
         public static final double armY = 0.0;
@@ -504,7 +526,7 @@ public final class Constants {
         public static final double armPitch = 0.0;
         public static final double armRoll = 0.0;
       }
-    }
+    }*/
 
   }
 

@@ -7,15 +7,15 @@ package frc.robot.commands;
 import frc.robot.Constants;
 import frc.robot.subsystems.LegAnkleSubsystem;
 
-public class MoveLegAnkleToPickupPositionCommand extends MoveLegAnkleToPositionCommand {
+public class MoveLegAnkleToInitialPositionCommand extends MoveLegAnkleToPositionCommand {
   /** Creates a new MoveLegAnkleToPickupPositionCommand. 
    * 
-   * This will move the leg ankle to the pickup position. It will end when it is in an acceptable margin of the setpoints.
+   * This will move the leg ankle to the inital position, to disengage the pawl. It will end when it is in an acceptable margin of the setpoints.
    * 
    * @param legAnkleSubsystem The {@link LegAnkleSubsystem} that this is controlling.
   */
-  public MoveLegAnkleToPickupPositionCommand(LegAnkleSubsystem legAnkleSubsystem) {
-    super(legAnkleSubsystem, Constants.AutomationConfiguration.legAnklePickupPosition);
+  public MoveLegAnkleToInitialPositionCommand(LegAnkleSubsystem legAnkleSubsystem) {
+    super(legAnkleSubsystem, Constants.AutomationConfiguration.initialLegAnklePosiitonMovement);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 }

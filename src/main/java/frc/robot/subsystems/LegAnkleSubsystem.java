@@ -6,73 +6,21 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
-
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.utility_classes.LegAnklePosition;
 import frc.robot.utility_classes.SemiAbsoluteEncoder;
 
 import static frc.robot.Constants.WristAndArm.*;
 
 public class LegAnkleSubsystem extends SubsystemBase {
-
-  /**H! Holds a set of motor positions the robot could go to.
-   * 
-   */
-  public class MotorPos {
-    public double extension;
-    public double pivot;
-    public double pitch;
-    public double roll; 
-
-    /**H! Creates a new motor position given the extension, pivot, pitch, and roll positions.
-     * 
-     * @param extension
-     * @param pivot
-     * @param pitch
-     * @param roll
-     */
-    public MotorPos(double extension, double pivot, double pitch, double roll) {
-      this.extension = extension;
-      this.pivot = pivot;
-      this.pitch = pitch;
-      this.roll = roll;
-    }
-
-    /**H! Gets the x, y, robot relative pitch, and roll
-     * 
-     * @return An array of the x, y, robot relative pitch, and roll
-     */
-    public double[] getKinematicPositions() {
-      return new double[] { 
-        (extension * Math.cos(Units.rotationsToRadians(pivot)))  +  (wristLength * Math.cos(Units.rotationsToRadians(pivot + pitch - 0.5))),
-        (extension * Math.sin(Units.rotationsToRadians(pivot)))  +  (wristLength * Math.sin(Units.rotationsToRadians(pivot + pitch - 0.5))),
-        Units.rotationsToRadians( pivot + pitch - 0.5 ),
-        Units.rotationsToRadians( roll )
-      };
-    }
-
-    /**H! Set the refrences for the pids to this motor position
-     * 
-     */
-    public void applyToMotors() {
-      pidExtension.setReference(extension, CANSparkMax.ControlType.kPosition);
-      pidPivot.setReference(pivot, CANSparkMax.ControlType.kPosition);
-      pidPitch.setReference(pitch, CANSparkMax.ControlType.kPosition);
-      pidRoll.setReference(roll, CANSparkMax.ControlType.kPosition);
-    }
-  }
-
 
   /**Performs inverse kinematics to get motor positions for given robot relative positions
    * H!
@@ -82,9 +30,9 @@ public class LegAnkleSubsystem extends SubsystemBase {
    * @param pitch The pitch relative to the horizontal forward direction in radians
    * @param roll The roll where 0 is up in radians
    * 
-   * @return A {@link MotorPos} object with the positions the motors should go to to acomplish this
+   * @return A {@link LegAnklePosition} object with the positions the motors should go to to acomplish this
    */
-  public MotorPos IK(double x, double y, double pitch, double roll) {
+  public static LegAnklePosition IK(double x, double y, double pitch, double roll) {
     // H! Inverse kinematics: see more detailed math here: https://www.desmos.com/calculator/l89yzwijul \
     double targetArmAngle = pivotEncoderOffset + Math.atan2(y - Constants.WristAndArm.wristLength * Math.sin(pitch),   x - Constants.WristAndArm.wristLength * Math.cos(pitch) );
     /*
@@ -111,7 +59,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
     // 0.5 is up for the roll encoder, but 0 for the inverse kinematics
     targetWristRoll += 0.5;
 
-    return new MotorPos(targetArmLength, targetArmAngle, targetWristAngle, targetWristRoll);
+    return new LegAnklePosition(targetArmLength, targetArmAngle, targetWristAngle, targetWristRoll);
   }
 
 
@@ -155,8 +103,8 @@ public class LegAnkleSubsystem extends SubsystemBase {
   private RelativeEncoder encoderPitchLeader = motorPitchLeader.getEncoder();
   private RelativeEncoder encoderPitchFollower = motorPitchFollower.getEncoder();
 
-  private final MotorPos startingPosition = IK(StartingPosition.x, StartingPosition.y, StartingPosition.pitch, StartingPosition.roll);
-  private MotorPos targetPosition = startingPosition;
+  private final LegAnklePosition startingPosition = IK(StartingPosition.x, StartingPosition.y, StartingPosition.pitch, StartingPosition.roll);
+  private LegAnklePosition targetPosition = startingPosition;
 
   // H! FOR TESTING PURPOSES
   private ShuffleboardTab tab = Shuffleboard.getTab("Arm Testing");
@@ -333,9 +281,9 @@ public class LegAnkleSubsystem extends SubsystemBase {
   /**Set the motor positions the legAnkle will go to 
    * H!
    * 
-   * @param newPosition A {@link MotorPos} object with the positions to go to
+   * @param newPosition A {@link LegAnklePosition} object with the positions to go to
    */
-  public void setMotorPositions(MotorPos newPosition) {
+  public void setMotorPositions(LegAnklePosition newPosition) {
     targetPosition = newPosition;
   }
 
@@ -348,7 +296,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
    * @param roll The roll to go to
    */
   public void setMotorPositions(double extension, double pivot, double pitch, double roll) {
-    setMotorPositions(new MotorPos(extension, pivot, pitch, roll));
+    setMotorPositions(new LegAnklePosition(extension, pivot, pitch, roll));
   }
 
   /**Moves the motor positions the legAnkle will go to by a given amount
@@ -437,9 +385,9 @@ public class LegAnkleSubsystem extends SubsystemBase {
   /**Returns the current setpoints that the leg ankle is trying to go to
    * H!
    * 
-   * @return The current setpoints that the leg ankle is trying to go to in the form of a {@link MotorPos} object
+   * @return The current setpoints that the leg ankle is trying to go to in the form of a {@link LegAnklePosition} object
    */
-  public MotorPos getManualSetpoints() {
+  public LegAnklePosition getManualSetpoints() {
     return targetPosition;
   }
 
