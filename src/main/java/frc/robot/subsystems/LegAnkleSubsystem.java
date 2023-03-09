@@ -9,6 +9,8 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
+
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -375,6 +377,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
    * 
    * @deprecated Using direct motor speeds is unideal, use {@link changeMotorPositions} to change the position the leg will try to go to
    */
+  @Deprecated
   public void setMotorSpeeds(double pivot, double extension, double pitch, double roll) {
     motorExtension.set(extension / 10);
     motorPivot.set(pivot / 10);
@@ -458,7 +461,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
     // ++ ----------------------
 
     // H! Set the position refrences
-    targetPosition.applyToMotors();
+    targetPosition.applyToMotors(pidExtension, pidPivot, pidPitch, pidRoll);
   }
 
 
