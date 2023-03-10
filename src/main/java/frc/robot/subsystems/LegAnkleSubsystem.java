@@ -160,7 +160,14 @@ public class LegAnkleSubsystem extends SubsystemBase {
     rollDValue = tab.add("Rol D Value", PID.Roll.D).getEntry();
     rollFFValue = tab.add("Rol FF Value", PID.Roll.FF).getEntry();
 
-    motorPitchFollower.follow(motorPitchLeader);
+    // H! Invert the motors that need to be inverted
+    motorExtension.setInverted(true);
+    motorRoll.setInverted(true);
+    motorPivot.setInverted(false);
+    motorPitchRight.setInverted(true);
+
+
+    motorPitchFollower.follow(motorPitchLeader, true);
 
     pidPivot = motorPivot.getPIDController();
     pidExtension = motorExtension.getPIDController();
@@ -176,14 +183,10 @@ public class LegAnkleSubsystem extends SubsystemBase {
     // H! Set the position conversion factors. Pivot is commented out because it didn't want to set. It's burned to flash manually
     encoderExtension.setPositionConversionFactor(extensionEncoderConversionFactor);
     //armPivotEncoder.setPositionConversionFactor(1/10);//(1 / 100) * (35/50) * (21/32) = 0.00459357
-    encoderPivotAbsolute.setPositionConversionFactor(0.65625); // TODO :D Check this value
+    encoderPivotAbsolute.setPositionConversionFactor(pivotEncoderConversionFactor); // TODO :D Check this value
     encoderPitchRight.setPositionConversionFactor(pitchEncoderConversionFactor);
     encoderPitchLeft.setPositionConversionFactor(pitchEncoderConversionFactor);
     
-    
-    motorExtension.setInverted(true);
-    motorRoll.setInverted(true);
-    motorPivot.setInverted(true);
     
 
     
@@ -360,7 +363,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
     // H! Return whether it's in the right position
     // H! TODO TEST THIS
     return (
-      Math.abs( encoderPivotRelative.getPosition() - targetPosition.pivot ) < atSetpointThreshold &&
+      Math.abs( encoderPivotAbsolute.getPosition() - targetPosition.pivot ) < atSetpointThreshold &&
       Math.abs( encoderExtension.getPosition() - targetPosition.extension ) < atSetpointThreshold &&
       Math.abs( encoderPitch.getPosition() - targetPosition.pitch ) < atSetpointThreshold &&
       Math.abs( encoderRoll.getPosition() - targetPosition.roll ) < atSetpointThreshold
@@ -416,8 +419,8 @@ public class LegAnkleSubsystem extends SubsystemBase {
     double[] kinematicSetpoints = targetPosition.getKinematicPositions();
     SmartDashboard.putNumber("targetX", kinematicSetpoints[0]);
     SmartDashboard.putNumber("targetY", kinematicSetpoints[1]);
-    SmartDashboard.putNumber("targetPitch", kinematicSetpoints[2]);
-    SmartDashboard.putNumber("targetRoll", kinematicSetpoints[3]);
+    SmartDashboard.putNumber("targetIKPitch", kinematicSetpoints[2]);
+    SmartDashboard.putNumber("targetIKRoll", kinematicSetpoints[3]);
 
     // H! display the current setpoint positions
     SmartDashboard.putNumber("targetPivot", targetPosition.pivot);
@@ -432,7 +435,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("rollCurrent", motorRoll.getOutputCurrent());
 
     // H! display current positions of the leg ankle
-    SmartDashboard.putNumber("pivotEncoder", encoderPivotRelative.getPosition());    
+    SmartDashboard.putNumber("pivotEncoder", encoderPivotAbsolute.getPosition());    
     SmartDashboard.putNumber("extensionEncoder", encoderExtension.getPosition());
     SmartDashboard.putNumber("pitchEncoder", encoderPitch.getPosition());
     SmartDashboard.putNumber("rollEncoder", encoderRoll.getPosition());
@@ -448,7 +451,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
     // H! If the limit switch is triggered, we're at min extension.
     SmartDashboard.putBoolean("limit switch pressed", extensionLimitSwitch.get());
     if (extensionLimitSwitch.get()) {
-      encoderExtension.setPosition(Limits.extensionMin);
+      //encoderExtension.setPosition(Limits.extensionMin); Disabled because mechanical keeps not doing the limit switch properly
     }
 
     // ++ clamp values to be safe -------------------------------------------

@@ -306,6 +306,7 @@ public final class Constants {
 
     public static final double extensionEncoderConversionFactor = (Units.inchesToMeters(2.707) * Math.PI) / (36);
     public static final double pitchEncoderConversionFactor = 1/60;
+    public static final double pivotEncoderConversionFactor = 42/60;
     
 
     // ++ pitch limits
@@ -340,7 +341,7 @@ public final class Constants {
     public static final int NEO550CurrentLimitHard = 30; // H! This is a temporary change! It was 20 before.
     public static final double atSetpointThreshold = 0.005;
 
-    public static final double pivotOutputRange = 0.65;
+    public static final double pivotOutputRange = 0.1;
     public static final double wristRollEncoderSetZeroOffset = 0.163;
 
     /**
@@ -372,17 +373,17 @@ public final class Constants {
 
     public static class PID {
       public static class Extension {
-        public static final double P = 2.0 * 0;// H! 2.0
+        public static final double P = 2.0;// H! 2.0
         public static final double I = 0.0;
         public static final double D = 0.0;
-        public static final double FF = 0.01 * 0;
+        public static final double FF = 0.01;
       }
 
       public static class Pivot {
-        public static final double P = 5.0 * 0;// H! 5.0
+        public static final double P = 5.0;// H! 5.0
         public static final double I = 0.0;
         public static final double D = 0.0;
-        public static final double FF = 0.1 * 0;
+        public static final double FF = 0.1;
       }
 
       public static class Pitch {

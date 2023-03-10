@@ -37,20 +37,20 @@ public class WristCommand extends CommandBase {
     // -m_controller.getRightX()));
     LegAnklePosition currentTargets = m_subsystem.getManualSetpoints();
 
-    m_subsystem.setMotorPositions(
+    /*m_subsystem.setMotorPositions(
       currentTargets.pivot, 
       currentTargets.extension, 
       m_controller.getPOVYAxis() > 0.6 ? (0.55) : ( m_controller.getPOVYAxis() < -0.6 ? (0.8) : currentTargets.pitch), 
       currentTargets.roll
-    );
+    );*/
     //System.out.println(m_controller.getDPadY());
 
 
     //&& Fast/slow mode for the LegAnkle using analog triggers
     m_subsystem.changeMotorPositions(
-      MathUtil.applyDeadband(m_controller.getRightTriggerAxis() - m_controller.getLeftTriggerAxis(), JoyUtilConstants.kDeadzone) / 7,
-      m_controller.getLeftY() / -5,
-      m_controller.getRightY() / -2,
+      MathUtil.applyDeadband(m_controller.getRightTriggerAxis() - m_controller.getLeftTriggerAxis(), JoyUtilConstants.kDeadzone) / 200,
+      m_controller.getLeftY() / -150,
+      m_controller.getRightY() / -150,
       0 //(m_controller.getRightX()) / 5
     );
     
