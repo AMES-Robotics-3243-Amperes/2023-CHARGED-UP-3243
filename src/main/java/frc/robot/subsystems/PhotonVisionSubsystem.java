@@ -116,9 +116,8 @@ public class PhotonVisionSubsystem extends SubsystemBase {
           // :> Uses the official Photonvision function to take in all of the previous data and get a field position
           // from it.
           /* It does this for both cameras that way it can get the most accurate position possible. The reason why
-          this system is used is because you can't estimate
-           */
-          /* any data except for Pose3Ds which is essential for getting good positonal data
+            this system is used is because you can't estimate any data except for Pose3Ds which is essential for
+            getting good positonal data
            */
           robotPoses.add(PhotonUtils.estimateFieldToRobotAprilTag(cameraToTarget, tagPose.get(), camsToBot.get(i)));
           // if (tagPoses.get(i).isPresent()) {
