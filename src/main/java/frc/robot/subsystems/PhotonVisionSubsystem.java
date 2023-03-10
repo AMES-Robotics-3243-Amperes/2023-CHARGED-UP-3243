@@ -219,11 +219,14 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 
   // :> Returns the best and all targets it can see and if it doesn't see any it returns null
   /* It also needs a camera to do this and takes all the data from the camera that it can find
-   */
+   */ 
   private PhotonTrackedTarget getBestTarget(PhotonCamera cam) {
     PhotonPipelineResult result = cam.getLatestResult();
-
-    return result.getBestTarget();
+    PhotonTrackedTarget target = result.getBestTarget();
+    if (target != null && target.getPoseAmbiguity() > .5 ){
+        return null;
+    }
+    return target;
   }
 
   /**
