@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.WristAndArm.Limits;
 import frc.robot.utility_classes.LegAnklePosition;
 import frc.robot.utility_classes.SemiAbsoluteEncoder;
 
@@ -447,12 +448,24 @@ public class LegAnkleSubsystem extends SubsystemBase {
     // H! If the limit switch is triggered, we're at min extension.
     SmartDashboard.putBoolean("limit switch pressed", extensionLimitSwitch.get());
     if (extensionLimitSwitch.get()) {
-      encoderExtension.setPosition(minLength);
+      encoderExtension.setPosition(Limits.extensionMin);
     }
 
     // ++ clamp values to be safe -------------------------------------------
     // H! Prevent arm from extending too much or too little
-    targetPosition.extension = clamp(minLength, maxLength, targetPosition.extension);
+    targetPosition.extension = clamp(Limits.extensionMin, Limits.extensionMax, targetPosition.extension);
+
+    // H! Prevent arm from pivoting too much or too little
+    targetPosition.pivot = clamp(Limits.pivotMin, Limits.pivotMax, targetPosition.pivot);
+
+    // H! Prevent arm from pivoting too much or too little
+    targetPosition.pitch = clamp(Limits.pitchMin, Limits.pitchMax, targetPosition.pitch);
+
+    // H! Prevent arm from pivoting too much or too little
+    targetPosition.roll = clamp(Limits.rollMin, Limits.rollMax, targetPosition.roll);
+
+
+    // H! NOTE: If you add xy limits, make sure to remove the comment in constants saying they're only used with IK
     
     // ++ pivot
     // targetPosition.pivot = clamp(minPivotPos, maxPivotPos, targetPosition.pivot);

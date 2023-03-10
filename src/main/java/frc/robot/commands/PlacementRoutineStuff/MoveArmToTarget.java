@@ -11,26 +11,21 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.FieldPosManager;
 import frc.robot.JoyUtil;
+import frc.robot.commands.MoveLegAnkleToPositionCommand;
 import frc.robot.subsystems.LegAnkleSubsystem;
+import frc.robot.utility_classes.LegAnklePosition;
 
-public class MoveArmToTarget extends CommandBase {
+public class MoveArmToTarget extends MoveLegAnkleToPositionCommand {
   private boolean isCube;
-  private LegAnkleSubsystem legAnkleSubsystem;
   private FieldPosManager.fieldSpot3d target;
 
-  private double targetX;
-  private double targetY;
-  private double targetPitch = 0;
-  private double targetRoll = 0;
   private int targetIndex;
   private FieldPosManager fieldPosManager;
   private JoyUtil controller;
 
-  private boolean isDone;
-
-
   /** Creates a new MoveArmToTarget. */
   public MoveArmToTarget(int targetIndex, boolean isCube, FieldPosManager.fieldSpot3d target, LegAnkleSubsystem legAnkleSubsystem, FieldPosManager fieldPosManager, JoyUtil controller) {
+    super(legAnkleSubsystem);
     this.isCube = isCube;
     this.legAnkleSubsystem = legAnkleSubsystem;
     this.target = target;
@@ -41,7 +36,6 @@ public class MoveArmToTarget extends CommandBase {
     addRequirements(legAnkleSubsystem);
 
     setTargetPositions();
-    
   }
 
 
@@ -54,31 +48,31 @@ public class MoveArmToTarget extends CommandBase {
 
     // ++ targets x, y, and z are the components of the translation3D between the arm pivot and the scoring position
     // ++ the X direction is in the length of the field 
-    targetX = pivotToScoringPos.getX();
-    targetY = pivotToScoringPos.getZ();
+    double targetX = pivotToScoringPos.getX();
+    double targetY = pivotToScoringPos.getZ();
+
+    LegAnklePosition newTargetPosition = LegAnkleSubsystem.IK(targetX, targetY, 0, 0);
+
+    targetExtension = newTargetPosition.extension;
+    targetPivot = newTargetPosition.pivot;
+    targetPitch = newTargetPosition.pitch;
+    targetRoll = newTargetPosition.roll;
   }
 
   
-
-
-
-  // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    legAnkleSubsystem.setKinematicPositions(targetX, targetY, targetPitch, targetRoll);
-  }
+  public void execute() {
+    // H! If the DPAD is up, go to the high goal. If it's in the middle, go to the middle goal. If it's down, go to the low goal.
+    if (controller.getPOVUp() ||  controller.getPOVUpRight() || controller.getPOVUpLeft()) {
+      target = FieldPosManager.fieldSpot3d.highGrabberScoring;      
+    } else if (controller.getPOVDown() ||  controller.getPOVDownRight() || controller.getPOVDownLeft()) {
+      target = FieldPosManager.fieldSpot3d.lowGrabberScoring;      
+    } else {
+      target = FieldPosManager.fieldSpot3d.middleGrabberScoring;
+    }
 
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {}
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {}
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return legAnkleSubsystem.isArmPositioned();
+    setTargetPositions();
+    
+    super.execute();
   }
 }
