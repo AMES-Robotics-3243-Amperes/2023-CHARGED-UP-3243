@@ -311,20 +311,14 @@ public final class Constants {
 
     public static final double extensionEncoderConversionFactor = (Units.inchesToMeters(2.707) * Math.PI) / (36);
     public static final double pitchEncoderConversionFactor = 1/60;
-    // H! Holds the data for the positions of stuff in the arm
-    public static final double minLength = 0.92804 + 0.05;
-    public static final double maxLength = minLength + Units.inchesToMeters(30);//1.5494;
-
-    // ++ pivot limits
-    public static final double maxPivotPos = 1.2;
-    public static final double minPivotPos = 0.46;
+    
 
     // ++ pitch limits
     // public static final double maxPitchPos;
     // public static final double minPitchPos;
 
     // ++ ------- pickup points -------
-    public static final double pivotPickupPos = minPivotPos;
+    public static final double pivotPickupPos = Limits.pivotMin;
     public static final double extensionPickupPos = 0.99;
     public static final double rollPickupPos = 0.55;
     public static final double pitchPickupPos = 0.0;
@@ -338,11 +332,6 @@ public final class Constants {
     public static final double changeYMultiplier = 0.10 / 50;
     public static final double changePitchMultiplier = Units.degreesToRadians(15) / 50;
     public static final double changeRollMultiplier = Units.degreesToRadians(15) / 50;
-    //&& x and y max and min from pivot in meters
-    public static final double maxX = 0.535069 + 1.2192;
-    public static final double minX = -0.277731 - 1.2192;
-    public static final double maxY = 1.9812 - 0.476364;
-    public static final double minY = 0 - 0.476364;
     public static final int pivotCurrentLimit = 39; // H! This is a temporary change! It was 30 before. // :D hi I just changed this from 30 to 40
     public static final int extensionCurrentLimit = 15; // H! This is a temporary change! It was 20 before. // :D hi I just changed this from 10 to 30
     public static final int pitchCurrentLimit = 29; // H! This is a temporary change! It was 10 before. // :D hi I just changed this from 30 to 15
@@ -409,6 +398,32 @@ public final class Constants {
         public static final double D = 0.01;
         public static final double FF = 0.1;
       }
+    }
+
+    /** All the maximums, minimums, and other values associated with stoping the legAnkle from
+     * destroying itself, or breaking FRC rules.
+     * H!
+     */
+    public static final class Limits {
+      //&& x and y max and min from pivot in meters (H! to avoid breaking the height limits and distance from frame perimeter limit, that is)
+      // H! Note this currently are only applied when using IK
+      public static final double maxX = 0.535069 + 1.2192;
+      public static final double minX = -0.277731 - 1.2192;
+      public static final double maxY = 1.9812 - 0.476364;
+      public static final double minY = 0 - 0.476364;
+
+      // H! Extension limits
+      public static final double extensionMin = 0.92804 /*+ 0.05*/;
+      public static final double extensionMax = extensionMin + Units.inchesToMeters(30);//1.5494;
+      // ++ pivot limits
+      public static final double pivotMax = 0.6;
+      public static final double pivotMin = -0.1;
+      // H! Pitch limitssssessss
+      public static final double pitchMax = 0.95;
+      public static final double pitchMin = 0.05;
+      // H! Roll lime-ets
+      public static final double rollMax = 1.0;
+      public static final double rollMin = 0.0;
     }
   }
 
