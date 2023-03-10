@@ -53,6 +53,8 @@ public class RobotContainer {
   private final GrabberCloseCommand m_grabCloseCommand = new GrabberCloseCommand(m_GrabberSubsystem);
   private final GrabberOpenCommand m_grabOpenCommand = new GrabberOpenCommand(m_GrabberSubsystem);
 
+  public final MoveLegAnkleToPickupPositionCommand m_moveLegAnkleToPickupPositionCommand = new MoveLegAnkleToPickupPositionCommand(m_legAnkleSubsystem);
+
   //private final PlaceGamePiece m_placeGamePieceCommand;
 
   /**
@@ -104,6 +106,7 @@ public class RobotContainer {
     secondaryController.leftBumper().onTrue(m_grabOpenCommand);
     secondaryController.rightBumper().onTrue(m_grabCloseCommand);
     secondaryController.x().onTrue(m_legAnkleToPickupCommand);
+    secondaryController.y().onTrue(m_moveLegAnkleToPickupPositionCommand);
   }
 
   public void teleopInit() {}
