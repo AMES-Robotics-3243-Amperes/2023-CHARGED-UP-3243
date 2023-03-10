@@ -9,6 +9,8 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
+
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -458,7 +460,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
     // ++ ----------------------
 
     // H! Set the position refrences
-    targetPosition.applyToMotors();
+    // TODO: uncomment this and make this work ztargetPosition.applyToMotors();
   }
 
 

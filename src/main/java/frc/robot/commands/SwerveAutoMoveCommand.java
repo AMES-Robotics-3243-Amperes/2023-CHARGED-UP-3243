@@ -4,7 +4,7 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -17,15 +17,28 @@ public class SwerveAutoMoveCommand extends CommandBase {
   private final DriveSubsystem m_subsystem;
   private final Pose2d destination;
 
-  private final PIDController xPidController;
-  private final PIDController yPidController;
-  private final PIDController thetaPIDController;
+  private final ProfiledPIDController xPidController;
+  private final ProfiledPIDController yPidController;
+  private final ProfiledPIDController thetaPIDController;
 
   private final double maxDistanceFromSetpointMeters;
   private final Rotation2d maxAngleFromSetpoint;
 
-  public SwerveAutoMoveCommand(DriveSubsystem subsystem, Pose2d destination, PIDController xPidController,
-                               PIDController yPidController, PIDController thetaPIDController,
+  /**
+   * Crates a new {@link SwerveAutoMoveCommand}. The PID controllers
+   * will be manually configured with everything but constraints and
+   * P, I, and D values.
+   *
+   * @param subsystem                     the {@link DriveSubsystem} to control
+   * @param destination                   where to drive the {@link DriveSubsystem} to
+   * @param xPidController                the pid controller for moving the robot across the x-axis
+   * @param yPidController                the pid controller for moving the robot across the y-axis
+   * @param thetaPIDController            the pid controller for controlling rotation
+   * @param maxDistanceFromSetpointMeters farthest the robot can be from the destination to stop the command
+   * @param maxAngleFromSetpoint          farthest the robot can be from proper rotation to stop command
+   */
+  public SwerveAutoMoveCommand(DriveSubsystem subsystem, Pose2d destination, ProfiledPIDController xPidController,
+                               ProfiledPIDController yPidController, ProfiledPIDController thetaPIDController,
                                double maxDistanceFromSetpointMeters, Rotation2d maxAngleFromSetpoint) {
     this.m_subsystem = subsystem;
     this.destination = destination;
@@ -35,9 +48,11 @@ public class SwerveAutoMoveCommand extends CommandBase {
     this.maxDistanceFromSetpointMeters = maxDistanceFromSetpointMeters;
     this.maxAngleFromSetpoint = maxAngleFromSetpoint;
 
-    this.xPidController.setSetpoint(destination.getX());
-    this.yPidController.setSetpoint(destination.getY());
-    this.thetaPIDController.setSetpoint(destination.getRotation().getDegrees());
+    this.xPidController.setGoal(destination.getX());
+    this.yPidController.setGoal(destination.getY());
+    this.thetaPIDController.setGoal(destination.getRotation().getDegrees());
+
+    this.thetaPIDController.enableContinuousInput(-180, 180);
 
     addRequirements(m_subsystem);
   }
@@ -51,11 +66,13 @@ public class SwerveAutoMoveCommand extends CommandBase {
     double yOutput = yPidController.calculate(m_subsystem.getPose().getY());
     double thetaOutput = thetaPIDController.calculate(m_subsystem.getHeading().getDegrees());
 
-    m_subsystem.drive(xOutput, yOutput, thetaOutput, true);
+    m_subsystem.drive(xOutput, yOutput, -Math.toRadians(thetaOutput), true);
   }
 
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_subsystem.drive(0, 0, 0, false);
+  }
 
   @Override
   public boolean isFinished() {

@@ -84,6 +84,7 @@ public class FieldPosManager {
       Transform2d transform = new Transform2d(previousOdometryPose, latestOdometryPose);
       transformRobotPose(transform);
     }
+    
     hasPhotonPose = false;
   }
 
