@@ -5,11 +5,9 @@
 package frc.robot;
 
 import com.revrobotics.CANSparkMax.IdleMode;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.LegAnkleSubsystem;
@@ -54,14 +52,16 @@ public final class Constants {
     public static final double closedGrabberSetpoint = 0.48;
 
     // ++ current limits
-    public static final int hardOpenerMotorCurrentLimit = 30; 
+    public static final int hardOpenerMotorCurrentLimit = 30;
     public static final int hardWheelMotorCurrentLimit = 30;
-    public static final int softOpenerMotorCurrentLimit = 15; // ++ this will have to be changed to adequately compress game pieces
+    public static final int softOpenerMotorCurrentLimit = 15; // ++ this will have to be changed to adequately
+    // compress game pieces
     public static final int softWheelMotorCurrentLimit = 10; // ++ will have to be experimentally tuned
 
     // ++ gear ratios
-    public static final double grabberMotorOpenerGearRatio = (1/1); // ++ find actual values! // :D by the way, the absolute encoder is on the ouput shaft of the grabber, so the conversion is 1:1
-    public static final double wheelMotorGearRatio = (1/1);
+    public static final double grabberMotorOpenerGearRatio = (1 / 1); // ++ find actual values! // :D by the way, the
+    // absolute encoder is on the ouput shaft of the grabber, so the conversion is 1:1
+    public static final double wheelMotorGearRatio = (1 / 1);
 
     // ++ PID values
     public static final double openerMotorPGain = 2;
@@ -213,41 +213,37 @@ public final class Constants {
       public static final class AutoConstants {
 
         // <> max speeds (only for pathfinding, not controlling)
-        public static final double kMaxMetersPerSecond = 3;
-        public static final double kMaxAngularMetersPerSecond = 1 * Math.PI;
-        public static final double kMaxAngularAccelerationMetersPerSecond = 1.4 * Math.PI;
+        public static final double kMaxMetersPerSecond = 0.6;
+        public static final double kMaxAccelerationMetersPerSecond = 0.2;
+        public static final double kMaxAngularMetersPerSecond = 30;
+        public static final double kMaxAngularAccelerationMetersPerSecond = 10;
 
-        // <> pid constraints for turning
+        // <> pid values
+        public static final double kDrivingP = 0.3;
+        public static final double kDrivingI = 0.004;
+        public static final double kDrivingD = 0;
+
+        public static final double kTurningP = 0.1;
+        public static final double kTurningI = 0;
+        public static final double kTurningD = 0;
+
+        // <> max distances
+        public static final double maxMetersFromSetpoint = 0.2;
+        public static final Rotation2d maxRotationFromSetpoint = Rotation2d.fromDegrees(5);
+
+        // <> pid constraints
+        public static final TrapezoidProfile.Constraints kDrivingControllerConstraints =
+          new TrapezoidProfile.Constraints(kMaxMetersPerSecond, kMaxAccelerationMetersPerSecond);
+
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
           kMaxAngularMetersPerSecond, kMaxAngularAccelerationMetersPerSecond);
 
-        // pid controls
-        public static final double kMovementPInitial = 0.2;
-        public static final double kMovementIInitial = 0;
-        public static final double kMovementDInitial = 0;
+        // <> pid controllers
+        public static final ProfiledPIDController kDrivingPIDController = new ProfiledPIDController(kDrivingP,
+          kDrivingI, kDrivingD, kDrivingControllerConstraints);
 
-        //public static final double kMovementPTrajectoryEnd = 3;
-        //public static final double kMovementITrajectoryEnd = 0.5;
-        //public static final double kMovementDTrajectoryEnd = 0.1;
-
-        public static final double kTurningP = 0.7;
-        public static final double kTurningI = 0;
-        public static final double kTurningD = 0.00000002;
-
-        // <> config for generated trajectories
-        public static final TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
-          DriveConstants.AutoConstants.kMaxMetersPerSecond,
-          DriveConstants.AutoConstants.kMaxAngularMetersPerSecond).setKinematics(ChassisKinematics.kDriveKinematics);
-
-        public static final PIDController movementPidControllerInitial = new PIDController(kMovementPInitial,
-          kMovementIInitial, kMovementDInitial);
-
-        //public static final PIDController movementPidControllerTrajectoryEnd = new PIDController(
-        //  kMovementPTrajectoryEnd, kMovementITrajectoryEnd, kMovementDTrajectoryEnd);
-
-        // <> leniency for ending SwerveAutoMoveCommands
-        public static double angleLeniencyDegrees = 3;
-        public static double positionLeniencyMeters = 0.1;
+        public static final ProfiledPIDController kTurningPIDController = new ProfiledPIDController(kTurningP,
+          kTurningI, kTurningD, kThetaControllerConstraints);
       }
 
       public static final class BalanceConstants {
@@ -280,26 +276,22 @@ public final class Constants {
    * ++ constants for JOYSTICKS --------------------------------------------
    */
   public static class JoyUtilConstants {
-    // <> ports
-    public static int primaryControllerID = 0;
-    public static int secondaryControllerID = 1;
-
     // <> size of controller deadzone
     public static final double kDeadzone = 0.08;
-
     // <> max amount controller output can change per second
     public static final double kRateLimitLeft = 4;
     public static final double kRateLimitRight = 3.4;
-
     // <> curve stuff
     public static final int exponent1 = 1;
     public static final int exponent2 = 3;
     public static final double coeff1 = 0.4;
     public static final double coeff2 = 0.6;
-
     // <> fast and slow mode
     public static final double leftTriggerSpeedMultiplier = 1.5;
     public static final double rightTriggerSpeedMultiplier = 0.4;
+    // <> ports
+    public static int primaryControllerID = 0;
+    public static int secondaryControllerID = 1;
   }
 
   /**
@@ -307,7 +299,8 @@ public final class Constants {
    */
   public static final class WristAndArm {
 
-    public static final Translation3d pivotOffset = new Translation3d(Units.inchesToMeters(32)/2 - .27773100, 0, .44255 + Units.inchesToMeters(2.662500 / 2));
+    public static final Translation3d pivotOffset = new Translation3d(Units.inchesToMeters(32) / 2 - .27773100, 0,
+      .44255 + Units.inchesToMeters(2.662500 / 2));
 
     public static final double extensionEncoderConversionFactor = (Units.inchesToMeters(2.707) * Math.PI) / (36);
     public static final double pitchEncoderConversionFactor = 1/60;
@@ -325,18 +318,23 @@ public final class Constants {
 
 
     public static final double pivotEncoderOffset = 0.28125; // TODO :D check this value
-
-
     public static final double wristLength = Units.inchesToMeters(5)/*0.072327*/;
     public static final double changeXMultiplier = 0.10 / 50;
     public static final double changeYMultiplier = 0.10 / 50;
     public static final double changePitchMultiplier = Units.degreesToRadians(15) / 50;
     public static final double changeRollMultiplier = Units.degreesToRadians(15) / 50;
-    public static final int pivotCurrentLimit = 39; // H! This is a temporary change! It was 30 before. // :D hi I just changed this from 30 to 40
-    public static final int extensionCurrentLimit = 15; // H! This is a temporary change! It was 20 before. // :D hi I just changed this from 10 to 30
-    public static final int pitchCurrentLimit = 29; // H! This is a temporary change! It was 10 before. // :D hi I just changed this from 30 to 15
-    public static final int rollCurrentLimit = 5; // H! This is a temporary change! It was 10 before. // :D hi I just changed this from 2 to 5
-    public static final int NEO1650CurrentLimitHard = 40; // H! This is a temporary change! It was 40 before. // :D hi I just changed this from 20 to 60
+
+    
+    public static final int pivotCurrentLimit = 39; // H! This is a temporary change! It was 30 before. // :D hi I
+    // just changed this from 30 to 40
+    public static final int extensionCurrentLimit = 15; // H! This is a temporary change! It was 20 before. // :D hi
+    // I just changed this from 10 to 30
+    public static final int pitchCurrentLimit = 29; // H! This is a temporary change! It was 10 before. // :D hi I
+    // just changed this from 30 to 15
+    public static final int rollCurrentLimit = 5; // H! This is a temporary change! It was 10 before. // :D hi I just
+    // changed this from 2 to 5
+    public static final int NEO1650CurrentLimitHard = 40; // H! This is a temporary change! It was 40 before. // :D
+    // hi I just changed this from 20 to 60
     public static final int NEO550CurrentLimitHard = 30; // H! This is a temporary change! It was 20 before.
     public static final double atSetpointThreshold = 0.005;
 
@@ -372,16 +370,16 @@ public final class Constants {
 
     public static class PID {
       public static class Extension {
-        public static final double P  = 2.0 * 0;// H! 2.0
-        public static final double I  = 0.0;
-        public static final double D  = 0.0;
+        public static final double P = 2.0 * 0;// H! 2.0
+        public static final double I = 0.0;
+        public static final double D = 0.0;
         public static final double FF = 0.01 * 0;
       }
 
       public static class Pivot {
-        public static final double P  = 5.0;// H! 5.0
-        public static final double I  = 0.0;
-        public static final double D  = 0.0;
+        public static final double P = 5.0 * 0;// H! 5.0
+        public static final double I = 0.0;
+        public static final double D = 0.0;
         public static final double FF = 0.1 * 0;
       }
 

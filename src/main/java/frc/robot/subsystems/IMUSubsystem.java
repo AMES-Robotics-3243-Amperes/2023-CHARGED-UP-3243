@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -33,15 +32,6 @@ public class IMUSubsystem extends SubsystemBase {
     Rotation2d raw_angle = m_imu.getRotation2d();
 
     return Constants.DriveTrain.DriveConstants.kGyroReversed ? raw_angle.times(-1) : raw_angle;
-  }
-
-  /**
-   * <>
-   *
-   * @return the displacement from starting position that the imu reads
-   */
-  public Translation2d getDisplacement() {
-    return new Translation2d(m_imu.getDisplacementX(), m_imu.getDisplacementY());
   }
 
   /**
