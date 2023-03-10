@@ -451,7 +451,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
     // H! If the limit switch is triggered, we're at min extension.
     SmartDashboard.putBoolean("limit switch pressed", extensionLimitSwitch.get());
     if (extensionLimitSwitch.get()) {
-      encoderExtension.setPosition(Limits.extensionMin);
+      //encoderExtension.setPosition(Limits.extensionMin); Disabled because mechanical keeps not doing the limit switch properly
     }
 
     // ++ clamp values to be safe -------------------------------------------
