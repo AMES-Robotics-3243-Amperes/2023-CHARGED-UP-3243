@@ -40,7 +40,6 @@ public class PhotonVisionSubsystem extends SubsystemBase {
     new Pose3d(Units.inchesToMeters(-2), Units.inchesToMeters(0), Units.inchesToMeters(14.5),
       new Rotation3d(0, 0, Units.degreesToRadians(180))), new Pose3d());
   public static ArrayList<PhotonTrackedTarget> targets = new ArrayList<PhotonTrackedTarget>();
-  // :> robotPoses can be turned into a non static array that is defined right above Check Robot Pose, done
   public static ArrayList<Optional<Pose3d>> tagPoses = new ArrayList<Optional<Pose3d>>();
   // :> the = new ArrayList is because the code interprets the array as null otherwise.
   static List<Transform3d> camsToBot = Arrays.asList(camToBot1, camToBot2);
@@ -60,7 +59,9 @@ public class PhotonVisionSubsystem extends SubsystemBase {
   public PhotonVisionSubsystem(FieldPosManager field) {
     m_field = field;
     // :D instantiate the camera and load the field layout
-    // :> Clean up this as it isn't acutally doing anything useful currently
+    // :> The reason why we catch this error just to throw a runtime exception is just because for loadfromresource can't handle an IO exception but can
+      /** handle a runtimeexception
+       */
     try {
       m_aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
     } catch (IOException err) {
@@ -69,6 +70,8 @@ public class PhotonVisionSubsystem extends SubsystemBase {
   }
 
   // :> Returns the best and all targets it can see and if it doesn't see any it returns null
+  /* It also needs a camera to do this and takes all the data from the camera that it can find
+   */
   private PhotonTrackedTarget getBestTarget(PhotonCamera cam){
     PhotonPipelineResult result = cam.getLatestResult();
 
@@ -78,11 +81,11 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 
   /**
    * Get the estimated camera position based on photon target data.
-   *
+   * This is an extremely important function that is the main purpose of this subsystem
    * @return {@link Pose3d} representing the position of the camera on the field, or null if no valid targets are found
    */
   public static Pose3d checkRobotPosition() {
-    // :> I'm so sorry for all of the for loops it is necessary for the three cameras.
+    // :> I'm so sorry for all of the for loops it is necessary for the two cameras.
     if (!targets.isEmpty()) {
       //for (int i = 0; i < targets.size(); i++) {
         //cameraToTargets.add(targets.get(i).getBestCameraToTarget());
@@ -92,13 +95,22 @@ public class PhotonVisionSubsystem extends SubsystemBase {
         // tagPoses.add(m_aprilTagFieldLayout.getTagPose(targets.get(i).getFiducialId()));
       // }
 
-      // :> RobotPoses can be defined here, done
+      // :> This next set of code in this function is the main logic to how we are getting our postional data.
+
+      // :> Defines the robot poses array to be used in the function
       ArrayList<Pose3d> robotPoses = new ArrayList<Pose3d>();
+      // :> Makes a for loop based on how many cameras are picking up targets
       for (int i = 0; i < targets.size(); i++) {
+        // :> Safety precuation that makes sure the that inside the cameras targets it isn't null that way it doesn't return a null pointer error
         if (targets.get(i) != null) {
+          // :> Gets the distance from the cameras to the targets it see's based off of which camera it's getting data from
           Transform3d cameraToTarget = targets.get(i).getBestCameraToTarget();
-        
+          //:> Gets the position of the apriltags on the field that it see's from the cameras.
           Optional<Pose3d> tagPose = m_aprilTagFieldLayout.getTagPose(targets.get(i).getFiducialId());
+          // :> Uses the official Photonvision function to take in all of the previous data and get a field position from it.
+          /* It does this for both cameras that way it can get the most accurate position possible. The reason why this system is used is because you can't estimate
+          /* any data except for Pose3Ds which is essential for getting good positonal data
+           */
           robotPoses.add(PhotonUtils.estimateFieldToRobotAprilTag(cameraToTarget, tagPose.get(), camsToBot.get(i)));
           // if (tagPoses.get(i).isPresent()) {
           //   for (int k = 0; k < cameraToTargets.size(); k++) {
@@ -110,18 +122,19 @@ public class PhotonVisionSubsystem extends SubsystemBase {
         }
       }
 
-      // ;> This can be removed and cleaned up, done
 
-      // :> Make an if statement that detects if robot poses is length 1 that way it can save time and only return one instead of doign a bunch of math
-      // :> We need to make a poses .length if statement to make sure that array length is not 0 due to null shenangians in avgPose3d
+      // :> An if statement is used here to save robot resources and time so instead of estimating Pose 3Ds when it reads only from one camera it can just report that position
+      // :> The other part of this if statement checks to make sure that no matter what if there is a null in the array or the array is of 0 length
+      /*  it doesn't crash the robot and just returns null for the function as it should be doing
+       */
       if (robotPoses.size() == 0) {
         return null;
       } else if (robotPoses.size( ) == 1) {
         return robotPoses.get(0);
       }
+
+      // :> When it see's targets from two targets the funciton below will average two poses together to get the most accurate field postition.
       Pose3d averageRobotPoses = averagePose3d(robotPoses.toArray(new Pose3d[0]));
-      //:> This can also be removed with all the other changes, done
-      // :> TagPoses can also be cleaned up as it is not needed in the new code, done
       return averageRobotPoses;
       // :> It's okay if averagePose3D = null since CRP can be null anyway and it gets passed in to averagerobotposes
     }
@@ -132,10 +145,12 @@ public class PhotonVisionSubsystem extends SubsystemBase {
   // :> Quiver in its Assemblic WPILIBERAL glory
 
   private static Pose3d averagePose3d(Pose3d... poses) {
+    // :> Makes an array equal to the robot poses it gets for calculations later
     Translation3d[] translations = new Translation3d[poses.length];
     Rotation3d[] rotations = new Rotation3d[poses.length];
 
     for (int i = 0; i < poses.length; i++) {
+      // :> Sets the translation and rotation arrays equal to the actual translations and rotation
       translations[i] = poses[i].getTranslation();
       rotations[i] = poses[i].getRotation();
     }
@@ -156,6 +171,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 
     Translation3d averageTranslation = new Translation3d();
 
+    // :> Adds together both all translations and divides them to average them together
     for (Translation3d translation : translations) {
       averageTranslation = averageTranslation.plus(translation);
     }
@@ -211,6 +227,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    // :> Periodically adds target values to the targets array equal to what the cameras can see
     for (int i = 0; i < cameras.size(); i++) {
       targets.add(i, getBestTarget(cameras.get(i)));
       // PhotonPipelineResult r = cameras.get(i).getLatestResult();
@@ -221,14 +238,15 @@ public class PhotonVisionSubsystem extends SubsystemBase {
     }
 
     // This method will be called once per scheduler run
+    // :> Checks if targets is empty as a precaution to make sure that it isn't getting values from targets that don't exist
     if (!targets.isEmpty()) {
-      // :> requirednonNull is a bit redundant sicne .toPose2d() would already throw a null pointer if CRP was null, done
-      // :> Check if cRP returns null that way it doesn't get fed elsewhere and get's handled here and doesn't crash the robot, done
       Pose3d robotPose = checkRobotPosition();
+      // :> As a precuation this makes sure that the field pos mangager isn't getting updated with null data that way we don't get a null pointer exception
       if (robotPose != null) {
       m_field.updateFieldPosWithPhotonVisionPose(robotPose.toPose2d());
       }
     }
+    // :> Clears the targets array that way it doesn't overflow with old targets or cause an out of bounds error
     targets.clear();
     //results.clear();
   }
@@ -237,7 +255,8 @@ public class PhotonVisionSubsystem extends SubsystemBase {
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
   }
-
+  
+  // :> This method checks to see if it can see an apriltag to update Shuffleboard
   public boolean seeingApriltag() {
     return !targets.isEmpty();
   }

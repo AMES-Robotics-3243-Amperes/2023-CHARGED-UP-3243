@@ -377,6 +377,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
    * 
    * @deprecated Using direct motor speeds is unideal, use {@link changeMotorPositions} to change the position the leg will try to go to
    */
+  @Deprecated
   public void setMotorSpeeds(double pivot, double extension, double pitch, double roll) {
     motorExtension.set(extension / 10);
     motorPivot.set(pivot / 10);
@@ -460,7 +461,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
     // ++ ----------------------
 
     // H! Set the position refrences
-    // TODO: uncomment this and make this work ztargetPosition.applyToMotors();
+    targetPosition.applyToMotors(pidExtension, pidPivot, pidPitch, pidRoll);
   }
 
 
