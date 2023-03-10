@@ -7,6 +7,8 @@ package frc.robot;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DriveTrain.DriveConstants;
@@ -97,7 +99,7 @@ public class RobotContainer {
    */
   public void configureBindings() {
     primaryController.a().toggleOnTrue(
-      new SwerveAutoMoveCommand(m_driveSubsystem, new Pose2d(), DriveConstants.AutoConstants.kDrivingPIDController,
+      new SwerveAutoMoveCommand(m_driveSubsystem, new Pose2d(new Translation2d(1, 2), Rotation2d.fromDegrees(45)), DriveConstants.AutoConstants.kDrivingPIDController,
         DriveConstants.AutoConstants.kDrivingPIDController, DriveConstants.AutoConstants.kTurningPIDController,
         DriveConstants.AutoConstants.maxMetersFromSetpoint, DriveConstants.AutoConstants.maxRotationFromSetpoint));
 

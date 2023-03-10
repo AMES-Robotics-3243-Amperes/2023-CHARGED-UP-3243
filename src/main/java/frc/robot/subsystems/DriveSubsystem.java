@@ -48,7 +48,7 @@ public class DriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     m_odometry.update(getHeading(), getModulePositions());
-    m_fieldPosManager.updateFieldPosWithPhotonVisionPose(m_odometry.getPoseMeters());
+    m_fieldPosManager.updateFieldPosWithSwerveData(m_odometry.getPoseMeters());
   }
 
   /**
