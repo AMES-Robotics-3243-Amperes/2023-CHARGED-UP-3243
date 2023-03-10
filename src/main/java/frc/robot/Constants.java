@@ -219,17 +219,17 @@ public final class Constants {
         public static final double kMaxAngularAccelerationMetersPerSecond = 10;
 
         // <> pid values
-        public static final double kDrivingP = 0.3;
-        public static final double kDrivingI = 0.004;
+        public static final double kDrivingP = 0.45;
+        public static final double kDrivingI = 0;
         public static final double kDrivingD = 0;
 
-        public static final double kTurningP = 0.1;
+        public static final double kTurningP = 0.3;
         public static final double kTurningI = 0;
         public static final double kTurningD = 0;
 
         // <> max distances
-        public static final double maxMetersFromSetpoint = 0.2;
-        public static final Rotation2d maxRotationFromSetpoint = Rotation2d.fromDegrees(5);
+        public static final double maxMetersFromSetpoint = 0.1;
+        public static final Rotation2d maxRotationFromSetpoint = Rotation2d.fromDegrees(3);
 
         // <> pid constraints
         public static final TrapezoidProfile.Constraints kDrivingControllerConstraints =
@@ -431,8 +431,8 @@ public final class Constants {
    */
   public static final class PhotonVision {
     // :> This fills me with nothing but dread
-    public static final String cameraName1 = "Forward_Global_Camera";
-    public static final String cameraName2 = "Backward_Global_Camera";
+    public static final String cameraName1 = "Backward_Global_Camera";
+    public static final String cameraName2 = "Forward_Global_Camera";
   }
 
   /**

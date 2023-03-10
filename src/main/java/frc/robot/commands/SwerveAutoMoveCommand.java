@@ -58,7 +58,13 @@ public class SwerveAutoMoveCommand extends CommandBase {
   }
 
   @Override
-  public void initialize() {}
+  public void initialize() {
+    Pose2d robotPose = m_subsystem.getPose();
+
+    xPidController.reset(robotPose.getX());
+    yPidController.reset(robotPose.getY());
+    thetaPIDController.reset(robotPose.getRotation().getDegrees());
+  }
 
   @Override
   public void execute() {
