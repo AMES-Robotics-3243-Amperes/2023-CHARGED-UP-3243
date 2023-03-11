@@ -193,6 +193,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
     //MotorPos startingMotorPosition = IK(StartingPosition.x, StartingPosition.y, StartingPosition.pitch, StartingPosition.roll);
     encoderExtension.setPosition(startingPosition.extension/*minLength*/);
     //encoderPivotRelative.setPosition(startingPosition.pivot); // :D I commented this out because we are using a semiabsolute encoder now
+    encoderPitch.setZeroOffset(0.366);
     encoderPivotAbsolute.setZeroOffset(0.196875); // TODO :D check this value
     // :D ^ this is in between the extreme values, so that the seam has the pivot facing where it physically can't go
     // :D the straight up direction is 0.43 on the absolute encoder
