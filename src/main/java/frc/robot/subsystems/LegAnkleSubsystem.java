@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.WristAndArm.Limits;
+import frc.robot.utility_classes.GeneralUtil;
 import frc.robot.utility_classes.LegAnklePosition;
 import frc.robot.utility_classes.SemiAbsoluteEncoder;
 
@@ -456,16 +457,16 @@ public class LegAnkleSubsystem extends SubsystemBase {
 
     // ++ clamp values to be safe -------------------------------------------
     // H! Prevent arm from extending too much or too little
-    targetPosition.extension = clamp(Limits.extensionMin, Limits.extensionMax, targetPosition.extension);
+    targetPosition.extension = GeneralUtil.clamp(Limits.extensionMin, Limits.extensionMax, targetPosition.extension);
 
     // H! Prevent arm from pivoting too much or too little
-    targetPosition.pivot = clamp(Limits.pivotMin, Limits.pivotMax, targetPosition.pivot);
+    targetPosition.pivot = GeneralUtil.clamp(Limits.pivotMin, Limits.pivotMax, targetPosition.pivot);
 
     // H! Prevent arm from pivoting too much or too little
-    targetPosition.pitch = clamp(Limits.pitchMin, Limits.pitchMax, targetPosition.pitch);
+    targetPosition.pitch = GeneralUtil.clamp(Limits.pitchMin, Limits.pitchMax, targetPosition.pitch);
 
     // H! Prevent arm from pivoting too much or too little
-    targetPosition.roll = clamp(Limits.rollMin, Limits.rollMax, targetPosition.roll);
+    targetPosition.roll = GeneralUtil.clamp(Limits.rollMin, Limits.rollMax, targetPosition.roll);
 
 
     // H! NOTE: If you add xy limits, make sure to remove the comment in constants saying they're only used with IK
@@ -489,17 +490,6 @@ public class LegAnkleSubsystem extends SubsystemBase {
 
 
 
-  /** ++ clamps input between two extreme values
-   * @param min the lower extreme value
-   * @param max the upper extreme value
-   * @param x the input value to be clamped
-   * 
-   * @return the value after clamping
-   */
-  private static double clamp(double min,  double max, double x) {
-    return x > max ? max : Math.max(x, min);
-  }
-
   /**Sets the PIDF values of a pid controller
    * H!
    * 
@@ -514,17 +504,5 @@ public class LegAnkleSubsystem extends SubsystemBase {
     pidController.setI(i);
     pidController.setD(d);
     pidController.setFF(f);
-  }
-
-  /**Rounds a number to a given number of places
-   * H!
-   * 
-   * @param value The value to round
-   * @param places The number of places to round to
-   * @return The rounded value
-   */
-  public static double roundAvoid(double value, int places) {
-    double scale = Math.pow(10, places);
-    return Math.round(value * scale) / scale;
   }
 }

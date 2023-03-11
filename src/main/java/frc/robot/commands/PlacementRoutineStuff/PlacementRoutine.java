@@ -14,6 +14,7 @@ import frc.robot.FieldPosManager;
 import frc.robot.JoyUtil;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LegAnkleSubsystem;
+import frc.robot.utility_classes.GeneralUtil;
 import frc.robot.subsystems.GrabberSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -78,17 +79,10 @@ public class PlacementRoutine extends SequentialCommandGroup {
       fieldPosManager.getNearestScoringZoneIndex() /* H! TODO Needs to be integrated with finding the closest pose */);
   }
 
-  private static int negativeSafeMod(int a, int b) {
-    if (a >= 0) {
-      return a % b;
-    }
-    return ((a % b) + b) % b;
-  }
-
   public void onPOVRight() {
     this.cancel();
     new PlacementRoutine(fieldPositionManager, driveSubsystem, legAnkleSubsystem, grabberSubsystem, thetaPidController,
-      controller, negativeSafeMod(poseIndex + 1, 9)).schedule();
+      controller, GeneralUtil.negativeSafeMod(poseIndex + 1, 9)).schedule();
   }
 
   /*private static int loopIndex(int min, int max, int x) {
@@ -103,6 +97,6 @@ public class PlacementRoutine extends SequentialCommandGroup {
   public void onPOVLeft() {
     this.cancel();
     new PlacementRoutine(fieldPositionManager, driveSubsystem, legAnkleSubsystem, grabberSubsystem, thetaPidController,
-      controller, negativeSafeMod(poseIndex - 1, 9)).schedule();
+      controller, GeneralUtil.negativeSafeMod(poseIndex - 1, 9)).schedule();
   }
 }
