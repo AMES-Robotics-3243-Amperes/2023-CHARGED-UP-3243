@@ -36,8 +36,8 @@ public final class Constants {
   public static final class Grabber {
     // ++ IDs for the motors:
     public static final int grabberOpenerMotorID = 16;
-    public static final int wheelMotorOneID = 4;
-    public static final int wheelMotorTwoID = 10;
+    public static final int wheelMotorOneID = 1;
+    public static final int wheelMotorTwoID = 14;
 
     // // ++ motor spin speeds
     // public static final double wheelMotorSpeed = 0.2;

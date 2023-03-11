@@ -89,11 +89,11 @@ public class LegAnkleSubsystem extends SubsystemBase {
   /**An alias for the motor controller that leads pitch
    * H!
    */
-  private CANSparkMax motorPitchLeader = motorPitchRight;
+  private CANSparkMax motorPitchLeader = motorPitchLeft;
   /**An alias for the motor controller that follows pitch
    * H!
    */
-  private CANSparkMax motorPitchFollower = motorPitchLeft;
+  private CANSparkMax motorPitchFollower = motorPitchRight;
 
   private SparkMaxAbsoluteEncoder encoderPivotAbsolute = motorPivot.getAbsoluteEncoder(Type.kDutyCycle);
   private RelativeEncoder encoderPivotRelative = motorPivot.getEncoder();
@@ -198,7 +198,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
     // :D ^ this is in between the extreme values, so that the seam has the pivot facing where it physically can't go
     // :D the straight up direction is 0.43 on the absolute encoder
     // H! Set the left pitch encoder 
-    encoderPitchFollower.setPosition(encoderPitch.getPosition());
+    //encoderPitchFollower.setPosition(encoderPitch.getPosition());
 
     // H! Used to reset the absolute encoder. Do not run this unless that's what you want to do
     //wristRollEncoder.setZeroOffset(0);
