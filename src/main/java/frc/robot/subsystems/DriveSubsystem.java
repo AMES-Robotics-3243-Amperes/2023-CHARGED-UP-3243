@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveTrain.DriveConstants;
 import frc.robot.FieldPosManager;
@@ -31,6 +32,8 @@ public class DriveSubsystem extends SubsystemBase {
 
   // <> field pos manager
   private final FieldPosManager m_fieldPosManager;
+
+  // <> pid controller for when turning is field relative
 
   // <> odometry for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(DriveConstants.ChassisKinematics.kDriveKinematics,
@@ -57,7 +60,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @return the pose
    */
   public Pose2d getPose() {
-    return new Pose2d(m_fieldPosManager.getRobotPose().getTranslation(), getHeading());
+    return new Pose2d(m_odometry.getPoseMeters().getTranslation(), getHeading());
   }
 
   /**
@@ -133,6 +136,26 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public Rotation2d getHeading() {
     return m_imuSubsystem.getYaw();
+  }
+
+  /**
+   * <> for use with functions that require a specific range (such as pids)
+   * 
+   * @return a rotation 2d with angles from -180 to 180
+   */
+  public Rotation2d getDiscontinuousHeading() {
+    Rotation2d rawAngle = getHeading();
+
+    // now from -360 to 360
+    double moddedDegree = rawAngle.getDegrees() % 360;
+
+    // now from 0 to 360
+    double doubleModdedDegree = (moddedDegree + 360) % 360;
+
+    // now from -180 to 180
+    double finalDegree = doubleModdedDegree <= 180 ? doubleModdedDegree : doubleModdedDegree - 360;
+
+    return Rotation2d.fromDegrees(finalDegree);
   }
 
   /**

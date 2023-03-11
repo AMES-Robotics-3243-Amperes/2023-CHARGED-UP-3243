@@ -49,6 +49,7 @@ public class RobotContainer {
   public final GrabberCommand m_GrabberCommand = new GrabberCommand(m_GrabberSubsystem, secondaryController);
   private final ShuffleboardSubsystem m_shuffleboardSubsystem = new ShuffleboardSubsystem(fieldPosManager,
     m_legAnkleSubsystem, m_driveSubsystem, m_photonVisionSubsystem, null, m_GrabberSubsystem);
+    
   // <> this is required for creating new swerve trajectory follow commands
   private final ProfiledPIDController thetaPidController;
   private final WristCommand m_WristCommand = new WristCommand(m_legAnkleSubsystem, secondaryController);
@@ -100,8 +101,9 @@ public class RobotContainer {
    * {@link JoyUtil}
    */
   public void configureBindings() {
+    primaryController.x().toggleOnTrue(new LockSwerveWheelsCommand(m_driveSubsystem));
     primaryController.a().toggleOnTrue(
-      new SwerveAutoMoveCommand(m_driveSubsystem, new Pose2d(new Translation2d(1, 2), Rotation2d.fromDegrees(45)), DriveConstants.AutoConstants.kDrivingPIDController,
+      new SwerveAutoMoveCommand(m_driveSubsystem, new Pose2d(),
         DriveConstants.AutoConstants.kDrivingPIDController, DriveConstants.AutoConstants.kTurningPIDController,
         DriveConstants.AutoConstants.maxMetersFromSetpoint, DriveConstants.AutoConstants.maxRotationFromSetpoint));
 
