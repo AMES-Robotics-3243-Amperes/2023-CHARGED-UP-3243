@@ -40,15 +40,10 @@ public class SwerveTeleopCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (controller.getXButton()) {
-      m_DriveSubsystem.setX();
-      return;
-    }
-
     // <> drive the drivetrain with the controller's input
     m_DriveSubsystem.drive(-controller.getLeftY() * (reverse ? -1 : 1),
       -controller.getLeftX() * (reverse ? -1 : 1), controller.getRightX(),
-      controller.getRightBumper() != DriveConstants.kFieldRelative);
+      controller.getRightBumper() != DriveConstants.kDrivingFieldRelative);
   } 
 
   /** 

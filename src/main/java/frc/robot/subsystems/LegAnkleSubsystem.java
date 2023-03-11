@@ -194,6 +194,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
     //MotorPos startingMotorPosition = IK(StartingPosition.x, StartingPosition.y, StartingPosition.pitch, StartingPosition.roll);
     encoderExtension.setPosition(startingPosition.extension/*minLength*/);
     //encoderPivotRelative.setPosition(startingPosition.pivot); // :D I commented this out because we are using a semiabsolute encoder now
+    encoderPitch.setZeroOffset(0.366);
     encoderPivotAbsolute.setZeroOffset(0.196875); // TODO :D check this value
     // :D ^ this is in between the extreme values, so that the seam has the pivot facing where it physically can't go
     // :D the straight up direction is 0.43 on the absolute encoder
@@ -452,7 +453,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
     // H! If the limit switch is triggered, we're at min extension.
     SmartDashboard.putBoolean("limit switch pressed", extensionLimitSwitch.get());
     if (extensionLimitSwitch.get()) {
-      encoderExtension.setPosition(Limits.extensionMin);
+      //encoderExtension.setPosition(Limits.extensionMin); Disabled because mechanical keeps not doing the limit switch properly
     }
 
     // ++ clamp values to be safe -------------------------------------------

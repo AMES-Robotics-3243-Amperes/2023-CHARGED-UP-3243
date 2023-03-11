@@ -151,8 +151,10 @@ public final class Constants {
 
     public static final class DriveConstants {
 
-      // <> if the driving is field relative
-      public static final boolean kFieldRelative = true;
+      // <> if controls are field relative
+      public static final boolean kDrivingFieldRelative = true;
+      public static final boolean kTurningFieldRelative = true;
+
       // <> speed damper (flat constant supplied speed is multiplied by)
       public static final double kDrivingSpeedDamper = 1.8; // <> meters per second
       public static final double kAngularSpeedDamper = 1 * Math.PI; // <> radians per second
@@ -213,17 +215,17 @@ public final class Constants {
       public static final class AutoConstants {
 
         // <> max speeds (only for pathfinding, not controlling)
-        public static final double kMaxMetersPerSecond = 0.6;
-        public static final double kMaxAccelerationMetersPerSecond = 0.2;
-        public static final double kMaxAngularMetersPerSecond = 30;
-        public static final double kMaxAngularAccelerationMetersPerSecond = 10;
+        public static final double kMaxMetersPerSecond = 1.4;
+        public static final double kMaxAccelerationMetersPerSecond = 1;
+        public static final double kMaxAngularMetersPerSecond = 130;
+        public static final double kMaxAngularAccelerationMetersPerSecond = 90;
 
         // <> pid values
-        public static final double kDrivingP = 0.45;
-        public static final double kDrivingI = 0;
+        public static final double kDrivingP = 0.4;
+        public static final double kDrivingI = 0.004;
         public static final double kDrivingD = 0;
 
-        public static final double kTurningP = 0.3;
+        public static final double kTurningP = 0.8;
         public static final double kTurningI = 0;
         public static final double kTurningD = 0;
 
