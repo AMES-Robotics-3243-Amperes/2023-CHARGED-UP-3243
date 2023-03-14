@@ -342,7 +342,10 @@ public final class Constants {
     public static final double atSetpointThreshold = 0.005;
 
     public static final double pivotOutputRange = 0.1;
+    public static final double pitchOutputRange = 0.1;
     public static final double wristRollEncoderSetZeroOffset = 0.163;
+    public static final double wristPitchEncoderSetZeroOffset = 0.866;
+    public static final double wristPivotEncoderSetZeroOffset = 0.196875;
 
     /**
      * H! This class just holds all the motor ids
