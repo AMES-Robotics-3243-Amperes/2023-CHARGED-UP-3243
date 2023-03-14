@@ -31,10 +31,7 @@ public class MoveLegAnkleToPositionCommand extends CommandBase {
    * @param targetRoll The roll value to go to.
   */
   public MoveLegAnkleToPositionCommand(LegAnkleSubsystem legAnkleSubsystem, double targetExtension, double targetPivot, double targetPitch, double targetRoll) {
-    this.targetExtension = targetExtension;
-    this.targetPivot = targetPivot;
-    this.targetPitch = targetPitch;
-    this.targetRoll = targetRoll;
+    setTargets(targetExtension, targetPivot, targetPitch, targetRoll);
     this.legAnkleSubsystem = legAnkleSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
 
@@ -64,6 +61,36 @@ public class MoveLegAnkleToPositionCommand extends CommandBase {
     this.legAnkleSubsystem = legAnkleSubsystem;
 
     addRequirements(legAnkleSubsystem);
+  }
+
+  /**Sets the target positions for each degree of freedom
+   * :D
+   * 
+   * I made this to set the target positions in the {@link MoveLegAnkleToPlacementPositionCommand} command, so that the positions could
+   * be set based on stacked controller inputs (such as Y+POV-UP vs Y vs Y+POV-DOWN, all doing very similar things)
+   * 
+   * @param targetExtension The extension value to go to.
+   * @param targetPivot The pivot value to go to.
+   * @param targetPitch The pitch value to go to.
+   * @param targetRoll The roll value to go to.
+   */
+  public void setTargets(double targetExtension, double targetPivot, double targetPitch, double targetRoll){
+    this.targetExtension = targetExtension;
+    this.targetPivot = targetPivot;
+    this.targetPitch = targetPitch;
+    this.targetRoll = targetRoll;
+  }
+
+  /**Sets the target positions for each degree of freedom
+   * :D
+   * 
+   * I made this to set the target positions in the {@link MoveLegAnkleToPlacementPositionCommand} command, so that the positions could
+   * be set based on stacked controller inputs (such as Y+POV-UP vs Y vs Y+POV-DOWN, all doing very similar things)
+   * 
+   * @param target A {@link LegAnklePosition} containing the positions to move to.
+   */
+  public void setTargets(LegAnklePosition target){
+    setTargets(target.extension, target.pivot, target.pitch, target.roll);
   }
 
   // Called when the command is initially scheduled.

@@ -140,7 +140,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
   private GenericEntry rollFFValue;
 
   
-
+  // :D Ahctipredocne
 
   /** Creates a new LegAnkleSubsystem. */
   public LegAnkleSubsystem() {
@@ -148,7 +148,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
     // H! You'll then need to manually set the conversion factor of the CANSparkMaxs through Rev Hardware Client
     //motorPitchRight.restoreFactoryDefaults();
     //motorPitchLeft.restoreFactoryDefaults();
-    encoderPitchAbsolute.setInverted(true);
+    encoderPitchAbsolute.setInverted(false); // :D hi I changed this from true to false, since it was previously inverted from what the standard is on the pivot
 
     encoderPitch = new SemiAbsoluteEncoder(motorPitchLeader);
     encoderRoll = new SemiAbsoluteEncoder(motorRoll);
