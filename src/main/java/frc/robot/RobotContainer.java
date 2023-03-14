@@ -44,12 +44,12 @@ public class RobotContainer {
   public final BalanceCommand m_BalanceCommand = new BalanceCommand(m_driveSubsystem);
   // public final MoveLegAnkleToPickupPositionCommand m_legAnkleToPickupCommand = new MoveLegAnkleToPickupPositionCommand(
   //   m_legAnkleSubsystem);// :D duplicate??
+  public final SnapToGridCommand m_SnapToGridCommand = new SnapToGridCommand(m_driveSubsystem, fieldPosManager, primaryController, secondaryController);
   public final TempAutoRoutine m_auto;
   private final GrabberSubsystem m_GrabberSubsystem = new GrabberSubsystem();
   public final GrabberCommand m_GrabberCommand = new GrabberCommand(m_GrabberSubsystem, secondaryController);
   private final ShuffleboardSubsystem m_shuffleboardSubsystem = new ShuffleboardSubsystem(fieldPosManager,
     m_legAnkleSubsystem, m_driveSubsystem, m_photonVisionSubsystem, null, m_GrabberSubsystem);
-  public final SnapToGrid m_SnapToGrid = new SnapToGrid(m_driveSubsystem, fieldPosManager);
     
   // <> this is required for creating new swerve trajectory follow commands
   private final ProfiledPIDController thetaPidController;
@@ -115,7 +115,7 @@ public class RobotContainer {
     // :D whats the deal with this? there are two pickup thingies? I commented the other one out and changed this one to use the x button
     secondaryController.x().onTrue(m_moveLegAnkleToPickupPositionCommand);
     //secondaryController.a().onTrue(m_moveLegAnkleToPlacementPositionCommand); // :D TODO: test this at some point soon // ss changed to a to stop conflicts
-    secondaryController.y().onTrue(m_SnapToGrid);
+    secondaryController.y().onTrue(m_SnapToGridCommand);
   }
 
   public void teleopInit() {}
