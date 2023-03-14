@@ -450,7 +450,7 @@ public final class Constants {
       public static final double extensionMin = 0.92804 /*+ 0.05*/;
       public static final double extensionMax = extensionMin + Units.inchesToMeters(30);// :D approx. equals: 1.69; prev value: 1.5494
       // ++ pivot limits
-      public static final double pivotMax = 0.6;
+      public static final double pivotMax = 0.57;
       public static final double pivotMin = -0.1;
       // H! Pitch limitssssessss
       public static final double pitchMax = 0.95;
