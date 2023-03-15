@@ -16,7 +16,7 @@ import frc.robot.subsystems.DriveSubsystem;
  */
 public class SwerveAutoMoveCommand extends CommandBase {
   private final DriveSubsystem m_subsystem;
-  private final Pose2d goal;
+  private Pose2d goal;
 
   private final ProfiledPIDController positionPIDController;
   private final ProfiledPIDController thetaPIDController;
@@ -131,5 +131,12 @@ public class SwerveAutoMoveCommand extends CommandBase {
     double yComponent = driveAngle.getSin() * drivingOutput;
 
     m_subsystem.drive(xComponent, yComponent, -Math.toRadians(thetaOutput), true);
+  }
+
+  /**
+   * <> change the goal of the robot
+   */
+  public void changeGoal(Pose2d newGoal) {
+    goal = newGoal;
   }
 }

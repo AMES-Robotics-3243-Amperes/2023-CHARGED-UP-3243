@@ -36,8 +36,8 @@ public final class Constants {
   public static final class Grabber {
     // ++ IDs for the motors:
     public static final int grabberOpenerMotorID = 16;
-    public static final int wheelMotorOneID = 4;
-    public static final int wheelMotorTwoID = 10;
+    public static final int wheelMotorOneID = 1;
+    public static final int wheelMotorTwoID = 14;
 
     // // ++ motor spin speeds
     // public static final double wheelMotorSpeed = 0.2;
@@ -342,7 +342,10 @@ public final class Constants {
     public static final double atSetpointThreshold = 0.005;
 
     public static final double pivotOutputRange = 0.1;
+    public static final double pitchOutputRange = 0.1;
     public static final double wristRollEncoderSetZeroOffset = 0.163;
+    public static final double wristPitchEncoderSetZeroOffset = 0.5570095;// :D prev value: 0.866; I changed it because it was flipped 180 degrees from what the standard on the pivot is
+    public static final double wristPivotEncoderSetZeroOffset = 0.196875;
 
     /**
      * H! This class just holds all the motor ids
@@ -369,6 +372,36 @@ public final class Constants {
       public static final double y = 0.80;
       public static final double pitch = -Math.PI / 2;
       public static final double roll = 0.0;
+    }
+
+    public static class PickupSetpoints {
+      public static final double pivot = 0.515;
+      public static final double extension = 1.09;
+      public static final double pitch = 0.5;
+      public static final double roll = 0.5;
+    }
+
+    public static class PlacementSetpoints {
+      public static final class High {
+        public static final double pivot = 0.135;
+        public static final double extension = WristAndArm.Limits.extensionMax-0.1;
+        public static final double pitch = 0.25;
+        public static final double roll = 0.5;
+      }
+
+      public static final class Middle {
+        public static final double pivot = 0.135;
+        public static final double extension = 1.09;
+        public static final double pitch = 0.25;
+        public static final double roll = 0.5;
+      }
+
+      public static final class Low {
+        public static final double pivot = 0.16;
+        public static final double extension = 1.09;
+        public static final double pitch = 0.115;
+        public static final double roll = 0.5;
+      }
     }
 
     public static class PID {
@@ -415,9 +448,9 @@ public final class Constants {
 
       // H! Extension limits
       public static final double extensionMin = 0.92804 /*+ 0.05*/;
-      public static final double extensionMax = extensionMin + Units.inchesToMeters(30);//1.5494;
+      public static final double extensionMax = extensionMin + Units.inchesToMeters(30);// :D approx. equals: 1.69; prev value: 1.5494
       // ++ pivot limits
-      public static final double pivotMax = 0.6;
+      public static final double pivotMax = 0.57;
       public static final double pivotMin = -0.1;
       // H! Pitch limitssssessss
       public static final double pitchMax = 0.95;
@@ -491,10 +524,32 @@ public final class Constants {
      * H!
      */
     public static final LegAnklePosition legAnklePickupPosition = new LegAnklePosition(
-      0, 
-      0, 
-      0, 
-      0
+      WristAndArm.PickupSetpoints.extension, 
+      WristAndArm.PickupSetpoints.pivot, 
+      WristAndArm.PickupSetpoints.pitch, 
+      WristAndArm.PickupSetpoints.roll
+    );
+
+    // :D I capitalized the HIGH, MIDDLE, and LOW so that it would stand out more, if you don't really like it, feel free to change
+    public static final LegAnklePosition legAnklePlacementPositionHIGH = new LegAnklePosition(
+      WristAndArm.PlacementSetpoints.High.extension,
+      WristAndArm.PlacementSetpoints.High.pivot,
+      WristAndArm.PlacementSetpoints.High.pitch, 
+      WristAndArm.PlacementSetpoints.High.roll
+    );
+
+    public static final LegAnklePosition legAnklePlacementPositionMIDDLE = new LegAnklePosition(
+      WristAndArm.PlacementSetpoints.Middle.extension,
+      WristAndArm.PlacementSetpoints.Middle.pivot,
+      WristAndArm.PlacementSetpoints.Middle.pitch, 
+      WristAndArm.PlacementSetpoints.Middle.roll
+    );
+
+    public static final LegAnklePosition legAnklePlacementPositionLOW = new LegAnklePosition(
+      WristAndArm.PlacementSetpoints.Low.extension,
+      WristAndArm.PlacementSetpoints.Low.pivot,
+      WristAndArm.PlacementSetpoints.Low.pitch, 
+      WristAndArm.PlacementSetpoints.Low.roll
     );
 
     // H! TODO: None of these constants are right

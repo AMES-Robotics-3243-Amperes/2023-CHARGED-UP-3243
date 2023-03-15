@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
@@ -63,6 +64,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
 
     // 0.5 is up for the roll encoder, but 0 for the inverse kinematics
     targetWristRoll += 0.5;
+    targetWristAngle += 0.5;
 
     return new LegAnklePosition(targetArmLength, targetArmAngle, targetWristAngle, targetWristRoll);
   }
@@ -90,20 +92,22 @@ public class LegAnkleSubsystem extends SubsystemBase {
   /**An alias for the motor controller that leads pitch
    * H!
    */
-  private CANSparkMax motorPitchLeader = motorPitchRight;
+  private CANSparkMax motorPitchLeader = motorPitchLeft;
   /**An alias for the motor controller that follows pitch
    * H!
    */
-  private CANSparkMax motorPitchFollower = motorPitchLeft;
+  private CANSparkMax motorPitchFollower = motorPitchRight;
 
   private SparkMaxAbsoluteEncoder encoderPivotAbsolute = motorPivot.getAbsoluteEncoder(Type.kDutyCycle);
   private RelativeEncoder encoderPivotRelative = motorPivot.getEncoder();
   private RelativeEncoder encoderExtension = motorExtension.getEncoder(/*Type.kDutyCycle*/);
-  private SemiAbsoluteEncoder encoderPitch = new SemiAbsoluteEncoder(motorPitchLeader);
+  private SemiAbsoluteEncoder encoderPitch;
+  private RelativeEncoder encoderPitchRelative;
+  private SparkMaxAbsoluteEncoder encoderPitchAbsolute = motorPitchLeader.getAbsoluteEncoder(Type.kDutyCycle);
   private RelativeEncoder encoderPitchRight = motorPitchRight.getEncoder();
   private RelativeEncoder encoderPitchLeft = motorPitchLeft.getEncoder();
   private RelativeEncoder encoderRollRelative;
-  private SemiAbsoluteEncoder encoderRoll = new SemiAbsoluteEncoder(motorRoll);
+  private SemiAbsoluteEncoder encoderRoll;
 
   private RelativeEncoder encoderPitchLeader = motorPitchLeader.getEncoder();
   private RelativeEncoder encoderPitchFollower = motorPitchFollower.getEncoder();
@@ -136,36 +140,28 @@ public class LegAnkleSubsystem extends SubsystemBase {
   private GenericEntry rollFFValue;
 
   
-
+  // :D Ahctipredocne
 
   /** Creates a new LegAnkleSubsystem. */
   public LegAnkleSubsystem() {
-    // H! Make all the PID tuning tabs in shuffleboard
-    extensionPValue = tab.add("Ext P Value", PID.Extension.P).getEntry();
-    extensionIValue = tab.add("Ext I Value", PID.Extension.I).getEntry();
-    extensionDValue = tab.add("Ext D Value", PID.Extension.D).getEntry();
-    extensionFFValue = tab.add("Ext FF Value", PID.Extension.FF).getEntry();
+    // H! Hey, if the pitch just kinda isn't or you changed which motor is right and left, uncomment this and deploy it once, then recomment it.
+    // H! You'll then need to manually set the conversion factor of the CANSparkMaxs through Rev Hardware Client
+    //motorPitchRight.restoreFactoryDefaults();
+    //motorPitchLeft.restoreFactoryDefaults();
+    encoderPitchAbsolute.setInverted(false); // :D hi I changed this from true to false, since it was previously inverted from what the standard is on the pivot
 
-    pivotPValue = tab.add("Piv P Value", PID.Pivot.P).getEntry();
-    pivotIValue = tab.add("Piv I Value", PID.Pivot.I).getEntry();
-    pivotDValue = tab.add("Piv D Value", PID.Pivot.D).getEntry();
-    pivotFFValue = tab.add("Piv FF Value", PID.Pivot.FF).getEntry();
+    encoderPitch = new SemiAbsoluteEncoder(motorPitchLeader);
+    encoderRoll = new SemiAbsoluteEncoder(motorRoll);
 
-    pitchPValue = tab.add("Pch P Value", PID.Roll.P).getEntry();
-    pitchIValue = tab.add("Pch I Value", PID.Roll.I).getEntry();
-    pitchDValue = tab.add("Pch D Value", PID.Roll.D).getEntry();
-    pitchFFValue = tab.add("Pch FF Value", PID.Roll.FF).getEntry();
-
-    rollPValue = tab.add("Rol P Value", PID.Roll.P).getEntry();
-    rollIValue = tab.add("Rol I Value", PID.Roll.I).getEntry();
-    rollDValue = tab.add("Rol D Value", PID.Roll.D).getEntry();
-    rollFFValue = tab.add("Rol FF Value", PID.Roll.FF).getEntry();
+    encoderPitchRelative = encoderPitch.getSparkMAXEncoder();
 
     // H! Invert the motors that need to be inverted
     motorExtension.setInverted(true);
     motorRoll.setInverted(true);
     motorPivot.setInverted(false);
-    motorPitchRight.setInverted(true);
+    motorPitchRight.setInverted(false);
+    motorPitchLeft.setInverted(true);
+
 
 
     motorPitchFollower.follow(motorPitchLeader, true);
@@ -178,6 +174,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
 
     // :D I added this in, it limits the output voltage of the motor
     pidPivot.setOutputRange(-pivotOutputRange, pivotOutputRange);
+    pidPitch.setOutputRange(-pitchOutputRange, pitchOutputRange);
     
 
 
@@ -194,12 +191,12 @@ public class LegAnkleSubsystem extends SubsystemBase {
     //MotorPos startingMotorPosition = IK(StartingPosition.x, StartingPosition.y, StartingPosition.pitch, StartingPosition.roll);
     encoderExtension.setPosition(startingPosition.extension/*minLength*/);
     //encoderPivotRelative.setPosition(startingPosition.pivot); // :D I commented this out because we are using a semiabsolute encoder now
-    encoderPitch.setZeroOffset(0.366);
-    encoderPivotAbsolute.setZeroOffset(0.196875); // TODO :D check this value
+    encoderPitch.setZeroOffset(wristPitchEncoderSetZeroOffset);
+    encoderPivotAbsolute.setZeroOffset(wristPivotEncoderSetZeroOffset); // TODO :D check this value
     // :D ^ this is in between the extreme values, so that the seam has the pivot facing where it physically can't go
     // :D the straight up direction is 0.43 on the absolute encoder
     // H! Set the left pitch encoder 
-    encoderPitchFollower.setPosition(encoderPitch.getPosition());
+    //encoderPitchFollower.setPosition(encoderPitch.getPosition());
 
     // H! Used to reset the absolute encoder. Do not run this unless that's what you want to do
     //wristRollEncoder.setZeroOffset(0);
@@ -212,13 +209,8 @@ public class LegAnkleSubsystem extends SubsystemBase {
 
 
     pidRoll.setFeedbackDevice(encoderRollRelative);
-
     pidPivot.setFeedbackDevice(encoderPivotAbsolute);
-
-
-
-    motorRoll.burnFlash();
-    motorPivot.burnFlash();
+    pidPitch.setFeedbackDevice(encoderPitchRelative);
     
 
     // H! Set the PID values initially
@@ -240,6 +232,33 @@ public class LegAnkleSubsystem extends SubsystemBase {
     motorPitchRight.setSecondaryCurrentLimit(NEO550CurrentLimitHard);
     motorPitchLeft.setSecondaryCurrentLimit(NEO550CurrentLimitHard);
     motorRoll.setSecondaryCurrentLimit(NEO550CurrentLimitHard);
+
+
+    motorRoll.burnFlash();
+    motorPivot.burnFlash();
+    motorPitchLeft.burnFlash();
+    motorPitchRight.burnFlash();
+
+    // H! Make all the PID tuning tabs in shuffleboard
+    extensionPValue = tab.add("Ext P Value", PID.Extension.P).getEntry();
+    extensionIValue = tab.add("Ext I Value", PID.Extension.I).getEntry();
+    extensionDValue = tab.add("Ext D Value", PID.Extension.D).getEntry();
+    extensionFFValue = tab.add("Ext FF Value", PID.Extension.FF).getEntry();
+
+    pivotPValue = tab.add("Piv P Value", PID.Pivot.P).getEntry();
+    pivotIValue = tab.add("Piv I Value", PID.Pivot.I).getEntry();
+    pivotDValue = tab.add("Piv D Value", PID.Pivot.D).getEntry();
+    pivotFFValue = tab.add("Piv FF Value", PID.Pivot.FF).getEntry();
+
+    pitchPValue = tab.add("Pch P Value", PID.Roll.P).getEntry();
+    pitchIValue = tab.add("Pch I Value", PID.Roll.I).getEntry();
+    pitchDValue = tab.add("Pch D Value", PID.Roll.D).getEntry();
+    pitchFFValue = tab.add("Pch FF Value", PID.Roll.FF).getEntry();
+
+    rollPValue = tab.add("Rol P Value", PID.Roll.P).getEntry();
+    rollIValue = tab.add("Rol I Value", PID.Roll.I).getEntry();
+    rollDValue = tab.add("Rol D Value", PID.Roll.D).getEntry();
+    rollFFValue = tab.add("Rol FF Value", PID.Roll.FF).getEntry();
   }
 
 

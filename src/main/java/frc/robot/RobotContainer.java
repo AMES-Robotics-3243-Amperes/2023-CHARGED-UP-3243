@@ -42,8 +42,8 @@ public class RobotContainer {
   // ++ ----- COMMANDS -------------
   public final SwerveTeleopCommand m_SwerveTeleopCommand = new SwerveTeleopCommand(m_driveSubsystem, primaryController);
   public final BalanceCommand m_BalanceCommand = new BalanceCommand(m_driveSubsystem);
-  public final MoveLegAnkleToPickupPositionCommand m_legAnkleToPickupCommand = new MoveLegAnkleToPickupPositionCommand(
-    m_legAnkleSubsystem);
+  // public final MoveLegAnkleToPickupPositionCommand m_legAnkleToPickupCommand = new MoveLegAnkleToPickupPositionCommand(
+  //   m_legAnkleSubsystem);// :D duplicate??
   public final TempAutoRoutine m_auto;
   private final GrabberSubsystem m_GrabberSubsystem = new GrabberSubsystem();
   public final GrabberCommand m_GrabberCommand = new GrabberCommand(m_GrabberSubsystem, secondaryController);
@@ -57,6 +57,7 @@ public class RobotContainer {
   private final GrabberOpenCommand m_grabOpenCommand = new GrabberOpenCommand(m_GrabberSubsystem);
 
   public final MoveLegAnkleToPickupPositionCommand m_moveLegAnkleToPickupPositionCommand = new MoveLegAnkleToPickupPositionCommand(m_legAnkleSubsystem);
+  public final MoveLegAnkleToPlacementPositionCommand m_moveLegAnkleToPlacementPositionCommand = new MoveLegAnkleToPlacementPositionCommand(m_legAnkleSubsystem, secondaryController);
 
   //private final PlaceGamePiece m_placeGamePieceCommand;
 
@@ -109,8 +110,10 @@ public class RobotContainer {
 
     secondaryController.leftBumper().onTrue(m_grabOpenCommand);
     secondaryController.rightBumper().onTrue(m_grabCloseCommand);
-    secondaryController.x().onTrue(m_legAnkleToPickupCommand);
-    secondaryController.y().onTrue(m_moveLegAnkleToPickupPositionCommand);
+    //secondaryController.x().onTrue(m_legAnkleToPickupCommand);
+    // :D whats the deal with this? there are two pickup thingies? I commented the other one out and changed this one to use the x button
+    secondaryController.x().onTrue(m_moveLegAnkleToPickupPositionCommand);
+    //secondaryController.y().onTrue(m_moveLegAnkleToPlacementPositionCommand); // :D TODO: test this at some point soon
   }
 
   public void teleopInit() {}
