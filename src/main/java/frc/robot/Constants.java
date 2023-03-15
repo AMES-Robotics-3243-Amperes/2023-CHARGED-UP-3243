@@ -339,7 +339,7 @@ public final class Constants {
     public static final int NEO1650CurrentLimitHard = 40; // H! This is a temporary change! It was 40 before. // :D
     // hi I just changed this from 20 to 60
     public static final int NEO550CurrentLimitHard = 30; // H! This is a temporary change! It was 20 before.
-    public static final double atSetpointThreshold = 0.005;
+    public static final double atSetpointThreshold = 0.02;
 
     public static final double pivotOutputRange = 0.1;
     public static final double pitchOutputRange = 0.1;

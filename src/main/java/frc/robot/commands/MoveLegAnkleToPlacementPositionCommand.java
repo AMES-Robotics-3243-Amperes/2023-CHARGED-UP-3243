@@ -9,6 +9,9 @@ import frc.robot.JoyUtil;
 import frc.robot.subsystems.LegAnkleSubsystem;
 
 public class MoveLegAnkleToPlacementPositionCommand extends MoveLegAnkleToPositionCommand {
+
+  JoyUtil joy;
+
   /** Creates a new MoveLegAnkleToPickupPositionCommand. 
    * 
    * This will move the leg ankle to the pickup position. It will end when it is in an acceptable margin of the setpoints.
@@ -16,7 +19,16 @@ public class MoveLegAnkleToPlacementPositionCommand extends MoveLegAnkleToPositi
    * @param legAnkleSubsystem The {@link LegAnkleSubsystem} that this is controlling.
   */
   public MoveLegAnkleToPlacementPositionCommand(LegAnkleSubsystem legAnkleSubsystem, JoyUtil joy) {
-    super(legAnkleSubsystem);
+    super(legAnkleSubsystem)​;
+
+    this.joy = joy;
+    
+    
+    // Use addRequirements() here to declare subsystem dependencies.
+  }
+
+  @Override
+  public void initialize(){
     // :D I don't think it's physically possible to hold the POV up and down at the same time so this should be ok
     if(joy.getPOVDown()){
       setTargets(Constants.AutomationConfiguration.legAnklePlacementPositionLOW);
@@ -25,8 +37,7 @@ public class MoveLegAnkleToPlacementPositionCommand extends MoveLegAnkleToPositi
     } else {
       setTargets(Constants.AutomationConfiguration.legAnklePlacementPositionMIDDLE);
     }
-    
-    // Use addRequirements() here to declare subsystem dependencies.
+    legAnkleSubsystem.​setMotorPositions(targetExtension, targetPivot, targetPitch, targetRoll);
   }
 
   

@@ -159,8 +159,8 @@ public class LegAnkleSubsystem extends SubsystemBase {
     motorExtension.setInverted(true);
     motorRoll.setInverted(true);
     motorPivot.setInverted(false);
-    motorPitchRight.setInverted(false);
-    motorPitchLeft.setInverted(true);
+    motorPitchRight.setInverted(true);
+    motorPitchLeft.setInverted(false);
 
 
 
@@ -313,6 +313,12 @@ public class LegAnkleSubsystem extends SubsystemBase {
    */
   public void setMotorPositions(LegAnklePosition newPosition) {
     targetPosition = newPosition;
+    System.out.println("$$$$$$$$$$$$$$$$$$$$$$$");
+    System.out.println(newPosition.extension);
+    System.out.println(newPosition.pivot);
+    System.out.println(newPosition.pitch);
+    System.out.println(newPosition.roll);
+    System.out.println("$$$$$$$$$$$$$$$$$$$$$$$");
   }
 
   /**Set the motor positions the legAnkle will go to 

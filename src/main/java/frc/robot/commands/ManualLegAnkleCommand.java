@@ -11,14 +11,14 @@ import frc.robot.Constants.JoyUtilConstants;
 import frc.robot.subsystems.LegAnkleSubsystem;
 import frc.robot.utility_classes.LegAnklePosition;
 
-public class WristCommand extends CommandBase {
+public class ManualLegAnkleCommand extends CommandBase {
   /**
    * Creates a new Wrist.
    */
   private final LegAnkleSubsystem m_subsystem;
   private final JoyUtil m_controller;
 
-  public WristCommand(LegAnkleSubsystem subsystem, JoyUtil controller) {
+  public ManualLegAnkleCommand(LegAnkleSubsystem subsystem, JoyUtil controller) {
     m_subsystem = subsystem;
     m_controller = controller;
     // Use addRequirements() here to declare subsystem dependencies.

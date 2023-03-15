@@ -52,7 +52,7 @@ public class RobotContainer {
     
   // <> this is required for creating new swerve trajectory follow commands
   private final ProfiledPIDController thetaPidController;
-  private final WristCommand m_WristCommand = new WristCommand(m_legAnkleSubsystem, secondaryController);
+  private final ManualLegAnkleCommand m_WristCommand = new ManualLegAnkleCommand(m_legAnkleSubsystem, secondaryController);
   private final GrabberCloseCommand m_grabCloseCommand = new GrabberCloseCommand(m_GrabberSubsystem);
   private final GrabberOpenCommand m_grabOpenCommand = new GrabberOpenCommand(m_GrabberSubsystem);
 
@@ -113,7 +113,7 @@ public class RobotContainer {
     //secondaryController.x().onTrue(m_legAnkleToPickupCommand);
     // :D whats the deal with this? there are two pickup thingies? I commented the other one out and changed this one to use the x button
     secondaryController.x().onTrue(m_moveLegAnkleToPickupPositionCommand);
-    //secondaryController.y().onTrue(m_moveLegAnkleToPlacementPositionCommand); // :D TODO: test this at some point soon
+    secondaryController.y().onTrue(m_moveLegAnkleToPlacementPositionCommand); // :D TODO: test this at some point soon
   }
 
   public void teleopInit() {}
