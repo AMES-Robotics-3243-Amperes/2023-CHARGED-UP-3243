@@ -278,7 +278,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
 
 
   public void resetRoll() {
-    targetPosition.roll = 0;
+    targetPosition.roll = 0.0;
   }
 
 
@@ -318,13 +318,14 @@ public class LegAnkleSubsystem extends SubsystemBase {
    * @param newPosition A {@link LegAnklePosition} object with the positions to go to
    */
   public void setMotorPositions(LegAnklePosition newPosition) {
-    targetPosition = newPosition;
+    
     System.out.println("$$$$$$$$$$$$$$$$$$$$$$$");
     System.out.println(newPosition.extension);
     System.out.println(newPosition.pivot);
     System.out.println(newPosition.pitch);
     System.out.println(newPosition.roll);
     System.out.println("$$$$$$$$$$$$$$$$$$$$$$$");
+    setMotorPositions(newPosition.extension, newPosition.pivot, newPosition.pitch, newPosition.roll);
   }
 
   /**Set the motor positions the legAnkle will go to 
@@ -335,8 +336,19 @@ public class LegAnkleSubsystem extends SubsystemBase {
    * @param pitch The pitch to go to
    * @param roll The roll to go to
    */
-  public void setMotorPositions(double extension, double pivot, double pitch, double roll) {
-    setMotorPositions(new LegAnklePosition(extension, pivot, pitch, roll));
+  public void setMotorPositions(Double extension, Double pivot, Double pitch, Double roll) {
+    if(extension != null){
+      targetPosition.extension = extension;
+    }
+    if(pitch != null){
+      targetPosition.pitch = pitch;
+    }
+    if(pivot != null){
+      targetPosition.pivot = pivot;
+    }
+    if(roll != null){
+      targetPosition.roll = roll;
+    }
   }
 
   /**Moves the motor positions the legAnkle will go to by a given amount
@@ -396,10 +408,10 @@ public class LegAnkleSubsystem extends SubsystemBase {
     // H! Return whether it's in the right position
     // H! TODO: TEST THIS
     return (
-      Math.abs( encoderPivotAbsolute.getPosition() - targetPosition.pivot ) < atSetpointThreshold &&
-      Math.abs( encoderExtension.getPosition() - targetPosition.extension ) < atSetpointThreshold &&
-      Math.abs( encoderPitch.getPosition() - targetPosition.pitch ) < atSetpointThreshold &&
-      Math.abs( encoderRoll.getPosition() - targetPosition.roll ) < atSetpointThreshold
+      (targetPosition.pivot == null || Math.abs( encoderPivotAbsolute.getPosition() - targetPosition.pivot ) < atSetpointThreshold) &&
+      (targetPosition.extension == null || Math.abs( encoderExtension.getPosition() - targetPosition.extension ) < atSetpointThreshold) &&
+      (targetPosition.pitch == null || Math.abs( encoderPitch.getPosition() - targetPosition.pitch ) < atSetpointThreshold) &&
+      (targetPosition.roll == null || Math.abs( encoderRoll.getPosition() - targetPosition.roll ) < atSetpointThreshold)
     );
   }
 
