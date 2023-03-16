@@ -24,19 +24,20 @@ public class MoveLegAnkleToPartialPositionCommand extends MoveLegAnkleToPosition
     super(legAnkleSubsystem);
 
     // H! For each axis, if a value is passed in, then use that value.
-    if (targetExtension == null) {
+    // :D I think you mean only use the values that we don't pass in lmao
+    if (targetExtension != null) {
       this.targetExtension = targetExtension;
     }
 
-    if (targetPivot == null) {
+    if (targetPivot != null) {
       this.targetPivot = targetPivot;
     }
 
-    if (targetPitch == null) {
+    if (targetPitch != null) {
       this.targetPitch = targetPitch;
     }
 
-    if (targetRoll == null) {
+    if (targetRoll != null) {
       this.targetRoll = targetRoll;
     }
     // Use addRequirements() here to declare subsystem dependencies.
@@ -47,7 +48,7 @@ public class MoveLegAnkleToPartialPositionCommand extends MoveLegAnkleToPosition
   public void initialize() {
     LegAnklePosition currentTargets = legAnkleSubsystem.getManualSetpoints();
 
-    // H! For each axis, if a value is passed in, then assume that value.
+    // H! For each axis, if a value is not passed in, then assume that value.
     if (targetExtension == null) {
       targetExtension = currentTargets.extension;
     }
@@ -65,5 +66,12 @@ public class MoveLegAnkleToPartialPositionCommand extends MoveLegAnkleToPosition
     }
 
     super.initialize();
+
+  }
+
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
+    
   }
 }

@@ -75,6 +75,12 @@ public class MoveLegAnkleToPositionCommand extends CommandBase {
    * @param targetRoll The roll value to go to.
    */
   public void setTargets(double targetExtension, double targetPivot, double targetPitch, double targetRoll){
+    System.out.println("~~~~~~~~~~~~~~~~~~~~~");
+    System.out.println(targetExtension);
+    System.out.println(targetPivot);
+    System.out.println(targetPitch);
+    System.out.println(targetRoll);
+    System.out.println("~~~~~~~~~~~~~~~~~~~~~");
     this.targetExtension = targetExtension;
     this.targetPivot = targetPivot;
     this.targetPitch = targetPitch;
@@ -96,7 +102,13 @@ public class MoveLegAnkleToPositionCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    legAnkleSubsystem.setMotorPositions(targetPivot, targetExtension, targetPitch, targetRoll);
+    System.out.println("~~~~~~~~~~~~~~~~~~~~~");
+    System.out.println(targetExtension);
+    System.out.println(targetPivot);
+    System.out.println(targetPitch);
+    System.out.println(targetRoll);
+    System.out.println("~~~~~~~~~~~~~~~~~~~~~");
+    legAnkleSubsystem.setMotorPositions(targetExtension, targetPivot, targetPitch, targetRoll);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
