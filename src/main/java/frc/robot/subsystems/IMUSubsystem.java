@@ -7,7 +7,7 @@ package frc.robot.subsystems;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import frc.robot.Constants.DriveTrain.DriveConstants;
 
 /**
  * <> A wrapper for an {@link AHRS} with a bunch of useful stuff
@@ -31,7 +31,17 @@ public class IMUSubsystem extends SubsystemBase {
   public Rotation2d getYaw() {
     Rotation2d raw_angle = m_imu.getRotation2d();
 
-    return Constants.DriveTrain.DriveConstants.kGyroReversed ? raw_angle.times(-1) : raw_angle;
+    return DriveConstants.kGyroReversed ? raw_angle.times(-1) : raw_angle;
+  }
+
+  /**
+   * <> gives the turn rate of the robot
+   *
+   * @return the turn rate of the robot
+   */
+  public Rotation2d getTurnRate() {
+    Rotation2d rawTurnRateDegrees = Rotation2d.fromDegrees(m_imu.getRate());
+    return DriveConstants.kGyroReversed ? rawTurnRateDegrees.times(-1) : rawTurnRateDegrees;
   }
 
   /**
