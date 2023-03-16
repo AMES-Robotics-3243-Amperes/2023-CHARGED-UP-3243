@@ -11,14 +11,14 @@ import frc.robot.Constants.JoyUtilConstants;
 import frc.robot.subsystems.LegAnkleSubsystem;
 import frc.robot.utility_classes.LegAnklePosition;
 
-public class WristCommand extends CommandBase {
+public class ManualLegAnkleCommand extends CommandBase {
   /**
    * Creates a new Wrist.
    */
   private final LegAnkleSubsystem m_subsystem;
   private final JoyUtil m_controller;
 
-  public WristCommand(LegAnkleSubsystem subsystem, JoyUtil controller) {
+  public ManualLegAnkleCommand(LegAnkleSubsystem subsystem, JoyUtil controller) {
     m_subsystem = subsystem;
     m_controller = controller;
     // Use addRequirements() here to declare subsystem dependencies.
@@ -51,7 +51,7 @@ public class WristCommand extends CommandBase {
       MathUtil.applyDeadband(m_controller.getRightTriggerAxis() - m_controller.getLeftTriggerAxis(), JoyUtilConstants.kDeadzone) / 200,
       m_controller.getLeftY() / -150,
       m_controller.getRightY() / -150,
-      0 //(m_controller.getRightX()) / 5
+      (m_controller.getRightX()) / 200
     );
     
     // H! IK control

@@ -159,8 +159,8 @@ public class LegAnkleSubsystem extends SubsystemBase {
     motorExtension.setInverted(true);
     motorRoll.setInverted(true);
     motorPivot.setInverted(false);
-    motorPitchRight.setInverted(false);
-    motorPitchLeft.setInverted(true);
+    motorPitchRight.setInverted(true);
+    motorPitchLeft.setInverted(false);
 
 
 
@@ -175,6 +175,8 @@ public class LegAnkleSubsystem extends SubsystemBase {
     // :D I added this in, it limits the output voltage of the motor
     pidPivot.setOutputRange(-pivotOutputRange, pivotOutputRange);
     pidPitch.setOutputRange(-pitchOutputRange, pitchOutputRange);
+    pidExtension.setOutputRange(-extensionOutputRange, extensionOutputRange);
+    pidRoll.setOutputRange(-rollOutputRange, rollOutputRange);
     
 
 
@@ -185,11 +187,11 @@ public class LegAnkleSubsystem extends SubsystemBase {
     encoderPitchRight.setPositionConversionFactor(pitchEncoderConversionFactor);
     encoderPitchLeft.setPositionConversionFactor(pitchEncoderConversionFactor);
     
-    
 
     
     //MotorPos startingMotorPosition = IK(StartingPosition.x, StartingPosition.y, StartingPosition.pitch, StartingPosition.roll);
     encoderExtension.setPosition(startingPosition.extension/*minLength*/);
+    
     //encoderPivotRelative.setPosition(startingPosition.pivot); // :D I commented this out because we are using a semiabsolute encoder now
     encoderPitch.setZeroOffset(wristPitchEncoderSetZeroOffset);
     encoderPivotAbsolute.setZeroOffset(wristPivotEncoderSetZeroOffset); // TODO :D check this value
@@ -204,8 +206,10 @@ public class LegAnkleSubsystem extends SubsystemBase {
     // :D hi I turned this into a constant // H! Great!
     encoderRoll.setZeroOffset(wristRollEncoderSetZeroOffset);
 
+    encoderPitchRight.setPosition(encoderPitch.getPosition());
+
     encoderRollRelative = encoderRoll.getSparkMAXEncoder();
-    encoderRoll.setPositionConversionFactor(1/75);
+    encoderRoll.setPositionConversionFactor(1/75); // :D TODO <constant
 
 
     pidRoll.setFeedbackDevice(encoderRollRelative);
@@ -216,7 +220,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
     // H! Set the PID values initially
     setPIDFValues(pidExtension, PID.Extension.P, PID.Extension.I, PID.Extension.D, PID.Extension.FF); 
     setPIDFValues(pidPivot,     PID.Pivot.P,     PID.Pivot.I,     PID.Pivot.D,     PID.Pivot.FF); 
-    setPIDFValues(pidPitch,   PID.Pitch.P,     PID.Pitch.I,     PID.Pitch.D,     PID.Pitch.FF); 
+    setPIDFValues(pidPitch,   PID.Pitch.P,     PID.Pitch.I,     PID.Pitch.D,     PID.Pitch.FF);
     setPIDFValues(pidRoll,    PID.Roll.P,      PID.Roll.I,      PID.Roll.D,      PID.Roll.FF);
     
     // H! Set soft current limits
@@ -232,6 +236,8 @@ public class LegAnkleSubsystem extends SubsystemBase {
     motorPitchRight.setSecondaryCurrentLimit(NEO550CurrentLimitHard);
     motorPitchLeft.setSecondaryCurrentLimit(NEO550CurrentLimitHard);
     motorRoll.setSecondaryCurrentLimit(NEO550CurrentLimitHard);
+
+
 
 
     motorRoll.burnFlash();
@@ -250,10 +256,10 @@ public class LegAnkleSubsystem extends SubsystemBase {
     pivotDValue = tab.add("Piv D Value", PID.Pivot.D).getEntry();
     pivotFFValue = tab.add("Piv FF Value", PID.Pivot.FF).getEntry();
 
-    pitchPValue = tab.add("Pch P Value", PID.Roll.P).getEntry();
-    pitchIValue = tab.add("Pch I Value", PID.Roll.I).getEntry();
-    pitchDValue = tab.add("Pch D Value", PID.Roll.D).getEntry();
-    pitchFFValue = tab.add("Pch FF Value", PID.Roll.FF).getEntry();
+    pitchPValue = tab.add("Pch P Value", PID.Pitch.P).getEntry();
+    pitchIValue = tab.add("Pch I Value", PID.Pitch.I).getEntry();
+    pitchDValue = tab.add("Pch D Value", PID.Pitch.D).getEntry();
+    pitchFFValue = tab.add("Pch FF Value", PID.Pitch.FF).getEntry();
 
     rollPValue = tab.add("Rol P Value", PID.Roll.P).getEntry();
     rollIValue = tab.add("Rol I Value", PID.Roll.I).getEntry();
@@ -313,6 +319,12 @@ public class LegAnkleSubsystem extends SubsystemBase {
    */
   public void setMotorPositions(LegAnklePosition newPosition) {
     targetPosition = newPosition;
+    System.out.println("$$$$$$$$$$$$$$$$$$$$$$$");
+    System.out.println(newPosition.extension);
+    System.out.println(newPosition.pivot);
+    System.out.println(newPosition.pitch);
+    System.out.println(newPosition.roll);
+    System.out.println("$$$$$$$$$$$$$$$$$$$$$$$");
   }
 
   /**Set the motor positions the legAnkle will go to 
@@ -382,7 +394,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
    */
   public boolean isArmPositioned() {
     // H! Return whether it's in the right position
-    // H! TODO TEST THIS
+    // H! TODO: TEST THIS
     return (
       Math.abs( encoderPivotAbsolute.getPosition() - targetPosition.pivot ) < atSetpointThreshold &&
       Math.abs( encoderExtension.getPosition() - targetPosition.extension ) < atSetpointThreshold &&
@@ -498,7 +510,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
     // ++ ----------------------
 
     // H! Set the position refrences
-    targetPosition.applyToMotors(pidExtension, pidPivot, pidPitch, pidRoll);
+    targetPosition.applyToMotors(pidExtension, pidPivot, pidPitch,  pidRoll);
   }
 
 
