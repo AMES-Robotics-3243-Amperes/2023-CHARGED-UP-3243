@@ -38,7 +38,9 @@ public class RobotContainer {
   // ++ ----- SUBSYSTEMS -----------
   public final PhotonVisionSubsystem m_photonVisionSubsystem = new PhotonVisionSubsystem(fieldPosManager);
   public final LegAnkleSubsystem m_legAnkleSubsystem = new LegAnkleSubsystem();
-  public final DriveSubsystem m_driveSubsystem = new DriveSubsystem(fieldPosManager);
+  public final DriveSubsystem m_driveSubsystem = new DriveSubsystem(
+    fieldPosManager, DriveConstants.FieldRelativeTurningConstants.kPidController);
+
   // ++ ----- COMMANDS -------------
   public final SwerveTeleopCommand m_SwerveTeleopCommand = new SwerveTeleopCommand(m_driveSubsystem, primaryController);
   public final BalanceCommand m_BalanceCommand = new BalanceCommand(m_driveSubsystem);

@@ -84,7 +84,7 @@ public class SwerveAutoMoveCommand extends CommandBase {
     Pose2d robotPose = m_subsystem.getPose();
 
     positionPIDController.reset(robotPose.getY());
-    thetaPIDController.reset(robotPose.getRotation().getDegrees());
+    thetaPIDController.reset(robotPose.getRotation().getDegrees(), m_subsystem.getTurnRate().getDegrees());
   }
 
   @Override
@@ -109,8 +109,7 @@ public class SwerveAutoMoveCommand extends CommandBase {
     double distanceError = Math.sqrt(xError * xError + yError * yError);
     boolean distanceOk = distanceError <= maxDistanceFromSetpointMeters;
 
-    double rotationErrorDegrees = Math.abs(
-      subsystemPose.getRotation().getDegrees() - goal.getRotation().getDegrees());
+    double rotationErrorDegrees = Math.abs(subsystemPose.getRotation().getDegrees() - goal.getRotation().getDegrees());
     boolean rotationOk = rotationErrorDegrees <= maxAngleFromSetpoint.getDegrees();
 
     return distanceOk && rotationOk;

@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveTrain.DriveConstants;
 import frc.robot.JoyUtil;
@@ -12,7 +13,7 @@ import frc.robot.subsystems.DriveSubsystem;
 public class SwerveTeleopCommand extends CommandBase {
 
   // <> subsystem
-  private final DriveSubsystem m_DriveSubsystem;
+  private final DriveSubsystem m_driveSubsystem;
 
   // <> driver joyutil
   private final JoyUtil controller;
@@ -20,11 +21,14 @@ public class SwerveTeleopCommand extends CommandBase {
   // <> driving needs to be reversed if on red alliance
   private boolean reverse;
 
+  // <> this is the current goal angle for field relative turning
+  private Rotation2d fieldRelativeTurningGoal = Rotation2d.fromDegrees(0);
+
   /**
    * Creates a new SwerveTeleopCommand.
    */
   public SwerveTeleopCommand(DriveSubsystem subsystem, JoyUtil controller) {
-    m_DriveSubsystem = subsystem;
+    m_driveSubsystem = subsystem;
     this.controller = controller;
 
     reverse = false;
@@ -35,22 +39,36 @@ public class SwerveTeleopCommand extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    m_driveSubsystem.resetFieldRelativeTurningPid();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // <> drive the drivetrain with the controller's input
-    m_DriveSubsystem.drive(-controller.getLeftY() * (reverse ? -1 : 1),
-      -controller.getLeftX() * (reverse ? -1 : 1), controller.getRightX(),
-      controller.getRightBumper() != DriveConstants.kDrivingFieldRelative);
-  } 
+    double xSpeed = -controller.getLeftY() * (reverse ? -1 : 1) * DriveConstants.kDrivingSpeedDamper;
+    double ySpeed = -controller.getLeftX() * (reverse ? -1 : 1) * DriveConstants.kDrivingSpeedDamper;
 
-  /** 
-   * <> sets the reverse value (true if red)
-  */
-  public void setReverse(boolean value) {
-    reverse = value;
+    boolean fieldRelativeDriving = controller.getRightBumper() != DriveConstants.kDrivingFieldRelative;
+
+    double controllerRightY = controller.getRightY();
+    double controllerRightX = controller.getRightX();
+
+    if (fieldRelativeDriving && controllerRightY == 0 && controllerRightX == 0) {
+      // <> field relative driving, but no angle specified
+      m_driveSubsystem.drive(xSpeed, ySpeed, fieldRelativeTurningGoal, true);
+    } else if (fieldRelativeDriving) {
+      // <> field relative turning, so get an angle
+      fieldRelativeTurningGoal = Rotation2d.fromRadians(Math.atan2(-controllerRightX, -controllerRightY));
+
+      m_driveSubsystem.drive(xSpeed, ySpeed, fieldRelativeTurningGoal, true);
+    } else {
+      // <> not field relative turning, so get raw rotation speed
+      double rotationSpeed = controllerRightX * DriveConstants.kAngularSpeedDamper;
+
+      m_driveSubsystem.drive(xSpeed, ySpeed, rotationSpeed, false);
+      fieldRelativeTurningGoal = m_driveSubsystem.getHeading();
+    }
   }
 
   // Called once the command ends or is interrupted.
@@ -61,5 +79,12 @@ public class SwerveTeleopCommand extends CommandBase {
   @Override
   public boolean isFinished() {
     return false;
+  }
+
+  /**
+   * <> sets the reverse value (true if red)
+   */
+  public void setReverse(boolean value) {
+    reverse = value;
   }
 }

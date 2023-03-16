@@ -156,10 +156,10 @@ public final class Constants {
       public static final boolean kTurningFieldRelative = true;
 
       // <> speed damper (flat constant supplied speed is multiplied by)
-      public static final double kDrivingSpeedDamper = 1.8; // <> meters per second
+      public static final double kDrivingSpeedDamper = 1; // <> meters per second
       public static final double kAngularSpeedDamper = 1 * Math.PI; // <> radians per second
       // <> max speed
-      public static final double kMaxMetersPerSecond = 5;
+      public static final double kMaxMetersPerSecond = 2;
       // <> this should be true
       public static final boolean kGyroReversed = false;
 
@@ -210,6 +210,21 @@ public final class Constants {
         public static final double max1650TempCelsius = 100;
       }
 
+      public static final class FieldRelativeTurningConstants {
+        public static final double kP = 4;
+        public static final double kI = 0;
+        public static final double kD = 0;
+
+        // <> these values aren't exact but are pretty close
+        public static final double kMaxAngularAccelerationDegreesPerSecond = 450;
+        public static final double kMaxAngularVelocityDegreesPerSecond = 600;
+
+        public static final TrapezoidProfile.Constraints kConstraints = new TrapezoidProfile.Constraints(
+          kMaxAngularVelocityDegreesPerSecond, kMaxAngularAccelerationDegreesPerSecond);
+
+        public static final ProfiledPIDController kPidController = new ProfiledPIDController(kP, kI, kD, kConstraints);
+      }
+
       // <> stuff pertaining to trajectory following,
       // <> not the actual autonomous period
       public static final class AutoConstants {
@@ -217,8 +232,8 @@ public final class Constants {
         // <> max speeds (only for pathfinding, not controlling)
         public static final double kMaxMetersPerSecond = 1.4;
         public static final double kMaxAccelerationMetersPerSecond = 1;
-        public static final double kMaxAngularMetersPerSecond = 130;
-        public static final double kMaxAngularAccelerationMetersPerSecond = 90;
+        public static final double kMaxAngularDegreesPerSecond = 130;
+        public static final double kMaxAngularAccelerationDegreesPerSecond = 90;
 
         // <> pid values
         public static final double kDrivingP = 0.4;
@@ -238,7 +253,7 @@ public final class Constants {
           new TrapezoidProfile.Constraints(kMaxMetersPerSecond, kMaxAccelerationMetersPerSecond);
 
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
-          kMaxAngularMetersPerSecond, kMaxAngularAccelerationMetersPerSecond);
+          kMaxAngularDegreesPerSecond, kMaxAngularAccelerationDegreesPerSecond);
 
         // <> pid controllers
         public static final ProfiledPIDController kDrivingPIDController = new ProfiledPIDController(kDrivingP,
