@@ -49,7 +49,7 @@ public final class Constants {
 
     // :D grabber open/close setpoints
     public static final double openGrabberSetpoint = 0.22;
-    public static final double closedGrabberSetpoint = 0.48;
+    public static final double closedGrabberSetpoint = 0.46;
 
     // ++ current limits
     public static final int hardOpenerMotorCurrentLimit = 30;
@@ -334,15 +334,17 @@ public final class Constants {
     // I just changed this from 10 to 30
     public static final int pitchCurrentLimit = 29; // H! This is a temporary change! It was 10 before. // :D hi I
     // just changed this from 30 to 15
-    public static final int rollCurrentLimit = 5; // H! This is a temporary change! It was 10 before. // :D hi I just
-    // changed this from 2 to 5
+    public static final int rollCurrentLimit = 20; // H! This is a temporary change! It was 10 before. // :D hi I just
+    // changed this from 5 to 10
     public static final int NEO1650CurrentLimitHard = 40; // H! This is a temporary change! It was 40 before. // :D
     // hi I just changed this from 20 to 60
     public static final int NEO550CurrentLimitHard = 30; // H! This is a temporary change! It was 20 before.
     public static final double atSetpointThreshold = 0.02;
 
-    public static final double pivotOutputRange = 0.1;
-    public static final double pitchOutputRange = 0.1;
+    public static final double pivotOutputRange = 0.15;
+    public static final double pitchOutputRange = 0.3;
+    public static final double extensionOutputRange = 0.5;
+    public static final double rollOutputRange = 0.3;
     public static final double wristRollEncoderSetZeroOffset = 0.163;
     public static final double wristPitchEncoderSetZeroOffset = 0.5570095;// :D prev value: 0.866; I changed it because it was flipped 180 degrees from what the standard on the pivot is
     public static final double wristPivotEncoderSetZeroOffset = 0.196875;
@@ -367,7 +369,7 @@ public final class Constants {
       public static final double roll = 0.0;
     }
 
-    public static class StartingSetpoints {
+    public static class StartingSetpoints { // :D TODO: make these values not use inverse kinematics, it'll be easier to visually see and check/adjust
       public static final double x = -0.2;
       public static final double y = 0.80;
       public static final double pitch = -Math.PI / 2;
@@ -375,62 +377,62 @@ public final class Constants {
     }
 
     public static class PickupSetpoints {
-      public static final double pivot = 0.515;
+      public static final double pivot = 0.535;
       public static final double extension = 1.09;
-      public static final double pitch = 0.5;
+      public static final double pitch = 0.7;
       public static final double roll = 0.5;
     }
 
     public static class PlacementSetpoints {
       public static final class High {
-        public static final double pivot = 0.135;
+        public static final double pivot = 0.165;
         public static final double extension = WristAndArm.Limits.extensionMax-0.1;
-        public static final double pitch = 0.25;
+        public static final double pitch = 0.584;
         public static final double roll = 0.5;
       }
 
       public static final class Middle {
-        public static final double pivot = 0.135;
+        public static final double pivot = 0.157;
         public static final double extension = 1.09;
-        public static final double pitch = 0.25;
+        public static final double pitch = 0.572;
         public static final double roll = 0.5;
       }
 
       public static final class Low {
-        public static final double pivot = 0.16;
+        public static final double pivot = 0.203;
         public static final double extension = 1.09;
-        public static final double pitch = 0.115;
+        public static final double pitch = 0.5;
         public static final double roll = 0.5;
       }
     }
 
     public static class PID {
       public static class Extension {
-        public static final double P = 2.0;// H! 2.0
+        public static final double P = 5.0;// H! 2.0
         public static final double I = 0.0;
         public static final double D = 0.0;
         public static final double FF = 0.01;
       }
 
       public static class Pivot {
-        public static final double P = 5.0;// H! 5.0
-        public static final double I = 0.0;
+        public static final double P = 10.0;// H! 5.0
+        public static final double I = 0.00;
         public static final double D = 0.0;
         public static final double FF = 0.1;
       }
 
       public static class Pitch {
-        public static final double P = 0.65;
-        public static final double I = 0.0125;
+        public static final double P = 6;
+        public static final double I = 0.001;
         public static final double D = 0.0;
         public static final double FF = 0.01;
       }
 
       public static class Roll {
-        public static final double P = 0.75;
-        public static final double I = 0.0;
-        public static final double D = 0.01;
-        public static final double FF = 0.1;
+        public static final double P = 0.95;
+        public static final double I = 0.00;
+        public static final double D = 0.0;
+        public static final double FF = 0.1*0;
       }
     }
 

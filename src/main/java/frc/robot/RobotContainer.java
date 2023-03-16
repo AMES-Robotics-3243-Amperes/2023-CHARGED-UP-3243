@@ -52,9 +52,11 @@ public class RobotContainer {
     
   // <> this is required for creating new swerve trajectory follow commands
   private final ProfiledPIDController thetaPidController;
-  private final ManualLegAnkleCommand m_WristCommand = new ManualLegAnkleCommand(m_legAnkleSubsystem, secondaryController);
+  private final ManualLegAnkleCommand m_manualLegAnkleCommand = new ManualLegAnkleCommand(m_legAnkleSubsystem, secondaryController);
   private final GrabberCloseCommand m_grabCloseCommand = new GrabberCloseCommand(m_GrabberSubsystem);
   private final GrabberOpenCommand m_grabOpenCommand = new GrabberOpenCommand(m_GrabberSubsystem);
+  private final WristRollDefaultCommand m_wristRollDefaultCommand = new WristRollDefaultCommand(m_legAnkleSubsystem);
+  private final WristRollUpCommand m_wristRollUpCommand = new WristRollUpCommand(m_legAnkleSubsystem);
 
   public final MoveLegAnkleToPickupPositionCommand m_moveLegAnkleToPickupPositionCommand = new MoveLegAnkleToPickupPositionCommand(m_legAnkleSubsystem);
   public final MoveLegAnkleToPlacementPositionCommand m_moveLegAnkleToPlacementPositionCommand = new MoveLegAnkleToPlacementPositionCommand(m_legAnkleSubsystem, secondaryController);
@@ -75,7 +77,7 @@ public class RobotContainer {
 
     m_driveSubsystem.setDefaultCommand(m_SwerveTeleopCommand);
 
-    m_legAnkleSubsystem.setDefaultCommand(m_WristCommand);
+    m_legAnkleSubsystem.setDefaultCommand(m_manualLegAnkleCommand);
 
     //m_GrabberSubsystem.setDefaultCommand(m_grabCloseCommand);
 
@@ -108,8 +110,10 @@ public class RobotContainer {
         DriveConstants.AutoConstants.kDrivingPIDController, DriveConstants.AutoConstants.kTurningPIDController,
         DriveConstants.AutoConstants.maxMetersFromSetpoint, DriveConstants.AutoConstants.maxRotationFromSetpoint));
 
-    secondaryController.leftBumper().onTrue(m_grabOpenCommand);
-    secondaryController.rightBumper().onTrue(m_grabCloseCommand);
+    secondaryController.rightBumper().onTrue(m_grabOpenCommand);
+    secondaryController.rightBumper().onFalse(m_grabCloseCommand);
+    secondaryController.leftBumper().onTrue(m_wristRollUpCommand);
+    secondaryController.leftBumper().onFalse(m_wristRollDefaultCommand);
     //secondaryController.x().onTrue(m_legAnkleToPickupCommand);
     // :D whats the deal with this? there are two pickup thingies? I commented the other one out and changed this one to use the x button
     secondaryController.x().onTrue(m_moveLegAnkleToPickupPositionCommand);

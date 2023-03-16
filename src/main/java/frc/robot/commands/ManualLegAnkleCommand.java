@@ -51,7 +51,7 @@ public class ManualLegAnkleCommand extends CommandBase {
       MathUtil.applyDeadband(m_controller.getRightTriggerAxis() - m_controller.getLeftTriggerAxis(), JoyUtilConstants.kDeadzone) / 200,
       m_controller.getLeftY() / -150,
       m_controller.getRightY() / -150,
-      0 //(m_controller.getRightX()) / 5
+      (m_controller.getRightX()) / 200
     );
     
     // H! IK control
