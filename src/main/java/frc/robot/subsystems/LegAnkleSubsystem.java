@@ -75,6 +75,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
   public boolean deleteThis_doSetpoint = true;
 
   private DigitalInput extensionLimitSwitch = new DigitalInput(0);
+  private DigitalInput pivotLimitSwitch = new DigitalInput(1);
   
   private SparkMaxPIDController pidPivot;
   private SparkMaxPIDController pidExtension;
@@ -511,6 +512,15 @@ public class LegAnkleSubsystem extends SubsystemBase {
 
     // H! Set the position refrences
     targetPosition.applyToMotors(pidExtension, pidPivot, pidPitch,  pidRoll);
+  }
+
+
+
+  public void testPeriodic() {
+    // H! This is maybe right TODO actually test it
+    if (pivotLimitSwitch.get()) {
+      encoderPivotAbsolute.setZeroOffset(encoderPivotAbsolute.getZeroOffset() + 0.5);
+    }
   }
 
 

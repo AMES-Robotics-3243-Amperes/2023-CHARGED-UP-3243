@@ -127,4 +127,8 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     return m_auto;
   }
+
+  public void testPeriodic() {
+    m_legAnkleSubsystem.testPeriodic();
+  }
 }
