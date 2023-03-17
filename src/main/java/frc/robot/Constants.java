@@ -369,6 +369,13 @@ public final class Constants {
       public static final Double roll = null;
     }
 
+    public static class PickupSetpointsLOW { // :D TODO: get the actual values
+      public static final double pivot = 0.535;
+      public static final double extension = 1.09;
+      public static final double pitch = 0.7;
+      public static final Double roll = null;
+    }
+
     public static class DoubleLoadSetpoints {
       public static final double pivot = 0.15;
       public static final double extension = 1.09;
@@ -533,6 +540,13 @@ public final class Constants {
       WristAndArm.PickupSetpoints.pivot, 
       WristAndArm.PickupSetpoints.pitch, 
       WristAndArm.PickupSetpoints.roll
+    );
+
+    public static final LegAnklePosition legAnklePickupPositionLOW = new LegAnklePosition(
+      WristAndArm.PickupSetpointsLOW.extension, 
+      WristAndArm.PickupSetpointsLOW.pivot, 
+      WristAndArm.PickupSetpointsLOW.pitch, 
+      WristAndArm.PickupSetpointsLOW.roll
     );
 
     // :D I capitalized the HIGH, MIDDLE, and LOW so that it would stand out more, if you don't really like it, feel free to change

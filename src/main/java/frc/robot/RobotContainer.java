@@ -51,7 +51,7 @@ public class RobotContainer {
   //   m_legAnkleSubsystem);// :D duplicate??
   public final MoveLegAnkleToPickupPositionCommand m_moveLegAnkleToPickupPositionCommand =
     new MoveLegAnkleToPickupPositionCommand(
-    m_legAnkleSubsystem);
+    m_legAnkleSubsystem, secondaryController);
   public final MoveLegAnkleToPlacementPositionCommand m_moveLegAnkleToPlacementPositionCommand =
     new MoveLegAnkleToPlacementPositionCommand(
     m_legAnkleSubsystem, secondaryController);
