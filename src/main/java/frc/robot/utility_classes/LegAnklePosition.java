@@ -38,18 +38,6 @@ public class LegAnklePosition {
      * @return An array of the x, y, robot relative pitch, and roll
      */
     public double[] getKinematicPositions() {
-        if(extension == null){
-            
-        }
-        if(pivot == null){
-
-        }
-        if(pitch == null){
-
-        }
-        if(roll == null){
-
-        }
 
         return new double[] { 
         (extension * Math.cos(Units.rotationsToRadians(pivot)))  +  (Constants.WristAndArm.wristLength * Math.cos(Units.rotationsToRadians(pivot + pitch - 0.5))),
