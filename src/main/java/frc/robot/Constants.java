@@ -398,6 +398,13 @@ public final class Constants {
       public static final double roll = 0.5;
     }
 
+    public static class DoubleLoadSetpoints {
+      public static final double pivot = 0.15;
+      public static final double extension = 1.09;
+      public static final double pitch = 0.5;
+      public static final double roll = 0.5;
+    }
+
     public static class PlacementSetpoints {
       public static final class High {
         public static final double pivot = 0.165;
@@ -430,10 +437,10 @@ public final class Constants {
       }
 
       public static class Pivot {
-        public static final double P = 10.0;// H! 5.0
+        public static final double P = 20.0;// H! 5.0
         public static final double I = 0.00;
-        public static final double D = 0.0;
-        public static final double FF = 0.1;
+        public static final double D = 2;
+        public static final double FF = 0.1*0;
       }
 
       public static class Pitch {
@@ -530,11 +537,21 @@ public final class Constants {
     /**The position the leg ankle will try to move to at the beginning of the match
      * H!
      */
-    public static final LegAnklePosition initialLegAnklePosiitonMovement = LegAnkleSubsystem.IK(
+    public static final LegAnklePosition initialLegAnklePosiitonMovement = LegAnkleSubsystem.IK( // :D TODO: make this not be IK and also consolodate with the other initial position stuff
       -0.2,
       0.80,
       -Math.PI / 2,
       0.0
+    );
+
+    /**The position of the leg ankle to easily pick up game pieces from the double loading station
+     * H!
+     */
+    public static final LegAnklePosition legAnkleDoubleLoadingPosition = new LegAnklePosition( // :D TODO: find these actual values
+      WristAndArm.DoubleLoadSetpoints.extension, 
+      WristAndArm.DoubleLoadSetpoints.pivot, 
+      WristAndArm.DoubleLoadSetpoints.pitch, 
+      WristAndArm.DoubleLoadSetpoints.roll
     );
 
     /**The position of the leg ankle to easily pick up game pieces

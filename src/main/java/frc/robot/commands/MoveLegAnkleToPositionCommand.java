@@ -30,7 +30,7 @@ public class MoveLegAnkleToPositionCommand extends CommandBase {
    * @param targetPitch The pitch value to go to.
    * @param targetRoll The roll value to go to.
   */
-  public MoveLegAnkleToPositionCommand(LegAnkleSubsystem legAnkleSubsystem, double targetExtension, double targetPivot, double targetPitch, double targetRoll) {
+  public MoveLegAnkleToPositionCommand(LegAnkleSubsystem legAnkleSubsystem, Double targetExtension, Double targetPivot, Double targetPitch, Double targetRoll) {
     setTargets(targetExtension, targetPivot, targetPitch, targetRoll);
     this.legAnkleSubsystem = legAnkleSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
@@ -74,7 +74,7 @@ public class MoveLegAnkleToPositionCommand extends CommandBase {
    * @param targetPitch The pitch value to go to.
    * @param targetRoll The roll value to go to.
    */
-  public void setTargets(double targetExtension, double targetPivot, double targetPitch, double targetRoll){
+  public void setTargets(Double targetExtension, Double targetPivot, Double targetPitch, Double targetRoll){
     System.out.println("~~~~~~~~~~~~~~~~~~~~~");
     System.out.println(targetExtension);
     System.out.println(targetPivot);

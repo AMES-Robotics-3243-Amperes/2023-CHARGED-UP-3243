@@ -14,10 +14,10 @@ import frc.robot.Constants;
  * 
  */
 public class LegAnklePosition {
-    public double extension;
-    public double pivot;
-    public double pitch;
-    public double roll; 
+    public Double extension;
+    public Double pivot;
+    public Double pitch;
+    public Double roll; 
 
     /**H! Creates a new motor position given the extension, pivot, pitch, and roll positions.
      * 
@@ -26,7 +26,7 @@ public class LegAnklePosition {
      * @param pitch
      * @param roll
      */
-    public LegAnklePosition(double extension, double pivot, double pitch, double roll) {
+    public LegAnklePosition(Double extension, Double pivot, Double pitch, Double roll) {
         this.extension = extension;
         this.pivot = pivot;
         this.pitch = pitch;
@@ -38,6 +38,19 @@ public class LegAnklePosition {
      * @return An array of the x, y, robot relative pitch, and roll
      */
     public double[] getKinematicPositions() {
+        if(extension == null){
+            
+        }
+        if(pivot == null){
+
+        }
+        if(pitch == null){
+
+        }
+        if(roll == null){
+
+        }
+
         return new double[] { 
         (extension * Math.cos(Units.rotationsToRadians(pivot)))  +  (Constants.WristAndArm.wristLength * Math.cos(Units.rotationsToRadians(pivot + pitch - 0.5))),
         (extension * Math.sin(Units.rotationsToRadians(pivot)))  +  (Constants.WristAndArm.wristLength * Math.sin(Units.rotationsToRadians(pivot + pitch - 0.5))),
