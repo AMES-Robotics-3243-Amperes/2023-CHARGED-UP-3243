@@ -408,9 +408,9 @@ public final class Constants {
       }
 
       public static class Pivot {
-        public static final double P = 20.0 * 0.1;// H! 5.0
-        public static final double I = 0.00;
-        public static final double D = 2;
+        public static final double P = 13.0;
+        public static final double I = 0.001; // 0
+        public static final double D = 2; // 1
         public static final double FF = 0.1*0;
       }
 
