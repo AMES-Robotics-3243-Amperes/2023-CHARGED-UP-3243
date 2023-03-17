@@ -4,11 +4,11 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.DriveTrain.DriveConstants;
 import frc.robot.subsystems.DriveSubsystem;
 
 /**
@@ -16,51 +16,29 @@ import frc.robot.subsystems.DriveSubsystem;
  */
 public class SwerveAutoMoveCommand extends CommandBase {
   private final DriveSubsystem m_subsystem;
-  private Pose2d goal;
-
-  private final ProfiledPIDController positionPIDController;
-  private final ProfiledPIDController thetaPIDController;
-
   private final double maxDistanceFromSetpointMeters;
   private final Rotation2d maxAngleFromSetpoint;
+  // <> used to stop the robot from accelerating too quickly
+  private final SlewRateLimiter limiter = new SlewRateLimiter(
+    DriveConstants.AutoConstants.kMaxAccelerationMetersPerSecondSq);
+  private Pose2d goal;
 
   /**
-   * <> Crates a new {@link SwerveAutoMoveCommand}. The PID controllers
-   * will be manually configured with everything but constraints and
-   * P, I, and D values.
+   * <> Crates a new {@link SwerveAutoMoveCommand}.
    *
    * @param subsystem                     the {@link DriveSubsystem} to control
    * @param destination                   where to drive the {@link DriveSubsystem} to
-   * @param positionPIDController         the pid controller for moving the robot
-   * @param thetaPIDController            the pid controller for rotating the robot
    * @param maxDistanceFromSetpointMeters farthest the robot can be from the destination to stop the command
    * @param maxAngleFromSetpoint          farthest the robot can be from proper rotation to stop command
    */
-  public SwerveAutoMoveCommand(DriveSubsystem subsystem, Pose2d destination,
-                               ProfiledPIDController positionPIDController, ProfiledPIDController thetaPIDController,
-                               double maxDistanceFromSetpointMeters, Rotation2d maxAngleFromSetpoint) {
+  public SwerveAutoMoveCommand(DriveSubsystem subsystem, Pose2d destination, double maxDistanceFromSetpointMeters,
+                               Rotation2d maxAngleFromSetpoint) {
     this.m_subsystem = subsystem;
     this.goal = destination;
-    this.positionPIDController = positionPIDController;
-    this.thetaPIDController = thetaPIDController;
     this.maxDistanceFromSetpointMeters = maxDistanceFromSetpointMeters;
     this.maxAngleFromSetpoint = maxAngleFromSetpoint;
 
-    this.positionPIDController.setGoal(destination.getX());
-    this.thetaPIDController.setGoal(destination.getRotation().getDegrees());
-
-    this.thetaPIDController.enableContinuousInput(-180, 180);
-
     addRequirements(m_subsystem);
-  }
-
-  /**
-   * <> get a transform representing the robot's distance from goal
-   *
-   * @return a transform from the destination to the robot's position
-   */
-  private Transform2d getTransformationFromGoal() {
-    return new Transform2d(goal, m_subsystem.getPose());
   }
 
   /**
@@ -69,67 +47,47 @@ public class SwerveAutoMoveCommand extends CommandBase {
    * @return the distance from the goal
    */
   private double getDistanceFromGoal() {
-    Transform2d offset = getTransformationFromGoal();
+    Pose2d subsystemPose = m_subsystem.getPose();
 
     // <> note: there is no need to take the absolute
     // value of these because the values are squared
-    double xError = offset.getX();
-    double yError = offset.getY();
+    double xError = subsystemPose.getX() - goal.getX();
+    double yError = subsystemPose.getY() - goal.getY();
 
     return Math.sqrt(xError * xError + yError * yError);
   }
 
   @Override
-  public void initialize() {
-    Pose2d robotPose = m_subsystem.getPose();
-
-    positionPIDController.reset(robotPose.getY());
-    thetaPIDController.reset(robotPose.getRotation().getDegrees(), m_subsystem.getTurnRate().getDegrees());
-  }
+  public void initialize() {}
 
   @Override
   public void execute() {
-    double drivingOutput = positionPIDController.calculate(getDistanceFromGoal());
-    double thetaOutput = thetaPIDController.calculate(m_subsystem.getDiscontinuousHeading().getDegrees());
+    Pose2d subsystemPose = m_subsystem.getPose();
 
-    driveWithPIDOutputs(drivingOutput, thetaOutput);
+    // <> find the angle to the goal
+    double xError = subsystemPose.getX() - goal.getX();
+    double yError = subsystemPose.getY() - goal.getY();
+    Rotation2d angle = Rotation2d.fromRadians(Math.atan2(yError, xError) + Math.PI);
+
+    // <> find speed and drive
+    double speed = limiter.calculate(DriveConstants.AutoConstants.kMaxVelocityMetersPerSecond);
+    m_subsystem.drive(speed * angle.getCos(), speed * angle.getSin(), goal.getRotation(), true);
   }
 
   @Override
   public void end(boolean interrupted) {
-    m_subsystem.drive(0, 0, 0, false);
+    m_subsystem.drive(0, 0, goal.getRotation(), false);
   }
 
   @Override
   public boolean isFinished() {
-    Pose2d subsystemPose = m_subsystem.getPose();
+    boolean distanceOk = getDistanceFromGoal() <= maxDistanceFromSetpointMeters;
 
-    double xError = Math.abs(goal.getX() - subsystemPose.getX());
-    double yError = Math.abs(goal.getY() - subsystemPose.getY());
-    double distanceError = Math.sqrt(xError * xError + yError * yError);
-    boolean distanceOk = distanceError <= maxDistanceFromSetpointMeters;
-
-    double rotationErrorDegrees = Math.abs(subsystemPose.getRotation().getDegrees() - goal.getRotation().getDegrees());
+    double rotationErrorDegrees = Math.abs(
+      m_subsystem.getPose().getRotation().getDegrees() - goal.getRotation().getDegrees());
     boolean rotationOk = rotationErrorDegrees <= maxAngleFromSetpoint.getDegrees();
 
     return distanceOk && rotationOk;
-  }
-
-  /**
-   * <> drives the robot according to the PID outputs
-   *
-   * @param drivingOutput the output of the driving PID (speed of robot)
-   * @param thetaOutput   output of theta PID (rotation of robot)
-   */
-  private void driveWithPIDOutputs(double drivingOutput, double thetaOutput) {
-    Transform2d offsetFromSetpoint = getTransformationFromGoal();
-
-    Rotation2d driveAngle = Rotation2d.fromRadians(Math.atan2(offsetFromSetpoint.getY(), offsetFromSetpoint.getX()));
-
-    double xComponent = driveAngle.getCos() * drivingOutput;
-    double yComponent = driveAngle.getSin() * drivingOutput;
-
-    m_subsystem.drive(xComponent, yComponent, -Math.toRadians(thetaOutput), true);
   }
 
   /**

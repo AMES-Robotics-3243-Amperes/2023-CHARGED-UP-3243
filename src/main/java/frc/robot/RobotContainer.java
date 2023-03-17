@@ -10,8 +10,10 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DriveTrain.DriveConstants;
+import frc.robot.Constants.DriveTrain.DriveConstants.FieldRelativeTurningConstants;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 // import edu.wpi.first.cscore.CameraServer;
@@ -38,30 +40,32 @@ public class RobotContainer {
   // ++ ----- SUBSYSTEMS -----------
   public final PhotonVisionSubsystem m_photonVisionSubsystem = new PhotonVisionSubsystem(fieldPosManager);
   public final LegAnkleSubsystem m_legAnkleSubsystem = new LegAnkleSubsystem();
-  public final DriveSubsystem m_driveSubsystem = new DriveSubsystem(
-    fieldPosManager, DriveConstants.FieldRelativeTurningConstants.kPidController);
+  public final DriveSubsystem m_driveSubsystem = new DriveSubsystem(fieldPosManager,
+    DriveConstants.FieldRelativeTurningConstants.kPidController);
 
   // ++ ----- COMMANDS -------------
   public final SwerveTeleopCommand m_SwerveTeleopCommand = new SwerveTeleopCommand(m_driveSubsystem, primaryController);
   public final BalanceCommand m_BalanceCommand = new BalanceCommand(m_driveSubsystem);
-  // public final MoveLegAnkleToPickupPositionCommand m_legAnkleToPickupCommand = new MoveLegAnkleToPickupPositionCommand(
+  // public final MoveLegAnkleToPickupPositionCommand m_legAnkleToPickupCommand = new
+  // MoveLegAnkleToPickupPositionCommand(
   //   m_legAnkleSubsystem);// :D duplicate??
-  public final TempAutoRoutine m_auto;
+  public final MoveLegAnkleToPickupPositionCommand m_moveLegAnkleToPickupPositionCommand =
+    new MoveLegAnkleToPickupPositionCommand(
+    m_legAnkleSubsystem);
+  public final MoveLegAnkleToPlacementPositionCommand m_moveLegAnkleToPlacementPositionCommand =
+    new MoveLegAnkleToPlacementPositionCommand(
+    m_legAnkleSubsystem, secondaryController);
   private final GrabberSubsystem m_GrabberSubsystem = new GrabberSubsystem();
   public final GrabberCommand m_GrabberCommand = new GrabberCommand(m_GrabberSubsystem, secondaryController);
   private final ShuffleboardSubsystem m_shuffleboardSubsystem = new ShuffleboardSubsystem(fieldPosManager,
     m_legAnkleSubsystem, m_driveSubsystem, m_photonVisionSubsystem, null, m_GrabberSubsystem);
-    
   // <> this is required for creating new swerve trajectory follow commands
-  private final ProfiledPIDController thetaPidController;
-  private final ManualLegAnkleCommand m_manualLegAnkleCommand = new ManualLegAnkleCommand(m_legAnkleSubsystem, secondaryController);
+  private final ManualLegAnkleCommand m_manualLegAnkleCommand = new ManualLegAnkleCommand(m_legAnkleSubsystem,
+    secondaryController);
   private final GrabberCloseCommand m_grabCloseCommand = new GrabberCloseCommand(m_GrabberSubsystem);
   private final GrabberOpenCommand m_grabOpenCommand = new GrabberOpenCommand(m_GrabberSubsystem);
   private final WristRollDefaultCommand m_wristRollDefaultCommand = new WristRollDefaultCommand(m_legAnkleSubsystem);
   private final WristRollUpCommand m_wristRollUpCommand = new WristRollUpCommand(m_legAnkleSubsystem);
-
-  public final MoveLegAnkleToPickupPositionCommand m_moveLegAnkleToPickupPositionCommand = new MoveLegAnkleToPickupPositionCommand(m_legAnkleSubsystem);
-  public final MoveLegAnkleToPlacementPositionCommand m_moveLegAnkleToPlacementPositionCommand = new MoveLegAnkleToPlacementPositionCommand(m_legAnkleSubsystem, secondaryController);
 
   //private final PlaceGamePiece m_placeGamePieceCommand;
 
@@ -69,14 +73,6 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    // <> this is required for creating new swerve trajectory follow commands
-    thetaPidController = new ProfiledPIDController(DriveConstants.AutoConstants.kTurningP,
-      DriveConstants.AutoConstants.kTurningI, DriveConstants.AutoConstants.kTurningD,
-      DriveConstants.AutoConstants.kThetaControllerConstraints);
-    thetaPidController.enableContinuousInput(-Math.PI, Math.PI);
-
-    m_auto = new TempAutoRoutine(fieldPosManager, m_driveSubsystem, thetaPidController, m_photonVisionSubsystem);
-
     m_driveSubsystem.setDefaultCommand(m_SwerveTeleopCommand);
 
     m_legAnkleSubsystem.setDefaultCommand(m_manualLegAnkleCommand);
@@ -107,17 +103,23 @@ public class RobotContainer {
    */
   public void configureBindings() {
     primaryController.x().toggleOnTrue(new LockSwerveWheelsCommand(m_driveSubsystem));
-    primaryController.a().toggleOnTrue(
-      new SwerveAutoMoveCommand(m_driveSubsystem, new Pose2d(),
-        DriveConstants.AutoConstants.kDrivingPIDController, DriveConstants.AutoConstants.kTurningPIDController,
-        DriveConstants.AutoConstants.maxMetersFromSetpoint, DriveConstants.AutoConstants.maxRotationFromSetpoint));
+    primaryController.a().toggleOnTrue(new SequentialCommandGroup(
+      new SwerveAutoMoveCommand(m_driveSubsystem, new Pose2d(), DriveConstants.AutoConstants.kMaxMetersFromGoal,
+        DriveConstants.AutoConstants.kMaxRotationFromGoal),
+      new SwerveAutoMoveCommand(m_driveSubsystem, new Pose2d(new Translation2d(1, 0.5), Rotation2d.fromDegrees(90)),
+        DriveConstants.AutoConstants.kMaxMetersFromGoal, DriveConstants.AutoConstants.kMaxRotationFromGoal),
+      new SwerveAutoMoveCommand(m_driveSubsystem, new Pose2d(new Translation2d(-0.5, -0.5), Rotation2d.fromDegrees(45)),
+        DriveConstants.AutoConstants.kMaxMetersFromGoal, DriveConstants.AutoConstants.kMaxRotationFromGoal),
+      new SwerveAutoMoveCommand(m_driveSubsystem, new Pose2d(new Translation2d(1.5, 0.5), Rotation2d.fromDegrees(180)),
+        DriveConstants.AutoConstants.kMaxMetersFromGoal, DriveConstants.AutoConstants.kMaxRotationFromGoal)));
 
     secondaryController.rightBumper().onTrue(m_grabOpenCommand);
     secondaryController.rightBumper().onFalse(m_grabCloseCommand);
     secondaryController.leftBumper().onTrue(m_wristRollUpCommand);
     secondaryController.leftBumper().onFalse(m_wristRollDefaultCommand);
     //secondaryController.x().onTrue(m_legAnkleToPickupCommand);
-    // :D whats the deal with this? there are two pickup thingies? I commented the other one out and changed this one to use the x button
+    // :D whats the deal with this? there are two pickup thingies? I commented the other one out and changed this one
+    // to use the x button
     secondaryController.x().onTrue(m_moveLegAnkleToPickupPositionCommand);
     secondaryController.y().onTrue(m_moveLegAnkleToPlacementPositionCommand); // :D TODO: test this at some point soon
   }
@@ -125,7 +127,7 @@ public class RobotContainer {
   public void teleopInit() {}
 
   public Command getAutonomousCommand() {
-    return m_auto;
+    return null;
   }
 
   public void testPeriodic() {

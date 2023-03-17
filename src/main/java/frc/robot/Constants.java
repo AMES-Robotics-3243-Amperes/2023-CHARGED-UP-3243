@@ -216,8 +216,8 @@ public final class Constants {
         public static final double kD = 0;
 
         // <> these values aren't exact but are pretty close
-        public static final double kMaxAngularAccelerationDegreesPerSecond = 450;
-        public static final double kMaxAngularVelocityDegreesPerSecond = 600;
+        public static final double kMaxAngularAccelerationDegreesPerSecond = 200;
+        public static final double kMaxAngularVelocityDegreesPerSecond = 300;
 
         public static final TrapezoidProfile.Constraints kConstraints = new TrapezoidProfile.Constraints(
           kMaxAngularVelocityDegreesPerSecond, kMaxAngularAccelerationDegreesPerSecond);
@@ -225,42 +225,13 @@ public final class Constants {
         public static final ProfiledPIDController kPidController = new ProfiledPIDController(kP, kI, kD, kConstraints);
       }
 
-      // <> stuff pertaining to trajectory following,
-      // <> not the actual autonomous period
+      // <> stuff pertaining to auto driving
       public static final class AutoConstants {
+        public static final double kMaxAccelerationMetersPerSecondSq = 0.15;
+        public static final double kMaxVelocityMetersPerSecond = 1;
 
-        // <> max speeds (only for pathfinding, not controlling)
-        public static final double kMaxMetersPerSecond = 1.4;
-        public static final double kMaxAccelerationMetersPerSecond = 1;
-        public static final double kMaxAngularDegreesPerSecond = 130;
-        public static final double kMaxAngularAccelerationDegreesPerSecond = 90;
-
-        // <> pid values
-        public static final double kDrivingP = 0.4;
-        public static final double kDrivingI = 0.004;
-        public static final double kDrivingD = 0;
-
-        public static final double kTurningP = 0.8;
-        public static final double kTurningI = 0;
-        public static final double kTurningD = 0;
-
-        // <> max distances
-        public static final double maxMetersFromSetpoint = 0.1;
-        public static final Rotation2d maxRotationFromSetpoint = Rotation2d.fromDegrees(3);
-
-        // <> pid constraints
-        public static final TrapezoidProfile.Constraints kDrivingControllerConstraints =
-          new TrapezoidProfile.Constraints(kMaxMetersPerSecond, kMaxAccelerationMetersPerSecond);
-
-        public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
-          kMaxAngularDegreesPerSecond, kMaxAngularAccelerationDegreesPerSecond);
-
-        // <> pid controllers
-        public static final ProfiledPIDController kDrivingPIDController = new ProfiledPIDController(kDrivingP,
-          kDrivingI, kDrivingD, kDrivingControllerConstraints);
-
-        public static final ProfiledPIDController kTurningPIDController = new ProfiledPIDController(kTurningP,
-          kTurningI, kTurningD, kThetaControllerConstraints);
+        public static final double kMaxMetersFromGoal = 0.1;
+        public static final Rotation2d kMaxRotationFromGoal = Rotation2d.fromDegrees(3);
       }
 
       public static final class BalanceConstants {
@@ -437,7 +408,7 @@ public final class Constants {
       }
 
       public static class Pivot {
-        public static final double P = 20.0;// H! 5.0
+        public static final double P = 20.0 * 0.1;// H! 5.0
         public static final double I = 0.00;
         public static final double D = 2;
         public static final double FF = 0.1*0;
@@ -451,7 +422,7 @@ public final class Constants {
       }
 
       public static class Roll {
-        public static final double P = 0.95;
+        public static final double P = 0.95 * 0;
         public static final double I = 0.00;
         public static final double D = 0.0;
         public static final double FF = 0.1*0;

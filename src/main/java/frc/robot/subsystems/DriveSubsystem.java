@@ -8,6 +8,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveTrain.DriveConstants;
 import frc.robot.FieldPosManager;
@@ -128,6 +129,10 @@ public class DriveSubsystem extends SubsystemBase {
   public void drive(double xSpeed, double ySpeed, Rotation2d rotation, boolean fieldRelative) {
     double clampedGoal = clampRotation2d(rotation).getDegrees();
     double rotationSpeed = Math.toRadians(m_thetaPidController.calculate(getDiscontinuousHeading().getDegrees(), clampedGoal));
+
+    SmartDashboard.putNumber("bobot setpoint pid output", -rotationSpeed);
+    SmartDashboard.putNumber("bobot pid goal", clampedGoal);
+    SmartDashboard.putNumber("bobot pid input", getDiscontinuousHeading().getDegrees());
 
     // <> now that we got a speed, drive using raw speeds
     driveWithRawSpeeds(xSpeed, ySpeed, -rotationSpeed, fieldRelative);
