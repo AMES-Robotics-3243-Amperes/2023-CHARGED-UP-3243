@@ -356,24 +356,24 @@ public final class Constants {
     }
 
     public static class StartingSetpoints { // :D TODO: make these values not use inverse kinematics, it'll be easier to visually see and check/adjust
-      public static final double x = -0.2;
-      public static final double y = 0.80;
-      public static final double pitch = -Math.PI / 2;
-      public static final double roll = 0.0;
+      public static final double pivot = 0.354;
+      public static final double extension = 1.09;
+      public static final double pitch = 0.826;
+      public static final Double roll = null;
     }
 
     public static class PickupSetpoints {
       public static final double pivot = 0.535;
       public static final double extension = 1.09;
       public static final double pitch = 0.7;
-      public static final double roll = 0.5;
+      public static final Double roll = null;
     }
 
     public static class DoubleLoadSetpoints {
       public static final double pivot = 0.15;
       public static final double extension = 1.09;
       public static final double pitch = 0.5;
-      public static final double roll = 0.5;
+      public static final Double roll = null;
     }
 
     public static class PlacementSetpoints {
@@ -381,21 +381,21 @@ public final class Constants {
         public static final double pivot = 0.165;
         public static final double extension = WristAndArm.Limits.extensionMax-0.1;
         public static final double pitch = 0.584;
-        public static final double roll = 0.5;
+        public static final Double roll = null;
       }
 
       public static final class Middle {
         public static final double pivot = 0.157;
         public static final double extension = 1.09;
         public static final double pitch = 0.572;
-        public static final double roll = 0.5;
+        public static final Double roll = null;
       }
 
       public static final class Low {
         public static final double pivot = 0.203;
         public static final double extension = 1.09;
         public static final double pitch = 0.5;
-        public static final double roll = 0.5;
+        public static final Double roll = null;
       }
     }
 
@@ -418,12 +418,12 @@ public final class Constants {
         public static final double P = 6;
         public static final double I = 0.001;
         public static final double D = 0.0;
-        public static final double FF = 0.01;
+        public static final double FF = 0.01*0;
       }
 
       public static class Roll {
-        public static final double P = 0.95 * 0;
-        public static final double I = 0.00;
+        public static final double P = 0.95;
+        public static final double I = 0.0003;
         public static final double D = 0.0;
         public static final double FF = 0.1*0;
       }
@@ -508,11 +508,11 @@ public final class Constants {
     /**The position the leg ankle will try to move to at the beginning of the match
      * H!
      */
-    public static final LegAnklePosition initialLegAnklePosiitonMovement = LegAnkleSubsystem.IK( // :D TODO: make this not be IK and also consolodate with the other initial position stuff
-      -0.2,
-      0.80,
-      -Math.PI / 2,
-      0.0
+    public static final LegAnklePosition initialLegAnklePosiitonMovement = new LegAnklePosition( // :D TODO: make this not be IK and also consolodate with the other initial position stuff
+      WristAndArm.StartingSetpoints.extension,
+      WristAndArm.StartingSetpoints.pivot,
+      WristAndArm.StartingSetpoints.pitch,
+      WristAndArm.StartingSetpoints.roll
     );
 
     /**The position of the leg ankle to easily pick up game pieces from the double loading station

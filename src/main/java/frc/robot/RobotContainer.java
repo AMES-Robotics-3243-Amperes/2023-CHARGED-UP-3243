@@ -55,6 +55,11 @@ public class RobotContainer {
   public final MoveLegAnkleToPlacementPositionCommand m_moveLegAnkleToPlacementPositionCommand =
     new MoveLegAnkleToPlacementPositionCommand(
     m_legAnkleSubsystem, secondaryController);
+  public final MoveLegAnkleToNeutralPositionCommand m_moveLegAnkleToNeutralPositionCommand =
+    new MoveLegAnkleToNeutralPositionCommand(
+    m_legAnkleSubsystem);
+
+
   private final GrabberSubsystem m_GrabberSubsystem = new GrabberSubsystem();
   public final GrabberCommand m_GrabberCommand = new GrabberCommand(m_GrabberSubsystem, secondaryController);
   private final ShuffleboardSubsystem m_shuffleboardSubsystem = new ShuffleboardSubsystem(fieldPosManager,
@@ -73,7 +78,7 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    m_driveSubsystem.setDefaultCommand(m_SwerveTeleopCommand);
+    //m_driveSubsystem.setDefaultCommand(m_SwerveTeleopCommand); // :D TODO: uncomment this
 
     m_legAnkleSubsystem.setDefaultCommand(m_manualLegAnkleCommand);
 
@@ -122,6 +127,7 @@ public class RobotContainer {
     // to use the x button
     secondaryController.x().onTrue(m_moveLegAnkleToPickupPositionCommand);
     secondaryController.y().onTrue(m_moveLegAnkleToPlacementPositionCommand); // :D TODO: test this at some point soon
+    secondaryController.a().onTrue(m_moveLegAnkleToNeutralPositionCommand);
   }
 
   public void teleopInit() {}
