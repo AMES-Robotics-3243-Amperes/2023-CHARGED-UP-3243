@@ -313,6 +313,17 @@ public class LegAnkleSubsystem extends SubsystemBase {
     );
   }
 
+
+
+  public LegAnklePosition getMotorPosition() {
+    return new LegAnklePosition(
+      encoderExtension.getPosition(), 
+      encoderPivotAbsolute.getPosition(), 
+      encoderPitch.getPosition(), 
+      encoderExtension.getPosition()
+    );
+  }
+
   /**Set the motor positions the legAnkle will go to 
    * H!
    * 

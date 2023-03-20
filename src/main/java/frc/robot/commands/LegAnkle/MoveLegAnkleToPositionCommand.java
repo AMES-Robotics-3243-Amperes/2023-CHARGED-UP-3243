@@ -117,7 +117,12 @@ public class MoveLegAnkleToPositionCommand extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    // H! If the command was interupted, then set the setpoints to the current position so it dosen't keep going.
+    if (interrupted) {
+      legAnkleSubsystem.setMotorPositions(legAnkleSubsystem.getMotorPosition());
+    }
+  }
 
   // Returns true when the command should end.
   @Override
