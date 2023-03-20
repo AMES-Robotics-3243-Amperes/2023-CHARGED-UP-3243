@@ -2,13 +2,13 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.LegAnkle;
 
 import frc.robot.Constants;
 import frc.robot.JoyUtil;
 import frc.robot.subsystems.LegAnkleSubsystem;
 
-public class MoveLegAnkleToPlacementPositionCommand extends MoveLegAnkleToPositionCommand {
+public class MoveLegAnkleToPickupPositionCommand extends MoveLegAnkleToPositionCommand {
 
   JoyUtil joy;
 
@@ -18,7 +18,7 @@ public class MoveLegAnkleToPlacementPositionCommand extends MoveLegAnkleToPositi
    * 
    * @param legAnkleSubsystem The {@link LegAnkleSubsystem} that this is controlling.
   */
-  public MoveLegAnkleToPlacementPositionCommand(LegAnkleSubsystem legAnkleSubsystem, JoyUtil joy) {
+  public MoveLegAnkleToPickupPositionCommand(LegAnkleSubsystem legAnkleSubsystem, JoyUtil joy) {
     super(legAnkleSubsystem);
 
     this.joy = joy;
@@ -31,15 +31,12 @@ public class MoveLegAnkleToPlacementPositionCommand extends MoveLegAnkleToPositi
   public void initialize(){
     // :D I don't think it's physically possible to hold the POV up and down at the same time so this should be ok
     if(joy.getPOVDown()){
-      setTargets(Constants.AutomationConfiguration.legAnklePlacementPositionLOW);
+      setTargets(Constants.AutomationConfiguration.legAnklePickupPositionLOW);
     } else if(joy.getPOVUp()){
-      setTargets(Constants.AutomationConfiguration.legAnklePlacementPositionHIGH);
+      setTargets(Constants.AutomationConfiguration.legAnkleDoubleLoadingPosition);
     } else {
-      setTargets(Constants.AutomationConfiguration.legAnklePlacementPositionMIDDLE);
+      setTargets(Constants.AutomationConfiguration.legAnklePickupPosition);
     }
     legAnkleSubsystem.setMotorPositions(targetExtension, targetPivot, targetPitch, targetRoll);
   }
-
-  
-
 }
