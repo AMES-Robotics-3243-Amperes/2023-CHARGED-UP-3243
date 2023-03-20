@@ -1,7 +1,5 @@
 package frc.robot.utility_classes;
 
-import edu.wpi.first.math.geometry.Translation2d;
-
 public class GeneralUtil {
 
     //&& This utility class holds all the LegAnkle functions that don't need to be in LegAnkleSubsystem to work
