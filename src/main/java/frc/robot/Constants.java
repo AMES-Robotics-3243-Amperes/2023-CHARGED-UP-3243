@@ -355,7 +355,7 @@ public final class Constants {
       public static final double roll = 0.0;
     }
 
-    public static class StartingSetpoints { // :D TODO: make these values not use inverse kinematics, it'll be easier to visually see and check/adjust
+    public static class StartingSetpoints { // :D DONE: make these values not use inverse kinematics, it'll be easier to visually see and check/adjust
       public static final double pivot = 0.354;
       public static final double extension = 1.09;
       public static final double pitch = 0.826;
@@ -515,7 +515,7 @@ public final class Constants {
     /**The position the leg ankle will try to move to at the beginning of the match
      * H!
      */
-    public static final LegAnklePosition initialLegAnklePosiitonMovement = new LegAnklePosition( // :D TODO: make this not be IK and also consolodate with the other initial position stuff
+    public static final LegAnklePosition initialLegAnklePosiitonMovement = new LegAnklePosition( // :D DONE: make this not be IK and also consolodate with the other initial position stuff
       WristAndArm.StartingSetpoints.extension,
       WristAndArm.StartingSetpoints.pivot,
       WristAndArm.StartingSetpoints.pitch,
@@ -571,7 +571,7 @@ public final class Constants {
       WristAndArm.PlacementSetpoints.Low.roll
     );
 
-    // H! TODO: None of these constants are right
+    // H! TODO: None of these constants are right // :D can this code be deleted?
     /*public static final class Cone {
       public static final class HighTarget {
         public static final double armX = 0.0;
