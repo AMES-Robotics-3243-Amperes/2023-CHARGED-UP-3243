@@ -418,7 +418,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
    */
   public boolean isArmPositioned() {
     // H! Return whether it's in the right position
-    // H! TODO: TEST THIS
+    // H! TODO: TEST THIS // :D tested enough already, right?
     return (
       (targetPosition.pivot == null || Math.abs( encoderPivotAbsolute.getPosition() - targetPosition.pivot ) < atSetpointThreshold) &&
       (targetPosition.extension == null || Math.abs( encoderExtension.getPosition() - targetPosition.extension ) < atSetpointThreshold) &&

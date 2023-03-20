@@ -134,7 +134,7 @@ public class RobotContainer {
     // :D whats the deal with this? there are two pickup thingies? I commented the other one out and changed this one
     // to use the x button
     secondaryController.x().onTrue(m_moveLegAnkleToPickupPositionCommand);
-    secondaryController.y().onTrue(m_moveLegAnkleToPlacementPositionCommand); // :D TODO: test this at some point soon
+    secondaryController.y().onTrue(m_moveLegAnkleToPlacementPositionCommand); // :D DONE: test this at some point soon
     secondaryController.a().onTrue(m_moveLegAnkleToNeutralPositionCommand);
   }
 
