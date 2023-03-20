@@ -130,10 +130,6 @@ public class DriveSubsystem extends SubsystemBase {
     double clampedGoal = clampRotation2d(rotation).getDegrees();
     double rotationSpeed = Math.toRadians(m_thetaPidController.calculate(getDiscontinuousHeading().getDegrees(), clampedGoal));
 
-    SmartDashboard.putNumber("bobot setpoint pid output", -rotationSpeed);
-    SmartDashboard.putNumber("bobot pid goal", clampedGoal);
-    SmartDashboard.putNumber("bobot pid input", getDiscontinuousHeading().getDegrees());
-
     // <> now that we got a speed, drive using raw speeds
     driveWithRawSpeeds(xSpeed, ySpeed, -rotationSpeed, fieldRelative);
   }

@@ -5,17 +5,17 @@
 package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DriveTrain.DriveConstants;
-import frc.robot.Constants.DriveTrain.DriveConstants.FieldRelativeTurningConstants;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
+
+import java.util.ArrayList;
+import java.util.List;
 // import edu.wpi.first.cscore.CameraServer;
 
 /**
@@ -103,15 +103,11 @@ public class RobotContainer {
    */
   public void configureBindings() {
     primaryController.x().toggleOnTrue(new LockSwerveWheelsCommand(m_driveSubsystem));
-    primaryController.a().toggleOnTrue(new SequentialCommandGroup(
-      new SwerveAutoMoveCommand(m_driveSubsystem, new Pose2d(), DriveConstants.AutoConstants.kMaxMetersFromGoal,
-        DriveConstants.AutoConstants.kMaxRotationFromGoal),
-      new SwerveAutoMoveCommand(m_driveSubsystem, new Pose2d(new Translation2d(1, 0.5), Rotation2d.fromDegrees(90)),
-        DriveConstants.AutoConstants.kMaxMetersFromGoal, DriveConstants.AutoConstants.kMaxRotationFromGoal),
-      new SwerveAutoMoveCommand(m_driveSubsystem, new Pose2d(new Translation2d(-0.5, -0.5), Rotation2d.fromDegrees(45)),
-        DriveConstants.AutoConstants.kMaxMetersFromGoal, DriveConstants.AutoConstants.kMaxRotationFromGoal),
-      new SwerveAutoMoveCommand(m_driveSubsystem, new Pose2d(new Translation2d(1.5, 0.5), Rotation2d.fromDegrees(180)),
-        DriveConstants.AutoConstants.kMaxMetersFromGoal, DriveConstants.AutoConstants.kMaxRotationFromGoal)));
+    primaryController.a().toggleOnTrue(new SwerveAutoMoveCommand(m_driveSubsystem,
+      new ArrayList<Pose2d>(List.of(new Pose2d(), new Pose2d(new Translation2d(1, 0), new Rotation2d(45)),
+        new Pose2d(new Translation2d(0, 0.5), new Rotation2d(-90)),
+        new Pose2d(new Translation2d(1.5, -0.2), new Rotation2d(180)))), DriveConstants.AutoConstants.kMaxMetersFromGoal,
+      DriveConstants.AutoConstants.kMaxRotationFromGoal));
 
     secondaryController.rightBumper().onTrue(m_grabOpenCommand);
     secondaryController.rightBumper().onFalse(m_grabCloseCommand);
