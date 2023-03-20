@@ -287,6 +287,8 @@ public final class Constants {
    */
   public static final class WristAndArm {
 
+    public static final double movementTimeoutDuration = 5.0;
+
     public static final Translation3d pivotOffset = new Translation3d(Units.inchesToMeters(32) / 2 - .27773100, 0,
       .44255 + Units.inchesToMeters(2.662500 / 2));
 
