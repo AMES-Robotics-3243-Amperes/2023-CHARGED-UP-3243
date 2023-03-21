@@ -12,30 +12,35 @@ import frc.robot.commands.DriveTrain.SwerveAutoMoveCommand;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
+// ss if i can figure out how, maybe make this inline?
 public class IndexLeftCommand extends InstantCommand {
   private final FieldPosManager m_FieldPosManager;
   private final SwerveAutoMoveCommand m_SwerveAutoMoveCommand;
   private final SnapToGridCommand m_SnapToGridCommand;
 
   /**
-   * This command exists to handle what happens when dpad left is pressed on the secondary controller
+   * ss This command exists to handle what happens when dpad left is pressed on the secondary controller
+   * This should only be called from within SnapToGridCommand
    * 
    * @param fieldPosManager
    * @param swerveAutoMoveCommand
-   * @param snapToGridCommand
+   * @param snapToGridCommand Yes I have the {@link SnapToGridCommand} pass itself into this, I need to mess with it for consistency 
    */
   public IndexLeftCommand(FieldPosManager fieldPosManager, SwerveAutoMoveCommand swerveAutoMoveCommand, SnapToGridCommand snapToGridCommand) {
+
     m_FieldPosManager = fieldPosManager;
     m_SwerveAutoMoveCommand = swerveAutoMoveCommand;
     m_SnapToGridCommand = snapToGridCommand;
 
+    // ss if blue, left means add 1
     if (m_FieldPosManager.allianceColor == Alliance.Blue) {
       m_SnapToGridCommand.index++;
-    }
+    } // ss if red, left means subtract 1
     else if (m_FieldPosManager.allianceColor == Alliance.Red) {
       m_SnapToGridCommand.index--;
     }
 
+    // ss change the goal to the new index
     m_SwerveAutoMoveCommand.changeGoal(m_FieldPosManager.get2dFieldObjectPose(FieldPosManager.fieldSpot2d.scoringPosition, true, m_SnapToGridCommand.index));
   }
 

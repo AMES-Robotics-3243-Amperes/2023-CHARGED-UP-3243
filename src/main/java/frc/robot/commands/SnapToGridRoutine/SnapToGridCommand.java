@@ -32,18 +32,21 @@ public class SnapToGridCommand extends CommandBase {
    * 
    * This is a command that will 'snap' the robot to the nearest of the 9 friendly scoring positions, and then allow t
    * 
-   * @param driveSubsystem The {@link DriveSubsystem} used to move the robot to the grid
-   * @param fieldPosManager The {@link FieldPosManager} to figure out where to go
+   * @param driveSubsystem The Drive Subsystem
+   * @param fieldPosManager The Field Position Manager
+   * @param JoyUtil The Primary Controller
+   * @param JoyUtil The Secondary Controller
   */
   public SnapToGridCommand(DriveSubsystem driveSubsystem, FieldPosManager fieldPosManager, JoyUtil primaryController, JoyUtil secondaryController) {
-    // Use addRequirements() here to declare subsystem dependencies.
+
+    // ss Initialize everything
     m_DriveSubsystem = driveSubsystem;
     m_FieldPosManager = fieldPosManager;
     m_PrimaryController = primaryController;
     m_SecondaryController = secondaryController;
     index = m_FieldPosManager.getNearestScoringZoneIndex();
 
-
+    // ss make an auto move command from the drive subsystem, the Pose2d corresponding to the index, and some constants
     m_SwerveAutoMoveCommand = new SwerveAutoMoveCommand(
       m_DriveSubsystem, 
       m_FieldPosManager.get2dFieldObjectPose(FieldPosManager.fieldSpot2d.scoringPosition, true, index), 
@@ -51,9 +54,11 @@ public class SnapToGridCommand extends CommandBase {
       DriveConstants.AutoConstants.kMaxRotationFromGoal
     );
 
+    // ss create the index commands from the field pos manager, auto move command, and this SnapToGridCommand
     m_IndexLeftCommand = new IndexLeftCommand(m_FieldPosManager, m_SwerveAutoMoveCommand, this);
     m_IndexRightCommand = new IndexRightCommand(m_FieldPosManager, m_SwerveAutoMoveCommand, this);
 
+    // ss set the commands to activate when the dpad left and right are pressed
     m_SecondaryController.povLeft().onTrue(m_IndexLeftCommand);
     m_SecondaryController.povRight().onTrue(m_IndexRightCommand);
 
@@ -62,10 +67,7 @@ public class SnapToGridCommand extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    m_SwerveAutoMoveCommand.schedule();
-    
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
