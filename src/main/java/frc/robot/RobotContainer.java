@@ -90,7 +90,7 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    //m_driveSubsystem.setDefaultCommand(m_SwerveTeleopCommand); // :D TODO: uncomment this
+    m_driveSubsystem.setDefaultCommand(m_SwerveTeleopCommand);
 
     m_legAnkleSubsystem.setDefaultCommand(m_manualLegAnkleCommand);
 
@@ -121,9 +121,7 @@ public class RobotContainer {
   public void configureBindings() {
     primaryController.x().toggleOnTrue(new LockSwerveWheelsCommand(m_driveSubsystem));
     primaryController.a().toggleOnTrue(new SwerveAutoMoveCommand(m_driveSubsystem,
-      new ArrayList<Pose2d>(List.of(new Pose2d(), new Pose2d(new Translation2d(1, 0), new Rotation2d(45)),
-        new Pose2d(new Translation2d(0, 0.5), new Rotation2d(-90)),
-        new Pose2d(new Translation2d(1.5, -0.2), new Rotation2d(180)))), DriveConstants.AutoConstants.kMaxMetersFromGoal,
+      new ArrayList<Pose2d>(List.of(new Pose2d(new Translation2d(2.5, 2.75), Rotation2d.fromDegrees(90)), new Pose2d(new Translation2d(3, 1), Rotation2d.fromDegrees(180)), new Pose2d(new Translation2d(5, 1), Rotation2d.fromDegrees(-90)), new Pose2d(new Translation2d(6, 3), Rotation2d.fromDegrees(0)), new Pose2d(new Translation2d(5, 4), Rotation2d.fromDegrees(90)), new Pose2d(new Translation2d(4, 5), Rotation2d.fromDegrees(180)), new Pose2d(new Translation2d(3, 4), Rotation2d.fromDegrees(-90)), new Pose2d(new Translation2d(2.5, 2.75), Rotation2d.fromDegrees(0)))), DriveConstants.AutoConstants.kMaxMetersFromGoal,
       DriveConstants.AutoConstants.kMaxRotationFromGoal));
 
     secondaryController.rightBumper().onTrue(m_grabOpenCommand);

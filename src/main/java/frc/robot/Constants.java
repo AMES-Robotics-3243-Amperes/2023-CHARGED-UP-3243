@@ -10,7 +10,6 @@ import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import frc.robot.subsystems.LegAnkleSubsystem;
 import frc.robot.utility_classes.LegAnklePosition;
 
 /**
@@ -227,8 +226,8 @@ public final class Constants {
 
       // <> stuff pertaining to auto driving
       public static final class AutoConstants {
-        public static final double kMaxAccelerationMetersPerSecondSq = 0.15;
-        public static final double kMaxVelocityMetersPerSecond = 1;
+        public static final double kMaxAccelerationMetersPerSecondSq = 1.5;
+        public static final double kMaxVelocityMetersPerSecond = 0.8;
 
         public static final double kMaxMetersFromGoal = 0.1;
         public static final Rotation2d kMaxRotationFromGoal = Rotation2d.fromDegrees(3);
@@ -408,28 +407,28 @@ public final class Constants {
 
     public static class PID {
       public static class Extension {
-        public static final double P = 5.0;// H! 2.0
+        public static final double P = 5.0 * 0;// H! 2.0
         public static final double I = 0.0;
         public static final double D = 0.0;
         public static final double FF = 0.01;
       }
 
       public static class Pivot {
-        public static final double P = 13.0;
+        public static final double P = 13.0 * 0.3;
         public static final double I = 0.001; // 0
         public static final double D = 2; // 1
         public static final double FF = 0.1*0;
       }
 
       public static class Pitch {
-        public static final double P = 6;
+        public static final double P = 6 * 0;
         public static final double I = 0.001;
         public static final double D = 0.0;
         public static final double FF = 0.01*0;
       }
 
       public static class Roll {
-        public static final double P = 0.95;
+        public static final double P = 0.95 * 0;
         public static final double I = 0.0003;
         public static final double D = 0.0;
         public static final double FF = 0.1*0;

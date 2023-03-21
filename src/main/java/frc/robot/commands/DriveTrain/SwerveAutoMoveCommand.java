@@ -7,10 +7,10 @@ package frc.robot.commands.DriveTrain;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveTrain.DriveConstants;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.utility_classes.GeneralUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,9 +62,14 @@ public class SwerveAutoMoveCommand extends CommandBase {
   public SwerveAutoMoveCommand(DriveSubsystem subsystem, ArrayList<Pose2d> goals,
                                double maxDistanceFromSetpointMeters, Rotation2d maxAngleFromSetpoint) {
     this.m_subsystem = subsystem;
-    this.goalList = goals;
     this.maxDistanceFromSetpointMeters = maxDistanceFromSetpointMeters;
     this.maxAngleFromSetpoint = maxAngleFromSetpoint;
+
+    // <> the rotations must be clamped
+    this.goalList = new ArrayList<>(List.of());
+    for (Pose2d goal : goals) {
+      this.goalList.add(new Pose2d(goal.getTranslation(), GeneralUtil.clampRotation2d(goal.getRotation())));
+    }
 
     this.finalGoal = goalList.get(goalList.size() - 1);
 
@@ -107,12 +112,11 @@ public class SwerveAutoMoveCommand extends CommandBase {
     boolean distanceOk = getDistanceFromGoal() <= maxDistanceFromSetpointMeters;
 
     double rotationErrorDegrees = Math.abs(
-      m_subsystem.getPose().getRotation().getDegrees() - getGoal().getRotation().getDegrees());
+      m_subsystem.getDiscontinuousHeading().getDegrees() - getGoal().getRotation().getDegrees());
     boolean rotationOk = rotationErrorDegrees <= maxAngleFromSetpoint.getDegrees();
 
     // <> and if we are remove the current goal
     if (distanceOk && rotationOk) {
-      System.out.println("hey chat"); // temporary, for debugging
       goalList.remove(0);
     }
   }
@@ -122,14 +126,13 @@ public class SwerveAutoMoveCommand extends CommandBase {
     // <> deep-copy absolute goal list into goal list
     goalList.clear();
     goalList.addAll(absoluteGoalList);
+
+    velocity = new Translation2d();
   }
 
   @Override
   public void execute() {
     Pose2d subsystemPose = m_subsystem.getPose();
-
-    SmartDashboard.putNumber("bobot goal x", getGoal().getX());
-    SmartDashboard.putNumber("bobot goal y", getGoal().getY());
 
     // <> move on to the next goal if we're at the current one
     cleanUpGoalList();

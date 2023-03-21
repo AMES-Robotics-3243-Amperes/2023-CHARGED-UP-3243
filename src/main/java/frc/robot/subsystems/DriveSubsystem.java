@@ -7,9 +7,14 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.*;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveTrain.DriveConstants;
+import frc.robot.utility_classes.GeneralUtil;
 import frc.robot.FieldPosManager;
 
 public class DriveSubsystem extends SubsystemBase {
@@ -72,7 +77,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @return the pose
    */
   public Pose2d getPose() {
-    return new Pose2d(m_odometry.getPoseMeters().getTranslation(), getHeading());
+    return new Pose2d(m_fieldPosManager.getRobotPose().getTranslation(), getHeading());
   }
 
   /**
@@ -126,7 +131,7 @@ public class DriveSubsystem extends SubsystemBase {
    *                      field
    */
   public void drive(double xSpeed, double ySpeed, Rotation2d rotation, boolean fieldRelative) {
-    double clampedGoal = clampRotation2d(rotation).getDegrees();
+    double clampedGoal = GeneralUtil.clampRotation2d(rotation).getDegrees();
     double rotationSpeed = Math.toRadians(m_thetaPidController.calculate(getDiscontinuousHeading().getDegrees(), clampedGoal));
 
     // <> now that we got a speed, drive using raw speeds
@@ -198,25 +203,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @return a rotation 2d with angles from -180 to 180
    */
   public Rotation2d getDiscontinuousHeading() {
-    return clampRotation2d(getHeading());
-  }
-
-  /**
-   * <> clamps a {@link Rotation2d} between -180 and 180 degrees
-   *
-   * @return the adjusted {@link Rotation2d}
-   */
-  private Rotation2d clampRotation2d(Rotation2d toClamp) {
-    // now from -360 to 360
-    double moddedDegree = toClamp.getDegrees() % 360;
-
-    // now from 0 to 360
-    double doubleModdedDegree = (moddedDegree + 360) % 360;
-
-    // now from -180 to 180
-    double finalDegree = doubleModdedDegree <= 180 ? doubleModdedDegree : doubleModdedDegree - 360;
-
-    return Rotation2d.fromDegrees(finalDegree);
+    return GeneralUtil.clampRotation2d(getHeading());
   }
 
   /**

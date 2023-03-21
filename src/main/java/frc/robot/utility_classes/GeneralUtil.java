@@ -1,5 +1,7 @@
 package frc.robot.utility_classes;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+
 public class GeneralUtil {
 
     //&& This utility class holds all the LegAnkle functions that don't need to be in LegAnkleSubsystem to work
@@ -33,4 +35,22 @@ public class GeneralUtil {
       }
       return ((a % b) + b) % b;
     }
+
+    /**
+     * <> clamps a {@link Rotation2d} between -180 and 180 degrees
+     *
+     * @return the adjusted {@link Rotation2d}
+     */
+    public static Rotation2d clampRotation2d(Rotation2d toClamp) {
+      // now from -360 to 360
+      double moddedDegree = toClamp.getDegrees() % 360;
+
+      // now from 0 to 360
+      double doubleModdedDegree = (moddedDegree + 360) % 360;
+    
+      // now from -180 to 180
+      double finalDegree = doubleModdedDegree <= 180 ? doubleModdedDegree : doubleModdedDegree - 360;
+
+      return Rotation2d.fromDegrees(finalDegree);
+  }
 }
