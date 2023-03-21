@@ -13,8 +13,12 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.FieldPosManager;
+
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonUtils;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
@@ -27,7 +31,7 @@ import java.util.Optional;
 public class PhotonVisionSubsystem extends SubsystemBase {
 
   // :D these are values that should be in constants after testing
-  public static final String cameraName = Constants.PhotonVision.cameraName1; // :> These are not needed  and can be
+  public static final String camera1Name = Constants.PhotonVision.cameraName1; // :> These are not needed  and can be
   // cleaned up
   
   public static final String camera2Name = Constants.PhotonVision.cameraName2;
@@ -35,11 +39,11 @@ public class PhotonVisionSubsystem extends SubsystemBase {
   //public static final string cameraName = "Microsoft_LifeCam_HD-3000";
   // :D this is a Transform3d that tracks the transformation from the camera to the robot
   public static final Transform3d camToBot1 = new Transform3d(
-    new Pose3d(Units.inchesToMeters(14), 0, Units.inchesToMeters(22.5),
+    new Pose3d(Units.inchesToMeters(-14), 0, Units.inchesToMeters(22.5),
       new Rotation3d(0, 0, Units.degreesToRadians(180))), new Pose3d());
 
   public static final Transform3d camToBot2 = new Transform3d(
-    new Pose3d(Units.inchesToMeters(-2), Units.inchesToMeters(0), Units.inchesToMeters(14.5),
+    new Pose3d(Units.inchesToMeters(2), Units.inchesToMeters(0), Units.inchesToMeters(14.5),
       new Rotation3d(0, 0, Units.degreesToRadians(0))), new Pose3d());
 
   public static ArrayList<PhotonTrackedTarget> targets = new ArrayList<PhotonTrackedTarget>();
@@ -54,6 +58,9 @@ public class PhotonVisionSubsystem extends SubsystemBase {
   ArrayList<PhotonPipelineResult> results = new ArrayList<PhotonPipelineResult>();
   List<PhotonCamera> cameras = Arrays.asList(new PhotonCamera(Constants.PhotonVision.cameraName1),
     new PhotonCamera(Constants.PhotonVision.cameraName2));
+  
+  private PhotonPoseEstimator frontCamPoseEstimator = new PhotonPoseEstimator(m_aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP, cameras.get(1), camToBot2);
+  private PhotonPoseEstimator backCamPoseEstimator = new PhotonPoseEstimator(m_aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP, cameras.get(0), camToBot1);
 
   // :> BIG NOTE: Arducam_OV9281_MMN2 is the name of the camera but that is not what it looks for. It is looking for
   // what photonvision reads
@@ -75,6 +82,12 @@ public class PhotonVisionSubsystem extends SubsystemBase {
     } catch (IOException err) {
       throw new RuntimeException(err);
     }
+
+    frontCamPoseEstimator.setFieldTags(m_aprilTagFieldLayout);
+    backCamPoseEstimator.setFieldTags(m_aprilTagFieldLayout);
+
+    frontCamPoseEstimator.setMultiTagFallbackStrategy(PoseStrategy.CLOSEST_TO_LAST_POSE);
+    backCamPoseEstimator.setMultiTagFallbackStrategy(PoseStrategy.CLOSEST_TO_LAST_POSE);
   }
 
   /**
@@ -83,9 +96,9 @@ public class PhotonVisionSubsystem extends SubsystemBase {
    *
    * @return {@link Pose3d} representing the position of the camera on the field, or null if no valid targets are found
    */
-  public static Pose3d checkRobotPosition() {
+  public Pose3d checkRobotPosition() {
     // :> I'm so sorry for all of the for loops it is necessary for the two cameras.
-    if (!targets.isEmpty()) {
+    //if (!targets.isEmpty()) {
       //for (int i = 0; i < targets.size(); i++) {
       //cameraToTargets.add(targets.get(i).getBestCameraToTarget());
       //}
@@ -98,39 +111,54 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 
       // :> Defines the robot poses array to be used in the function
       ArrayList<Pose3d> robotPoses = new ArrayList<Pose3d>();
-      // :> Makes a for loop based on how many cameras are picking up targets
-      for (int i = 0; i < targets.size(); i++) {
-        // :> Safety precuation that makes sure the that inside the cameras targets it isn't null that way it doesn't
-        // return a null pointer error
-        if (targets.get(i) != null) {
-          // :> Gets the distance from the cameras to the targets it see's based off of which camera it's getting
-          // data from
-          Transform3d cameraToTarget = targets.get(i).getBestCameraToTarget();
-          //:> Gets the position of the apriltags on the field that it see's from the cameras.
-          Optional<Pose3d> tagPose = m_aprilTagFieldLayout.getTagPose(targets.get(i).getFiducialId());
 
-          if (!tagPose.isPresent()) {
-            continue;
-          }
+      frontCamPoseEstimator.setLastPose(m_field.getRobotPose());
+      backCamPoseEstimator.setLastPose(m_field.getRobotPose());
+      
+      Optional<EstimatedRobotPose> frontEstPose = frontCamPoseEstimator.update();
+      Optional<EstimatedRobotPose> backEstPose = backCamPoseEstimator.update();
 
-          // :> Uses the official Photonvision function to take in all of the previous data and get a field position
-          // from it.
-          /* It does this for both cameras that way it can get the most accurate position possible. The reason why
-            this system is used is because you can't estimate any data except for Pose3Ds which is essential for
-            getting good positonal data
-           */
-          robotPoses.add(PhotonUtils.estimateFieldToRobotAprilTag(cameraToTarget, tagPose.get(), camsToBot.get(i)));
-          // if (tagPoses.get(i).isPresent()) {
-          //   for (int k = 0; k < cameraToTargets.size(); k++) {
-          //     robotPoses.add(
-          //       PhotonUtils.estimateFieldToRobotAprilTag(cameraToTargets.get(k), tagPoses.get(j).get(), camsToBot
-          //       .get(k)));
-          //   // :> The .get(j)s correspond to the for loop but the other one turns it into a Pose3D instead of an
-          //   optional Pose3D
-          //   }
-          // }
-        }
+      if(frontEstPose.isPresent()){
+        robotPoses.add(frontEstPose.get().estimatedPose);
       }
+      if(backEstPose.isPresent()){
+        robotPoses.add(backEstPose.get().estimatedPose);
+      }
+
+      // :> Makes a for loop based on how many cameras are picking up targets
+      // for (int i = 0; i < targets.size(); i++) {
+      //   // :> Safety precuation that makes sure the that inside the cameras targets it isn't null that way it doesn't
+      //   // return a null pointer error
+      //   if (targets.get(i) != null) {
+      //     // :> Gets the distance from the cameras to the targets it see's based off of which camera it's getting
+      //     // data from
+      //     Transform3d cameraToTarget = targets.get(i).getBestCameraToTarget();
+      //     //:> Gets the position of the apriltags on the field that it see's from the cameras.
+      //     Optional<Pose3d> tagPose = m_aprilTagFieldLayout.getTagPose(targets.get(i).getFiducialId());
+
+      //     if (!tagPose.isPresent()) {
+      //       continue;
+      //     }
+
+      //     // :> Uses the official Photonvision function to take in all of the previous data and get a field position
+      //     // from it.
+      //     /* It does this for both cameras that way it can get the most accurate position possible. The reason why
+      //       this system is used is because you can't estimate any data except for Pose3Ds which is essential for
+      //       getting good positonal data
+      //      */
+          
+      //     robotPoses.add(PhotonUtils.estimateFieldToRobotAprilTag(cameraToTarget, tagPose.get(), camsToBot.get(i)));
+      //     // if (tagPoses.get(i).isPresent()) {
+      //     //   for (int k = 0; k < cameraToTargets.size(); k++) {
+      //     //     robotPoses.add(
+      //     //       PhotonUtils.estimateFieldToRobotAprilTag(cameraToTargets.get(k), tagPoses.get(j).get(), camsToBot
+      //     //       .get(k)));
+      //     //   // :> The .get(j)s correspond to the for loop but the other one turns it into a Pose3D instead of an
+      //     //   optional Pose3D
+      //     //   }
+      //     // }
+      //   }
+      // }
 
 
       // :> An if statement is used here to save robot resources and time so instead of estimating Pose 3Ds when it
@@ -150,9 +178,9 @@ public class PhotonVisionSubsystem extends SubsystemBase {
       Pose3d averageRobotPoses = averagePose3d(robotPoses.toArray(new Pose3d[0]));
       return averageRobotPoses;
       // :> It's okay if averagePose3D = null since CRP can be null anyway and it gets passed in to averagerobotposes
-    }
+    //}
 
-    return null;
+    //return null;
   }
 
   private static Pose3d averagePose3d(Pose3d... poses) {
@@ -261,14 +289,14 @@ public class PhotonVisionSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     // :> Checks if targets is empty as a precaution to make sure that it isn't getting values from targets that
     // don't exist
-    if (!targets.isEmpty()) {
+    //if (!targets.isEmpty()) {
       Pose3d robotPose = checkRobotPosition();
       // :> As a precuation this makes sure that the field pos mangager isn't getting updated with null data that way
       // we don't get a null pointer exception
       if (robotPose != null) {
         m_field.updateFieldPosWithPhotonVisionPose(robotPose.toPose2d());
       }
-    }
+    //}
     // :> Clears the targets array that way it doesn't overflow with old targets or cause an out of bounds error
     targets.clear();
     //results.clear();
