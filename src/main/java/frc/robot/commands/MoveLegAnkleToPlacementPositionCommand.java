@@ -19,7 +19,7 @@ public class MoveLegAnkleToPlacementPositionCommand extends MoveLegAnkleToPositi
    * @param legAnkleSubsystem The {@link LegAnkleSubsystem} that this is controlling.
   */
   public MoveLegAnkleToPlacementPositionCommand(LegAnkleSubsystem legAnkleSubsystem, JoyUtil joy) {
-    super(legAnkleSubsystem)​;
+    super(legAnkleSubsystem);
 
     this.joy = joy;
     
@@ -37,7 +37,7 @@ public class MoveLegAnkleToPlacementPositionCommand extends MoveLegAnkleToPositi
     } else {
       setTargets(Constants.AutomationConfiguration.legAnklePlacementPositionMIDDLE);
     }
-    legAnkleSubsystem.​setMotorPositions(targetExtension, targetPivot, targetPitch, targetRoll);
+    legAnkleSubsystem.setMotorPositions(targetExtension, targetPivot, targetPitch, targetRoll);
   }
 
   
