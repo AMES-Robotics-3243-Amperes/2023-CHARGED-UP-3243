@@ -2,20 +2,26 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.DriveTrain;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 
-public class DriveOntoCharge extends CommandBase {
-  DriveSubsystem m_Subsystem;
+/**
+ * <> A command to put a {@link DriveSubsystem}'s wheels in an X
+ * and keep them there.
+ * 
+ * @apiNote THIS WILL NEVER END UNLESS INTERRUPTED
+ */
+public class LockSwerveWheelsCommand extends CommandBase {
+  DriveSubsystem m_subsystem;
 
-  /** Creates a new DriveOntoCharge. */
-  public DriveOntoCharge(DriveSubsystem subsystem) {
-    m_Subsystem = subsystem;
+  /** Creates a new LockSwerveWheelsCommand. */
+  public LockSwerveWheelsCommand(DriveSubsystem subsystem) {
+    m_subsystem = subsystem;
 
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_Subsystem);
+    addRequirements(m_subsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -25,7 +31,7 @@ public class DriveOntoCharge extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_Subsystem.drive(-0.75, 0, 0, true);
+    m_subsystem.setX();
   }
 
   // Called once the command ends or is interrupted.
@@ -35,6 +41,6 @@ public class DriveOntoCharge extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(m_Subsystem.getChargeLevel().getDegrees()) > 10;
+    return false;
   }
 }

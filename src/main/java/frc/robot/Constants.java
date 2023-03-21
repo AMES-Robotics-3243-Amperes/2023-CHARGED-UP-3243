@@ -10,7 +10,6 @@ import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import frc.robot.subsystems.LegAnkleSubsystem;
 import frc.robot.utility_classes.LegAnklePosition;
 
 /**
@@ -49,7 +48,7 @@ public final class Constants {
 
     // :D grabber open/close setpoints
     public static final double openGrabberSetpoint = 0.22;
-    public static final double closedGrabberSetpoint = 0.48;
+    public static final double closedGrabberSetpoint = 0.46;
 
     // ++ current limits
     public static final int hardOpenerMotorCurrentLimit = 30;
@@ -156,10 +155,10 @@ public final class Constants {
       public static final boolean kTurningFieldRelative = true;
 
       // <> speed damper (flat constant supplied speed is multiplied by)
-      public static final double kDrivingSpeedDamper = 1.8; // <> meters per second
+      public static final double kDrivingSpeedDamper = 1; // <> meters per second
       public static final double kAngularSpeedDamper = 1 * Math.PI; // <> radians per second
       // <> max speed
-      public static final double kMaxMetersPerSecond = 5;
+      public static final double kMaxMetersPerSecond = 2;
       // <> this should be true
       public static final boolean kGyroReversed = false;
 
@@ -210,42 +209,28 @@ public final class Constants {
         public static final double max1650TempCelsius = 100;
       }
 
-      // <> stuff pertaining to trajectory following,
-      // <> not the actual autonomous period
+      public static final class FieldRelativeTurningConstants {
+        public static final double kP = 4;
+        public static final double kI = 0;
+        public static final double kD = 0;
+
+        // <> these values aren't exact but are pretty close
+        public static final double kMaxAngularAccelerationDegreesPerSecond = 200;
+        public static final double kMaxAngularVelocityDegreesPerSecond = 300;
+
+        public static final TrapezoidProfile.Constraints kConstraints = new TrapezoidProfile.Constraints(
+          kMaxAngularVelocityDegreesPerSecond, kMaxAngularAccelerationDegreesPerSecond);
+
+        public static final ProfiledPIDController kPidController = new ProfiledPIDController(kP, kI, kD, kConstraints);
+      }
+
+      // <> stuff pertaining to auto driving
       public static final class AutoConstants {
+        public static final double kMaxAccelerationMetersPerSecondSq = 1.5;
+        public static final double kMaxVelocityMetersPerSecond = 0.8;
 
-        // <> max speeds (only for pathfinding, not controlling)
-        public static final double kMaxMetersPerSecond = 1.4;
-        public static final double kMaxAccelerationMetersPerSecond = 1;
-        public static final double kMaxAngularMetersPerSecond = 130;
-        public static final double kMaxAngularAccelerationMetersPerSecond = 90;
-
-        // <> pid values
-        public static final double kDrivingP = 0.4;
-        public static final double kDrivingI = 0.004;
-        public static final double kDrivingD = 0;
-
-        public static final double kTurningP = 0.8;
-        public static final double kTurningI = 0;
-        public static final double kTurningD = 0;
-
-        // <> max distances
-        public static final double maxMetersFromSetpoint = 0.1;
-        public static final Rotation2d maxRotationFromSetpoint = Rotation2d.fromDegrees(3);
-
-        // <> pid constraints
-        public static final TrapezoidProfile.Constraints kDrivingControllerConstraints =
-          new TrapezoidProfile.Constraints(kMaxMetersPerSecond, kMaxAccelerationMetersPerSecond);
-
-        public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
-          kMaxAngularMetersPerSecond, kMaxAngularAccelerationMetersPerSecond);
-
-        // <> pid controllers
-        public static final ProfiledPIDController kDrivingPIDController = new ProfiledPIDController(kDrivingP,
-          kDrivingI, kDrivingD, kDrivingControllerConstraints);
-
-        public static final ProfiledPIDController kTurningPIDController = new ProfiledPIDController(kTurningP,
-          kTurningI, kTurningD, kThetaControllerConstraints);
+        public static final double kMaxMetersFromGoal = 0.1;
+        public static final Rotation2d kMaxRotationFromGoal = Rotation2d.fromDegrees(3);
       }
 
       public static final class BalanceConstants {
@@ -301,6 +286,8 @@ public final class Constants {
    */
   public static final class WristAndArm {
 
+    public static final double movementTimeoutDuration = 5.0;
+
     public static final Translation3d pivotOffset = new Translation3d(Units.inchesToMeters(32) / 2 - .27773100, 0,
       .44255 + Units.inchesToMeters(2.662500 / 2));
 
@@ -334,15 +321,17 @@ public final class Constants {
     // I just changed this from 10 to 30
     public static final int pitchCurrentLimit = 29; // H! This is a temporary change! It was 10 before. // :D hi I
     // just changed this from 30 to 15
-    public static final int rollCurrentLimit = 5; // H! This is a temporary change! It was 10 before. // :D hi I just
-    // changed this from 2 to 5
+    public static final int rollCurrentLimit = 20; // H! This is a temporary change! It was 10 before. // :D hi I just
+    // changed this from 5 to 10
     public static final int NEO1650CurrentLimitHard = 40; // H! This is a temporary change! It was 40 before. // :D
     // hi I just changed this from 20 to 60
     public static final int NEO550CurrentLimitHard = 30; // H! This is a temporary change! It was 20 before.
     public static final double atSetpointThreshold = 0.02;
 
-    public static final double pivotOutputRange = 0.1;
-    public static final double pitchOutputRange = 0.1;
+    public static final double pivotOutputRange = 0.15;
+    public static final double pitchOutputRange = 0.3;
+    public static final double extensionOutputRange = 0.5;
+    public static final double rollOutputRange = 0.3;
     public static final double wristRollEncoderSetZeroOffset = 0.163;
     public static final double wristPitchEncoderSetZeroOffset = 0.5570095;// :D prev value: 0.866; I changed it because it was flipped 180 degrees from what the standard on the pivot is
     public static final double wristPivotEncoderSetZeroOffset = 0.196875;
@@ -367,70 +356,84 @@ public final class Constants {
       public static final double roll = 0.0;
     }
 
-    public static class StartingSetpoints {
-      public static final double x = -0.2;
-      public static final double y = 0.80;
-      public static final double pitch = -Math.PI / 2;
-      public static final double roll = 0.0;
+    public static class StartingSetpoints { // :D DONE: make these values not use inverse kinematics, it'll be easier to visually see and check/adjust
+      public static final double pivot = 0.354;
+      public static final double extension = 1.09;
+      public static final double pitch = 0.826;
+      public static final Double roll = null;
     }
 
     public static class PickupSetpoints {
-      public static final double pivot = 0.515;
+      public static final double pivot = 0.535;
+      public static final double extension = 1.09;
+      public static final double pitch = 0.7;
+      public static final Double roll = null;
+    }
+
+    public static class PickupSetpointsLOW { // :D TODO: get the actual values
+      public static final double pivot = 0.535;
+      public static final double extension = 1.09;
+      public static final double pitch = 0.7;
+      public static final Double roll = null;
+    }
+
+    public static class DoubleLoadSetpoints {
+      public static final double pivot = 0.15;
       public static final double extension = 1.09;
       public static final double pitch = 0.5;
-      public static final double roll = 0.5;
+      public static final Double roll = null;
     }
 
     public static class PlacementSetpoints {
       public static final class High {
-        public static final double pivot = 0.135;
+        public static final double pivot = 0.165;
         public static final double extension = WristAndArm.Limits.extensionMax-0.1;
-        public static final double pitch = 0.25;
-        public static final double roll = 0.5;
+        public static final double pitch = 0.584;
+        public static final Double roll = null;
       }
 
       public static final class Middle {
-        public static final double pivot = 0.135;
+        public static final double pivot = 0.157;
         public static final double extension = 1.09;
-        public static final double pitch = 0.25;
-        public static final double roll = 0.5;
+        public static final double pitch = 0.572;
+        public static final Double roll = null;
       }
 
       public static final class Low {
-        public static final double pivot = 0.16;
+        public static final double pivot = 0.203;
         public static final double extension = 1.09;
-        public static final double pitch = 0.115;
-        public static final double roll = 0.5;
+        public static final double pitch = 0.5;
+        public static final Double roll = null;
       }
     }
 
     public static class PID {
       public static class Extension {
-        public static final double P = 2.0;// H! 2.0
+        public static final double P = 5.0 * 0;// H! 2.0
         public static final double I = 0.0;
         public static final double D = 0.0;
         public static final double FF = 0.01;
       }
 
       public static class Pivot {
-        public static final double P = 5.0;// H! 5.0
-        public static final double I = 0.0;
-        public static final double D = 0.0;
-        public static final double FF = 0.1;
+        public static final double P = 13.0 * 0.3;
+        public static final double I = 0.001; // 0
+        public static final double D = 2; // 1
+        public static final double FF = 0.1*0;
       }
 
       public static class Pitch {
-        public static final double P = 0.65;
-        public static final double I = 0.0125;
+        public static final double P = 6 * 0;
+        public static final double I = 0.001;
         public static final double D = 0.0;
-        public static final double FF = 0.01;
+        public static final double FF = 0.01*0;
       }
 
       public static class Roll {
-        public static final double P = 0.75;
-        public static final double I = 0.0;
-        public static final double D = 0.01;
-        public static final double FF = 0.1;
+        public static final double P = 0.95 * 0;
+        public static final double I = 0.0003;
+        public static final double D = 0.0;
+        public static final double FF = 0.1*0;
       }
     }
 
@@ -513,11 +516,21 @@ public final class Constants {
     /**The position the leg ankle will try to move to at the beginning of the match
      * H!
      */
-    public static final LegAnklePosition initialLegAnklePosiitonMovement = LegAnkleSubsystem.IK(
-      -0.2,
-      0.80,
-      -Math.PI / 2,
-      0.0
+    public static final LegAnklePosition initialLegAnklePositonMovement = new LegAnklePosition( // :D DONE: make this not be IK and also consolodate with the other initial position stuff
+      WristAndArm.StartingSetpoints.extension,
+      WristAndArm.StartingSetpoints.pivot,
+      WristAndArm.StartingSetpoints.pitch,
+      WristAndArm.StartingSetpoints.roll
+    );
+
+    /**The position of the leg ankle to easily pick up game pieces from the double loading station
+     * H!
+     */
+    public static final LegAnklePosition legAnkleDoubleLoadingPosition = new LegAnklePosition( // :D TODO: find these actual values
+      WristAndArm.DoubleLoadSetpoints.extension, 
+      WristAndArm.DoubleLoadSetpoints.pivot, 
+      WristAndArm.DoubleLoadSetpoints.pitch, 
+      WristAndArm.DoubleLoadSetpoints.roll
     );
 
     /**The position of the leg ankle to easily pick up game pieces
@@ -528,6 +541,13 @@ public final class Constants {
       WristAndArm.PickupSetpoints.pivot, 
       WristAndArm.PickupSetpoints.pitch, 
       WristAndArm.PickupSetpoints.roll
+    );
+
+    public static final LegAnklePosition legAnklePickupPositionLOW = new LegAnklePosition(
+      WristAndArm.PickupSetpointsLOW.extension, 
+      WristAndArm.PickupSetpointsLOW.pivot, 
+      WristAndArm.PickupSetpointsLOW.pitch, 
+      WristAndArm.PickupSetpointsLOW.roll
     );
 
     // :D I capitalized the HIGH, MIDDLE, and LOW so that it would stand out more, if you don't really like it, feel free to change
@@ -552,7 +572,7 @@ public final class Constants {
       WristAndArm.PlacementSetpoints.Low.roll
     );
 
-    // H! TODO: None of these constants are right
+    // H! TODO: None of these constants are right // :D can this code be deleted?
     /*public static final class Cone {
       public static final class HighTarget {
         public static final double armX = 0.0;

@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.LegAnkle;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -51,7 +51,7 @@ public class ManualLegAnkleCommand extends CommandBase {
       MathUtil.applyDeadband(m_controller.getRightTriggerAxis() - m_controller.getLeftTriggerAxis(), JoyUtilConstants.kDeadzone) / 200,
       m_controller.getLeftY() / -150,
       m_controller.getRightY() / -150,
-      0 //(m_controller.getRightX()) / 5
+      (m_controller.getRightX()) / 200
     );
     
     // H! IK control

@@ -5,15 +5,32 @@
 package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DriveTrain.DriveConstants;
-import frc.robot.commands.*;
+import frc.robot.commands.DriveTrain.BalanceCommand;
+import frc.robot.commands.DriveTrain.LockSwerveWheelsCommand;
+import frc.robot.commands.DriveTrain.SwerveAutoMoveCommand;
+import frc.robot.commands.DriveTrain.SwerveTeleopCommand;
+import frc.robot.commands.Grabber.GrabberCloseCommand;
+import frc.robot.commands.Grabber.GrabberCommand;
+import frc.robot.commands.Grabber.GrabberOpenCommand;
+import frc.robot.commands.LegAnkle.ManualLegAnkleCommand;
+import frc.robot.commands.LegAnkle.MoveLegAnkleToNeutralPositionCommand;
+import frc.robot.commands.LegAnkle.MoveLegAnkleToPlacementPositionCommand;
+import frc.robot.commands.LegAnkle.WristRollDefaultCommand;
+import frc.robot.commands.LegAnkle.WristRollUpCommand;
+import frc.robot.commands.LegAnkle.PickupPosition.MoveLegAnkleToPickupPositionCommand;
+import frc.robot.commands.LegAnkle.PickupPosition.MoveLegAnkleToPickupPositionCommandDoubleLoading;
+import frc.robot.commands.LegAnkle.PickupPosition.MoveLegAnkleToPickupPositionCommandLOW;
+import frc.robot.commands.LegAnkle.PickupPosition.MoveLegAnkleToPickupPositionCommandNormal;
 import frc.robot.subsystems.*;
+
+import java.util.ArrayList;
+import java.util.List;
 // import edu.wpi.first.cscore.CameraServer;
 
 /**
@@ -38,26 +55,39 @@ public class RobotContainer {
   // ++ ----- SUBSYSTEMS -----------
   public final PhotonVisionSubsystem m_photonVisionSubsystem = new PhotonVisionSubsystem(fieldPosManager);
   public final LegAnkleSubsystem m_legAnkleSubsystem = new LegAnkleSubsystem();
-  public final DriveSubsystem m_driveSubsystem = new DriveSubsystem(fieldPosManager);
+  public final DriveSubsystem m_driveSubsystem = new DriveSubsystem(fieldPosManager,
+    DriveConstants.FieldRelativeTurningConstants.kPidController);
+
   // ++ ----- COMMANDS -------------
   public final SwerveTeleopCommand m_SwerveTeleopCommand = new SwerveTeleopCommand(m_driveSubsystem, primaryController);
   public final BalanceCommand m_BalanceCommand = new BalanceCommand(m_driveSubsystem);
-  // public final MoveLegAnkleToPickupPositionCommand m_legAnkleToPickupCommand = new MoveLegAnkleToPickupPositionCommand(
+  // public final MoveLegAnkleToPickupPositionCommand m_legAnkleToPickupCommand = new
+  // MoveLegAnkleToPickupPositionCommand(
   //   m_legAnkleSubsystem);// :D duplicate??
-  public final TempAutoRoutine m_auto;
+  public final MoveLegAnkleToPickupPositionCommandNormal m_moveLegAnkleToPickupPositionCommandNormal = new MoveLegAnkleToPickupPositionCommandNormal(m_legAnkleSubsystem);
+  public final MoveLegAnkleToPickupPositionCommandLOW m_moveLegAnkleToPickupPositionCommandLOW = new MoveLegAnkleToPickupPositionCommandLOW(m_legAnkleSubsystem);
+  public final MoveLegAnkleToPickupPositionCommandDoubleLoading m_moveLegAnkleToPickupPositionCommandDoubleLoading = new MoveLegAnkleToPickupPositionCommandDoubleLoading(m_legAnkleSubsystem);
+  public final MoveLegAnkleToPickupPositionCommand m_MoveLegAnkleToPickupPositionCommand = new MoveLegAnkleToPickupPositionCommand(m_moveLegAnkleToPickupPositionCommandLOW, m_moveLegAnkleToPickupPositionCommandNormal, m_moveLegAnkleToPickupPositionCommandDoubleLoading, secondaryController);
+
+  public final MoveLegAnkleToPlacementPositionCommand m_moveLegAnkleToPlacementPositionCommand =
+    new MoveLegAnkleToPlacementPositionCommand(
+    m_legAnkleSubsystem, secondaryController);
+  public final MoveLegAnkleToNeutralPositionCommand m_moveLegAnkleToNeutralPositionCommand =
+    new MoveLegAnkleToNeutralPositionCommand(
+    m_legAnkleSubsystem);
+
+
   private final GrabberSubsystem m_GrabberSubsystem = new GrabberSubsystem();
   public final GrabberCommand m_GrabberCommand = new GrabberCommand(m_GrabberSubsystem, secondaryController);
   private final ShuffleboardSubsystem m_shuffleboardSubsystem = new ShuffleboardSubsystem(fieldPosManager,
     m_legAnkleSubsystem, m_driveSubsystem, m_photonVisionSubsystem, null, m_GrabberSubsystem);
-    
   // <> this is required for creating new swerve trajectory follow commands
-  private final ProfiledPIDController thetaPidController;
-  private final ManualLegAnkleCommand m_WristCommand = new ManualLegAnkleCommand(m_legAnkleSubsystem, secondaryController);
+  private final ManualLegAnkleCommand m_manualLegAnkleCommand = new ManualLegAnkleCommand(m_legAnkleSubsystem,
+    secondaryController);
   private final GrabberCloseCommand m_grabCloseCommand = new GrabberCloseCommand(m_GrabberSubsystem);
   private final GrabberOpenCommand m_grabOpenCommand = new GrabberOpenCommand(m_GrabberSubsystem);
-
-  public final MoveLegAnkleToPickupPositionCommand m_moveLegAnkleToPickupPositionCommand = new MoveLegAnkleToPickupPositionCommand(m_legAnkleSubsystem);
-  public final MoveLegAnkleToPlacementPositionCommand m_moveLegAnkleToPlacementPositionCommand = new MoveLegAnkleToPlacementPositionCommand(m_legAnkleSubsystem, secondaryController);
+  private final WristRollDefaultCommand m_wristRollDefaultCommand = new WristRollDefaultCommand(m_legAnkleSubsystem);
+  private final WristRollUpCommand m_wristRollUpCommand = new WristRollUpCommand(m_legAnkleSubsystem);
 
   //private final PlaceGamePiece m_placeGamePieceCommand;
 
@@ -65,17 +95,9 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    // <> this is required for creating new swerve trajectory follow commands
-    thetaPidController = new ProfiledPIDController(DriveConstants.AutoConstants.kTurningP,
-      DriveConstants.AutoConstants.kTurningI, DriveConstants.AutoConstants.kTurningD,
-      DriveConstants.AutoConstants.kThetaControllerConstraints);
-    thetaPidController.enableContinuousInput(-Math.PI, Math.PI);
-
-    m_auto = new TempAutoRoutine(fieldPosManager, m_driveSubsystem, thetaPidController, m_photonVisionSubsystem);
-
     m_driveSubsystem.setDefaultCommand(m_SwerveTeleopCommand);
 
-    m_legAnkleSubsystem.setDefaultCommand(m_WristCommand);
+    m_legAnkleSubsystem.setDefaultCommand(m_manualLegAnkleCommand);
 
     //m_GrabberSubsystem.setDefaultCommand(m_grabCloseCommand);
 
@@ -103,22 +125,29 @@ public class RobotContainer {
    */
   public void configureBindings() {
     primaryController.x().toggleOnTrue(new LockSwerveWheelsCommand(m_driveSubsystem));
-    primaryController.a().toggleOnTrue(
-      new SwerveAutoMoveCommand(m_driveSubsystem, new Pose2d(),
-        DriveConstants.AutoConstants.kDrivingPIDController, DriveConstants.AutoConstants.kTurningPIDController,
-        DriveConstants.AutoConstants.maxMetersFromSetpoint, DriveConstants.AutoConstants.maxRotationFromSetpoint));
+    primaryController.a().toggleOnTrue(new SwerveAutoMoveCommand(m_driveSubsystem,
+      new ArrayList<Pose2d>(List.of(new Pose2d(new Translation2d(2.5, 2.75), Rotation2d.fromDegrees(90)), new Pose2d(new Translation2d(3, 1), Rotation2d.fromDegrees(180)), new Pose2d(new Translation2d(5, 1), Rotation2d.fromDegrees(-90)), new Pose2d(new Translation2d(6, 3), Rotation2d.fromDegrees(0)), new Pose2d(new Translation2d(5, 4), Rotation2d.fromDegrees(90)), new Pose2d(new Translation2d(4, 5), Rotation2d.fromDegrees(180)), new Pose2d(new Translation2d(3, 4), Rotation2d.fromDegrees(-90)), new Pose2d(new Translation2d(2.5, 2.75), Rotation2d.fromDegrees(0)))), DriveConstants.AutoConstants.kMaxMetersFromGoal,
+      DriveConstants.AutoConstants.kMaxRotationFromGoal));
 
-    secondaryController.leftBumper().onTrue(m_grabOpenCommand);
-    secondaryController.rightBumper().onTrue(m_grabCloseCommand);
+    secondaryController.rightBumper().onTrue(m_grabOpenCommand);
+    secondaryController.rightBumper().onFalse(m_grabCloseCommand);
+    secondaryController.leftBumper().onTrue(m_wristRollUpCommand);
+    secondaryController.leftBumper().onFalse(m_wristRollDefaultCommand);
     //secondaryController.x().onTrue(m_legAnkleToPickupCommand);
-    // :D whats the deal with this? there are two pickup thingies? I commented the other one out and changed this one to use the x button
-    secondaryController.x().onTrue(m_moveLegAnkleToPickupPositionCommand);
-    secondaryController.y().onTrue(m_moveLegAnkleToPlacementPositionCommand); // :D TODO: test this at some point soon
+    // :D whats the deal with this? there are two pickup thingies? I commented the other one out and changed this one
+    // to use the x button
+    secondaryController.x().onTrue(m_MoveLegAnkleToPickupPositionCommand);
+    secondaryController.y().onTrue(m_moveLegAnkleToPlacementPositionCommand); // :D DONE: test this at some point soon
+    secondaryController.a().onTrue(m_moveLegAnkleToNeutralPositionCommand);
   }
 
   public void teleopInit() {}
 
   public Command getAutonomousCommand() {
-    return m_auto;
+    return null;
+  }
+
+  public void testPeriodic() {
+    m_legAnkleSubsystem.testPeriodic();
   }
 }

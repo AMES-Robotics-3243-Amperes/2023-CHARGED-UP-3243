@@ -4,12 +4,17 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.*;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveTrain.DriveConstants;
+import frc.robot.utility_classes.GeneralUtil;
 import frc.robot.FieldPosManager;
 
 public class DriveSubsystem extends SubsystemBase {
@@ -32,18 +37,22 @@ public class DriveSubsystem extends SubsystemBase {
 
   // <> field pos manager
   private final FieldPosManager m_fieldPosManager;
-
-  // <> pid controller for when turning is field relative
-
   // <> odometry for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(DriveConstants.ChassisKinematics.kDriveKinematics,
     getHeading(), getModulePositions());
 
+  // <> pid controller for when turning is field relative (degrees)
+  private ProfiledPIDController m_thetaPidController;
+
   /**
    * Creates a new DriveSubsystem.
    */
-  public DriveSubsystem(FieldPosManager fieldPosManager) {
+  public DriveSubsystem(FieldPosManager fieldPosManager, ProfiledPIDController thetaPIDController) {
     m_fieldPosManager = fieldPosManager;
+    m_thetaPidController = thetaPIDController;
+
+    m_thetaPidController.enableContinuousInput(-180, 180);
+    resetFieldRelativeTurningPid();
 
     resetEncoders();
   }
@@ -55,29 +64,32 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   /**
+   * <> resets the pid controller for field relative turning
+   * (smart to do at command initialization)
+   */
+  public void resetFieldRelativeTurningPid() {
+    m_thetaPidController.reset(getHeading().getRadians(), m_imuSubsystem.getTurnRate().getRadians());
+  }
+
+  /**
    * <>
    *
    * @return the pose
    */
   public Pose2d getPose() {
-    return new Pose2d(m_odometry.getPoseMeters().getTranslation(), getHeading());
+    return new Pose2d(m_fieldPosManager.getRobotPose().getTranslation(), getHeading());
   }
 
   /**
    * <> drive the robot
    *
-   * @param xSpeed        Speed of the robot in the x direction (forward).
-   * @param ySpeed        Speed of the robot in the y direction (sideways).
-   * @param rot           Angular rate of the robot.
-   * @param fieldRelative Whether the provided x and y speeds are relative to the
-   *                      field.
+   * @param xSpeed        speed of the robot in the x direction (forward)
+   * @param ySpeed        speed of the robot in the y direction (sideways)
+   * @param rotation      angular rate of the robot in radians
+   * @param fieldRelative whether the provided x and y speeds are relative to the
+   *                      field
    */
-  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
-    // <> apply dampers defined in constants
-    xSpeed *= DriveConstants.kDrivingSpeedDamper;
-    ySpeed *= DriveConstants.kDrivingSpeedDamper;
-    rot *= DriveConstants.kAngularSpeedDamper;
-
+  private void driveWithRawSpeeds(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
     // <> adjust the inputs if field relative is true
     SwerveModuleState[] swerveModuleStates = DriveConstants.ChassisKinematics.kDriveKinematics.toSwerveModuleStates(
       fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getHeading()) : new ChassisSpeeds(
@@ -94,6 +106,39 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   /**
+   * <> drive the robot and reset pids
+   *
+   * @param xSpeed        speed of the robot in the x direction (forward)
+   * @param ySpeed        speed of the robot in the y direction (sideways)
+   * @param rotationSpeed angular rate of the robot in radians
+   * @param fieldRelative whether the provided x and y speeds are relative to the
+   *                      field
+   */
+  public void drive(double xSpeed, double ySpeed, double rotationSpeed, boolean fieldRelative) {
+    // <> because we're not driving field relative, reset those pids
+    resetFieldRelativeTurningPid();
+
+    driveWithRawSpeeds(xSpeed, ySpeed, rotationSpeed, fieldRelative);
+  }
+
+  /**
+   * <> drive the robot with a rotation setpoint
+   *
+   * @param xSpeed        speed of the robot in the x direction (forward)
+   * @param ySpeed        speed of the robot in the y direction (sideways)
+   * @param rotation      or goal of field relative driving
+   * @param fieldRelative whether the provided x and y speeds are relative to the
+   *                      field
+   */
+  public void drive(double xSpeed, double ySpeed, Rotation2d rotation, boolean fieldRelative) {
+    double clampedGoal = GeneralUtil.clampRotation2d(rotation).getDegrees();
+    double rotationSpeed = Math.toRadians(m_thetaPidController.calculate(getDiscontinuousHeading().getDegrees(), clampedGoal));
+
+    // <> now that we got a speed, drive using raw speeds
+    driveWithRawSpeeds(xSpeed, ySpeed, -rotationSpeed, fieldRelative);
+  }
+
+  /**
    * <> set wheels into an x position to prevent movement
    */
   public void setX() {
@@ -106,17 +151,27 @@ public class DriveSubsystem extends SubsystemBase {
   /**
    * <> set the swerve modules' desired states
    *
-   * @param desiredStates The desired SwerveModule states.
+   * @param desiredStates the desired SwerveModule states.
    */
   public void setModuleStates(SwerveModuleState[] desiredStates) {
+    setModuleStates(desiredStates, true);
+  }
+
+  /**
+   * <> set the swerve modules' desired states
+   *
+   * @param desiredStates              the desired SwerveModule states.
+   * @param allowLowSpeedModuleTurning if the modules should turn even if told to go very slow
+   */
+  public void setModuleStates(SwerveModuleState[] desiredStates, boolean allowLowSpeedModuleTurning) {
     // <> desaturate wheel speeds
     SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, DriveConstants.kDrivingSpeedDamper);
 
     // <> set the desired states
-    m_frontLeft.setDesiredState(desiredStates[0], true);
-    m_frontRight.setDesiredState(desiredStates[1], true);
-    m_rearLeft.setDesiredState(desiredStates[2], true);
-    m_rearRight.setDesiredState(desiredStates[3], true);
+    m_frontLeft.setDesiredState(desiredStates[0], allowLowSpeedModuleTurning);
+    m_frontRight.setDesiredState(desiredStates[1], allowLowSpeedModuleTurning);
+    m_rearLeft.setDesiredState(desiredStates[2], allowLowSpeedModuleTurning);
+    m_rearRight.setDesiredState(desiredStates[3], allowLowSpeedModuleTurning);
   }
 
   /**
@@ -127,6 +182,10 @@ public class DriveSubsystem extends SubsystemBase {
     m_rearLeft.resetEncoders();
     m_frontRight.resetEncoders();
     m_rearRight.resetEncoders();
+  }
+
+  public Rotation2d getTurnRate() {
+    return m_imuSubsystem.getTurnRate();
   }
 
   /**
@@ -140,22 +199,11 @@ public class DriveSubsystem extends SubsystemBase {
 
   /**
    * <> for use with functions that require a specific range (such as pids)
-   * 
+   *
    * @return a rotation 2d with angles from -180 to 180
    */
   public Rotation2d getDiscontinuousHeading() {
-    Rotation2d rawAngle = getHeading();
-
-    // now from -360 to 360
-    double moddedDegree = rawAngle.getDegrees() % 360;
-
-    // now from 0 to 360
-    double doubleModdedDegree = (moddedDegree + 360) % 360;
-
-    // now from -180 to 180
-    double finalDegree = doubleModdedDegree <= 180 ? doubleModdedDegree : doubleModdedDegree - 360;
-
-    return Rotation2d.fromDegrees(finalDegree);
+    return GeneralUtil.clampRotation2d(getHeading());
   }
 
   /**
