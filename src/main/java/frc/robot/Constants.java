@@ -517,7 +517,7 @@ public final class Constants {
     /**The position the leg ankle will try to move to at the beginning of the match
      * H!
      */
-    public static final LegAnklePosition initialLegAnklePosiitonMovement = new LegAnklePosition( // :D DONE: make this not be IK and also consolodate with the other initial position stuff
+    public static final LegAnklePosition initialLegAnklePositonMovement = new LegAnklePosition( // :D DONE: make this not be IK and also consolodate with the other initial position stuff
       WristAndArm.StartingSetpoints.extension,
       WristAndArm.StartingSetpoints.pivot,
       WristAndArm.StartingSetpoints.pitch,
