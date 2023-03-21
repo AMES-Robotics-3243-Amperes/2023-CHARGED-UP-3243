@@ -51,28 +51,28 @@ public class LEDSubsystem extends SubsystemBase {
         ArrayList<String> validFileNamesFound = new ArrayList<String>();
 
         try {
-        for (File patternFile : patterns) {
-            // H! Only add the file if it's .json
-            if (patternFile.getName().length() >= 5) {
-            if (patternFile.getName().substring(patternFile.getName().length() - 5) == ".json") {
-                // H! Read the file and add it to jsonStrings
-                jsonStrings.add(Files.readString(patternFile.toPath()));
-                // H! Add the filename to validFileNamesFound
-                validFileNamesFound.add(patternFile.getName());
+            for (File patternFile : patterns) {
+                // H! Only add the file if it's .json
+                if (patternFile.getName().length() >= 5) {
+                    if (patternFile.getName().substring(patternFile.getName().length() - 5) == ".json") {
+                        // H! Read the file and add it to jsonStrings
+                        jsonStrings.add(Files.readString(patternFile.toPath()));
+                        // H! Add the filename to validFileNamesFound
+                        validFileNamesFound.add(patternFile.getName());
+                    }
+                }
             }
-            }
-        }
         } catch (IOException e) {
-        System.out.println("Reading JSON files failed");
-        e.printStackTrace();
+            System.out.println("Reading JSON files failed");
+            e.printStackTrace();
         }
 
         // H! Put the list of filenames and list of JSONObjects into a map from one to the other
         for (int i = 0; i < validFileNamesFound.size(); i++) {
-        patternMap.put(
-            validFileNamesFound.get(i),
-            new JSONObject(jsonStrings.get(i))
-        );
+            patternMap.put(
+                validFileNamesFound.get(i),
+                new JSONObject(jsonStrings.get(i))
+            );
         }
     }
 
