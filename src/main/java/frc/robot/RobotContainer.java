@@ -27,6 +27,7 @@ import frc.robot.commands.LegAnkle.PickupPosition.MoveLegAnkleToPickupPositionCo
 import frc.robot.commands.LegAnkle.PickupPosition.MoveLegAnkleToPickupPositionCommandDoubleLoading;
 import frc.robot.commands.LegAnkle.PickupPosition.MoveLegAnkleToPickupPositionCommandLOW;
 import frc.robot.commands.LegAnkle.PickupPosition.MoveLegAnkleToPickupPositionCommandNormal;
+import frc.robot.commands.SnapToGridRoutine.SnapToGridCommand;
 import frc.robot.subsystems.*;
 
 import java.util.ArrayList;

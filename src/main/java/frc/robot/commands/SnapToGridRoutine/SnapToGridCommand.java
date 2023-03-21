@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.SnapToGridRoutine;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
@@ -13,7 +13,9 @@ import frc.robot.Constants.DriveTrain.DriveConstants;
 import frc.robot.FieldPosManager.fieldSpot2d;
 import frc.robot.FieldPosManager;
 import frc.robot.JoyUtil;
-import frc.robot.commands.*;
+import frc.robot.commands.DriveTrain.SwerveAutoMoveCommand;
+import frc.robot.commands.SnapToGridRoutine.IndexLeftCommand;
+import frc.robot.commands.SnapToGridRoutine.IndexRightCommand;
 import frc.robot.subsystems.*;
 
 public class SnapToGridCommand extends CommandBase {
@@ -45,10 +47,8 @@ public class SnapToGridCommand extends CommandBase {
     m_SwerveAutoMoveCommand = new SwerveAutoMoveCommand(
       m_DriveSubsystem, 
       m_FieldPosManager.get2dFieldObjectPose(FieldPosManager.fieldSpot2d.scoringPosition, true, index), 
-      DriveConstants.AutoConstants.kDrivingPIDController, 
-      DriveConstants.AutoConstants.kTurningPIDController,
-      DriveConstants.AutoConstants.maxMetersFromSetpoint, 
-      DriveConstants.AutoConstants.maxRotationFromSetpoint
+      DriveConstants.AutoConstants.kMaxMetersFromGoal, 
+      DriveConstants.AutoConstants.kMaxRotationFromGoal
     );
 
     m_IndexLeftCommand = new IndexLeftCommand(m_FieldPosManager, m_SwerveAutoMoveCommand, this);
