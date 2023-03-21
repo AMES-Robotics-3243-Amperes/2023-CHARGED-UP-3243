@@ -4,43 +4,46 @@
 
 package frc.robot.commands.PlacementRoutine;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
-import frc.robot.FieldPosManager;
+import edu.wpi.first.wpilibj.Timer;
+import frc.robot.JoyUtil;
+import frc.robot.commands.Grabber.GrabberOpenCommand;
 import frc.robot.subsystems.GrabberSubsystem;
 
-public class ReleaseGameObject extends CommandBase {
-  private boolean isCube;
-  private GrabberSubsystem grabberSubsystem;
-  private FieldPosManager.fieldSpot3d target;
+public class ReleaseGameObject extends GrabberOpenCommand {
+  
+  protected Timer timeoutTimer = new Timer();
+  protected double timeoutDuration = 5;
+  protected boolean confirmed = false;
+  protected JoyUtil controller;
 
   /** Creates a new ReleaseGameObject. */
-  public ReleaseGameObject(boolean isCube, FieldPosManager.fieldSpot3d target, GrabberSubsystem grabberSubsystem) {
-    this.isCube = isCube;
-    this.grabberSubsystem = grabberSubsystem;
-    this.target = target;
-
-    
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(grabberSubsystem);
+  public ReleaseGameObject(GrabberSubsystem grabberSubsystem, JoyUtil controller) {
+    super(grabberSubsystem);
+    this.controller = controller;
   }
-
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    if (controller.getAButton()) {
+      confirmed = true;
+    }
 
-  // Called once the command ends or is interrupted.
+    if (confirmed) {
+      super.execute();
+    }
+  }
+
   @Override
-  public void end(boolean interrupted) {}
+  public void initialize() {
+    timeoutTimer.reset();
+    super.initialize();
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false; // H! TODO Implement finding out whether the grabber is open and make this dependent on it
+    return timeoutTimer.hasElapsed(timeoutDuration); // H! TODO Implement finding out whether the grabber is open and make this dependent on it
   }
 
 }

@@ -15,7 +15,7 @@ public class MoveLegAnkleToNeutralPositionCommand extends MoveLegAnkleToPosition
    * @param legAnkleSubsystem The {@link LegAnkleSubsystem} that this is controlling.
   */
   public MoveLegAnkleToNeutralPositionCommand(LegAnkleSubsystem legAnkleSubsystem) {
-    super(legAnkleSubsystem, Constants.AutomationConfiguration.initialLegAnklePosiitonMovement);
+    super(legAnkleSubsystem, Constants.AutomationConfiguration.initialLegAnklePositonMovement);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 }

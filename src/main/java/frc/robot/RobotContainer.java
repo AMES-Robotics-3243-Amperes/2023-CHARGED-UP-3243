@@ -20,10 +20,13 @@ import frc.robot.commands.Grabber.GrabberCommand;
 import frc.robot.commands.Grabber.GrabberOpenCommand;
 import frc.robot.commands.LegAnkle.ManualLegAnkleCommand;
 import frc.robot.commands.LegAnkle.MoveLegAnkleToNeutralPositionCommand;
-import frc.robot.commands.LegAnkle.MoveLegAnkleToPickupPositionCommand;
 import frc.robot.commands.LegAnkle.MoveLegAnkleToPlacementPositionCommand;
 import frc.robot.commands.LegAnkle.WristRollDefaultCommand;
 import frc.robot.commands.LegAnkle.WristRollUpCommand;
+import frc.robot.commands.LegAnkle.PickupPosition.MoveLegAnkleToPickupPositionCommand;
+import frc.robot.commands.LegAnkle.PickupPosition.MoveLegAnkleToPickupPositionCommandDoubleLoading;
+import frc.robot.commands.LegAnkle.PickupPosition.MoveLegAnkleToPickupPositionCommandLOW;
+import frc.robot.commands.LegAnkle.PickupPosition.MoveLegAnkleToPickupPositionCommandNormal;
 import frc.robot.subsystems.*;
 
 import java.util.ArrayList;
@@ -61,9 +64,11 @@ public class RobotContainer {
   // public final MoveLegAnkleToPickupPositionCommand m_legAnkleToPickupCommand = new
   // MoveLegAnkleToPickupPositionCommand(
   //   m_legAnkleSubsystem);// :D duplicate??
-  public final MoveLegAnkleToPickupPositionCommand m_moveLegAnkleToPickupPositionCommand =
-    new MoveLegAnkleToPickupPositionCommand(
-    m_legAnkleSubsystem, secondaryController);
+  public final MoveLegAnkleToPickupPositionCommandNormal m_moveLegAnkleToPickupPositionCommandNormal = new MoveLegAnkleToPickupPositionCommandNormal(m_legAnkleSubsystem);
+  public final MoveLegAnkleToPickupPositionCommandLOW m_moveLegAnkleToPickupPositionCommandLOW = new MoveLegAnkleToPickupPositionCommandLOW(m_legAnkleSubsystem);
+  public final MoveLegAnkleToPickupPositionCommandDoubleLoading m_moveLegAnkleToPickupPositionCommandDoubleLoading = new MoveLegAnkleToPickupPositionCommandDoubleLoading(m_legAnkleSubsystem);
+  public final MoveLegAnkleToPickupPositionCommand m_MoveLegAnkleToPickupPositionCommand = new MoveLegAnkleToPickupPositionCommand(m_moveLegAnkleToPickupPositionCommandLOW, m_moveLegAnkleToPickupPositionCommandNormal, m_moveLegAnkleToPickupPositionCommandDoubleLoading, secondaryController);
+
   public final MoveLegAnkleToPlacementPositionCommand m_moveLegAnkleToPlacementPositionCommand =
     new MoveLegAnkleToPlacementPositionCommand(
     m_legAnkleSubsystem, secondaryController);
@@ -131,8 +136,8 @@ public class RobotContainer {
     //secondaryController.x().onTrue(m_legAnkleToPickupCommand);
     // :D whats the deal with this? there are two pickup thingies? I commented the other one out and changed this one
     // to use the x button
-    secondaryController.x().onTrue(m_moveLegAnkleToPickupPositionCommand);
-    secondaryController.y().onTrue(m_moveLegAnkleToPlacementPositionCommand); // :D TODO: test this at some point soon
+    secondaryController.x().onTrue(m_MoveLegAnkleToPickupPositionCommand);
+    secondaryController.y().onTrue(m_moveLegAnkleToPlacementPositionCommand); // :D DONE: test this at some point soon
     secondaryController.a().onTrue(m_moveLegAnkleToNeutralPositionCommand);
   }
 

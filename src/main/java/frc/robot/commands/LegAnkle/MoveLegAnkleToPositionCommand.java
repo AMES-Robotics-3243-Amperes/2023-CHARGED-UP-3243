@@ -4,7 +4,9 @@
 
 package frc.robot.commands.LegAnkle;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.LegAnkleSubsystem;
 import frc.robot.utility_classes.LegAnklePosition;
 
@@ -15,6 +17,9 @@ public class MoveLegAnkleToPositionCommand extends CommandBase {
   public Double targetExtension;
 
   public LegAnkleSubsystem legAnkleSubsystem;
+
+  public Timer timeoutTimer = new Timer();
+  public double timeoutDuration = Constants.WristAndArm.movementTimeoutDuration;
 
   
   
@@ -102,6 +107,7 @@ public class MoveLegAnkleToPositionCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    timeoutTimer.reset();
     System.out.println("~~~~~~~~~~~~~~~~~~~~~");
     System.out.println(targetExtension);
     System.out.println(targetPivot);
@@ -117,11 +123,14 @@ public class MoveLegAnkleToPositionCommand extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    // H! When the command is done, set the setpoints to the current position so it dosen't keep going.
+    legAnkleSubsystem.setMotorPositions(legAnkleSubsystem.getMotorPosition());
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return legAnkleSubsystem.isArmPositioned();
+    return legAnkleSubsystem.isArmPositioned() || timeoutTimer.hasElapsed(timeoutDuration);
   }
 }
