@@ -47,3 +47,4 @@ public class IndexRightCommand extends InstantCommand {
   @Override
   public void initialize() {}
 }
+ 
