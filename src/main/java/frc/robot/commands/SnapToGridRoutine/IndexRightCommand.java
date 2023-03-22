@@ -15,7 +15,6 @@ import frc.robot.commands.DriveTrain.SwerveAutoMoveCommand;
 // ss if i can figure out how, maybe make this inline?
 public class IndexRightCommand extends InstantCommand {
   private final FieldPosManager m_FieldPosManager;
-  private final SwerveAutoMoveCommand m_SwerveAutoMoveCommand;
   private final SnapToGridCommand m_SnapToGridCommand;
 
   /**
@@ -26,12 +25,12 @@ public class IndexRightCommand extends InstantCommand {
    * @param swerveAutoMoveCommand
    * @param SnapToGridCommand Yes I have the {@link SnapToGridCommand} pass itself into this, I need to mess with it for consistency 
    */
-  public IndexRightCommand(FieldPosManager fieldPosManager, SwerveAutoMoveCommand swerveAutoMoveCommand, SnapToGridCommand snapToGridCommand) {
+  public IndexRightCommand(FieldPosManager fieldPosManager, SnapToGridCommand snapToGridCommand) {
 
     m_FieldPosManager = fieldPosManager;
-    m_SwerveAutoMoveCommand = swerveAutoMoveCommand;
     m_SnapToGridCommand = snapToGridCommand;
 
+    // H! I don't think this is actually necessary - the drivers are on the other side of the field when the alliance is diferent, so it's already fliped
     // ss if blue, right means subtract 1
     if (m_FieldPosManager.allianceColor == Alliance.Blue) {
       m_SnapToGridCommand.index--;
@@ -41,7 +40,7 @@ public class IndexRightCommand extends InstantCommand {
     }
 
     // ss change the goal to the new index
-    m_SwerveAutoMoveCommand.changeGoal(m_FieldPosManager.get2dFieldObjectPose(FieldPosManager.fieldSpot2d.scoringPosition, true, m_SnapToGridCommand.index));
+    m_SnapToGridCommand.changeGoal(m_FieldPosManager.get2dFieldObjectPose(FieldPosManager.fieldSpot2d.scoringPosition, true, m_SnapToGridCommand.index));
   }
 
   // Called when the command is initially scheduled.
