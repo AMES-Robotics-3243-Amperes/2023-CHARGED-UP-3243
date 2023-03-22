@@ -250,7 +250,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
   private PhotonTrackedTarget getBestTarget(PhotonCamera cam) {
     PhotonPipelineResult result = cam.getLatestResult();
     PhotonTrackedTarget target = result.getBestTarget();
-    if (target != null && target.getPoseAmbiguity() > 0.15 ){
+    if (target != null && target.getPoseAmbiguity() > 0.1 ){
         return null;
     }
     return target;
@@ -279,24 +279,24 @@ public class PhotonVisionSubsystem extends SubsystemBase {
     // :> Periodically adds target values to the targets array equal to what the cameras can see
     for (int i = 0; i < cameras.size(); i++) {
       targets.add(i, getBestTarget(cameras.get(i)));
-      // PhotonPipelineResult r = cameras.get(i).getLatestResult();
-      //   if (r.hasTargets()) {
-      //     results.add(r);
-      //     targets.add(r.getBestTarget());
-      //   }
+      PhotonPipelineResult r = cameras.get(i).getLatestResult();
+        if (r.hasTargets()) {
+          results.add(r);
+          targets.add(r.getBestTarget());
+        }
     }
 
     // This method will be called once per scheduler run
     // :> Checks if targets is empty as a precaution to make sure that it isn't getting values from targets that
     // don't exist
-    //if (!targets.isEmpty()) {
+    if (!targets.isEmpty()) {
       Pose3d robotPose = checkRobotPosition();
       // :> As a precuation this makes sure that the field pos mangager isn't getting updated with null data that way
       // we don't get a null pointer exception
       if (robotPose != null) {
         m_field.updateFieldPosWithPhotonVisionPose(robotPose.toPose2d());
       }
-    //}
+    }
     // :> Clears the targets array that way it doesn't overflow with old targets or cause an out of bounds error
     targets.clear();
     //results.clear();
