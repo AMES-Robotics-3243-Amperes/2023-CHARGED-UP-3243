@@ -84,7 +84,7 @@ public class SnapToGridCommand extends CommandBase { // :D hi after looking over
   @Override
   public boolean isFinished() {
     // ss stops everything if the movement joysticks move. These functions apply deadzone automatically
-    if (m_PrimaryController.getLeftX() > 0 || m_PrimaryController.getLeftY() > 0 || m_PrimaryController.getRightY() > 0) {
+    if (m_PrimaryController.getLeftX() > 0 || m_PrimaryController.getLeftY() > 0 || m_PrimaryController.getRightY() > 0) { // use Math.abs() and also check RightY joystick
       m_SwerveAutoMoveCommand.cancel();
       return true;
     }
