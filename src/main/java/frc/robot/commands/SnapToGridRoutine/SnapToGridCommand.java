@@ -18,7 +18,10 @@ import frc.robot.commands.SnapToGridRoutine.IndexLeftCommand;
 import frc.robot.commands.SnapToGridRoutine.IndexRightCommand;
 import frc.robot.subsystems.*;
 
-public class SnapToGridCommand extends CommandBase {
+public class SnapToGridCommand extends CommandBase { // :D hi after looking over this, it looks like due to the fact that only one command
+                                                    //is able to run on a subsystem at once, this will not quite work right. to make this work better, I'd extend SwerveAutoMoveCommand
+                                                    //and rely on it running until snap-to-grid is canceled. also it may be necessary to put the logic for IndexLeftCommand
+                                                    //and IndexRightCommand all into this class
   private final SwerveAutoMoveCommand m_SwerveAutoMoveCommand;
   private final DriveSubsystem m_DriveSubsystem;
   private final FieldPosManager m_FieldPosManager;
