@@ -153,11 +153,13 @@ public class SwerveAutoMoveCommand extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
+    // <> stop the robot from driving when the command ends
     m_subsystem.drive(0, 0, getGoal().getRotation(), false);
   }
 
   @Override
   public boolean isFinished() {
+    // <> end if we have no more goals
     return goalList.isEmpty();
   }
 
@@ -168,11 +170,12 @@ public class SwerveAutoMoveCommand extends CommandBase {
    * @param goalVelocity the velocity goal of the robot
    */
   private void driveWithGoalVelocity(Translation2d goalVelocity) {
-    // <> how much we'd need to change the velocity to get to the goal velocity
+    // <> find how much we'd need to change the velocity to get to the goal velocity
     Translation2d velocityDifference = goalVelocity.plus(velocity.times(-1));
     double velocityDifferenceLength = velocityDifference.getNorm();
 
-    // <> the constant is in seconds, but loop time is 20 ms
+    // <> the constant is in seconds, but loop time is 20 ms, so extract
+    // the constant in terms of the max velocity change per loop
     final double maxVelocityChange = DriveConstants.AutoConstants.kMaxAccelerationMetersPerSecondSq / 50;
 
     // if the change in velocity exceeds the max velocity change per 20 ms, slow it down
@@ -193,6 +196,8 @@ public class SwerveAutoMoveCommand extends CommandBase {
    * <> change the goal of the robot (doesn't affect intermediate points)
    */
   public void changeGoal(Pose2d newGoal) {
+    // <> set the final goal variable and the last members of the goal lists
+    // to the passed in new goal, ignoring all other existing goals
     finalGoal = newGoal;
     goalList.set(goalList.size() - 1, newGoal);
     absoluteGoalList.set(absoluteGoalList.size() - 1, newGoal);
@@ -202,6 +207,7 @@ public class SwerveAutoMoveCommand extends CommandBase {
    * <> change the goal of the robot (will go back and travel to all points given)
    */
   public void changeGoal(ArrayList<Pose2d> newGoals) {
+    // <> update the final goal variable
     finalGoal = newGoals.get(newGoals.size() - 1);
 
     // <> deep-copy the array lists

@@ -250,7 +250,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
   private PhotonTrackedTarget getBestTarget(PhotonCamera cam) {
     PhotonPipelineResult result = cam.getLatestResult();
     PhotonTrackedTarget target = result.getBestTarget();
-    if (target != null && target.getPoseAmbiguity() > 0.01 ){
+    if (target != null && target.getPoseAmbiguity() > 0.15 ){
         return null;
     }
     return target;
