@@ -53,7 +53,7 @@ public class RobotContainer {
 
   // The robot's subsystems and commands are defined here...
   // ++ ----- SUBSYSTEMS -----------
-  public final PhotonVisionSubsystem m_photonVisionSubsystem = new PhotonVisionSubsystem(fieldPosManager);
+  public final SinglePhotonVisionSubsystem m_photonVisionSubsystem = new SinglePhotonVisionSubsystem(fieldPosManager);
   public final LegAnkleSubsystem m_legAnkleSubsystem = new LegAnkleSubsystem();
   public final DriveSubsystem m_driveSubsystem = new DriveSubsystem(fieldPosManager,
     DriveConstants.FieldRelativeTurningConstants.kPidController);
