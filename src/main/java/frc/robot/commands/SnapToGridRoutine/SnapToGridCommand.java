@@ -5,6 +5,8 @@
 package frc.robot.commands.SnapToGridRoutine;
 
 import frc.robot.Constants.DriveTrain.DriveConstants;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.FieldPosManager;
 import frc.robot.JoyUtil;
 import frc.robot.commands.DriveTrain.SwerveAutoMoveCommand;
@@ -12,11 +14,11 @@ import frc.robot.subsystems.*;
 
 public class SnapToGridCommand extends SwerveAutoMoveCommand { // :D hi after looking over this, it looks like due to the fact that only one command
   private final FieldPosManager m_FieldPosManager;
-  private final IndexLeftCommand m_IndexLeftCommand;
-  private final IndexRightCommand m_IndexRightCommand;
   private final JoyUtil m_PrimaryController;
   private final JoyUtil m_SecondaryController;
   public int index;
+  private boolean lastPOVLeft = false;
+  private boolean lastPOVRight = false;
 
   /** Creates a new SnapToGridCommand. 
    * 
@@ -43,15 +45,6 @@ public class SnapToGridCommand extends SwerveAutoMoveCommand { // :D hi after lo
 
     // ss make an auto move command from the drive subsystem, the Pose2d corresponding to the index, and some constants
     
-
-    // ss create the index commands from the field pos manager, auto move command, and this SnapToGridCommand
-    m_IndexLeftCommand = new IndexLeftCommand(m_FieldPosManager, this);
-    m_IndexRightCommand = new IndexRightCommand(m_FieldPosManager, this);
-
-    // ss set the commands to activate when the dpad left and right are pressed
-    m_SecondaryController.povLeft().onTrue(m_IndexLeftCommand);
-    m_SecondaryController.povRight().onTrue(m_IndexRightCommand);
-
     addRequirements(driveSubsystem);
   }
 
@@ -61,7 +54,36 @@ public class SnapToGridCommand extends SwerveAutoMoveCommand { // :D hi after lo
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    if(m_PrimaryController.getPOVRight() && !lastPOVRight){
+      // ss if blue, right means subtract 1
+      if (m_FieldPosManager.allianceColor == Alliance.Blue) {
+        index--;
+      } // ss if red, right means add 1
+      else if (m_FieldPosManager.allianceColor == Alliance.Red) {
+        index++;
+      }
+      index = (int)MathUtil.inputModulus(index, 0, 8);
+
+      // ss change the goal to the new index
+      changeGoal(m_FieldPosManager.get2dFieldObjectPose(FieldPosManager.fieldSpot2d.scoringPosition, true, index));
+    }
+    if(m_PrimaryController.getPOVLeft() && !lastPOVLeft){
+      // ss if blue, left means add 1
+      if (m_FieldPosManager.allianceColor == Alliance.Blue) {
+        index++;
+      } // ss if red, left means subtract 1
+      else if (m_FieldPosManager.allianceColor == Alliance.Red) {
+        index--;
+      }
+      index = (int)MathUtil.inputModulus(index, 0, 8);
+
+      // ss change the goal to the new index
+      changeGoal(m_FieldPosManager.get2dFieldObjectPose(FieldPosManager.fieldSpot2d.scoringPosition, true, index));
+    }
+    lastPOVRight = m_PrimaryController.getPOVRight();
+    lastPOVLeft = m_PrimaryController.getPOVLeft();
+  }
 
   // Called once the command ends or is interrupted.
   @Override
