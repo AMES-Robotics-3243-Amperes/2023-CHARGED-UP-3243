@@ -37,6 +37,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   // <> field pos manager
   private final FieldPosManager m_fieldPosManager;
+  
   // <> odometry for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(DriveConstants.ChassisKinematics.kDriveKinematics,
     getHeading(), getModulePositions());
@@ -77,7 +78,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @return the pose
    */
   public Pose2d getPose() {
-    return new Pose2d(m_fieldPosManager.getRobotPose().getTranslation(), getHeading());
+    return m_fieldPosManager.getRobotPose();
   }
 
   /**
@@ -132,7 +133,7 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public void drive(double xSpeed, double ySpeed, Rotation2d rotation, boolean fieldRelative) {
     double clampedGoal = GeneralUtil.clampRotation2d(rotation).getDegrees();
-    double rotationSpeed = Math.toRadians(m_thetaPidController.calculate(getDiscontinuousHeading().getDegrees(), clampedGoal));
+    double rotationSpeed = Math.toRadians(m_thetaPidController.calculate(getClampedHeading().getDegrees(), clampedGoal));
 
     // <> now that we got a speed, drive using raw speeds
     driveWithRawSpeeds(xSpeed, ySpeed, -rotationSpeed, fieldRelative);
@@ -184,10 +185,6 @@ public class DriveSubsystem extends SubsystemBase {
     m_rearRight.resetEncoders();
   }
 
-  public Rotation2d getTurnRate() {
-    return m_imuSubsystem.getTurnRate();
-  }
-
   /**
    * <>
    *
@@ -202,7 +199,7 @@ public class DriveSubsystem extends SubsystemBase {
    *
    * @return a rotation 2d with angles from -180 to 180
    */
-  public Rotation2d getDiscontinuousHeading() {
+  public Rotation2d getClampedHeading() {
     return GeneralUtil.clampRotation2d(getHeading());
   }
 

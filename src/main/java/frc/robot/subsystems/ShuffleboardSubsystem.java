@@ -26,7 +26,7 @@ public class ShuffleboardSubsystem extends SubsystemBase {
   private FieldPosManager fieldPoseManager;
 
   private DriveSubsystem driveTrainSubsystem;
-  private SinglePhotonVisionSubsystem photonVisionSubsystem;
+  private PhotonVisionSubsystem photonVisionSubsystem;
   private IMUSubsystem imuSubsystem;
   private GrabberSubsystem GrabberSubsystem;
 
@@ -35,7 +35,7 @@ public class ShuffleboardSubsystem extends SubsystemBase {
    * Creates a new ShuffleboardSubsystem.
    */
   public ShuffleboardSubsystem(FieldPosManager posManager, LegAnkleSubsystem legAnkle, DriveSubsystem driveTrain,
-                               SinglePhotonVisionSubsystem photonVision, IMUSubsystem IMU, GrabberSubsystem grabber) {
+                               PhotonVisionSubsystem photonVision, IMUSubsystem IMU, GrabberSubsystem grabber) {
 
     //&& Set fieldPoseManager equal to posManager for Field2D widget
     fieldPoseManager = posManager;
