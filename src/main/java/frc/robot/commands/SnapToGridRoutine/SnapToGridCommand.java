@@ -11,7 +11,7 @@ import frc.robot.commands.DriveTrain.SwerveAutoMoveCommand;
 import frc.robot.subsystems.*;
 
 public class SnapToGridCommand extends SwerveAutoMoveCommand { // :D hi after looking over this, it looks like due to the fact that only one command
-                                                    private final FieldPosManager m_FieldPosManager;
+  private final FieldPosManager m_FieldPosManager;
   private final IndexLeftCommand m_IndexLeftCommand;
   private final IndexRightCommand m_IndexRightCommand;
   private final JoyUtil m_PrimaryController;

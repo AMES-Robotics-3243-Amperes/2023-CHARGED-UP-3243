@@ -5,6 +5,7 @@
 package frc.robot.commands.SnapToGridRoutine;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.FieldPosManager;
 import frc.robot.commands.DriveTrain.SwerveAutoMoveCommand;
@@ -37,6 +38,7 @@ public class IndexLeftCommand extends InstantCommand {
     else if (m_FieldPosManager.allianceColor == Alliance.Red) {
       m_SnapToGridCommand.index--;
     }
+    m_SnapToGridCommand.index = (int)MathUtil.inputModulus(m_SnapToGridCommand.index, 0, 8);
 
     // ss change the goal to the new index
     snapToGridCommand.changeGoal(m_FieldPosManager.get2dFieldObjectPose(FieldPosManager.fieldSpot2d.scoringPosition, true, m_SnapToGridCommand.index));

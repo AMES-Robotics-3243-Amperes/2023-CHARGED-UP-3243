@@ -5,6 +5,7 @@
 package frc.robot.commands.SnapToGridRoutine;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.FieldPosManager;
 import frc.robot.commands.DriveTrain.SwerveAutoMoveCommand;
@@ -30,7 +31,6 @@ public class IndexRightCommand extends InstantCommand {
     m_FieldPosManager = fieldPosManager;
     m_SnapToGridCommand = snapToGridCommand;
 
-    // H! I don't think this is actually necessary - the drivers are on the other side of the field when the alliance is diferent, so it's already fliped
     // ss if blue, right means subtract 1
     if (m_FieldPosManager.allianceColor == Alliance.Blue) {
       m_SnapToGridCommand.index--;
@@ -38,6 +38,7 @@ public class IndexRightCommand extends InstantCommand {
     else if (m_FieldPosManager.allianceColor == Alliance.Red) {
       m_SnapToGridCommand.index++;
     }
+    m_SnapToGridCommand.index = (int)MathUtil.inputModulus(m_SnapToGridCommand.index, 0, 8);
 
     // ss change the goal to the new index
     m_SnapToGridCommand.changeGoal(m_FieldPosManager.get2dFieldObjectPose(FieldPosManager.fieldSpot2d.scoringPosition, true, m_SnapToGridCommand.index));
