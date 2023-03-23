@@ -112,7 +112,7 @@ public class SwerveAutoMoveCommand extends CommandBase {
     boolean distanceOk = getDistanceFromGoal() <= maxDistanceFromSetpointMeters;
 
     double rotationErrorDegrees = Math.abs(
-      m_subsystem.getDiscontinuousHeading().getDegrees() - getGoal().getRotation().getDegrees());
+      m_subsystem.getClampedHeading().getDegrees() - getGoal().getRotation().getDegrees());
     boolean rotationOk = rotationErrorDegrees <= maxAngleFromSetpoint.getDegrees();
 
     // <> and if we are remove the current goal
@@ -171,7 +171,7 @@ public class SwerveAutoMoveCommand extends CommandBase {
    */
   private void driveWithGoalVelocity(Translation2d goalVelocity) {
     // <> find how much we'd need to change the velocity to get to the goal velocity
-    Translation2d velocityDifference = goalVelocity.plus(velocity.times(-1));
+    Translation2d velocityDifference = goalVelocity.plus(velocity.times(-1)).times(0.8);
     double velocityDifferenceLength = velocityDifference.getNorm();
 
     // <> the constant is in seconds, but loop time is 20 ms, so extract

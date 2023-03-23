@@ -54,7 +54,7 @@ public class SwerveTeleopCommand extends CommandBase {
     double controllerRightY = controller.getRightY();
     double controllerRightX = controller.getRightX();
 
-    if (fieldRelativeDriving && controllerRightY == 0 && controllerRightX == 0) {
+    if (fieldRelativeDriving && Math.sqrt(controllerRightX * controllerRightX + controllerRightY * controllerRightY) <= 0.8) {
       // <> field relative driving, but no angle specified
       m_driveSubsystem.drive(xSpeed, ySpeed, fieldRelativeTurningGoal, true);
     } else if (fieldRelativeDriving) {

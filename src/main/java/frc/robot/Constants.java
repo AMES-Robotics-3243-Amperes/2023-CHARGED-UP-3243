@@ -80,15 +80,18 @@ public final class Constants {
     // <> constants for individual modules
     public static final class ModuleConstants {
 
-      // <> the maximum wheel speed the modules will turn for
+      // <> the maximum robot speed the modules will turn for
       // <> (in meters per second)
       public static final double kModuleMinSpeed = 0.02;
+
       // <> pid connects at 0 and 2 pi because rotation is continuous
       public static final double kTurningEncoderPositionPIDMinInput = 0; // <> radians
       public static final double kTurningEncoderPositionPIDMaxInput = Math.PI * 2; // <> radians
+
       // <> idle modes
       public static final IdleMode kDrivingMotorIdleMode = IdleMode.kBrake;
       public static final IdleMode kTurningMotorIdleMode = IdleMode.kBrake;
+
       // <> current limits
       public static final int kDrivingMotorCurrentLimit = 50; // <> amps
       public static final int kTurningMotorCurrentLimit = 20; // <> amps
@@ -105,7 +108,7 @@ public final class Constants {
 
         public static final double kTurningP = 0.45;
         public static final double kTurningI = 0;
-        public static final double kTurningD = 0;
+        public static final double kTurningD = 0.02;
         public static final double kTurningFF = 0;
         public static final double kTurningMinOutput = -1;
         public static final double kTurningMaxOutput = 1;
@@ -215,8 +218,8 @@ public final class Constants {
         public static final double kD = 0;
 
         // <> these values aren't exact but are pretty close
-        public static final double kMaxAngularAccelerationDegreesPerSecond = 200;
-        public static final double kMaxAngularVelocityDegreesPerSecond = 300;
+        public static final double kMaxAngularAccelerationDegreesPerSecond = 350;
+        public static final double kMaxAngularVelocityDegreesPerSecond = 325;
 
         public static final TrapezoidProfile.Constraints kConstraints = new TrapezoidProfile.Constraints(
           kMaxAngularVelocityDegreesPerSecond, kMaxAngularAccelerationDegreesPerSecond);
@@ -226,10 +229,10 @@ public final class Constants {
 
       // <> stuff pertaining to auto driving
       public static final class AutoConstants {
-        public static final double kMaxAccelerationMetersPerSecondSq = 1.5;
-        public static final double kMaxVelocityMetersPerSecond = 0.8;
+        public static final double kMaxAccelerationMetersPerSecondSq = 5;
+        public static final double kMaxVelocityMetersPerSecond = 1;
 
-        public static final double kMaxMetersFromGoal = 0.1;
+        public static final double kMaxMetersFromGoal = 0.06;
         public static final Rotation2d kMaxRotationFromGoal = Rotation2d.fromDegrees(3);
       }
 
