@@ -63,7 +63,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 
     backCamPoseEstimator.setFieldTags(m_aprilTagFieldLayout);
 
-    backCamPoseEstimator.setMultiTagFallbackStrategy(PoseStrategy.CLOSEST_TO_REFERENCE_POSE);
+    // backCamPoseEstimator.setMultiTagFallbackStrategy(PoseStrategy.CLOSEST_TO_LAST_POSE);
   }
 
   /**
@@ -74,7 +74,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
    */
   public Pose3d checkRobotPosition() {
 
-      //backCamPoseEstimator.setReferencePose(m_field.getRobotPose());
+      // backCamPoseEstimator.setLastPose(m_field.getRobotPose());
       
       Optional<EstimatedRobotPose> backEstPose = backCamPoseEstimator.update();
 

@@ -47,7 +47,11 @@ public class RobotContainer {
 
   // ++ CONTROLLER STUFF ---------------------
   public static JoyUtil primaryController = new JoyUtil(Constants.JoyUtilConstants.primaryControllerID);
-  public static JoyUtil secondaryController = new JoyUtil(Constants.JoyUtilConstants.secondaryControllerID);
+  public static JoyUtil secondaryController = new JoyUtil(Constants.JoyUtilConstants.secondaryControllerID,
+  Constants.JoyUtilConstants.kDeadzone, Constants.JoyUtilConstants.kRateLimitLeft, Constants.JoyUtilConstants.kRateLimitRight,
+  9, 1, 0.5, 0,
+  Constants.JoyUtilConstants.leftTriggerSpeedMultiplier, Constants.JoyUtilConstants.rightTriggerSpeedMultiplier,
+  Constants.JoyUtilConstants.leftTriggerSpeedMultiplier, Constants.JoyUtilConstants.rightTriggerSpeedMultiplier);
 
   // <> --- FIELD POS MANAGER ---
   public static FieldPosManager fieldPosManager = new FieldPosManager();
