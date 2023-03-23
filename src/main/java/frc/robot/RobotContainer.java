@@ -27,6 +27,7 @@ import frc.robot.commands.LegAnkle.PickupPosition.MoveLegAnkleToPickupPositionCo
 import frc.robot.commands.LegAnkle.PickupPosition.MoveLegAnkleToPickupPositionCommandDoubleLoading;
 import frc.robot.commands.LegAnkle.PickupPosition.MoveLegAnkleToPickupPositionCommandLOW;
 import frc.robot.commands.LegAnkle.PickupPosition.MoveLegAnkleToPickupPositionCommandNormal;
+import frc.robot.commands.SnapToGridRoutine.SnapToGridCommand;
 import frc.robot.subsystems.*;
 
 import java.util.ArrayList;
@@ -64,6 +65,7 @@ public class RobotContainer {
   // public final MoveLegAnkleToPickupPositionCommand m_legAnkleToPickupCommand = new
   // MoveLegAnkleToPickupPositionCommand(
   //   m_legAnkleSubsystem);// :D duplicate??
+  public final SnapToGridCommand m_SnapToGridCommand = new SnapToGridCommand(m_driveSubsystem, fieldPosManager, primaryController, secondaryController);
   public final MoveLegAnkleToPickupPositionCommandNormal m_moveLegAnkleToPickupPositionCommandNormal = new MoveLegAnkleToPickupPositionCommandNormal(m_legAnkleSubsystem);
   public final MoveLegAnkleToPickupPositionCommandLOW m_moveLegAnkleToPickupPositionCommandLOW = new MoveLegAnkleToPickupPositionCommandLOW(m_legAnkleSubsystem);
   public final MoveLegAnkleToPickupPositionCommandDoubleLoading m_moveLegAnkleToPickupPositionCommandDoubleLoading = new MoveLegAnkleToPickupPositionCommandDoubleLoading(m_legAnkleSubsystem);
@@ -139,8 +141,8 @@ public class RobotContainer {
     // :D whats the deal with this? there are two pickup thingies? I commented the other one out and changed this one
     // to use the x button
     secondaryController.x().onTrue(m_MoveLegAnkleToPickupPositionCommand);
-    secondaryController.y().onTrue(m_moveLegAnkleToPlacementPositionCommand); // :D DONE: test this at some point soon
-    secondaryController.a().onTrue(m_moveLegAnkleToNeutralPositionCommand);
+    secondaryController.y().onTrue(m_moveLegAnkleToPlacementPositionCommand); // :D DONE: test this at some point soon // ss changed to a to stop conflicts
+    primaryController.y().onTrue(m_SnapToGridCommand); // :D hi i switched this to the primary controller
   }
 
   public void teleopInit() {}

@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.FieldPosManager;
 import frc.robot.JoyUtil;
+import frc.robot.commands.SnapToGridRoutine.SnapToGridCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LegAnkleSubsystem;
 import frc.robot.utility_classes.GeneralUtil;
@@ -28,62 +29,39 @@ public class PlacementRoutine extends SequentialCommandGroup {
   public LegAnkleSubsystem legAnkleSubsystem;
   public GrabberSubsystem grabberSubsystem;
   public ProfiledPIDController thetaPidController;
-  public JoyUtil controller;
+  public JoyUtil primaryController;
+  public JoyUtil secondaryController;
   public FieldPosManager fieldPositionManager;
   public int poseIndex;
   public Pose2d targetPose;
-
-  private EventLoop rightPOVBindingEventLoop;
-  private EventLoop leftPOVBindingEventLoop;
 
   /**
    * Creates a new PlaceGamePiece.
    */
   public PlacementRoutine(FieldPosManager fieldPosManager, DriveSubsystem driveSubsystem,
                         LegAnkleSubsystem legAnkleSubsystem, GrabberSubsystem grabberSubsystem,
-                        ProfiledPIDController thetaPidController, JoyUtil controller, int poseIndex) {
+                        ProfiledPIDController thetaPidController, JoyUtil secondaryController, JoyUtil primaryController) {
     this.fieldPositionManager = fieldPosManager;
     this.driveSubsystem = driveSubsystem;
     this.legAnkleSubsystem = legAnkleSubsystem;
     this.grabberSubsystem = grabberSubsystem;
     this.thetaPidController = thetaPidController;
-    this.controller = controller;
-    this.poseIndex = poseIndex;
+    this.primaryController = primaryController;
+    this.secondaryController = secondaryController;
 
-    /* 
+    
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands( // H! TODO Make the target pose based on the index passed in and the FieldPositionManager pose array
-      new MoveRobotToGrid(
-        fieldPosManager.get2dFieldObjectPose(FieldPosManager.fieldSpot2d.scoringPosition, true, poseIndex),
-        driveSubsystem, controller, thetaPidController),
-      new MoveArmToTarget(poseIndex, isCube, target, legAnkleSubsystem, fieldPosManager, controller),
-      new ReleaseGameObject(isCube, target, grabberSubsystem));
+    addCommands(
+      new SnapToGridCommand(driveSubsystem, fieldPosManager, primaryController, secondaryController),
+      new MoveArmToTarget(poseIndex, isCube, target, legAnkleSubsystem, fieldPosManager, secondaryController), //H! this needs to be changed so it no longer needs posIndex, or that needs to be gotten from snap to grid once it ends
+      new ReleaseGameObject(grabberSubsystem, secondaryController)
+    );
 
 
-    // H! Binds onPOVRight to starting pov right
-    rightPOVBindingEventLoop = new EventLoop();
-    controller.povRight().onTrue(new InstantCommand(this::onPOVRight));
-
-    // H! Binds onPOVLeft to starting pov left
-    leftPOVBindingEventLoop = new EventLoop();
-    controller.povLeft().onTrue(new InstantCommand(this::onPOVLeft));
-    */
+    
   }
 
-
-  public PlacementRoutine(FieldPosManager fieldPosManager, DriveSubsystem driveSubsystem,
-                        LegAnkleSubsystem legAnkleSubsystem, GrabberSubsystem grabberSubsystem,
-                        ProfiledPIDController thetaPidController, JoyUtil controller) {
-    this(fieldPosManager, driveSubsystem, legAnkleSubsystem, grabberSubsystem, thetaPidController, controller,
-      fieldPosManager.getNearestScoringZoneIndex() /* H! TODO Needs to be integrated with finding the closest pose */);
-  }
-
-  public void onPOVRight() {
-    this.cancel();
-    new PlacementRoutine(fieldPositionManager, driveSubsystem, legAnkleSubsystem, grabberSubsystem, thetaPidController,
-      controller, GeneralUtil.negativeSafeMod(poseIndex + 1, 9)).schedule();
-  }
 
   /*private static int loopIndex(int min, int max, int x) {
     if (x > max) {
@@ -93,10 +71,4 @@ public class PlacementRoutine extends SequentialCommandGroup {
     }
     return x;
   }*/
-
-  public void onPOVLeft() {
-    this.cancel();
-    new PlacementRoutine(fieldPositionManager, driveSubsystem, legAnkleSubsystem, grabberSubsystem, thetaPidController,
-      controller, GeneralUtil.negativeSafeMod(poseIndex - 1, 9)).schedule();
-  }
 }
