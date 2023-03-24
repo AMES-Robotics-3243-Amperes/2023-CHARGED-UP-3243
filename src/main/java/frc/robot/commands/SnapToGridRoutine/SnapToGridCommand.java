@@ -41,16 +41,16 @@ public class SnapToGridCommand extends SwerveAutoMoveCommand { // :D hi after lo
     m_PrimaryController = primaryController;
     m_SecondaryController = secondaryController;
     
-    index = m_FieldPosManager.getNearestScoringZoneIndex();
+    
 
     // ss make an auto move command from the drive subsystem, the Pose2d corresponding to the index, and some constants
-    
-    addRequirements(driveSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    index = m_FieldPosManager.getNearestScoringZoneIndex();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -83,20 +83,22 @@ public class SnapToGridCommand extends SwerveAutoMoveCommand { // :D hi after lo
     }
     lastPOVRight = m_PrimaryController.getPOVRight();
     lastPOVLeft = m_PrimaryController.getPOVLeft();
-  }
 
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {}
+    super.execute();
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     // ss stops everything if the movement joysticks move. These functions apply deadzone automatically
-    if (m_PrimaryController.getLeftX() > 0 || m_PrimaryController.getLeftY() > 0 || m_PrimaryController.getRightY() > 0) { // use Math.abs() and also check RightY joystick
-    
+    if (m_PrimaryController.getLeftX() != 0 || m_PrimaryController.getLeftY() != 0 || m_PrimaryController.getRightX() != 0 || m_PrimaryController.getRightY() != 0) { // use Math.abs() and also check RightY joystick
       return true;
     }
+    
+    if (super.isFinished() && m_SecondaryController.getAButton()) {
+      return true;
+    }
+
     return false;
   }
 }

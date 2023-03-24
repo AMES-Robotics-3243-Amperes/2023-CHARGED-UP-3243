@@ -36,7 +36,7 @@ public class ReleaseGameObject extends GrabberOpenCommand {
 
   @Override
   public void initialize() {
-    timeoutTimer.reset();
+    timeoutTimer.restart();
     super.initialize();
   }
 

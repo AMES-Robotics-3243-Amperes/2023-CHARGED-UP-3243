@@ -32,7 +32,6 @@ public class PlacementRoutine extends SequentialCommandGroup {
   public JoyUtil primaryController;
   public JoyUtil secondaryController;
   public FieldPosManager fieldPositionManager;
-  public int poseIndex;
   public Pose2d targetPose;
 
   /**
@@ -54,7 +53,7 @@ public class PlacementRoutine extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new SnapToGridCommand(driveSubsystem, fieldPosManager, primaryController, secondaryController),
-      new MoveArmToTarget(poseIndex, isCube, target, legAnkleSubsystem, fieldPosManager, secondaryController), //H! this needs to be changed so it no longer needs posIndex, or that needs to be gotten from snap to grid once it ends
+      new MoveArmToTarget(isCube, target, legAnkleSubsystem, fieldPosManager, secondaryController), //H! this needs to be changed so it no longer needs posIndex, or that needs to be gotten from snap to grid once it ends
       new ReleaseGameObject(grabberSubsystem, secondaryController)
     );
 

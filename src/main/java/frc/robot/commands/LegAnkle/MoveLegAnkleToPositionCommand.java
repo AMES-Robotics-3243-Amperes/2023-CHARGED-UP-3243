@@ -80,12 +80,12 @@ public class MoveLegAnkleToPositionCommand extends CommandBase {
    * @param targetRoll The roll value to go to.
    */
   public void setTargets(Double targetExtension, Double targetPivot, Double targetPitch, Double targetRoll){
-    System.out.println("~~~~~~~~~~~~~~~~~~~~~");
+    /*System.out.println("~~~~~~~~~~~~~~~~~~~~~");
     System.out.println(targetExtension);
     System.out.println(targetPivot);
     System.out.println(targetPitch);
     System.out.println(targetRoll);
-    System.out.println("~~~~~~~~~~~~~~~~~~~~~");
+    System.out.println("~~~~~~~~~~~~~~~~~~~~~");*/
     this.targetExtension = targetExtension;
     this.targetPivot = targetPivot;
     this.targetPitch = targetPitch;
@@ -107,7 +107,7 @@ public class MoveLegAnkleToPositionCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    timeoutTimer.reset();
+    timeoutTimer.restart();
     System.out.println("~~~~~~~~~~~~~~~~~~~~~");
     System.out.println(targetExtension);
     System.out.println(targetPivot);

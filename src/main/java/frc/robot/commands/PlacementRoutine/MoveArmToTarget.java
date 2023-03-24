@@ -24,22 +24,16 @@ public class MoveArmToTarget extends MoveLegAnkleToPositionCommand {
   private JoyUtil controller;
 
   /** Creates a new MoveArmToTarget. */
-  public MoveArmToTarget(int targetIndex, boolean isCube, FieldPosManager.fieldSpot3d target, LegAnkleSubsystem legAnkleSubsystem, FieldPosManager fieldPosManager, JoyUtil controller) {
+  public MoveArmToTarget(boolean isCube, FieldPosManager.fieldSpot3d target, LegAnkleSubsystem legAnkleSubsystem, FieldPosManager fieldPosManager, JoyUtil controller) {
     super(legAnkleSubsystem);
     this.isCube = isCube;
-    this.legAnkleSubsystem = legAnkleSubsystem;
     this.target = target;
-    this.targetIndex = targetIndex;
     this.fieldPosManager = fieldPosManager;
     this.controller = controller;
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(legAnkleSubsystem);
-
-    setTargetPositions();
   }
 
 
-  public void setTargetPositions() {
+  public void setTargetPositionsByIndex() {
     // H! Get the scoring target positions
     Pose3d scoringPos = fieldPosManager.get3dFieldObjectPose(target, isCube, targetIndex);
     Translation3d robotPosToScoringPos = scoringPos.getTranslation().minus(new Pose3d(fieldPosManager.getRobotPose()).getTranslation());
@@ -53,10 +47,14 @@ public class MoveArmToTarget extends MoveLegAnkleToPositionCommand {
 
     LegAnklePosition newTargetPosition = LegAnkleSubsystem.IK(targetX, targetY, 0, 0);
 
-    targetExtension = newTargetPosition.extension;
-    targetPivot = newTargetPosition.pivot;
-    targetPitch = newTargetPosition.pitch;
-    targetRoll = newTargetPosition.roll;
+    setTargets(newTargetPosition);
+  }
+
+  @Override
+  public void initialize() {
+    targetIndex = fieldPosManager.getNearestScoringZoneIndex();
+    setTargetPositionsByIndex();
+    super.initialize();
   }
 
   
@@ -71,8 +69,10 @@ public class MoveArmToTarget extends MoveLegAnkleToPositionCommand {
       target = FieldPosManager.fieldSpot3d.middleGrabberScoring;
     }
 
-    setTargetPositions();
+    setTargetPositionsByIndex();
     
+    legAnkleSubsystem.setMotorPositions(targetExtension, targetPivot, targetPitch, targetRoll);
+
     super.execute();
   }
 }
