@@ -56,8 +56,8 @@ public class SwerveAutoMoveCommand extends CommandBase {
    *
    * @param subsystem                     the {@link DriveSubsystem} to control
    * @param goals                         points to drive the {@link DriveSubsystem} to (order is preserved)
-   * @param maxDistanceFromSetpointMeters farthest the robot can be from the destination to stop the command
-   * @param maxAngleFromSetpoint          farthest the robot can be from proper rotation to stop command
+   * @param maxDistanceFromSetpointMeters farthest the robot can be from a setpoint to move on to the next
+   * @param maxAngleFromSetpoint          farthest the robot can be from a setpoint rotation to move on
    */
   public SwerveAutoMoveCommand(DriveSubsystem subsystem, ArrayList<Pose2d> goals,
                                double maxDistanceFromSetpointMeters, Rotation2d maxAngleFromSetpoint) {
@@ -78,6 +78,26 @@ public class SwerveAutoMoveCommand extends CommandBase {
     this.absoluteGoalList.addAll(goals);
 
     addRequirements(m_subsystem);
+  }
+
+  /**
+   * <> Crates a new {@link SwerveAutoMoveCommand}.
+   *
+   * @param subsystem                     the {@link DriveSubsystem} to control
+   * @param destination                   where to drive the {@link DriveSubsystem} to
+   */
+  public SwerveAutoMoveCommand(DriveSubsystem subsystem, Pose2d destination) {
+    this(subsystem, destination, DriveConstants.AutoConstants.kMaxMetersFromGoal, DriveConstants.AutoConstants.kMaxRotationFromGoal);
+  }
+
+  /**
+   * <> Crates a new {@link SwerveAutoMoveCommand}.
+   *
+   * @param subsystem                     the {@link DriveSubsystem} to control
+   * @param goals                         points to drive the {@link DriveSubsystem} to (order is preserved)
+   */
+  public SwerveAutoMoveCommand(DriveSubsystem subsystem, ArrayList<Pose2d> goals) {
+    this(subsystem, goals, DriveConstants.AutoConstants.kMaxMetersFromGoal, DriveConstants.AutoConstants.kMaxRotationFromGoal);
   }
 
   private Pose2d getGoal() {

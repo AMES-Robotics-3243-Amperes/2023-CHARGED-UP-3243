@@ -94,7 +94,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     // :> Checks if targets is empty as a precaution to make sure that it isn't getting values from targets that
     // don't exist
-    if (result.hasTargets() && result.getBestTarget().getPoseAmbiguity() < 0.07) {
+    if (result.hasTargets() && result.getBestTarget().getPoseAmbiguity() < 0.1) {
       Pose3d robotPose = checkRobotPosition();
       // :> As a precuation this makes sure that the field pos mangager isn't getting updated with null data that way
       // we don't get a null pointer exception

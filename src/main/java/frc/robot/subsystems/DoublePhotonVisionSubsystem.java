@@ -2,17 +2,16 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.FieldPosManager;
+import frc.robot.utility_classes.GeneralUtil;
 
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
@@ -175,7 +174,7 @@ public class DoublePhotonVisionSubsystem extends SubsystemBase {
 
       // :> When it see's targets from two targets the funciton below will average two poses together to get the most
       // accurate field postition.
-      Pose3d averageRobotPoses = averagePose3d(robotPoses.toArray(new Pose3d[0]));
+      Pose3d averageRobotPoses = GeneralUtil.averagePose3d(robotPoses.toArray(new Pose3d[0]));
       return averageRobotPoses;
       // :> It's okay if averagePose3D = null since CRP can be null anyway and it gets passed in to averagerobotposes
     //}
@@ -183,64 +182,8 @@ public class DoublePhotonVisionSubsystem extends SubsystemBase {
     //return null;
   }
 
-  private static Pose3d averagePose3d(Pose3d... poses) {
-    // :> Makes an array equal to the robot poses it gets for calculations later
-    Translation3d[] translations = new Translation3d[poses.length];
-    Rotation3d[] rotations = new Rotation3d[poses.length];
-
-    for (int i = 0; i < poses.length; i++) {
-      // :> Sets the translation and rotation arrays equal to the actual translations and rotation
-      translations[i] = poses[i].getTranslation();
-      rotations[i] = poses[i].getRotation();
-    }
-
-    return new Pose3d(averageTranslation3d(translations), averageRotation3d(rotations));
-  }
-  // :> Behold the cursed functions Hale made to average Pose3Ds 
-  // :> Quiver in its Assemblic WPILIBERAL glory
-
-  /**
-   * <h2>Finds the average translation between any number of translations</h2>
-   * <p>H!</p>
-   *
-   * @param translations The translations to average between
-   * @return The average translation
-   */
-  private static Translation3d averageTranslation3d(Translation3d... translations) {
-    int numArguments = translations.length;
-
-    Translation3d averageTranslation = new Translation3d();
-
-    // :> Adds together both all translations and divides them to average them together
-    for (Translation3d translation : translations) {
-      averageTranslation = averageTranslation.plus(translation);
-    }
-
-    averageTranslation = averageTranslation.div(numArguments);
-
-    return averageTranslation;
-  }
-
-  private static Rotation3d averageRotation3d(Rotation3d... rotations) {
-    int numArguments = rotations.length;
-
-    // :> Takes the rotation into it's vectors
-    Vector<N3> averageVector = VecBuilder.fill(0, 0, 0);
-    double averageAngle = 0;
-
-    // :> Averages the values of each vector and it's angles
-    for (Rotation3d rotation : rotations) {
-      averageVector = new Vector<N3>(averageVector.plus(rotation.getAxis().div(numArguments)));
-      averageAngle += rotation.getAngle() / numArguments;
-    }
-
-    // :> normalizes the Vector and angle and puts it back together into a Rotation3D
-    averageVector = normalize(averageVector);
-    return new Rotation3d(averageVector, averageAngle);
-  }
-
   // :> Manually normalizes the vector since WPILIB doesn't have a function for it already.
-  private static Vector<N3> normalize(Vector<N3> vector) {
+  public static Vector<N3> normalize(Vector<N3> vector) {
     return vector.div(Math.sqrt(vector.elementPower(2).elementSum()));
   }
 

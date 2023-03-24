@@ -233,7 +233,10 @@ public final class Constants {
         public static final double kMaxVelocityMetersPerSecond = 1;
 
         public static final double kMaxMetersFromGoal = 0.06;
-        public static final Rotation2d kMaxRotationFromGoal = Rotation2d.fromDegrees(3);
+        public static final Rotation2d kMaxRotationFromGoal = Rotation2d.fromDegrees(2);
+
+        public static final double kMaxLenientMetersFromGoal = 0.15;
+        public static final Rotation2d kMaxLenientRotationFromGoal = Rotation2d.fromDegrees(10);
       }
 
       public static final class BalanceConstants {
