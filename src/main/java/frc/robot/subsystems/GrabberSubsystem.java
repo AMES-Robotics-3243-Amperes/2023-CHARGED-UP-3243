@@ -53,7 +53,7 @@ public class GrabberSubsystem extends SubsystemBase {
     grabberOpenerPID = grabberOpenerMotor.getPIDController();
     grabberOpenerPID.setFeedbackDevice(grabberOpenerEncoder);
 
-    grabberOpenerEncoder.setZeroOffset(0.5);
+    grabberOpenerEncoder.setZeroOffset(0.65);
 
     // ++ initializes wheel objects
     //wheelMotorEncoderOne = wheelMotorOne.getEncoder();

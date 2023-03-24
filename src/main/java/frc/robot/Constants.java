@@ -47,8 +47,8 @@ public final class Constants {
     public static final double minimumGrabberLimit = 0.22;
 
     // :D grabber open/close setpoints
-    public static final double openGrabberSetpoint = 0.22;
-    public static final double closedGrabberSetpoint = 0.46;
+    public static final double openGrabberSetpoint = 0.25;
+    public static final double closedGrabberSetpoint = 0.45;
 
     // ++ current limits
     public static final int hardOpenerMotorCurrentLimit = 30;
@@ -335,8 +335,8 @@ public final class Constants {
     public static final double pitchOutputRange = 0.3;
     public static final double extensionOutputRange = 0.5;
     public static final double rollOutputRange = 0.3;
-    public static final double wristRollEncoderSetZeroOffset = 0.163;
-    public static final double wristPitchEncoderSetZeroOffset = 0.5570095;// :D prev value: 0.866; I changed it because it was flipped 180 degrees from what the standard on the pivot is
+    public static final double wristRollEncoderSetZeroOffset = 0.9990205;
+    public static final double wristPitchEncoderSetZeroOffset = 0.2574555;// :D prev value: 0.866; I changed it because it was flipped 180 degrees from what the standard on the pivot is
     public static final double wristPivotEncoderSetZeroOffset = 0.196875;
 
     /**
@@ -356,7 +356,7 @@ public final class Constants {
       public static final double x = -0.3;
       public static final double y = 0.77;
       public static final double pitch = -Math.PI / 2;
-      public static final double roll = 0.0;
+      public static final Double roll = 0.25;
     }
 
     public static class StartingSetpoints { // :D DONE: make these values not use inverse kinematics, it'll be easier to visually see and check/adjust
