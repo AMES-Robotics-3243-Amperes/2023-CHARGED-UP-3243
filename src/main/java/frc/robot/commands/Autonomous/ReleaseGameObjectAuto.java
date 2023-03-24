@@ -11,7 +11,7 @@ import frc.robot.subsystems.GrabberSubsystem;
 public class ReleaseGameObjectAuto extends GrabberOpenCommand {
   
   protected Timer timeoutTimer = new Timer();
-  protected double timeoutDuration = 5;
+  protected double timeoutDuration = 2.5;
   protected boolean confirmed = false;
 
   /** Creates a new ReleaseGameObject. */
