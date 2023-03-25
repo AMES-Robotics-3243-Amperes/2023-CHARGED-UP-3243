@@ -213,7 +213,7 @@ public final class Constants {
       }
 
       public static final class FieldRelativeTurningConstants {
-        public static final double kP = 4;
+        public static final double kP = 4 * 0; // :D TODO: make this not zero
         public static final double kI = 0;
         public static final double kD = 0;
 
@@ -338,7 +338,7 @@ public final class Constants {
     public static final double pitchOutputRange = 0.3;
     public static final double extensionOutputRange = 0.5;
     public static final double rollOutputRange = 0.3;
-    public static final double wristRollEncoderSetZeroOffset = 0.9990205;
+    public static final double wristRollEncoderSetZeroOffset = 0.8458498;
     public static final double wristPitchEncoderSetZeroOffset = 0.2574555;// :D prev value: 0.866; I changed it because it was flipped 180 degrees from what the standard on the pivot is
     public static final double wristPivotEncoderSetZeroOffset = 0.196875;
 
@@ -372,7 +372,7 @@ public final class Constants {
     public static class PickupSetpoints {
       public static final double pivot = 0.535;
       public static final double extension = 1.09;
-      public static final double pitch = 0.7;
+      public static final double pitch = 0.51;
       public static final Double roll = null;
     }
 
@@ -394,21 +394,21 @@ public final class Constants {
       public static final class High {
         public static final double pivot = 0.165;
         public static final double extension = WristAndArm.Limits.extensionMax-0.1;
-        public static final double pitch = 0.584;
+        public static final double pitch = 0.722;
         public static final Double roll = null;
       }
 
       public static final class Middle {
         public static final double pivot = 0.157;
         public static final double extension = 1.09;
-        public static final double pitch = 0.572;
+        public static final double pitch = 0.722;
         public static final Double roll = null;
       }
 
       public static final class Low {
         public static final double pivot = 0.203;
         public static final double extension = 1.09;
-        public static final double pitch = 0.5;
+        public static final double pitch = 0.722;
         public static final Double roll = null;
       }
     }

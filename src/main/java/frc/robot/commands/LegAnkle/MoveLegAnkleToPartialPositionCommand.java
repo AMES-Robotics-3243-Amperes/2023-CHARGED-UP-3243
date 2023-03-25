@@ -7,7 +7,7 @@ package frc.robot.commands.LegAnkle;
 import frc.robot.subsystems.LegAnkleSubsystem;
 import frc.robot.utility_classes.LegAnklePosition;
 
-public class MoveLegAnkleToPartialPositionCommand extends MoveLegAnkleToPositionCommand {
+public class MoveLegAnkleToPartialPositionCommand extends MoveLegAnkleToPositionCommand { // :D TODO: delete this file I think
 
   /**Creates a new MoveLegAnkleToPositionCommand. 
    * H!
