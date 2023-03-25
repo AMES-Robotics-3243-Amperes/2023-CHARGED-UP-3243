@@ -7,7 +7,6 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -61,10 +60,13 @@ public class ShuffleboardSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("doLowerRoute", true);
 
     SmartDashboard.putNumber("placePiece0", 0);
+    SmartDashboard.putBoolean("piece0IsCube", false);
     SmartDashboard.putNumber("pickupPiece1", 0);
     SmartDashboard.putNumber("placePiece1", 0);
+    SmartDashboard.putBoolean("piece1IsCube", true);
     SmartDashboard.putNumber("pickupPiece2", 0);
     SmartDashboard.putNumber("placePiece2", 0);
+    SmartDashboard.putBoolean("piece2IsCube", true);
     SmartDashboard.putNumber("pickupPiece3", 0);
     SmartDashboard.putNumber("placePiece3", 0);
     SmartDashboard.putNumber("chargePosition", 0);
@@ -104,6 +106,18 @@ public class ShuffleboardSubsystem extends SubsystemBase {
       case goLowerRoute:
 
         return SmartDashboard.getBoolean("doLowerRoute", true);
+
+      case piece0IsCube:
+
+        return SmartDashboard.getBoolean("piece0IsCube", false);
+
+      case piece1IsCube:
+
+        return SmartDashboard.getBoolean("piece1IsCube", false);
+
+      case piece2IsCube:
+
+        return SmartDashboard.getBoolean("piece2IsCube", false);
 
       default:
         return false;
@@ -150,6 +164,6 @@ public class ShuffleboardSubsystem extends SubsystemBase {
 
   public enum ShuffleBoardInput {
     piece0Place, piece1Pickup, piece1Place, piece2Pickup, piece2Place, piece3Pickup, piece3Place, goChargeStation,
-    chargeStationPosition, goUpperRoute, goLowerRoute
+    chargeStationPosition, goUpperRoute, goLowerRoute, piece0IsCube, piece1IsCube, piece2IsCube
   }
 }
