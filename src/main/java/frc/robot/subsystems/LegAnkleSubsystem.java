@@ -320,7 +320,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
       encoderExtension.getPosition(), 
       encoderPivotAbsolute.getPosition(), 
       encoderPitch.getPosition(), 
-      encoderExtension.getPosition()
+      encoderRoll.getPosition()
     );
   }
 

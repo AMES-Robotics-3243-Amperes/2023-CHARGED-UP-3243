@@ -213,7 +213,7 @@ public final class Constants {
       }
 
       public static final class FieldRelativeTurningConstants {
-        public static final double kP = 4 * 0; // :D TODO: make this not zero
+        public static final double kP = 4;
         public static final double kI = 0;
         public static final double kD = 0;
 
@@ -338,7 +338,7 @@ public final class Constants {
     public static final double pitchOutputRange = 0.3;
     public static final double extensionOutputRange = 0.5;
     public static final double rollOutputRange = 0.3;
-    public static final double wristRollEncoderSetZeroOffset = 0.8458498;
+    public static final double wristRollEncoderSetZeroOffset = 0.1052921;
     public static final double wristPitchEncoderSetZeroOffset = 0.2574555;// :D prev value: 0.866; I changed it because it was flipped 180 degrees from what the standard on the pivot is
     public static final double wristPivotEncoderSetZeroOffset = 0.196875;
 

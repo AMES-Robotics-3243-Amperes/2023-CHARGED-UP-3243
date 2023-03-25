@@ -60,7 +60,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    m_odometry.update(getHeading(), getModulePositions());
+    m_odometry.update(m_imuSubsystem.getYaw(), getModulePositions());
     m_fieldPosManager.updateFieldPosWithSwerveData(m_odometry.getPoseMeters());
   }
 
@@ -191,7 +191,11 @@ public class DriveSubsystem extends SubsystemBase {
    * @return the robot's heading
    */
   public Rotation2d getHeading() {
-    return m_imuSubsystem.getYaw();
+    if (m_fieldPosManager == null) {
+      return m_imuSubsystem.getYaw();
+    }
+
+    return m_fieldPosManager.getRobotPose().getRotation();
   }
 
   /**

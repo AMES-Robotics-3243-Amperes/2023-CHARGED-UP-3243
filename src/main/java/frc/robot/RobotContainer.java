@@ -140,8 +140,8 @@ public class RobotContainer {
     secondaryController.leftBumper().onTrue(m_wristRollUpCommand);
     secondaryController.leftBumper().onFalse(m_wristRollDefaultCommand);
     //secondaryController.x().onTrue(m_legAnkleToPickupCommand);
-    // :D whats the deal with this? there are two pickup thingies? I commented the other one out and changed this one
     // to use the x button
+    secondaryController.a().onTrue(m_moveLegAnkleToNeutralPositionCommand);
     secondaryController.x().onTrue(m_MoveLegAnkleToPickupPositionCommand);
     secondaryController.y().onTrue(m_moveLegAnkleToPlacementPositionCommand); // :D DONE: test this at some point soon // ss changed to a to stop conflicts
     primaryController.y().onTrue(m_SnapToGridCommand); // :D hi i switched this to the primary controller
