@@ -425,21 +425,21 @@ public final class Constants {
         public static final double P = 13.0 * 0.3;
         public static final double I = 0.001; // 0
         public static final double D = 2; // 1
-        public static final double FF = 0.1*0;
+        public static final double FF = 0.1;
       }
 
       public static class Pitch {
-        public static final double P = 6 * 0;
+        public static final double P = 6;
         public static final double I = 0.001;
         public static final double D = 0.0;
-        public static final double FF = 0.01*0;
+        public static final double FF = 0.01;
       }
 
       public static class Roll {
-        public static final double P = 0.95 * 0;
+        public static final double P = 0.95;
         public static final double I = 0.0003;
         public static final double D = 0.0;
-        public static final double FF = 0.1*0;
+        public static final double FF = 0.1;
       }
     }
 
