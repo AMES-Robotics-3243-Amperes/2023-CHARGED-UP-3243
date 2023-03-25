@@ -9,10 +9,10 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.DriveTrain.DriveConstants;
+import frc.robot.FieldPosManager;
 import frc.robot.commands.DriveTrain.BalanceCommand;
 import frc.robot.commands.DriveTrain.LockSwerveWheelsCommand;
 import frc.robot.commands.DriveTrain.SwerveAutoMoveCommand;
-import frc.robot.FieldPosManager;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.GrabberSubsystem;
 import frc.robot.subsystems.LegAnkleSubsystem;
@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * <> The command that will be executed during the autonomous period
  */
- 
+
 public class AutoCommandGroup extends SequentialCommandGroup {
   protected final DriveSubsystem m_driveSubsystem;
   protected final LegAnkleSubsystem m_legAnkleSubsystem;
@@ -37,9 +37,10 @@ public class AutoCommandGroup extends SequentialCommandGroup {
    *
    * @param driveSubsystem the {@link DriveSubsystem} to control for driving
    */
-   
+
   public AutoCommandGroup(DriveSubsystem driveSubsystem, LegAnkleSubsystem legAnkleSubsystem,
-                          ShuffleboardSubsystem shuffleboardSubsystem, GrabberSubsystem grabberSubsystem, FieldPosManager posManager) {
+                          ShuffleboardSubsystem shuffleboardSubsystem, GrabberSubsystem grabberSubsystem,
+                          FieldPosManager posManager) {
     m_driveSubsystem = driveSubsystem;
     m_legAnkleSubsystem = legAnkleSubsystem;
     m_grabberSubsystem = grabberSubsystem;
@@ -80,79 +81,95 @@ public class AutoCommandGroup extends SequentialCommandGroup {
     int piece2DropOffID = (int) m_shuffleboardSubsystem.ShuffleBoardNumberInput(
       ShuffleboardSubsystem.ShuffleBoardInput.piece2Place);
 
-    // TODO: shift these so that the robot doesn't drive into things
-    Pose2d dropOffPiece0Destination = m_posManager.get3dFieldObjectPose(FieldPosManager.fieldSpot3d.highGrabberScoring,
-      true, piece0DropOffID).toPose2d();
+    // TODO: make the pickup correct (be sure to shift them)
+    Pose2d dropOffPiece0Destination = m_posManager.get2dFieldObjectPose(FieldPosManager.fieldSpot2d.scoringPosition,
+      true, piece0DropOffID);
+    boolean piece0IsCube = m_shuffleboardSubsystem.ShuffleBoardBooleanInput(
+      ShuffleboardSubsystem.ShuffleBoardInput.piece0IsCube);
 
-    Pose2d pickupPiece1Position = m_posManager.get3dFieldObjectPose(FieldPosManager.fieldSpot3d.centerFieldGamePieces,
-      true, piece1ID).toPose2d();
-    Pose2d dropOffPiece1Destination = m_posManager.get3dFieldObjectPose(FieldPosManager.fieldSpot3d.highGrabberScoring,
-      true, piece1DropOffID).toPose2d();
+    Pose2d pickupPiece1Position = m_posManager.get2dFieldObjectPose(FieldPosManager.fieldSpot2d.scoringPosition, true,
+      piece1ID);
+    Pose2d dropOffPiece1Destination = m_posManager.get2dFieldObjectPose(FieldPosManager.fieldSpot2d.scoringPosition,
+      true, piece1DropOffID);
+    boolean piece1IsCube = m_shuffleboardSubsystem.ShuffleBoardBooleanInput(
+      ShuffleboardSubsystem.ShuffleBoardInput.piece1IsCube);
 
-    Pose2d pickupPiece2Position = m_posManager.get3dFieldObjectPose(FieldPosManager.fieldSpot3d.centerFieldGamePieces,
-      true, piece2ID).toPose2d();
-    Pose2d dropOffPiece2Destination = m_posManager.get3dFieldObjectPose(FieldPosManager.fieldSpot3d.highGrabberScoring,
-      true, piece2DropOffID).toPose2d();
+    Pose2d pickupPiece2Position = m_posManager.get2dFieldObjectPose(FieldPosManager.fieldSpot2d.scoringPosition, true,
+      piece2ID);
+    Pose2d dropOffPiece2Destination = m_posManager.get2dFieldObjectPose(FieldPosManager.fieldSpot2d.scoringPosition,
+      true, piece2DropOffID);
+    boolean piece2IsCube = m_shuffleboardSubsystem.ShuffleBoardBooleanInput(
+      ShuffleboardSubsystem.ShuffleBoardInput.piece2IsCube);
 
     // <> only add all the commands if neither of the ids are negative
     if (piece0DropOffID >= 0) {
-      SwerveAutoMoveCommand goToPieceDropOffCommand = new SwerveAutoMoveCommand(m_driveSubsystem, dropOffPiece0Destination);
+      SwerveAutoMoveCommand goToPieceDropOffCommand = new SwerveAutoMoveCommand(m_driveSubsystem,
+        dropOffPiece0Destination);
       autoCommands.add(goToPieceDropOffCommand);
 
-      // TODO: check if cone/cube
-      SequentialCommandGroup dropOffCommand = new SequentialCommandGroup(new MoveArmToTargetAuto(true, m_legAnkleSubsystem, posManager), new ReleaseGameObjectAuto(m_grabberSubsystem));
+      SequentialCommandGroup dropOffCommand = new SequentialCommandGroup(
+        new MoveArmToPlaceTargetAuto(piece0IsCube, m_legAnkleSubsystem, posManager),
+        new ReleaseGameObjectAuto(m_grabberSubsystem));
       autoCommands.add(dropOffCommand);
     }
 
     // <> only add all the commands if neither of the ids are negative
     if (piece1ID >= 0 && piece1DropOffID >= 0) {
-      SwerveAutoMoveCommand goToPieceCommand = new SwerveAutoMoveCommand(m_driveSubsystem, new ArrayList<Pose2d>(List.of(nearChargeAvoidIntermediatePoint, farChargeAvoidIntermediatePoint, pickupPiece1Position)));
+      SwerveAutoMoveCommand goToPieceCommand = new SwerveAutoMoveCommand(m_driveSubsystem, new ArrayList<Pose2d>(
+        List.of(nearChargeAvoidIntermediatePoint, farChargeAvoidIntermediatePoint, pickupPiece1Position)));
       autoCommands.add(goToPieceCommand);
 
-      // TODO: add pickup command (talk to hale i think idk who's doing this)
+      SequentialCommandGroup pickupCommand = new SequentialCommandGroup(
+        new MoveArmToPickupTargetAuto(piece1ID, legAnkleSubsystem, posManager),
+        new PickupGameObjectAuto(grabberSubsystem));
+      autoCommands.add(pickupCommand);
 
-      SwerveAutoMoveCommand goToPieceDropOffCommand = new SwerveAutoMoveCommand(m_driveSubsystem, new ArrayList<>(List.of(farChargeAvoidIntermediatePoint, nearChargeAvoidIntermediatePoint, dropOffPiece1Destination)));
+      SwerveAutoMoveCommand goToPieceDropOffCommand = new SwerveAutoMoveCommand(m_driveSubsystem, new ArrayList<>(
+        List.of(farChargeAvoidIntermediatePoint, nearChargeAvoidIntermediatePoint, dropOffPiece1Destination)));
       autoCommands.add(goToPieceDropOffCommand);
 
-      // TODO: check if cone/cube
-      SequentialCommandGroup dropOffCommand = new SequentialCommandGroup(new MoveArmToTargetAuto(true, m_legAnkleSubsystem, posManager), new ReleaseGameObjectAuto(m_grabberSubsystem));
+      SequentialCommandGroup dropOffCommand = new SequentialCommandGroup(
+        new MoveArmToPlaceTargetAuto(piece1IsCube, m_legAnkleSubsystem, posManager),
+        new ReleaseGameObjectAuto(m_grabberSubsystem));
       autoCommands.add(dropOffCommand);
     }
 
     // <> only add all the commands if neither of the ids are negative
     if (piece2ID >= 0 && piece2DropOffID >= 0) {
-      SwerveAutoMoveCommand goToPieceCommand = new SwerveAutoMoveCommand(m_driveSubsystem, new ArrayList<>(List.of(nearChargeAvoidIntermediatePoint, farChargeAvoidIntermediatePoint, pickupPiece2Position)));
+      SwerveAutoMoveCommand goToPieceCommand = new SwerveAutoMoveCommand(m_driveSubsystem, new ArrayList<>(
+        List.of(nearChargeAvoidIntermediatePoint, farChargeAvoidIntermediatePoint, pickupPiece2Position)));
       autoCommands.add(goToPieceCommand);
 
-      // TODO: add pickup command (talk to hale i think idk who's doing this)
+      SequentialCommandGroup pickupCommand = new SequentialCommandGroup(
+        new MoveArmToPickupTargetAuto(piece2ID, legAnkleSubsystem, posManager),
+        new PickupGameObjectAuto(grabberSubsystem));
+      autoCommands.add(pickupCommand);
 
-      SwerveAutoMoveCommand goToPieceDropOffCommand = new SwerveAutoMoveCommand(m_driveSubsystem, new ArrayList<>(List.of(farChargeAvoidIntermediatePoint, nearChargeAvoidIntermediatePoint, dropOffPiece2Destination)));
+      SwerveAutoMoveCommand goToPieceDropOffCommand = new SwerveAutoMoveCommand(m_driveSubsystem, new ArrayList<>(
+        List.of(farChargeAvoidIntermediatePoint, nearChargeAvoidIntermediatePoint, dropOffPiece2Destination)));
       autoCommands.add(goToPieceDropOffCommand);
 
-      // TODO: check if cone/cube
-      SequentialCommandGroup dropOffCommand = new SequentialCommandGroup(new MoveArmToTargetAuto(true, m_legAnkleSubsystem, posManager), new ReleaseGameObjectAuto(m_grabberSubsystem));
+      SequentialCommandGroup dropOffCommand = new SequentialCommandGroup(
+        new MoveArmToPlaceTargetAuto(piece2IsCube, m_legAnkleSubsystem, posManager),
+        new ReleaseGameObjectAuto(m_grabberSubsystem));
       autoCommands.add(dropOffCommand);
     }
 
     if (charge) {
-      // TODO: get these correct
-
       Pose2d bottomNearChargeCorner = m_posManager.getAutoPose(FieldPosManager.autoPath.lowerPath, true, 0);
       Pose2d topFarChargeCorner = m_posManager.getAutoPose(FieldPosManager.autoPath.upperPath, true, 1);
-      Pose2d chargePoint =  bottomNearChargeCorner.plus(new Transform2d(bottomNearChargeCorner, topFarChargeCorner)).div(2);
+      Pose2d chargePoint = bottomNearChargeCorner.plus(new Transform2d(bottomNearChargeCorner, topFarChargeCorner))
+        .div(2);
 
       Pose2d intermediatePoint = new Pose2d();
-      boolean doBalance = true;
 
-      SwerveAutoMoveCommand getToPosCommand = new SwerveAutoMoveCommand(m_driveSubsystem, new ArrayList<>(List.of(intermediatePoint, chargePoint)),
-        DriveConstants.AutoConstants.kMaxLenientMetersFromGoal, DriveConstants.AutoConstants.kMaxLenientRotationFromGoal);
+      SwerveAutoMoveCommand getToPosCommand = new SwerveAutoMoveCommand(m_driveSubsystem,
+        new ArrayList<>(List.of(intermediatePoint, chargePoint)),
+        DriveConstants.AutoConstants.kMaxLenientMetersFromGoal,
+        DriveConstants.AutoConstants.kMaxLenientRotationFromGoal);
 
       autoCommands.add(getToPosCommand);
-
-      if (doBalance) {
-        autoCommands.add(new BalanceCommand(m_driveSubsystem));
-      }
-
+      autoCommands.add(new BalanceCommand(m_driveSubsystem));
       autoCommands.add(new LockSwerveWheelsCommand(m_driveSubsystem));
     }
 

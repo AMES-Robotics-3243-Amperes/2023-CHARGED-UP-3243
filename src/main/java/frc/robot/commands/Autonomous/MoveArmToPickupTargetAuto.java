@@ -12,24 +12,22 @@ import frc.robot.commands.LegAnkle.MoveLegAnkleToPositionCommand;
 import frc.robot.subsystems.LegAnkleSubsystem;
 import frc.robot.utility_classes.LegAnklePosition;
 
-public class MoveArmToTargetAuto extends MoveLegAnkleToPositionCommand {
-  private boolean isCube = true;
-  private FieldPosManager.fieldSpot3d target = FieldPosManager.fieldSpot3d.highGrabberScoring;
-
-  private int targetIndex;
+public class MoveArmToPickupTargetAuto extends MoveLegAnkleToPositionCommand {
+  private int pickupIndex;
   private FieldPosManager fieldPosManager;
 
   /** Creates a new MoveArmToTarget. */
-  public MoveArmToTargetAuto(boolean isCube, LegAnkleSubsystem legAnkleSubsystem, FieldPosManager fieldPosManager) {
+  public MoveArmToPickupTargetAuto(int pickupIndex, LegAnkleSubsystem legAnkleSubsystem, FieldPosManager fieldPosManager) {
     super(legAnkleSubsystem);
     this.fieldPosManager = fieldPosManager;
+    this.pickupIndex = pickupIndex;
   }
 
 
-  public void setTargetPositionsByIndex() {
-    // H! Get the scoring target positions
-    Pose3d scoringPos = fieldPosManager.get3dFieldObjectPose(target, isCube, targetIndex);
-    Translation3d robotPosToScoringPos = scoringPos.getTranslation().minus(new Pose3d(fieldPosManager.getRobotPose()).getTranslation());
+  public void setTargetPositionsByIndex(int pickupIndex) {
+    // H! Get the pickup target positions
+    Pose3d pickupPos = fieldPosManager.get3dFieldObjectPose(FieldPosManager.fieldSpot3d.centerFieldGamePieces, true, pickupIndex);
+    Translation3d robotPosToScoringPos = pickupPos.getTranslation().minus(new Pose3d(fieldPosManager.getRobotPose()).getTranslation());
     Translation3d pivotToScoringPos = robotPosToScoringPos.plus(Constants.WristAndArm.pivotOffset);
     
 
@@ -45,8 +43,7 @@ public class MoveArmToTargetAuto extends MoveLegAnkleToPositionCommand {
 
   @Override
   public void initialize() {
-    targetIndex = fieldPosManager.getNearestScoringZoneIndex();
-    setTargetPositionsByIndex();
+    setTargetPositionsByIndex(pickupIndex);
     super.initialize();
   }
 }
