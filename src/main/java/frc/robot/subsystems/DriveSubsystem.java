@@ -186,6 +186,13 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   /**
+   * <> returns the raw rotation from the imu
+   */
+  public Rotation2d getIMURotation() {
+    return m_imuSubsystem.getYaw();
+  }
+
+  /**
    * <>
    *
    * @return the robot's heading

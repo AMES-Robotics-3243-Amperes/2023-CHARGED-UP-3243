@@ -49,7 +49,13 @@ public class SnapToGridCommand extends SwerveAutoMoveCommand { // :D hi after lo
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    super.initialize();
     index = m_FieldPosManager.getNearestScoringZoneIndex();
+    changeGoal(m_FieldPosManager.get2dFieldObjectPose(FieldPosManager.fieldSpot2d.scoringPosition, true, index));
+
+    System.out.println("-sdf;jisdf;oijsdfoihseeoiufuhwfeoeihr--------");
+    System.out.println("MASON'S MOM HAHAHAHA");
+    System.out.println();
   }
 
   // Called every time the scheduler runs while the command is scheduled.

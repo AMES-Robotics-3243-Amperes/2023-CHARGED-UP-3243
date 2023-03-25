@@ -133,7 +133,7 @@ public class RobotContainer {
     primaryController.x().toggleOnTrue(new LockSwerveWheelsCommand(m_driveSubsystem));
     primaryController.a().toggleOnTrue(new SwerveAutoMoveCommand(m_driveSubsystem,
       new ArrayList<Pose2d>(List.of(new Pose2d(new Translation2d(2.5, 2.75), Rotation2d.fromDegrees(0)), new Pose2d(new Translation2d(3, 1), Rotation2d.fromDegrees(0)), new Pose2d(new Translation2d(5, 1), Rotation2d.fromDegrees(0)), new Pose2d(new Translation2d(6, 3), Rotation2d.fromDegrees(0)), new Pose2d(new Translation2d(5, 4), Rotation2d.fromDegrees(0)), new Pose2d(new Translation2d(4, 5), Rotation2d.fromDegrees(0)), new Pose2d(new Translation2d(3, 4), Rotation2d.fromDegrees(0)), new Pose2d(new Translation2d(2.5, 2.75), Rotation2d.fromDegrees(0))))));
-    primaryController.b().toggleOnTrue(new SwerveAutoMoveCommand(m_driveSubsystem, new ArrayList<>(List.of(new Pose2d(new Translation2d(1.85, 2.748), new Rotation2d()), new Pose2d(new Translation2d(7, 4), new Rotation2d())))));
+    primaryController.b().toggleOnTrue(new SwerveAutoMoveCommand(m_driveSubsystem, new ArrayList<>(List.of(new Pose2d(new Translation2d(2, 2.748), Rotation2d.fromDegrees(180))))));
 
     secondaryController.rightBumper().onTrue(m_grabOpenCommand);
     secondaryController.rightBumper().onFalse(m_grabCloseCommand);
@@ -144,7 +144,7 @@ public class RobotContainer {
     secondaryController.a().onTrue(m_moveLegAnkleToNeutralPositionCommand);
     secondaryController.x().onTrue(m_MoveLegAnkleToPickupPositionCommand);
     secondaryController.y().onTrue(m_moveLegAnkleToPlacementPositionCommand); // :D DONE: test this at some point soon // ss changed to a to stop conflicts
-    primaryController.y().onTrue(m_SnapToGridCommand); // :D hi i switched this to the primary controller
+    primaryController.y().whileTrue(m_SnapToGridCommand); // :D hi i switched this to the primary controller
   }
 
   public void teleopInit() {}

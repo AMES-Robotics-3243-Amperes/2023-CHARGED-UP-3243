@@ -4,8 +4,10 @@
 
 package frc.robot.commands.DriveTrain;
 
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveTrain.DriveConstants;
@@ -37,6 +39,9 @@ public class SwerveAutoMoveCommand extends CommandBase {
   // <> this should always be the same as the last element of the goal
   // list, and exists to avoid out of range exceptions
   private Pose2d finalGoal;
+
+  // <> takes the length of the velocity difference and outputs the magnited of acceleration
+  private ProfiledPIDController velocityPidController;
 
   /**
    * <> Crates a new {@link SwerveAutoMoveCommand}.
@@ -76,6 +81,10 @@ public class SwerveAutoMoveCommand extends CommandBase {
     // <> deep-copy the final list just to be absolutely sure it doesn't get modified
     this.absoluteGoalList = new ArrayList<>(List.of());
     this.absoluteGoalList.addAll(goals);
+
+    // <> create pid controller
+    this.velocityPidController = new ProfiledPIDController(DriveConstants.AutoConstants.kP,
+      DriveConstants.AutoConstants.kI, DriveConstants.AutoConstants.kD, DriveConstants.AutoConstants.kConstraints);
 
     addRequirements(m_subsystem);
   }
@@ -157,17 +166,17 @@ public class SwerveAutoMoveCommand extends CommandBase {
     // <> move on to the next goal if we're at the current one
     cleanUpGoalList();
 
-    // <> find the angle to the goal
-    double xError = subsystemPose.getX() - getGoal().getX();
-    double yError = subsystemPose.getY() - getGoal().getY();
-    Rotation2d driveAngle = Rotation2d.fromRadians(Math.atan2(yError, xError) + Math.PI);
+    // <> find the translation from the robot to the goal
+    Translation2d uncappedGoalVelocity = getGoal().getTranslation().minus(subsystemPose.getTranslation());
+    double uncappedGoalVelocityMagnitude = uncappedGoalVelocity.getNorm();
 
-    // <> extract constant so that the next line of code is shorter
-    final double speed = DriveConstants.AutoConstants.kMaxVelocityMetersPerSecond;
-
+    // <> if the uncapped goal velocity is too long, limit the magnitude
+    double maxVelocity = DriveConstants.AutoConstants.kMaxVelocityMetersPerSecond;
+    Translation2d goalVelocity = (uncappedGoalVelocityMagnitude > maxVelocity) ?
+      uncappedGoalVelocity.div(uncappedGoalVelocityMagnitude).times(maxVelocity) : uncappedGoalVelocity;
+    
     // <> we can easily figure out where we *should* be driving, so let this
     // function handle the acceleration limiting and actual driving
-    Translation2d goalVelocity = new Translation2d(speed * driveAngle.getCos(), speed * driveAngle.getSin());
     driveWithGoalVelocity(goalVelocity);
   }
 
@@ -194,21 +203,20 @@ public class SwerveAutoMoveCommand extends CommandBase {
     Translation2d velocityDifference = goalVelocity.plus(velocity.times(-1)).times(0.8);
     double velocityDifferenceLength = velocityDifference.getNorm();
 
-    // <> the constant is in seconds, but loop time is 20 ms, so extract
-    // the constant in terms of the max velocity change per loop
-    final double maxVelocityChange = DriveConstants.AutoConstants.kMaxAccelerationMetersPerSecondSq / 50;
+    // <> get magnitude of the velocity change
+    double velocityChangeMagnitude = velocityPidController.calculate(0, velocityDifferenceLength);
 
-    // if the change in velocity exceeds the max velocity change per 20 ms, slow it down
-    if (velocityDifferenceLength >= maxVelocityChange) {
-      // <> normalize velocity change
-      velocityDifference = velocityDifference.div(velocityDifferenceLength);
+    // <> get the angle of the velocity change
+    Rotation2d velocityChangeAngle = Rotation2d.fromRadians(Math.atan2(velocityDifference.getY(), velocityDifference.getX()));
 
-      // <> and multiply it by the max velocity change
-      velocityDifference = velocityDifference.times(maxVelocityChange);
-    }
+    // <> get the velocity change
+    Translation2d velocityChange = new Translation2d(
+      velocityChangeMagnitude * velocityChangeAngle.getCos(), velocityChangeMagnitude * velocityChangeAngle.getSin());
 
-    // <> update velocity and drive
-    velocity = velocity.plus(velocityDifference);
+    // <> add velocity change to velocity
+    velocity = velocity.plus(velocityChange);
+
+    // <> drive using velocity
     m_subsystem.drive(velocity.getX(), velocity.getY(), getGoal().getRotation(), true);
   }
 
@@ -219,9 +227,15 @@ public class SwerveAutoMoveCommand extends CommandBase {
     // <> set the final goal variable and the last members of the goal lists
     // to the passed in new goal, ignoring all other existing goals
     finalGoal = newGoal;
-    goalList.set(goalList.size() - 1, newGoal);
-    absoluteGoalList.set(absoluteGoalList.size() - 1, newGoal);
+
+    // <> make both of the lists contain just one element: newGoal
+    goalList.clear();
+    goalList.add(newGoal);
+
+    absoluteGoalList.clear();
+    absoluteGoalList.add(newGoal);
   }
+  
 
   /**
    * <> change the goal of the robot (will go back and travel to all points given)
