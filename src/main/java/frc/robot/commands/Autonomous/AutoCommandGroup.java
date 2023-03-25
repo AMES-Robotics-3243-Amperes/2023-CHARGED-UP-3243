@@ -14,6 +14,7 @@ import frc.robot.commands.DriveTrain.LockSwerveWheelsCommand;
 import frc.robot.commands.DriveTrain.SwerveAutoMoveCommand;
 import frc.robot.FieldPosManager;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.GrabberSubsystem;
 import frc.robot.subsystems.LegAnkleSubsystem;
 import frc.robot.subsystems.ShuffleboardSubsystem;
 
@@ -29,6 +30,7 @@ public class AutoCommandGroup extends SequentialCommandGroup {
   protected final LegAnkleSubsystem m_legAnkleSubsystem;
   protected final FieldPosManager m_posManager;
   protected final ShuffleboardSubsystem m_shuffleboardSubsystem;
+  protected final GrabberSubsystem m_grabberSubsystem;
 
   /**
    * <> creates a new {@link AutoCommandGroup}
@@ -37,10 +39,11 @@ public class AutoCommandGroup extends SequentialCommandGroup {
    */
    
   public AutoCommandGroup(DriveSubsystem driveSubsystem, LegAnkleSubsystem legAnkleSubsystem,
-                          ShuffleboardSubsystem shuffleboardSubsystem, FieldPosManager posManager) {
+                          ShuffleboardSubsystem shuffleboardSubsystem, GrabberSubsystem grabberSubsystem, FieldPosManager posManager) {
     m_driveSubsystem = driveSubsystem;
     m_legAnkleSubsystem = legAnkleSubsystem;
-    addRequirements(m_driveSubsystem, legAnkleSubsystem);
+    m_grabberSubsystem = grabberSubsystem;
+    addRequirements(m_driveSubsystem, legAnkleSubsystem, grabberSubsystem, shuffleboardSubsystem);
 
     m_posManager = posManager;
     m_shuffleboardSubsystem = shuffleboardSubsystem;
@@ -96,7 +99,9 @@ public class AutoCommandGroup extends SequentialCommandGroup {
       SwerveAutoMoveCommand goToPieceDropOffCommand = new SwerveAutoMoveCommand(m_driveSubsystem, dropOffPiece0Destination);
       autoCommands.add(goToPieceDropOffCommand);
 
-      // TODO: add drop-off command (talk to hale i think idk who's doing this)
+      // TODO: check if cone/cube
+      SequentialCommandGroup dropOffCommand = new SequentialCommandGroup(new MoveArmToTargetAuto(true, m_legAnkleSubsystem, posManager), new ReleaseGameObjectAuto(m_grabberSubsystem));
+      autoCommands.add(dropOffCommand);
     }
 
     // <> only add all the commands if neither of the ids are negative
@@ -109,7 +114,9 @@ public class AutoCommandGroup extends SequentialCommandGroup {
       SwerveAutoMoveCommand goToPieceDropOffCommand = new SwerveAutoMoveCommand(m_driveSubsystem, new ArrayList<>(List.of(farChargeAvoidIntermediatePoint, nearChargeAvoidIntermediatePoint, dropOffPiece1Destination)));
       autoCommands.add(goToPieceDropOffCommand);
 
-      // TODO: add drop-off command (talk to hale i think idk who's doing this)
+      // TODO: check if cone/cube
+      SequentialCommandGroup dropOffCommand = new SequentialCommandGroup(new MoveArmToTargetAuto(true, m_legAnkleSubsystem, posManager), new ReleaseGameObjectAuto(m_grabberSubsystem));
+      autoCommands.add(dropOffCommand);
     }
 
     // <> only add all the commands if neither of the ids are negative
@@ -122,7 +129,9 @@ public class AutoCommandGroup extends SequentialCommandGroup {
       SwerveAutoMoveCommand goToPieceDropOffCommand = new SwerveAutoMoveCommand(m_driveSubsystem, new ArrayList<>(List.of(farChargeAvoidIntermediatePoint, nearChargeAvoidIntermediatePoint, dropOffPiece2Destination)));
       autoCommands.add(goToPieceDropOffCommand);
 
-      // TODO: add drop-off command (talk to hale i think idk who's doing this)
+      // TODO: check if cone/cube
+      SequentialCommandGroup dropOffCommand = new SequentialCommandGroup(new MoveArmToTargetAuto(true, m_legAnkleSubsystem, posManager), new ReleaseGameObjectAuto(m_grabberSubsystem));
+      autoCommands.add(dropOffCommand);
     }
 
     if (charge) {
