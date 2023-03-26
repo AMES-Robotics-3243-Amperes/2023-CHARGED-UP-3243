@@ -15,7 +15,6 @@ import frc.robot.subsystems.*;
 public class SnapToGridCommand extends SwerveAutoMoveCommand { // :D hi after looking over this, it looks like due to the fact that only one command
   private final FieldPosManager m_FieldPosManager;
   private final JoyUtil m_PrimaryController;
-  private final JoyUtil m_SecondaryController;
   public int index;
   private boolean lastPOVLeft = false;
   private boolean lastPOVRight = false;
@@ -39,9 +38,6 @@ public class SnapToGridCommand extends SwerveAutoMoveCommand { // :D hi after lo
 
     m_FieldPosManager = fieldPosManager;
     m_PrimaryController = primaryController;
-    m_SecondaryController = secondaryController;
-    
-    
 
     // ss make an auto move command from the drive subsystem, the Pose2d corresponding to the index, and some constants
   }
@@ -52,10 +48,6 @@ public class SnapToGridCommand extends SwerveAutoMoveCommand { // :D hi after lo
     super.initialize();
     index = m_FieldPosManager.getNearestScoringZoneIndex();
     changeGoal(m_FieldPosManager.get2dFieldObjectPose(FieldPosManager.fieldSpot2d.scoringPosition, true, index));
-
-    System.out.println("-sdf;jisdf;oijsdfoihseeoiufuhwfeoeihr--------");
-    System.out.println("MASON'S MOM HAHAHAHA");
-    System.out.println();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -101,7 +93,7 @@ public class SnapToGridCommand extends SwerveAutoMoveCommand { // :D hi after lo
       return true;
     }
     
-    if (super.isFinished() && m_SecondaryController.getAButton()) {
+    if (m_PrimaryController.getAButton()) {
       return true;
     }
 

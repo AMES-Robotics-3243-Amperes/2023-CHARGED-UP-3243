@@ -653,19 +653,20 @@ public final class Constants {
       // :D position of the robot's chassis:
       public static double scoringChassisPositionX = 1.85;
       public static Pose2d[] scoringPositions = {new Pose2d(Constants.FieldConstants.Blue.scoringChassisPositionX,
-        Constants.FieldConstants.targetPositionsY[0], new Rotation2d(Math.PI)), new Pose2d(
+        Constants.FieldConstants.targetPositionsY[0], new Rotation2d()), new Pose2d(
         Constants.FieldConstants.Blue.scoringChassisPositionX, Constants.FieldConstants.targetPositionsY[1],
-        new Rotation2d(Math.PI)), new Pose2d(Constants.FieldConstants.Blue.scoringChassisPositionX,
-        Constants.FieldConstants.targetPositionsY[2], new Rotation2d(Math.PI)), new Pose2d(
+        new Rotation2d()), new Pose2d(Constants.FieldConstants.Blue.scoringChassisPositionX,
+        Constants.FieldConstants.targetPositionsY[2], new Rotation2d()), new Pose2d(
         Constants.FieldConstants.Blue.scoringChassisPositionX, Constants.FieldConstants.targetPositionsY[3],
-        new Rotation2d(Math.PI)), new Pose2d(Constants.FieldConstants.Blue.scoringChassisPositionX,
-        Constants.FieldConstants.targetPositionsY[4], new Rotation2d(Math.PI)), new Pose2d(
+        new Rotation2d()), new Pose2d(Constants.FieldConstants.Blue.scoringChassisPositionX,
+        Constants.FieldConstants.targetPositionsY[4], new Rotation2d()), new Pose2d(
         Constants.FieldConstants.Blue.scoringChassisPositionX, Constants.FieldConstants.targetPositionsY[5],
-        new Rotation2d(Math.PI)), new Pose2d(Constants.FieldConstants.Blue.scoringChassisPositionX,
-        Constants.FieldConstants.targetPositionsY[6], new Rotation2d(Math.PI)), new Pose2d(
+        new Rotation2d()), new Pose2d(Constants.FieldConstants.Blue.scoringChassisPositionX,
+        Constants.FieldConstants.targetPositionsY[6], new Rotation2d()), new Pose2d(
         Constants.FieldConstants.Blue.scoringChassisPositionX, Constants.FieldConstants.targetPositionsY[7],
-        new Rotation2d(Math.PI)), new Pose2d(Constants.FieldConstants.Blue.scoringChassisPositionX,
-        Constants.FieldConstants.targetPositionsY[8], new Rotation2d(Math.PI))};
+        new Rotation2d()), new Pose2d(Constants.FieldConstants.Blue.scoringChassisPositionX,
+        Constants.FieldConstants.targetPositionsY[8], new Rotation2d())};
+
       public static Pose2d doubleLoadingZone = new Pose2d(new Translation2d(1.4, 6.75), new Rotation2d(Math.PI));
       public static Pose2d singleLoadingZone = new Pose2d(new Translation2d(2.342, 7), new Rotation2d(Math.PI / 2));
       public static Pose2d chargeStationBottomLeft = new Pose2d(new Translation2d(3.276, 1.522), new Rotation2d(0));
@@ -694,19 +695,19 @@ public final class Constants {
     public static final class Red {
       public static double scoringChassisPositionX = 14.697;
       public static Pose2d[] scoringPositions = {new Pose2d(Constants.FieldConstants.Red.scoringChassisPositionX,
-        Constants.FieldConstants.targetPositionsY[0], new Rotation2d()), new Pose2d(
+        Constants.FieldConstants.targetPositionsY[0], new Rotation2d(Math.PI)), new Pose2d(
         Constants.FieldConstants.Red.scoringChassisPositionX, Constants.FieldConstants.targetPositionsY[1],
-        new Rotation2d()), new Pose2d(Constants.FieldConstants.Red.scoringChassisPositionX,
-        Constants.FieldConstants.targetPositionsY[2], new Rotation2d()), new Pose2d(
+        new Rotation2d(Math.PI)), new Pose2d(Constants.FieldConstants.Red.scoringChassisPositionX,
+        Constants.FieldConstants.targetPositionsY[2], new Rotation2d(Math.PI)), new Pose2d(
         Constants.FieldConstants.Red.scoringChassisPositionX, Constants.FieldConstants.targetPositionsY[3],
-        new Rotation2d()), new Pose2d(Constants.FieldConstants.Red.scoringChassisPositionX,
-        Constants.FieldConstants.targetPositionsY[4], new Rotation2d()), new Pose2d(
+        new Rotation2d(Math.PI)), new Pose2d(Constants.FieldConstants.Red.scoringChassisPositionX,
+        Constants.FieldConstants.targetPositionsY[4], new Rotation2d(Math.PI)), new Pose2d(
         Constants.FieldConstants.Red.scoringChassisPositionX, Constants.FieldConstants.targetPositionsY[5],
-        new Rotation2d()), new Pose2d(Constants.FieldConstants.Red.scoringChassisPositionX,
-        Constants.FieldConstants.targetPositionsY[6], new Rotation2d()), new Pose2d(
+        new Rotation2d(Math.PI)), new Pose2d(Constants.FieldConstants.Red.scoringChassisPositionX,
+        Constants.FieldConstants.targetPositionsY[6], new Rotation2d(Math.PI)), new Pose2d(
         Constants.FieldConstants.Red.scoringChassisPositionX, Constants.FieldConstants.targetPositionsY[7],
-        new Rotation2d()), new Pose2d(Constants.FieldConstants.Red.scoringChassisPositionX,
-        Constants.FieldConstants.targetPositionsY[8], new Rotation2d())};
+        new Rotation2d(Math.PI)), new Pose2d(Constants.FieldConstants.Red.scoringChassisPositionX,
+        Constants.FieldConstants.targetPositionsY[8], new Rotation2d(Math.PI))};
       public static Pose2d doubleLoadingZone = new Pose2d(new Translation2d(15, 6.75), new Rotation2d(0));
       public static Pose2d singleLoadingZone = new Pose2d(new Translation2d(14.199, 7), new Rotation2d(Math.PI / 2));
       public static Pose2d chargeStationBottomLeft = new Pose2d(new Translation2d(12.046, 1.522), new Rotation2d(0));

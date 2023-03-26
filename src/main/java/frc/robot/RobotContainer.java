@@ -144,7 +144,7 @@ public class RobotContainer {
     secondaryController.a().onTrue(m_moveLegAnkleToNeutralPositionCommand);
     secondaryController.x().onTrue(m_MoveLegAnkleToPickupPositionCommand);
     secondaryController.y().onTrue(m_moveLegAnkleToPlacementPositionCommand); // :D DONE: test this at some point soon // ss changed to a to stop conflicts
-    primaryController.y().whileTrue(m_SnapToGridCommand); // :D hi i switched this to the primary controller
+    primaryController.y().onTrue(m_SnapToGridCommand); // :D hi i switched this to the primary controller
   }
 
   public void teleopInit() {}
