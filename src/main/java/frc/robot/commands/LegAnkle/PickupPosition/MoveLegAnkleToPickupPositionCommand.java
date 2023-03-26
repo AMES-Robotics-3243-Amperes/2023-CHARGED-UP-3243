@@ -20,6 +20,7 @@ public class MoveLegAnkleToPickupPositionCommand extends InstantCommand {
     this.controller = controller;
     this.lowCommand = lowCommand;
     this.doubleLoadingCommand = doubleLoadingCommand;
+    this.normalCommand = normalCommand;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -29,9 +30,9 @@ public class MoveLegAnkleToPickupPositionCommand extends InstantCommand {
     if (controller.getPOVUp()) {
       doubleLoadingCommand.schedule();
     } else if (controller.getPOVDown()) {
-      normalCommand.schedule();
-    } else {
       lowCommand.schedule();
+    } else {
+      normalCommand.schedule();
     }
   }
 }

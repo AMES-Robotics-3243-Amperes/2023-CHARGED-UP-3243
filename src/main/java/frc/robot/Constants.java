@@ -378,16 +378,16 @@ public final class Constants {
     }
 
     public static class PickupSetpoints {
-      public static final double pivot = 0.535;
+      public static final double pivot = 0.55;
       public static final double extension = 1.09;
-      public static final double pitch = 0.51;
+      public static final double pitch = 0.5;
       public static final Double roll = null;
     }
 
     public static class PickupSetpointsLOW { // :D TODO: get the actual values
-      public static final double pivot = 0.535;
+      public static final double pivot = 0.376;
       public static final double extension = 1.09;
-      public static final double pitch = 0.7;
+      public static final double pitch = 0.655;
       public static final Double roll = null;
     }
 
@@ -467,8 +467,8 @@ public final class Constants {
       public static final double extensionMin = 0.92804 /*+ 0.05*/;
       public static final double extensionMax = extensionMin + Units.inchesToMeters(30);// :D approx. equals: 1.69; prev value: 1.5494
       // ++ pivot limits
-      public static final double pivotMax = 0.57;
-      public static final double pivotMin = -0.1;
+      public static final double pivotMax = 0.58;
+      public static final double pivotMin = 0.075;
       // H! Pitch limitssssessss
       public static final double pitchMax = 0.95;
       public static final double pitchMin = 0.05;
