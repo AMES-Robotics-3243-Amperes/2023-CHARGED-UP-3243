@@ -27,17 +27,31 @@ public class MoveLegAnkleToPlacementPositionCommand extends MoveLegAnkleToPositi
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
+  public void low(){
+    setTargets(Constants.AutomationConfiguration.legAnklePlacementPositionLOW);
+    legAnkleSubsystem.setMotorPositions(targetExtension, targetPivot, targetPitch, targetRoll);
+  }
+
+  public void mid(){
+    setTargets(Constants.AutomationConfiguration.legAnklePlacementPositionMIDDLE);
+    legAnkleSubsystem.setMotorPositions(targetExtension, targetPivot, targetPitch, targetRoll);
+  }
+
+  public void high(){
+    setTargets(Constants.AutomationConfiguration.legAnklePlacementPositionHIGH);
+    legAnkleSubsystem.setMotorPositions(targetExtension, targetPivot, targetPitch, targetRoll);
+  }
+
   @Override
   public void initialize(){
     // :D I don't think it's physically possible to hold the POV up and down at the same time so this should be ok
     if(joy.getPOVDown()){
-      setTargets(Constants.AutomationConfiguration.legAnklePlacementPositionLOW);
+      low();
     } else if(joy.getPOVUp()){
-      setTargets(Constants.AutomationConfiguration.legAnklePlacementPositionHIGH);
+      high();
     } else {
-      setTargets(Constants.AutomationConfiguration.legAnklePlacementPositionMIDDLE);
+      mid();
     }
-    legAnkleSubsystem.setMotorPositions(targetExtension, targetPivot, targetPitch, targetRoll);
   }
 
   
