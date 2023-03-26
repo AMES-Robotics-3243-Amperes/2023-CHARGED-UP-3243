@@ -44,19 +44,10 @@ public class ShuffleboardSubsystem extends SubsystemBase {
     imuSubsystem = IMU;
     GrabberSubsystem = grabber;
 
-  }
-
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-    //&& Field 2D widget
-    SmartDashboard.putData(fieldPoseManager.getField2d());
-
-
     //&& -----------------Titles of the widgets that get displayed in shuffleboard------------------
 
     SmartDashboard.putBoolean("doCharge", true);
-    SmartDashboard.putBoolean("doUpperRoute", true);
+    // SmartDashboard.putBoolean("doUpperRoute", true);
     SmartDashboard.putBoolean("doLowerRoute", true);
 
     SmartDashboard.putNumber("placePiece0", 0);
@@ -69,7 +60,18 @@ public class ShuffleboardSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("piece2IsCube", true);
     SmartDashboard.putNumber("pickupPiece3", 0);
     SmartDashboard.putNumber("placePiece3", 0);
-    SmartDashboard.putNumber("chargePosition", 0);
+    // SmartDashboard.putNumber("chargePosition", 0);
+
+  }
+
+  @Override
+  public void periodic() {
+    // This method will be called once per scheduler run
+    //&& Field 2D widget
+    SmartDashboard.putData(fieldPoseManager.getField2d());
+
+
+    
 
     //&& Shows the command running for LegAnkleSubsystem
     //SmartDashboard.putString("legAnkleCommandWidget", legAnkleSubsystem.getCurrentCommand().getName());
@@ -99,9 +101,9 @@ public class ShuffleboardSubsystem extends SubsystemBase {
 
         return SmartDashboard.getBoolean("doCharge", true);
 
-      case goUpperRoute:
+      // case goUpperRoute:
 
-        return SmartDashboard.getBoolean("doUpperRoute", true);
+      //   return SmartDashboard.getBoolean("doUpperRoute", true);
 
       case goLowerRoute:
 

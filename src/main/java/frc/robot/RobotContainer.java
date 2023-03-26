@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DriveTrain.DriveConstants;
+import frc.robot.commands.Autonomous.AutoCommandGroup;
 import frc.robot.commands.DriveTrain.BalanceCommand;
 import frc.robot.commands.DriveTrain.LockSwerveWheelsCommand;
 import frc.robot.commands.DriveTrain.SwerveAutoMoveCommand;
@@ -150,7 +151,7 @@ public class RobotContainer {
   public void teleopInit() {}
 
   public Command getAutonomousCommand() {
-    return null;
+    return new AutoCommandGroup(m_driveSubsystem, m_legAnkleSubsystem, m_shuffleboardSubsystem, m_GrabberSubsystem, fieldPosManager);
   }
 
   public void testPeriodic() {

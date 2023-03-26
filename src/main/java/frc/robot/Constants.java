@@ -106,9 +106,9 @@ public final class Constants {
         public static final double kDrivingMinOutput = -1;
         public static final double kDrivingMaxOutput = 1;
 
-        public static final double kTurningP = 0.45;
+        public static final double kTurningP = 0.5;
         public static final double kTurningI = 0;
-        public static final double kTurningD = 0.02;
+        public static final double kTurningD = 0.3;
         public static final double kTurningFF = 0;
         public static final double kTurningMinOutput = -1;
         public static final double kTurningMaxOutput = 1;
@@ -229,13 +229,13 @@ public final class Constants {
 
       // <> stuff pertaining to auto driving
       public static final class AutoConstants {
-        public static final double kP = 0.8;
+        public static final double kP = 1.7;
         public static final double kI = 0;
         public static final double kD = 0;
 
         public static final double kMaxVelocityMetersPerSecond = 1.4;
-        public static final double kMaxAccelerationMetersPerSecondSq = 4;
-        public static final double kMaxJerkMetersPerSecondCubed = 2.5;
+        public static final double kMaxAccelerationMetersPerSecondSq = 3.5;
+        public static final double kMaxJerkMetersPerSecondCubed = 5;
 
         public static final TrapezoidProfile.Constraints kConstraints = new TrapezoidProfile.Constraints(
           kMaxAccelerationMetersPerSecondSq, kMaxJerkMetersPerSecondCubed);
@@ -278,7 +278,7 @@ public final class Constants {
    */
   public static class JoyUtilConstants {
     // <> size of controller deadzone
-    public static final double kDeadzone = 0.08;
+    public static final double kDeadzone = 0.12;
     // <> max amount controller output can change per second
     public static final double kRateLimitLeft = 4;
     public static final double kRateLimitRight = 3.4;
@@ -651,7 +651,7 @@ public final class Constants {
 
     public static final class Blue {
       // :D position of the robot's chassis:
-      public static double scoringChassisPositionX = 1.85;
+      public static double scoringChassisPositionX = 1.85 + 0.05;
       public static Pose2d[] scoringPositions = {new Pose2d(Constants.FieldConstants.Blue.scoringChassisPositionX,
         Constants.FieldConstants.targetPositionsY[0], new Rotation2d()), new Pose2d(
         Constants.FieldConstants.Blue.scoringChassisPositionX, Constants.FieldConstants.targetPositionsY[1],
@@ -693,7 +693,7 @@ public final class Constants {
     }
 
     public static final class Red {
-      public static double scoringChassisPositionX = 14.697;
+      public static double scoringChassisPositionX = 14.697 - 0.05;
       public static Pose2d[] scoringPositions = {new Pose2d(Constants.FieldConstants.Red.scoringChassisPositionX,
         Constants.FieldConstants.targetPositionsY[0], new Rotation2d(Math.PI)), new Pose2d(
         Constants.FieldConstants.Red.scoringChassisPositionX, Constants.FieldConstants.targetPositionsY[1],
