@@ -160,3 +160,8 @@ bin/
 
 # Simulation GUI and other tools window save file
 *-window.json
+
+# I'm assuming nobody wants my intellij config files
+# and while I would just not include them I'm going
+# to forget eventually so I'll just put them here
+.idea
