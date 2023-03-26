@@ -53,7 +53,7 @@ public class AutoCommandGroup extends SequentialCommandGroup {
     m_shuffleboardSubsystem = shuffleboardSubsystem;
     m_secondaryJoy = secondaryJoy;
 
-    ArrayList<Command> autoCommands = new ArrayList<Command>();
+    ArrayList<Command> autoCommands = new ArrayList<>();
 
     boolean bottom = m_shuffleboardSubsystem.ShuffleBoardBooleanInput(
       ShuffleboardSubsystem.ShuffleBoardInput.goLowerRoute);
@@ -88,22 +88,16 @@ public class AutoCommandGroup extends SequentialCommandGroup {
     // TODO: make the pickup correct (be sure to shift them)
     Pose2d dropOffPiece0Destination = m_posManager.get2dFieldObjectPose(FieldPosManager.fieldSpot2d.scoringPosition,
       true, piece0DropOffID);
-    boolean piece0IsCube = m_shuffleboardSubsystem.ShuffleBoardBooleanInput(
-      ShuffleboardSubsystem.ShuffleBoardInput.piece0IsCube);
 
     Pose2d pickupPiece1Position = m_posManager.get2dFieldObjectPose(FieldPosManager.fieldSpot2d.scoringPosition, true,
       piece1ID);
     Pose2d dropOffPiece1Destination = m_posManager.get2dFieldObjectPose(FieldPosManager.fieldSpot2d.scoringPosition,
       true, piece1DropOffID);
-    boolean piece1IsCube = m_shuffleboardSubsystem.ShuffleBoardBooleanInput(
-      ShuffleboardSubsystem.ShuffleBoardInput.piece1IsCube);
 
     Pose2d pickupPiece2Position = m_posManager.get2dFieldObjectPose(FieldPosManager.fieldSpot2d.scoringPosition, true,
       piece2ID);
     Pose2d dropOffPiece2Destination = m_posManager.get2dFieldObjectPose(FieldPosManager.fieldSpot2d.scoringPosition,
       true, piece2DropOffID);
-    boolean piece2IsCube = m_shuffleboardSubsystem.ShuffleBoardBooleanInput(
-      ShuffleboardSubsystem.ShuffleBoardInput.piece2IsCube);
 
     // <> only add all the commands if neither of the ids are negative
     if (piece0DropOffID >= 0) {
@@ -111,28 +105,22 @@ public class AutoCommandGroup extends SequentialCommandGroup {
         dropOffPiece0Destination);
       autoCommands.add(goToPieceDropOffCommand);
 
-      SequentialCommandGroup dropOffCommand = new SequentialCommandGroup(
-        new MoveArmToPlaceTargetAuto(legAnkleSubsystem, m_secondaryJoy), new ReleaseGameObjectAuto(m_grabberSubsystem));
-      autoCommands.add(dropOffCommand);
+      addNewPlacementRoutine(legAnkleSubsystem, autoCommands);
     }
 
     // <> only add all the commands if neither of the ids are negative
     if (piece1ID >= 0 && piece1DropOffID >= 0) {
-      SwerveAutoMoveCommand goToPieceCommand = new SwerveAutoMoveCommand(m_driveSubsystem, new ArrayList<Pose2d>(
+      SwerveAutoMoveCommand goToPieceCommand = new SwerveAutoMoveCommand(m_driveSubsystem, new ArrayList<>(
         List.of(nearChargeAvoidIntermediatePoint, farChargeAvoidIntermediatePoint, pickupPiece1Position)));
       autoCommands.add(goToPieceCommand);
 
-      SequentialCommandGroup pickupCommand = new SequentialCommandGroup(
-        new MoveArmToPickupTargetAuto(legAnkleSubsystem), new PickupGameObjectAuto(grabberSubsystem));
-      autoCommands.add(pickupCommand);
+      addNewPickupRoutine(legAnkleSubsystem, grabberSubsystem, autoCommands);
 
       SwerveAutoMoveCommand goToPieceDropOffCommand = new SwerveAutoMoveCommand(m_driveSubsystem, new ArrayList<>(
         List.of(farChargeAvoidIntermediatePoint, nearChargeAvoidIntermediatePoint, dropOffPiece1Destination)));
       autoCommands.add(goToPieceDropOffCommand);
 
-      SequentialCommandGroup dropOffCommand = new SequentialCommandGroup(
-        new MoveArmToPlaceTargetAuto(legAnkleSubsystem, m_secondaryJoy), new ReleaseGameObjectAuto(m_grabberSubsystem));
-      autoCommands.add(dropOffCommand);
+      addNewPlacementRoutine(legAnkleSubsystem, autoCommands);
     }
 
     // <> only add all the commands if neither of the ids are negative
@@ -141,17 +129,13 @@ public class AutoCommandGroup extends SequentialCommandGroup {
         List.of(nearChargeAvoidIntermediatePoint, farChargeAvoidIntermediatePoint, pickupPiece2Position)));
       autoCommands.add(goToPieceCommand);
 
-      SequentialCommandGroup pickupCommand = new SequentialCommandGroup(
-        new MoveArmToPickupTargetAuto(legAnkleSubsystem), new PickupGameObjectAuto(grabberSubsystem));
-      autoCommands.add(pickupCommand);
+      addNewPickupRoutine(legAnkleSubsystem, grabberSubsystem, autoCommands);
 
       SwerveAutoMoveCommand goToPieceDropOffCommand = new SwerveAutoMoveCommand(m_driveSubsystem, new ArrayList<>(
         List.of(farChargeAvoidIntermediatePoint, nearChargeAvoidIntermediatePoint, dropOffPiece2Destination)));
       autoCommands.add(goToPieceDropOffCommand);
 
-      SequentialCommandGroup dropOffCommand = new SequentialCommandGroup(
-        new MoveArmToPlaceTargetAuto(legAnkleSubsystem, m_secondaryJoy), new ReleaseGameObjectAuto(m_grabberSubsystem));
-      autoCommands.add(dropOffCommand);
+      addNewPlacementRoutine(legAnkleSubsystem, autoCommands);
     }
 
     if (charge) {
@@ -177,5 +161,20 @@ public class AutoCommandGroup extends SequentialCommandGroup {
     Command[] commandArray = new Command[autoCommands.size()];
     commandArray = autoCommands.toArray(commandArray);
     addCommands(commandArray);
+  }
+
+  private static void addNewPickupRoutine(LegAnkleSubsystem legAnkleSubsystem, GrabberSubsystem grabberSubsystem,
+                                          ArrayList<Command> autoCommands) {
+    SequentialCommandGroup pickupCommand = new SequentialCommandGroup(new MoveArmToPickupTargetAuto(legAnkleSubsystem),
+      new PickupGameObjectAuto(grabberSubsystem));
+
+    autoCommands.add(pickupCommand);
+  }
+
+  private void addNewPlacementRoutine(LegAnkleSubsystem legAnkleSubsystem, ArrayList<Command> autoCommands) {
+    SequentialCommandGroup dropOffCommand = new SequentialCommandGroup(
+      new MoveArmToPlaceTargetAuto(legAnkleSubsystem, m_secondaryJoy), new ReleaseGameObjectAuto(m_grabberSubsystem));
+
+    autoCommands.add(dropOffCommand);
   }
 }
