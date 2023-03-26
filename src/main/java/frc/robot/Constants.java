@@ -684,9 +684,11 @@ public final class Constants {
         public static final double highTargetsX = 0.379;
         public static final double middleTargetsX = 0.811;
         public static final double lowTargetsX = 1.185;
-        public static final Pose3d[] fieldCenterGamePieces = {new Pose3d(new Translation3d(7.068, 4.577, 0),
-          new Rotation3d()), new Pose3d(new Translation3d(7.068, 3.358, 0), new Rotation3d()), new Pose3d(
-          new Translation3d(7.068, 2.138, 0), new Rotation3d()), new Pose3d(new Translation3d(7.068, 0.919, 0),
+        public static final double fieldCenterGamePiecesX = 7.068 - 1; // :D for testing purposes, due to limited space. TODO: remove the "- 1"
+
+        public static final Pose3d[] fieldCenterGamePieces = {new Pose3d(new Translation3d(fieldCenterGamePiecesX, 4.577, 0),
+          new Rotation3d()), new Pose3d(new Translation3d(fieldCenterGamePiecesX, 3.358, 0), new Rotation3d()), new Pose3d(
+          new Translation3d(fieldCenterGamePiecesX, 2.138, 0), new Rotation3d()), new Pose3d(new Translation3d(fieldCenterGamePiecesX, 0.919, 0),
           new Rotation3d())};
       }
 
@@ -725,9 +727,11 @@ public final class Constants {
         public static final double highTargetsX = 16.162;
         public static final double middleTargetsX = 15.730;
         public static final double lowTargetsX = 15.350;
-        public static final Pose3d[] fieldCenterGamePieces = {new Pose3d(new Translation3d(9.473, 4.577, 0),
-          new Rotation3d()), new Pose3d(new Translation3d(9.473, 3.358, 0), new Rotation3d()), new Pose3d(
-          new Translation3d(9.473, 2.138, 0), new Rotation3d()), new Pose3d(new Translation3d(9.473, 0.919, 0),
+        public static final double fieldCenterGamePiecesX = 9.473;
+
+        public static final Pose3d[] fieldCenterGamePieces = {new Pose3d(new Translation3d(fieldCenterGamePiecesX, 4.577, 0),
+          new Rotation3d()), new Pose3d(new Translation3d(fieldCenterGamePiecesX, 3.358, 0), new Rotation3d()), new Pose3d(
+          new Translation3d(fieldCenterGamePiecesX, 2.138, 0), new Rotation3d()), new Pose3d(new Translation3d(fieldCenterGamePiecesX, 0.919, 0),
           new Rotation3d())};
       }
     }

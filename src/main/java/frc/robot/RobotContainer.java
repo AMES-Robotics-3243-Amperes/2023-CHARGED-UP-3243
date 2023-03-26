@@ -151,7 +151,7 @@ public class RobotContainer {
   public void teleopInit() {}
 
   public Command getAutonomousCommand() {
-    return new AutoCommandGroup(m_driveSubsystem, m_legAnkleSubsystem, m_shuffleboardSubsystem, m_GrabberSubsystem, fieldPosManager);
+    return new AutoCommandGroup(m_driveSubsystem, m_legAnkleSubsystem, m_shuffleboardSubsystem, m_GrabberSubsystem, fieldPosManager, secondaryController);
   }
 
   public void testPeriodic() {

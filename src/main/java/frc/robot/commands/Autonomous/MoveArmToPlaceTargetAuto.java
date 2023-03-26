@@ -4,15 +4,9 @@
 
 package frc.robot.commands.Autonomous;
 
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Translation3d;
-import frc.robot.Constants;
-import frc.robot.FieldPosManager;
 import frc.robot.JoyUtil;
 import frc.robot.commands.LegAnkle.MoveLegAnkleToPlacementPositionCommand;
-import frc.robot.commands.LegAnkle.MoveLegAnkleToPositionCommand;
 import frc.robot.subsystems.LegAnkleSubsystem;
-import frc.robot.utility_classes.LegAnklePosition;
 
 public class MoveArmToPlaceTargetAuto extends MoveLegAnkleToPlacementPositionCommand {
 

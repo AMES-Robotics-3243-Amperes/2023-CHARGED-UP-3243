@@ -133,7 +133,7 @@ public class GrabberSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     
     // SmartDashboard.putNumber("Actual Current", grabberOpenerMotor.getOutputCurrent());
-    SmartDashboard.putNumber("Absolute Encoder", grabberOpenerEncoder.getPosition());
+    SmartDashboard.putNumber("grabberEncoder", grabberOpenerEncoder.getPosition());
     
 
     // ++ grabber position safeties 

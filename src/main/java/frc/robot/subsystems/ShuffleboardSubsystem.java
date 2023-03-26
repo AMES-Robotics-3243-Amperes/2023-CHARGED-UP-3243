@@ -50,16 +50,16 @@ public class ShuffleboardSubsystem extends SubsystemBase {
     // SmartDashboard.putBoolean("doUpperRoute", true);
     SmartDashboard.putBoolean("doLowerRoute", true);
 
-    SmartDashboard.putNumber("placePiece0", 0);
-    SmartDashboard.putBoolean("piece0IsCube", false);
-    SmartDashboard.putNumber("pickupPiece1", 0);
-    SmartDashboard.putNumber("placePiece1", 0);
-    SmartDashboard.putBoolean("piece1IsCube", true);
-    SmartDashboard.putNumber("pickupPiece2", 0);
-    SmartDashboard.putNumber("placePiece2", 0);
-    SmartDashboard.putBoolean("piece2IsCube", true);
-    SmartDashboard.putNumber("pickupPiece3", 0);
-    SmartDashboard.putNumber("placePiece3", 0);
+    SmartDashboard.putNumber("placePiece0", -1);
+    // SmartDashboard.putBoolean("piece0IsCube", false);
+    SmartDashboard.putNumber("pickupPiece1", -1);
+    SmartDashboard.putNumber("placePiece1", -1);
+    // SmartDashboard.putBoolean("piece1IsCube", true);
+    SmartDashboard.putNumber("pickupPiece2", -1);
+    SmartDashboard.putNumber("placePiece2", -1);
+    // SmartDashboard.putBoolean("piece2IsCube", true);
+    SmartDashboard.putNumber("pickupPiece3", -1);
+    SmartDashboard.putNumber("placePiece3", -1);
     // SmartDashboard.putNumber("chargePosition", 0);
 
   }

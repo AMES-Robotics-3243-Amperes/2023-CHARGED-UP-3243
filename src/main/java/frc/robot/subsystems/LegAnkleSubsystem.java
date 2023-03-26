@@ -158,7 +158,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
 
     // H! Invert the motors that need to be inverted
     motorExtension.setInverted(true);
-    motorRoll.setInverted(true);
+    motorRoll.setInverted(false);
     motorPivot.setInverted(false);
     motorPitchRight.setInverted(true);
     motorPitchLeft.setInverted(false);
@@ -473,11 +473,12 @@ public class LegAnkleSubsystem extends SubsystemBase {
     // H! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
     // H! find kinematic position and display it
+    // :D I commented these out because it's cluttering shuffleboard
     double[] kinematicSetpoints = targetPosition.getKinematicPositions();
-    SmartDashboard.putNumber("targetX", kinematicSetpoints[0]);
-    SmartDashboard.putNumber("targetY", kinematicSetpoints[1]);
-    SmartDashboard.putNumber("targetIKPitch", kinematicSetpoints[2]);
-    SmartDashboard.putNumber("targetIKRoll", kinematicSetpoints[3]);
+    // SmartDashboard.putNumber("targetX", kinematicSetpoints[0]);
+    // SmartDashboard.putNumber("targetY", kinematicSetpoints[1]);
+    // SmartDashboard.putNumber("targetIKPitch", kinematicSetpoints[2]);
+    // SmartDashboard.putNumber("targetIKRoll", kinematicSetpoints[3]);
 
     // H! display the current setpoint positions
     SmartDashboard.putNumber("targetPivot", targetPosition.pivot);
@@ -497,7 +498,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("pitchEncoder", encoderPitch.getPosition());
     SmartDashboard.putNumber("rollEncoder", encoderRoll.getPosition());
 
-    SmartDashboard.putNumber("rollRelativeEncoder", encoderRoll.getSparkMAXEncoder().getPosition());
+    // SmartDashboard.putNumber("rollRelativeEncoder", encoderRoll.getSparkMAXEncoder().getPosition());
 
 
 
