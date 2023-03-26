@@ -18,6 +18,9 @@ import java.util.List;
 
 /**
  * A command used to drive a {@link DriveSubsystem} to a series Pose2d's
+ * 
+ * <p> If more than 1 point is given, all but the last points are more
+ * lenient with when the robot will move on from that point
  */
 public class SwerveAutoMoveCommand extends CommandBase {
   private final DriveSubsystem m_subsystem;
@@ -136,12 +139,17 @@ public class SwerveAutoMoveCommand extends CommandBase {
       return;
     }
 
+    // <> get the max distance and rotation from the goal
+    // (more lenient if on an intermidiate point)
+    double maxDistance = goalList.size() > 1 ? DriveConstants.AutoConstants.kMaxLenientMetersFromGoal : maxDistanceFromSetpointMeters;
+    Rotation2d maxRotationOffset = goalList.size() > 1 ? DriveConstants.AutoConstants.kMaxLenientRotationFromGoal : maxAngleFromSetpoint;
+
     // <> figure out if we're at a valid position and rotation
-    boolean distanceOk = getDistanceFromGoal() <= maxDistanceFromSetpointMeters;
+    boolean distanceOk = getDistanceFromGoal() <= maxDistance;
 
     double rotationErrorDegrees = Math.abs(
       m_subsystem.getClampedHeading().getDegrees() - getGoal().getRotation().getDegrees());
-    boolean rotationOk = rotationErrorDegrees <= maxAngleFromSetpoint.getDegrees();
+    boolean rotationOk = rotationErrorDegrees <= maxRotationOffset.getDegrees();
 
     // <> and if we are remove the current goal
     if (distanceOk && rotationOk) {

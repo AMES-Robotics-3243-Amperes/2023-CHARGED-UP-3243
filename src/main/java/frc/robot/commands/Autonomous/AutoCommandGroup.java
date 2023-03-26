@@ -6,6 +6,7 @@ package frc.robot.commands.Autonomous;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.DriveTrain.DriveConstants;
@@ -111,8 +112,7 @@ public class AutoCommandGroup extends SequentialCommandGroup {
       autoCommands.add(goToPieceDropOffCommand);
 
       SequentialCommandGroup dropOffCommand = new SequentialCommandGroup(
-        new MoveArmToPlaceTargetAuto(legAnkleSubsystem, m_secondaryJoy),
-        new ReleaseGameObjectAuto(m_grabberSubsystem));
+        new MoveArmToPlaceTargetAuto(legAnkleSubsystem, m_secondaryJoy), new ReleaseGameObjectAuto(m_grabberSubsystem));
       autoCommands.add(dropOffCommand);
     }
 
@@ -123,8 +123,7 @@ public class AutoCommandGroup extends SequentialCommandGroup {
       autoCommands.add(goToPieceCommand);
 
       SequentialCommandGroup pickupCommand = new SequentialCommandGroup(
-        new MoveArmToPickupTargetAuto(legAnkleSubsystem),
-        new PickupGameObjectAuto(grabberSubsystem));
+        new MoveArmToPickupTargetAuto(legAnkleSubsystem), new PickupGameObjectAuto(grabberSubsystem));
       autoCommands.add(pickupCommand);
 
       SwerveAutoMoveCommand goToPieceDropOffCommand = new SwerveAutoMoveCommand(m_driveSubsystem, new ArrayList<>(
@@ -132,8 +131,7 @@ public class AutoCommandGroup extends SequentialCommandGroup {
       autoCommands.add(goToPieceDropOffCommand);
 
       SequentialCommandGroup dropOffCommand = new SequentialCommandGroup(
-        new MoveArmToPlaceTargetAuto(legAnkleSubsystem, m_secondaryJoy),
-        new ReleaseGameObjectAuto(m_grabberSubsystem));
+        new MoveArmToPlaceTargetAuto(legAnkleSubsystem, m_secondaryJoy), new ReleaseGameObjectAuto(m_grabberSubsystem));
       autoCommands.add(dropOffCommand);
     }
 
@@ -144,8 +142,7 @@ public class AutoCommandGroup extends SequentialCommandGroup {
       autoCommands.add(goToPieceCommand);
 
       SequentialCommandGroup pickupCommand = new SequentialCommandGroup(
-        new MoveArmToPickupTargetAuto(legAnkleSubsystem),
-        new PickupGameObjectAuto(grabberSubsystem));
+        new MoveArmToPickupTargetAuto(legAnkleSubsystem), new PickupGameObjectAuto(grabberSubsystem));
       autoCommands.add(pickupCommand);
 
       SwerveAutoMoveCommand goToPieceDropOffCommand = new SwerveAutoMoveCommand(m_driveSubsystem, new ArrayList<>(
@@ -153,8 +150,7 @@ public class AutoCommandGroup extends SequentialCommandGroup {
       autoCommands.add(goToPieceDropOffCommand);
 
       SequentialCommandGroup dropOffCommand = new SequentialCommandGroup(
-        new MoveArmToPlaceTargetAuto(legAnkleSubsystem, m_secondaryJoy),
-        new ReleaseGameObjectAuto(m_grabberSubsystem));
+        new MoveArmToPlaceTargetAuto(legAnkleSubsystem, m_secondaryJoy), new ReleaseGameObjectAuto(m_grabberSubsystem));
       autoCommands.add(dropOffCommand);
     }
 
@@ -164,7 +160,9 @@ public class AutoCommandGroup extends SequentialCommandGroup {
       Pose2d chargePoint = bottomNearChargeCorner.plus(new Transform2d(bottomNearChargeCorner, topFarChargeCorner))
         .div(2);
 
-      Pose2d intermediatePoint = new Pose2d();
+      Pose2d intermediatePoint = new Pose2d(
+        new Translation2d(nearChargeAvoidIntermediatePoint.getX(), chargePoint.getY()),
+        nearChargeAvoidIntermediatePoint.getRotation());
 
       SwerveAutoMoveCommand getToPosCommand = new SwerveAutoMoveCommand(m_driveSubsystem,
         new ArrayList<>(List.of(intermediatePoint, chargePoint)),
