@@ -11,6 +11,7 @@ import frc.robot.subsystems.LegAnkleSubsystem;
 public class MoveLegAnkleToPlacementPositionCommand extends MoveLegAnkleToPositionCommand {
 
   JoyUtil joy;
+  MoveLegAnkleToPlacementPositionHIGH placeHigh = new MoveLegAnkleToPlacementPositionHIGH(legAnkleSubsystem);
 
   /** Creates a new MoveLegAnkleToPickupPositionCommand. 
    * 
@@ -22,6 +23,7 @@ public class MoveLegAnkleToPlacementPositionCommand extends MoveLegAnkleToPositi
     super(legAnkleSubsystem);
 
     this.joy = joy;
+
     
     
     // Use addRequirements() here to declare subsystem dependencies.
@@ -37,10 +39,10 @@ public class MoveLegAnkleToPlacementPositionCommand extends MoveLegAnkleToPositi
     legAnkleSubsystem.setMotorPositions(targetExtension, targetPivot, targetPitch, targetRoll);
   }
 
-  public void high(){
-    setTargets(Constants.AutomationConfiguration.legAnklePlacementPositionHIGH);
-    legAnkleSubsystem.setMotorPositions(targetExtension, targetPivot, targetPitch, targetRoll);
-  }
+  // public void high(){
+  //   setTargets(Constants.AutomationConfiguration.legAnklePlacementPositionHIGH);
+  //   legAnkleSubsystem.setMotorPositions(targetExtension, targetPivot, targetPitch, targetRoll);
+  // }
 
   @Override
   public void initialize(){
@@ -48,7 +50,7 @@ public class MoveLegAnkleToPlacementPositionCommand extends MoveLegAnkleToPositi
     if(joy.getPOVDown()){
       low();
     } else if(joy.getPOVUp()){
-      high();
+      placeHigh.schedule();
     } else {
       mid();
     }

@@ -4,18 +4,12 @@
 
 package frc.robot.commands.Autonomous;
 
-import frc.robot.JoyUtil;
-import frc.robot.commands.LegAnkle.MoveLegAnkleToPlacementPositionCommand;
+import frc.robot.commands.LegAnkle.MoveLegAnkleToPlacementPositionHIGH;
 import frc.robot.subsystems.LegAnkleSubsystem;
 
-public class MoveArmToPlaceTargetAuto extends MoveLegAnkleToPlacementPositionCommand {
+public class MoveArmToPlaceTargetAuto extends MoveLegAnkleToPlacementPositionHIGH {
 
-  MoveArmToPlaceTargetAuto(LegAnkleSubsystem legAnkleSubsystem, JoyUtil secondaryJoy) {
-    super(legAnkleSubsystem, secondaryJoy);
-  }
-
-  @Override
-  public void initialize() {
-    high();
+  MoveArmToPlaceTargetAuto(LegAnkleSubsystem legAnkleSubsystem) {
+    super(legAnkleSubsystem);
   }
 }

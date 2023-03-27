@@ -21,8 +21,8 @@ public class MoveLegAnkleToPickupPositionCommandLOW extends SequentialCommandGro
   */
   public MoveLegAnkleToPickupPositionCommandLOW(LegAnkleSubsystem legAnkleSubsystem) {
     addCommands(
-      new MoveLegAnkleToPositionCommand(legAnkleSubsystem, null, null, Constants.AutomationConfiguration.legAnkleDoubleLoadingPosition.pitch, null),
-      new MoveLegAnkleToPositionCommand(legAnkleSubsystem, Constants.AutomationConfiguration.legAnkleDoubleLoadingPosition)
+      new MoveLegAnkleToPositionCommand(legAnkleSubsystem, Constants.AutomationConfiguration.legAnklePickupPositionLOW.extension, null, Constants.AutomationConfiguration.legAnklePickupPositionLOW.pitch, null),
+      new MoveLegAnkleToPositionCommand(legAnkleSubsystem, Constants.AutomationConfiguration.legAnklePickupPositionLOW)
     );
   }
 }

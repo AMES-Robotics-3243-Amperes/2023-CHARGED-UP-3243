@@ -4,18 +4,21 @@
 
 package frc.robot.commands.LegAnkle;
 
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.subsystems.LegAnkleSubsystem;
 
-public class MoveLegAnkleToNeutralPositionCommand extends MoveLegAnkleToPositionCommand {
-  /** Creates a new MoveLegAnkleToPickupPositionCommand. 
+public class MoveLegAnkleToNeutralPositionCommand extends SequentialCommandGroup {
+
+  /** Creates a new MoveLegAnkleToNeutralPositionCommand. 
    * 
-   * This will move the leg ankle to the inital position, to disengage the pawl. It will end when it is in an acceptable margin of the setpoints.
    * 
    * @param legAnkleSubsystem The {@link LegAnkleSubsystem} that this is controlling.
   */
   public MoveLegAnkleToNeutralPositionCommand(LegAnkleSubsystem legAnkleSubsystem) {
-    super(legAnkleSubsystem, Constants.AutomationConfiguration.initialLegAnklePositonMovement);
-    // Use addRequirements() here to declare subsystem dependencies.
+    addCommands(
+      new MoveLegAnkleToPositionCommand(legAnkleSubsystem, Constants.AutomationConfiguration.initialLegAnklePositonMovement.extension, null, Constants.AutomationConfiguration.initialLegAnklePositonMovement.pitch, null),
+      new MoveLegAnkleToPositionCommand(legAnkleSubsystem, Constants.AutomationConfiguration.initialLegAnklePositonMovement)
+    );
   }
 }

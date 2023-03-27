@@ -51,39 +51,38 @@ public class GrabberSubsystem extends SubsystemBase {
 
   /** ++ Creates a new GrabberSubsystem. This subsystem controls the grabber, and NOT the wrist*/
   public GrabberSubsystem() {
-
-    // ++ set the PID values of the grabber
-    setGrabberPIDValues();
-
+    
     // ++ initializes opener objects
     grabberOpenerEncoder = grabberOpenerMotor.getAbsoluteEncoder(Type.kDutyCycle);
-//    grabberOpenerEncoder.setPositionConversionFactor(Constants.Grabber.grabberMotorOpenerGearRatio);
+    //    grabberOpenerEncoder.setPositionConversionFactor(Constants.Grabber.grabberMotorOpenerGearRatio);
     grabberOpenerPID = grabberOpenerMotor.getPIDController();
     grabberOpenerPID.setFeedbackDevice(grabberOpenerEncoder);
-
+    
+    
     grabberOpenerEncoder.setZeroOffset(0.65);
-
+    
     // ++ initializes wheel objects
-    //wheelMotorEncoderOne = wheelMotorOne.getEncoder();
-    //wheelMotorEncoderTwo = wheelMotorTwo.getEncoder();
-    //wheelMotorEncoderOne.setVelocityConversionFactor(Constants.Grabber.wheelMotorGearRatio);
-    //wheelMotorEncoderTwo.setVelocityConversionFactor(Constants.Grabber.wheelMotorGearRatio);
-    //wheelMotorOnePID = wheelMotorOne.getPIDController();
-    //wheelMotorTwoPID = wheelMotorTwo.getPIDController();
-
-    // setGrabberPIDValues();
-
-
+    // wheelMotorEncoderOne = wheelMotorOne.getEncoder();
+    // wheelMotorEncoderTwo = wheelMotorTwo.getEncoder();
+    // wheelMotorEncoderOne.setVelocityConversionFactor(Constants.Grabber.wheelMotorGearRatio);
+    // wheelMotorEncoderTwo.setVelocityConversionFactor(Constants.Grabber.wheelMotorGearRatio);
+    wheelMotorOnePID = wheelMotorOne.getPIDController();
+    wheelMotorTwoPID = wheelMotorTwo.getPIDController();
+    
+    // ++ set the PID values of the grabber
+    setGrabberPIDValues();
+    
+    
 
     // ££ sets the current limits
     // ++ soft limits
     grabberOpenerMotor.setSmartCurrentLimit(Constants.Grabber.softOpenerMotorCurrentLimit);
-    //wheelMotorOne.setSmartCurrentLimit(Constants.Grabber.softWheelMotorCurrentLimit);
-    //wheelMotorTwo.setSmartCurrentLimit(Constants.Grabber.softWheelMotorCurrentLimit);
+    wheelMotorOne.setSmartCurrentLimit(Constants.Grabber.softWheelMotorCurrentLimit);
+    wheelMotorTwo.setSmartCurrentLimit(Constants.Grabber.softWheelMotorCurrentLimit);
     // ++ hard limits
     grabberOpenerMotor.setSecondaryCurrentLimit(Constants.Grabber.hardOpenerMotorCurrentLimit);
-    //wheelMotorOne.setSecondaryCurrentLimit(Constants.Grabber.hardWheelMotorCurrentLimit);
-    //wheelMotorTwo.setSecondaryCurrentLimit(Constants.Grabber.hardWheelMotorCurrentLimit);
+    wheelMotorOne.setSecondaryCurrentLimit(Constants.Grabber.hardWheelMotorCurrentLimit);
+    wheelMotorTwo.setSecondaryCurrentLimit(Constants.Grabber.hardWheelMotorCurrentLimit);
 
     grabberOpenerMotor.burnFlash();
 
@@ -124,7 +123,8 @@ public class GrabberSubsystem extends SubsystemBase {
   }
 
   /** ++ closes grabber */
-  public void closeGrabber () {
+  public void 
+  closeGrabber () {
     setGrabberPosition(Constants.Grabber.closedGrabberSetpoint);
     setGrabberWheelSpeeds(Constants.Grabber.ambientWheelSpeed);
   }

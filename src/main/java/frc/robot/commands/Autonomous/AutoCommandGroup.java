@@ -15,6 +15,7 @@ import frc.robot.JoyUtil;
 import frc.robot.commands.DriveTrain.BalanceCommand;
 import frc.robot.commands.DriveTrain.LockSwerveWheelsCommand;
 import frc.robot.commands.DriveTrain.SwerveAutoMoveCommand;
+import frc.robot.commands.LegAnkle.MoveLegAnkleToNeutralPositionCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.GrabberSubsystem;
 import frc.robot.subsystems.LegAnkleSubsystem;
@@ -173,7 +174,7 @@ public class AutoCommandGroup extends SequentialCommandGroup {
 
   private void addNewPlacementRoutine(LegAnkleSubsystem legAnkleSubsystem, ArrayList<Command> autoCommands) {
     SequentialCommandGroup dropOffCommand = new SequentialCommandGroup(
-      new MoveArmToPlaceTargetAuto(legAnkleSubsystem, m_secondaryJoy), new ReleaseGameObjectAuto(m_grabberSubsystem, m_secondaryJoy));
+      new MoveArmToPlaceTargetAuto(legAnkleSubsystem), new ReleaseGameObjectAuto(m_grabberSubsystem, m_secondaryJoy), new MoveLegAnkleToNeutralPositionCommand(legAnkleSubsystem));
 
     autoCommands.add(dropOffCommand);
   }
