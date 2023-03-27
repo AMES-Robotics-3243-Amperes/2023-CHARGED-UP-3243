@@ -8,25 +8,25 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.subsystems.LegAnkleSubsystem;
 
-public class MoveLegAnkleToNeutralPositionCommand extends SequentialCommandGroup {
+public class MoveLegAnkleToPlacementPositionLOW extends SequentialCommandGroup {
 
-  /** Creates a new MoveLegAnkleToNeutralPositionCommand. 
+  /** Creates a new MoveLegAnkleToPlacementPositionHIGH. 
    * 
    * 
    * @param legAnkleSubsystem The {@link LegAnkleSubsystem} that this is controlling.
   */
-  public MoveLegAnkleToNeutralPositionCommand(LegAnkleSubsystem legAnkleSubsystem) {
+  public MoveLegAnkleToPlacementPositionLOW(LegAnkleSubsystem legAnkleSubsystem) {
     addCommands(
       new MoveLegAnkleToPositionCommand(legAnkleSubsystem, 
-       Constants.AutomationConfiguration.legAnklePickupPositionSweep.extension, 
+        Constants.AutomationConfiguration.legAnklePlacementPositionLOW.extension,
         null, 
-        null, 
+        Constants.AutomationConfiguration.legAnklePlacementPositionLOW.pitch, 
         null
       ),
       new MoveLegAnkleToPositionCommand(legAnkleSubsystem, 
-        Constants.AutomationConfiguration.legAnklePickupPositionSweep.extension, 
-        Constants.AutomationConfiguration.legAnklePickupPositionSweep.pivot, 
-        Constants.AutomationConfiguration.legAnklePickupPositionSweep.pitch, 
+        Constants.AutomationConfiguration.legAnklePlacementPositionLOW.extension,
+        Constants.AutomationConfiguration.legAnklePlacementPositionLOW.pivot,
+        Constants.AutomationConfiguration.legAnklePlacementPositionLOW.pitch,
         null
       )
     );

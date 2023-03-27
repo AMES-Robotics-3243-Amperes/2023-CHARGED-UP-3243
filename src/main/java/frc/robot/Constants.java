@@ -559,14 +559,14 @@ public final class Constants {
     /**The position of the leg ankle to easily pick up game pieces
      * H!
      */
-    public static final LegAnklePosition legAnklePickupPosition = new LegAnklePosition(
+    public static final LegAnklePosition legAnklePickupPositionCrane = new LegAnklePosition(
       WristAndArm.PickupSetpoints.extension, 
       WristAndArm.PickupSetpoints.pivot, 
       WristAndArm.PickupSetpoints.pitch, 
       WristAndArm.PickupSetpoints.roll
     );
 
-    public static final LegAnklePosition legAnklePickupPositionLOW = new LegAnklePosition(
+    public static final LegAnklePosition legAnklePickupPositionSweep = new LegAnklePosition(
       WristAndArm.PickupSetpointsLOW.extension, 
       WristAndArm.PickupSetpointsLOW.pivot, 
       WristAndArm.PickupSetpointsLOW.pitch, 

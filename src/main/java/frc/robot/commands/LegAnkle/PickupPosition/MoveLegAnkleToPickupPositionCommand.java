@@ -12,11 +12,11 @@ import frc.robot.JoyUtil;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class MoveLegAnkleToPickupPositionCommand extends InstantCommand {
   public JoyUtil controller;
-  public MoveLegAnkleToPickupPositionCommandLOW lowCommand;
-  public MoveLegAnkleToPickupPositionCommandNormal normalCommand;
+  public MoveLegAnkleToPickupPositionCommandSweep lowCommand;
+  public MoveLegAnkleToPickupPositionCommandCrane normalCommand;
   public MoveLegAnkleToPickupPositionCommandDoubleLoading doubleLoadingCommand;
 
-  public MoveLegAnkleToPickupPositionCommand(MoveLegAnkleToPickupPositionCommandLOW lowCommand, MoveLegAnkleToPickupPositionCommandNormal normalCommand, MoveLegAnkleToPickupPositionCommandDoubleLoading doubleLoadingCommand, JoyUtil controller) {
+  public MoveLegAnkleToPickupPositionCommand(MoveLegAnkleToPickupPositionCommandSweep lowCommand, MoveLegAnkleToPickupPositionCommandCrane normalCommand, MoveLegAnkleToPickupPositionCommandDoubleLoading doubleLoadingCommand, JoyUtil controller) {
     this.controller = controller;
     this.lowCommand = lowCommand;
     this.doubleLoadingCommand = doubleLoadingCommand;

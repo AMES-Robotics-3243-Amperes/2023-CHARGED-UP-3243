@@ -17,8 +17,18 @@ public class MoveLegAnkleToPlacementPositionHIGH extends SequentialCommandGroup 
   */
   public MoveLegAnkleToPlacementPositionHIGH(LegAnkleSubsystem legAnkleSubsystem) {
     addCommands(
-      new MoveLegAnkleToPositionCommand(legAnkleSubsystem, null, Constants.AutomationConfiguration.legAnklePlacementPositionHIGH.pivot, Constants.AutomationConfiguration.legAnklePlacementPositionHIGH.pitch, null),
-      new MoveLegAnkleToPositionCommand(legAnkleSubsystem, Constants.AutomationConfiguration.legAnklePlacementPositionHIGH)
+      new MoveLegAnkleToPositionCommand(legAnkleSubsystem, 
+        null, 
+        Constants.AutomationConfiguration.legAnklePlacementPositionHIGH.pivot, 
+        Constants.AutomationConfiguration.legAnklePlacementPositionHIGH.pitch, 
+        null
+      ),
+      new MoveLegAnkleToPositionCommand(legAnkleSubsystem, 
+        Constants.AutomationConfiguration.legAnklePlacementPositionHIGH.extension, 
+        Constants.AutomationConfiguration.legAnklePlacementPositionHIGH.pivot, 
+        Constants.AutomationConfiguration.legAnklePlacementPositionHIGH.pitch, 
+        null
+      )
     );
   }
 }

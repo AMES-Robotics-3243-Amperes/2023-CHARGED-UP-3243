@@ -26,8 +26,8 @@ import frc.robot.commands.LegAnkle.WristRollDefaultCommand;
 import frc.robot.commands.LegAnkle.WristRollUpCommand;
 import frc.robot.commands.LegAnkle.PickupPosition.MoveLegAnkleToPickupPositionCommand;
 import frc.robot.commands.LegAnkle.PickupPosition.MoveLegAnkleToPickupPositionCommandDoubleLoading;
-import frc.robot.commands.LegAnkle.PickupPosition.MoveLegAnkleToPickupPositionCommandLOW;
-import frc.robot.commands.LegAnkle.PickupPosition.MoveLegAnkleToPickupPositionCommandNormal;
+import frc.robot.commands.LegAnkle.PickupPosition.MoveLegAnkleToPickupPositionCommandSweep;
+import frc.robot.commands.LegAnkle.PickupPosition.MoveLegAnkleToPickupPositionCommandCrane;
 import frc.robot.commands.SnapToGridRoutine.SnapToGridCommand;
 import frc.robot.subsystems.*;
 
@@ -71,8 +71,8 @@ public class RobotContainer {
   // MoveLegAnkleToPickupPositionCommand(
   //   m_legAnkleSubsystem);// :D duplicate??
   public final SnapToGridCommand m_SnapToGridCommand = new SnapToGridCommand(m_driveSubsystem, fieldPosManager, primaryController, secondaryController);
-  public final MoveLegAnkleToPickupPositionCommandNormal m_moveLegAnkleToPickupPositionCommandNormal = new MoveLegAnkleToPickupPositionCommandNormal(m_legAnkleSubsystem);
-  public final MoveLegAnkleToPickupPositionCommandLOW m_moveLegAnkleToPickupPositionCommandLOW = new MoveLegAnkleToPickupPositionCommandLOW(m_legAnkleSubsystem);
+  public final MoveLegAnkleToPickupPositionCommandCrane m_moveLegAnkleToPickupPositionCommandNormal = new MoveLegAnkleToPickupPositionCommandCrane(m_legAnkleSubsystem);
+  public final MoveLegAnkleToPickupPositionCommandSweep m_moveLegAnkleToPickupPositionCommandLOW = new MoveLegAnkleToPickupPositionCommandSweep(m_legAnkleSubsystem);
   public final MoveLegAnkleToPickupPositionCommandDoubleLoading m_moveLegAnkleToPickupPositionCommandDoubleLoading = new MoveLegAnkleToPickupPositionCommandDoubleLoading(m_legAnkleSubsystem);
   public final MoveLegAnkleToPickupPositionCommand m_MoveLegAnkleToPickupPositionCommand = new MoveLegAnkleToPickupPositionCommand(m_moveLegAnkleToPickupPositionCommandLOW, m_moveLegAnkleToPickupPositionCommandNormal, m_moveLegAnkleToPickupPositionCommandDoubleLoading, secondaryController);
 
