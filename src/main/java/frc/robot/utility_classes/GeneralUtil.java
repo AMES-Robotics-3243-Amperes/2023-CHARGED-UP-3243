@@ -7,7 +7,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N3;
-import frc.robot.subsystems.DoublePhotonVisionSubsystem;
 
 public class GeneralUtil {
 
@@ -78,7 +77,7 @@ public class GeneralUtil {
       }
       
       // :> normalizes the Vector and angle and puts it back together into a Rotation3D
-      averageVector = DoublePhotonVisionSubsystem.normalize(averageVector);
+      averageVector = GeneralUtil.normalize(averageVector);
       return new Rotation3d(averageVector, averageAngle);
     }
 
@@ -116,5 +115,10 @@ public class GeneralUtil {
       }
     
       return new Pose3d(averageTranslation3d(translations), averageRotation3d(rotations));
+    }
+
+    // :> Manually normalizes the vector since WPILIB doesn't have a function for it already.
+    public static Vector<N3> normalize(Vector<N3> vector) {
+      return vector.div(Math.sqrt(vector.elementPower(2).elementSum()));
     }
 }

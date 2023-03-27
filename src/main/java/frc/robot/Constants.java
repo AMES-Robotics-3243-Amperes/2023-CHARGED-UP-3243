@@ -229,13 +229,16 @@ public final class Constants {
 
       // <> stuff pertaining to auto driving
       public static final class AutoConstants {
-        public static final double kP = 1.7;
+        public static final double kP = 0.6;
         public static final double kI = 0;
         public static final double kD = 0;
 
-        public static final double kMaxVelocityMetersPerSecond = 1.4;
-        public static final double kMaxAccelerationMetersPerSecondSq = 3.5;
-        public static final double kMaxJerkMetersPerSecondCubed = 5;
+        public static final double kGoalVelocityMagnitudeScalar = 3.2;
+
+        public static final double kMaxVelocityMetersPerSecond = 1.5
+        ;
+        public static final double kMaxAccelerationMetersPerSecondSq = 2.5;
+        public static final double kMaxJerkMetersPerSecondCubed = 3.5;
 
         public static final TrapezoidProfile.Constraints kConstraints = new TrapezoidProfile.Constraints(
           kMaxAccelerationMetersPerSecondSq, kMaxJerkMetersPerSecondCubed);

@@ -8,6 +8,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveTrain.DriveConstants;
 import frc.robot.subsystems.DriveSubsystem;
@@ -174,7 +175,8 @@ public class SwerveAutoMoveCommand extends CommandBase {
     cleanUpGoalList();
 
     // <> find the translation from the robot to the goal
-    Translation2d uncappedGoalVelocity = getGoal().getTranslation().minus(subsystemPose.getTranslation());
+    Translation2d uncappedGoalVelocity = getGoal().getTranslation().minus(subsystemPose.getTranslation())
+      .times(DriveConstants.AutoConstants.kGoalVelocityMagnitudeScalar);
     double uncappedGoalVelocityMagnitude = uncappedGoalVelocity.getNorm();
 
     // <> if the uncapped goal velocity is too long, limit the magnitude

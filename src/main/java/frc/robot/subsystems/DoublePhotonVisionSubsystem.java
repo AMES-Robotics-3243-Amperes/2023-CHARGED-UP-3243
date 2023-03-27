@@ -2,11 +2,9 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -180,11 +178,6 @@ public class DoublePhotonVisionSubsystem extends SubsystemBase {
     //}
 
     //return null;
-  }
-
-  // :> Manually normalizes the vector since WPILIB doesn't have a function for it already.
-  public static Vector<N3> normalize(Vector<N3> vector) {
-    return vector.div(Math.sqrt(vector.elementPower(2).elementSum()));
   }
 
   // :> Returns the best and all targets it can see and if it doesn't see any it returns null
