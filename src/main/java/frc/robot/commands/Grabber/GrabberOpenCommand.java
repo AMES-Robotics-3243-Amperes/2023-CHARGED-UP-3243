@@ -7,9 +7,10 @@ package frc.robot.commands.Grabber;
 import frc.robot.JoyUtil;
 import frc.robot.subsystems.GrabberSubsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 /** GrabberCommand controls the grabber. */
-public class GrabberOpenCommand extends CommandBase {
+public class GrabberOpenCommand extends InstantCommand {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   // ££ Defines the subsystem and the controller
   JoyUtil joy;
@@ -32,8 +33,7 @@ public class GrabberOpenCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // ++ set the PID values of the grabber
-    m_GrabberSubsystem.setGrabberPIDValues();
+
 
     if (joy.getPOVUp()) {
       m_GrabberSubsystem.ejectObject();
@@ -45,27 +45,4 @@ public class GrabberOpenCommand extends CommandBase {
     
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-
-    
-    m_GrabberSubsystem.openGrabber();
-      
-
-  }
-
- 
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
-    m_GrabberSubsystem.setGrabberWheelSpeeds(0.0);
-    m_GrabberSubsystem.setGrabberWheelSpeeds(0.0);
-  }
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return true;
-  }
 }

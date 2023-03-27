@@ -45,9 +45,9 @@ public class SnapToGridCommand extends SwerveAutoMoveCommand { // :D hi after lo
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    super.initialize();
     index = m_FieldPosManager.getNearestScoringZoneIndex();
     changeGoal(m_FieldPosManager.get2dFieldObjectPose(FieldPosManager.fieldSpot2d.scoringPosition, true, index));
+    super.initialize();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -90,10 +90,6 @@ public class SnapToGridCommand extends SwerveAutoMoveCommand { // :D hi after lo
   public boolean isFinished() {
     // ss stops everything if the movement joysticks move. These functions apply deadzone automatically
     if (m_PrimaryController.getLeftX() != 0 || m_PrimaryController.getLeftY() != 0 || m_PrimaryController.getRightX() != 0 || m_PrimaryController.getRightY() != 0) { // use Math.abs() and also check RightY joystick
-      return true;
-    }
-    
-    if (m_PrimaryController.getAButton()) {
       return true;
     }
 

@@ -7,6 +7,7 @@ package frc.robot.commands.Autonomous;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.commands.Grabber.GrabberOpenCommand;
 import frc.robot.subsystems.GrabberSubsystem;
+import frc.robot.JoyUtil;
 
 public class ReleaseGameObjectAuto extends GrabberOpenCommand {
   
@@ -15,8 +16,8 @@ public class ReleaseGameObjectAuto extends GrabberOpenCommand {
   protected boolean confirmed = false;
 
   /** Creates a new ReleaseGameObject. */
-  public ReleaseGameObjectAuto(GrabberSubsystem grabberSubsystem) {
-    super(grabberSubsystem);
+  public ReleaseGameObjectAuto(GrabberSubsystem grabberSubsystem, JoyUtil controller) {
+    super(grabberSubsystem, controller);
   }
 
   @Override

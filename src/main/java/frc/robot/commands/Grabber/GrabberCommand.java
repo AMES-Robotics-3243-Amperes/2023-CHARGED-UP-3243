@@ -15,6 +15,16 @@ public class GrabberCommand extends CommandBase {
   private final GrabberSubsystem m_GrabberSubsystem;
   private final JoyUtil m_controller;
 
+
+
+  // ++   -------------------- TODO: probably delete this? ----------------
+
+
+
+
+
+
+
   /**
    * Creates a new GrabberCommand.
    *
@@ -32,9 +42,6 @@ public class GrabberCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
-    // ++ set the PID values of the grabber
-    m_GrabberSubsystem.setGrabberPIDValues();
     
   }
 
@@ -42,9 +49,9 @@ public class GrabberCommand extends CommandBase {
   @Override
   public void execute() {
 
-    // ++ set speeds based on controller readings TEMPORARY, FOR TESTING
-    m_GrabberSubsystem.setGrabberPosition( m_controller.getLeftX() );
-    m_GrabberSubsystem.setGrabberWheelSpeeds( m_controller.getRightTriggerAxis() * 0.05);
+    // // ++ set speeds based on controller readings TEMPORARY, FOR TESTING
+    // m_GrabberSubsystem.setGrabberPosition( m_controller.getLeftX() );
+    // m_GrabberSubsystem.setGrabberWheelSpeeds( m_controller.getRightTriggerAxis() * 0.05);
     
 
   }

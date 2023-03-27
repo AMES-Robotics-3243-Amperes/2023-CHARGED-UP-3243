@@ -173,7 +173,7 @@ public class AutoCommandGroup extends SequentialCommandGroup {
 
   private void addNewPlacementRoutine(LegAnkleSubsystem legAnkleSubsystem, ArrayList<Command> autoCommands) {
     SequentialCommandGroup dropOffCommand = new SequentialCommandGroup(
-      new MoveArmToPlaceTargetAuto(legAnkleSubsystem, m_secondaryJoy), new ReleaseGameObjectAuto(m_grabberSubsystem));
+      new MoveArmToPlaceTargetAuto(legAnkleSubsystem, m_secondaryJoy), new ReleaseGameObjectAuto(m_grabberSubsystem, m_secondaryJoy));
 
     autoCommands.add(dropOffCommand);
   }

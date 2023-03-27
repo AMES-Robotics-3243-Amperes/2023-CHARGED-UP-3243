@@ -7,6 +7,8 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import java.lang.invoke.ConstantCallSite;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
@@ -37,6 +39,9 @@ public class GrabberSubsystem extends SubsystemBase {
   //private RelativeEncoder wheelMotorEncoderOne;
   //private RelativeEncoder wheelMotorEncoderTwo;
 
+  private CANSparkMax wheelMotorOne = new CANSparkMax(Constants.Grabber.wheelMotorOneID, MotorType.kBrushless);
+  private CANSparkMax wheelMotorTwo = new CANSparkMax(Constants.Grabber.wheelMotorTwoID, MotorType.kBrushless);
+
   // ++ create PID objects
   private SparkMaxPIDController wheelMotorOnePID;
   private SparkMaxPIDController wheelMotorTwoPID;
@@ -46,6 +51,9 @@ public class GrabberSubsystem extends SubsystemBase {
 
   /** ++ Creates a new GrabberSubsystem. This subsystem controls the grabber, and NOT the wrist*/
   public GrabberSubsystem() {
+
+    // ++ set the PID values of the grabber
+    setGrabberPIDValues();
 
     // ++ initializes opener objects
     grabberOpenerEncoder = grabberOpenerMotor.getAbsoluteEncoder(Type.kDutyCycle);
@@ -94,21 +102,38 @@ public class GrabberSubsystem extends SubsystemBase {
     grabberOpenerPID.setReference(position, ControlType.kPosition);
   }
 
+  // public void spinCompliantWheels (double speed) {
+  //   wheelMotorOne.set(speed);
+  //   wheelMotorOne.set(speed);
+  // }
+
   /** ++ opens grabber */
-  public void openGrabber(){
+  public void openGrabber () {
     setGrabberPosition(Constants.Grabber.openGrabberSetpoint);
+    setGrabberWheelSpeeds(0.0);
+  }
+
+  public void openGrabberToWidth () {
+    setGrabberPosition(Constants.Grabber.openGrabberToWidthSetpoint);
+    setGrabberWheelSpeeds(Constants.Grabber.intakeWheelSpeed);
+  }
+
+  public void ejectObject () {
+    setGrabberPosition(Constants.Grabber.openGrabberToWidthSetpoint + 0.1);
+    setGrabberWheelSpeeds(Constants.Grabber.ejectWheelSpeed);
   }
 
   /** ++ closes grabber */
-  public void closeGrabber() {
+  public void closeGrabber () {
     setGrabberPosition(Constants.Grabber.closedGrabberSetpoint);
+    setGrabberWheelSpeeds(Constants.Grabber.ambientWheelSpeed);
   }
 
 
   /** ++ sets speed of grabber intake wheels */
   public void setGrabberWheelSpeeds (double speed) {
-    // wheelMotorOnePID.setReference(speed, ControlType.kVelocity);
-    // wheelMotorTwoPID.setReference(speed, ControlType.kVelocity);
+    wheelMotorOnePID.setReference(speed, ControlType.kVelocity);
+    wheelMotorTwoPID.setReference(speed, ControlType.kVelocity);
   }
 
   /** ++ sets grabber PID values for all motors. Should be run in grabber command init */
@@ -117,13 +142,13 @@ public class GrabberSubsystem extends SubsystemBase {
     grabberOpenerPID.setI(Constants.Grabber.openerMotorIGain);
     grabberOpenerPID.setD(Constants.Grabber.openerMotorDGain);
 
-    // wheelMotorOnePID.setP(Constants.Grabber.wheelMotorPGain);
-    // wheelMotorOnePID.setI(Constants.Grabber.wheelMotorIGain);
-    // wheelMotorOnePID.setD(Constants.Grabber.wheelMotorDGain);
+    wheelMotorOnePID.setP(Constants.Grabber.wheelMotorPGain);
+    wheelMotorOnePID.setI(Constants.Grabber.wheelMotorIGain);
+    wheelMotorOnePID.setD(Constants.Grabber.wheelMotorDGain);
 
-    // wheelMotorTwoPID.setP(Constants.Grabber.wheelMotorPGain);
-    // wheelMotorTwoPID.setI(Constants.Grabber.wheelMotorIGain);
-    // wheelMotorTwoPID.setD(Constants.Grabber.wheelMotorDGain);
+    wheelMotorTwoPID.setP(Constants.Grabber.wheelMotorPGain);
+    wheelMotorTwoPID.setI(Constants.Grabber.wheelMotorIGain);
+    wheelMotorTwoPID.setD(Constants.Grabber.wheelMotorDGain);
   }
 
 
@@ -143,7 +168,6 @@ public class GrabberSubsystem extends SubsystemBase {
     if (grabberOpenerEncoder.getPosition() < Constants.Grabber.minimumGrabberLimit) {
       grabberOpenerPID.setReference( Constants.Grabber.minimumGrabberLimit, ControlType.kPosition);
     }
-
 
   }
 

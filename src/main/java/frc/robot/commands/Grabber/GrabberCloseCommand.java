@@ -5,10 +5,11 @@
 package frc.robot.commands.Grabber;
 
 import frc.robot.subsystems.GrabberSubsystem;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.Constants;
 
 /** GrabberCommand controls the grabber. */
-public class GrabberCloseCommand extends CommandBase {
+public class GrabberCloseCommand extends InstantCommand {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   // ££ Defines the subsystem and the controller
   private final GrabberSubsystem m_GrabberSubsystem;
@@ -26,36 +27,12 @@ public class GrabberCloseCommand extends CommandBase {
     addRequirements(subsystem);
   }
 
-  // Called when the command is initially scheduled.
+  // ++ Called when the command runs. It's an instant command, so init's really the only thing here
   @Override
   public void initialize() {
-
-    // ++ set the PID values of the grabber
-    m_GrabberSubsystem.setGrabberPIDValues();
-    
-  }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-
     
     m_GrabberSubsystem.closeGrabber();
-      
 
   }
 
- 
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
-    m_GrabberSubsystem.setGrabberWheelSpeeds(0.0);
-    m_GrabberSubsystem.setGrabberWheelSpeeds(0.0);
-  }
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return true;
-  }
 }

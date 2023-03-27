@@ -6,6 +6,7 @@ package frc.robot.commands.Grabber;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.GrabberSubsystem;
+import frc.robot.Constants;
 
 public class AmbientSpinningCommand extends CommandBase {
   private final GrabberSubsystem m_GrabberSubsystem;
@@ -23,7 +24,7 @@ public class AmbientSpinningCommand extends CommandBase {
   @Override
   public void execute() {
 
-    m_GrabberSubsystem.spinCompliantWheels(0.1);
+    m_GrabberSubsystem.setGrabberWheelSpeeds(Constants.Grabber.ambientWheelSpeed);
 
   }
 

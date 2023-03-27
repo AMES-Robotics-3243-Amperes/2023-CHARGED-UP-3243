@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.FieldPosManager;
@@ -15,6 +16,7 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -38,7 +40,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
   static AprilTagFieldLayout m_aprilTagFieldLayout;
   private PhotonCamera camera = new PhotonCamera(Constants.PhotonVision.cameraName1);
   
-  private PhotonPoseEstimator backCamPoseEstimator = new PhotonPoseEstimator(m_aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP, camera, camToBot);
+  private PhotonPoseEstimator backCamPoseEstimator;
 
   // :> BIG NOTE: Arducam_OV9281_MMN2 is the name of the camera but that is not what it looks for. It is looking for
   // what photonvision reads
@@ -61,9 +63,10 @@ public class PhotonVisionSubsystem extends SubsystemBase {
       throw new RuntimeException(err);
     }
 
-    backCamPoseEstimator.setFieldTags(m_aprilTagFieldLayout);
+    // backCamPoseEstimator.setFieldTags(m_aprilTagFieldLayout);
+    backCamPoseEstimator = new PhotonPoseEstimator(m_aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP, camera, camToBot);
 
-    // backCamPoseEstimator.setMultiTagFallbackStrategy(PoseStrategy.CLOSEST_TO_LAST_POSE);
+    backCamPoseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
   }
 
   /**
@@ -72,12 +75,13 @@ public class PhotonVisionSubsystem extends SubsystemBase {
    *
    * @return {@link Pose3d} representing the position of the camera on the field, or null if no valid targets are found
    */
-  public Pose3d checkRobotPosition() {
+  public Pose3d checkRobotPosition(PhotonPipelineResult result) {
 
       // backCamPoseEstimator.setLastPose(m_field.getRobotPose());
       
-      Optional<EstimatedRobotPose> backEstPose = backCamPoseEstimator.update();
-
+      Optional<EstimatedRobotPose> backEstPose = backCamPoseEstimator.update(result);
+      SmartDashboard.putBoolean("present", backEstPose.isPresent());
+      SmartDashboard.putBoolean("emppty", backEstPose.isEmpty());
       if(backEstPose.isPresent()){
         return backEstPose.get().estimatedPose;
       }
@@ -91,15 +95,29 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 
     PhotonPipelineResult result = camera.getLatestResult();
 
+    PhotonTrackedTarget resultBestTarget;
+    if (result.hasTargets()) {
+      resultBestTarget = result.getBestTarget();
+    } else {
+      return;
+    }
+
     // This method will be called once per scheduler run
     // :> Checks if targets is empty as a precaution to make sure that it isn't getting values from targets that
     // don't exist
-    if (result.hasTargets() && result.getBestTarget().getPoseAmbiguity() < 0.1) {
-      Pose3d robotPose = checkRobotPosition();
-      // :> As a precuation this makes sure that the field pos mangager isn't getting updated with null data that way
-      // we don't get a null pointer exception
-      if (robotPose != null) {
-        m_field.updateFieldPosWithPhotonVisionPose(robotPose.toPose2d());
+    // This method will be called once per scheduler run
+    // :> Checks if targets is empty as a precaution to make sure that it isn't getting values from targets that
+    // don't exist
+    if (resultBestTarget.getPoseAmbiguity() < 0.1 ) {
+      if (result.getTargets().size() > 1 || resultBestTarget.getArea() < 6.5 || (resultBestTarget.getYaw() > -18 && resultBestTarget.getYaw() < 18)) {
+        Pose3d robotPose = checkRobotPosition(result);
+
+        // :> As a precuation this makes sure that the field pos mangager isn't getting updated with null data that way
+        // we don't get a null pointer exception
+        if (robotPose != null) {
+          // System.out.println(resultBestTarget.getArea() + " " + resultBestTarget.getYaw());
+          m_field.updateFieldPosWithPhotonVisionPose(robotPose.toPose2d());
+        }
       }
     }
   }

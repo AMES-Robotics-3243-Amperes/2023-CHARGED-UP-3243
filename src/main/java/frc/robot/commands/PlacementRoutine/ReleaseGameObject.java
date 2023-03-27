@@ -18,7 +18,7 @@ public class ReleaseGameObject extends GrabberOpenCommand {
 
   /** Creates a new ReleaseGameObject. */
   public ReleaseGameObject(GrabberSubsystem grabberSubsystem, JoyUtil controller) {
-    super(grabberSubsystem);
+    super(grabberSubsystem, controller);
     this.controller = controller;
   }
 
