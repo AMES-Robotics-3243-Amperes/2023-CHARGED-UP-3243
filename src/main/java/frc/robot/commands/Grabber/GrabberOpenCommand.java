@@ -4,6 +4,7 @@
 
 package frc.robot.commands.Grabber;
 
+import frc.robot.JoyUtil;
 import frc.robot.subsystems.GrabberSubsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -11,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class GrabberOpenCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   // ££ Defines the subsystem and the controller
+  JoyUtil joy;
   private final GrabberSubsystem m_GrabberSubsystem;
 
   /**
@@ -18,9 +20,10 @@ public class GrabberOpenCommand extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public GrabberOpenCommand(GrabberSubsystem subsystem) {
+  public GrabberOpenCommand(GrabberSubsystem subsystem, JoyUtil joy) {
     // Assigns the subsystem and the controller values
     m_GrabberSubsystem = subsystem;
+    joy = this.joy;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
@@ -29,9 +32,16 @@ public class GrabberOpenCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
     // ++ set the PID values of the grabber
     m_GrabberSubsystem.setGrabberPIDValues();
+
+    if (joy.getPOVUp()) {
+      m_GrabberSubsystem.ejectObject();
+    } else if (joy.getPOVDown()) {
+      m_GrabberSubsystem.openGrabberToWidth();
+    } else {
+      m_GrabberSubsystem.openGrabber();
+    }
     
   }
 
