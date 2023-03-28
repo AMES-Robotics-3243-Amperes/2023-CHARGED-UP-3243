@@ -23,21 +23,21 @@ public class MoveLegAnkleToPickupPositionCommandCrane extends SequentialCommandG
   public MoveLegAnkleToPickupPositionCommandCrane(LegAnkleSubsystem legAnkleSubsystem) {
     addCommands(
       new MoveLegAnkleToPositionCommand(legAnkleSubsystem, 
-       Constants.AutomationConfiguration.legAnklePickupPositionSweep.extension, 
+       Constants.AutomationConfiguration.legAnklePickupPositionCrane.extension, 
         null, 
         null, 
         null
       ),
       new MoveLegAnkleToPositionCommand(legAnkleSubsystem, 
-        Constants.AutomationConfiguration.legAnklePickupPositionSweep.extension, 
-        Constants.AutomationConfiguration.legAnklePickupPositionSweep.pivot, 
+        Constants.AutomationConfiguration.legAnklePickupPositionCrane.extension, 
+        Constants.AutomationConfiguration.legAnklePickupPositionCrane.pivot, 
         null, 
         null
       ),
       new MoveLegAnkleToPositionCommand(legAnkleSubsystem, 
-        Constants.AutomationConfiguration.legAnklePickupPositionSweep.extension, 
-        Constants.AutomationConfiguration.legAnklePickupPositionSweep.pivot, 
-        Constants.AutomationConfiguration.legAnklePickupPositionSweep.pitch, 
+        Constants.AutomationConfiguration.legAnklePickupPositionCrane.extension, 
+        Constants.AutomationConfiguration.legAnklePickupPositionCrane.pivot, 
+        Constants.AutomationConfiguration.legAnklePickupPositionCrane.pitch, 
         null
       )
     );

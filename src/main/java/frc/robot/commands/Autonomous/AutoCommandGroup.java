@@ -15,7 +15,9 @@ import frc.robot.JoyUtil;
 import frc.robot.commands.DriveTrain.BalanceCommand;
 import frc.robot.commands.DriveTrain.LockSwerveWheelsCommand;
 import frc.robot.commands.DriveTrain.SwerveAutoMoveCommand;
+import frc.robot.commands.Grabber.OpenToWidthCommand;
 import frc.robot.commands.LegAnkle.MoveLegAnkleToNeutralPositionCommand;
+import frc.robot.commands.LegAnkle.PickupPosition.MoveLegAnkleToPickupPositionCommandSweep;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.GrabberSubsystem;
 import frc.robot.subsystems.LegAnkleSubsystem;
@@ -171,7 +173,7 @@ public class AutoCommandGroup extends SequentialCommandGroup {
   }
 
   private void addNewPickupRoutine() {
-    SequentialCommandGroup pickupCommand = new SequentialCommandGroup(new MoveArmToPickupTargetAuto(m_legAnkleSubsystem),
+    SequentialCommandGroup pickupCommand = new SequentialCommandGroup(new MoveLegAnkleToPickupPositionCommandSweep(m_legAnkleSubsystem), new OpenToWidthCommand(m_grabberSubsystem),
       new PickupGameObjectAuto(m_grabberSubsystem), new MoveLegAnkleToNeutralPositionCommand(m_legAnkleSubsystem));
 
     autoCommands.add(pickupCommand);
@@ -179,8 +181,8 @@ public class AutoCommandGroup extends SequentialCommandGroup {
 
   private void addNewPlacementRoutine() {
     SequentialCommandGroup dropOffCommand = new SequentialCommandGroup(
-      new MoveArmToPlaceTargetAuto(m_legAnkleSubsystem), new ReleaseGameObjectAuto(m_grabberSubsystem, m_secondaryJoy),
-      new MoveLegAnkleToNeutralPositionCommand(m_legAnkleSubsystem));
+      new WristRollDefaultAuto(m_legAnkleSubsystem), new MoveArmToPlaceTargetAuto(m_legAnkleSubsystem), new ReleaseGameObjectAuto(m_grabberSubsystem, m_secondaryJoy),
+      new MoveLegAnkleToNeutralPositionCommand(m_legAnkleSubsystem), new WristRollUpAuto(m_legAnkleSubsystem));
 
     autoCommands.add(dropOffCommand);
   }

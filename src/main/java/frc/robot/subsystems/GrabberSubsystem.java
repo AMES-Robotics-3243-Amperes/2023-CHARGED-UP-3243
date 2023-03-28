@@ -126,7 +126,7 @@ public class GrabberSubsystem extends SubsystemBase {
   }
 
   public void ejectObject () {
-    setGrabberPosition(Constants.Grabber.openGrabberToWidthSetpoint - 0.05);
+    setGrabberPosition(Constants.Grabber.openGrabberToWidthSetpoint);
     setGrabberWheelSpeeds(Constants.Grabber.ejectWheelSpeed);
   }
 
@@ -163,9 +163,9 @@ public class GrabberSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
 
-    SmartDashboard.putNumber("grabber", grabberRelativeEncoder.getPosition());
-    SmartDashboard.putNumber("wheel1", compliantRelativeEncoder1.getPosition());
-    SmartDashboard.putNumber("wheel2", compliantRelativeEncoder2.getPosition());
+    SmartDashboard.putNumber("grabber", grabberOpenerMotor.getAppliedOutput());
+    SmartDashboard.putNumber("wheel1", wheelMotorOne.getAppliedOutput());
+    SmartDashboard.putNumber("wheel2", wheelMotorTwo.getAppliedOutput());
     // This method will be called once per scheduler run
     
     // SmartDashboard.putNumber("Actual Current", grabberOpenerMotor.getOutputCurrent());

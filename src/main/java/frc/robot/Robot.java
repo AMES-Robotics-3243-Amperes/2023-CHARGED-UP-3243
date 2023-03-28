@@ -69,6 +69,7 @@ public class Robot extends TimedRobot {
     }
 
     m_robotContainer.m_legAnkleSubsystem.updatePIDValues();
+    m_robotContainer.autoInit();
   }
 
   /** This function is called periodically during autonomous. */

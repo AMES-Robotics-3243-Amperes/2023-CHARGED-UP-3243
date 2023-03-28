@@ -43,19 +43,19 @@ public final class Constants {
     // public static final double openCloseSpeed = 0.05;
 
     // ++ grabber maximum/minimum positions
-    public static final double maximumGrabberLimit = 0.56;
+    public static final double maximumGrabberLimit = 0.6;
     public static final double minimumGrabberLimit = 0.4;
 
     // :D grabber open/close setpoints
     public static final double openGrabberSetpoint = 0.4;
-    public static final double closedGrabberSetpoint = 0.56;
+    public static final double closedGrabberSetpoint = 0.6;
 
     // ++ current limits
     public static final int hardOpenerMotorCurrentLimit = 30;
     public static final int hardWheelMotorCurrentLimit = 30;
     public static final int softOpenerMotorCurrentLimit = 15; // ++ this will have to be changed to adequately
     // compress game pieces
-    public static final int softWheelMotorCurrentLimit = 20; // ++ will have to be experimentally tuned
+    public static final int softWheelMotorCurrentLimit = 7; // ++ will have to be experimentally tuned
 
     // ++ gear ratios
     public static final double grabberMotorOpenerGearRatio = (1 / 1); // ++ find actual values! // :D by the way, the
@@ -67,15 +67,15 @@ public final class Constants {
     public static final double openerMotorIGain = 0.0;
     public static final double openerMotorDGain = 0.0;
 
-    public static final double wheelMotorPGain = 0.005 * 0;
+    public static final double wheelMotorPGain = 0.00008;
     public static final double wheelMotorIGain = 0.000000;
     public static final double wheelMotorDGain = 0.00000;
   
     // ++ wheel spin speed constants
-    public static final double openGrabberToWidthSetpoint = 0.48;
-    public static final double intakeWheelSpeed = 10;
-    public static final double ambientWheelSpeed = 10;
-    public static final double ejectWheelSpeed = -10;
+    public static final double openGrabberToWidthSetpoint = 0.44;
+    public static final double intakeWheelSpeed = 10000;
+    public static final double ambientWheelSpeed = 1000;
+    public static final double ejectWheelSpeed = -1000000000;
   }
 
   /**
@@ -379,52 +379,52 @@ public final class Constants {
     }
 
     public static class StartingSetpoints { // :D DONE: make these values not use inverse kinematics, it'll be easier to visually see and check/adjust
-      public static final double pivot = 0.354;
+      public static final double pivot = 0.308;
       public static final double extension = 1.09;
-      public static final double pitch = 0.826;
+      public static final double pitch = 0.463;
       public static final Double roll = null;
     }
 
     public static class PickupSetpoints {
-      public static final double pivot = 0.55;
+      public static final double pivot = 0.53;
       public static final double extension = 1.09;
       public static final double pitch = 0.5;
       public static final Double roll = null;
     }
 
     public static class PickupSetpointsLOW { // :D TODO: get the actual values
-      public static final double pivot = 0.376;
+      public static final double pivot = 0.565;
       public static final double extension = 1.09;
-      public static final double pitch = 0.655;
+      public static final double pitch = 0.758;
       public static final Double roll = null;
     }
 
     public static class DoubleLoadSetpoints {
-      public static final double pivot = 0.15;
+      public static final double pivot = 0.375;
       public static final double extension = 1.09;
-      public static final double pitch = 0.5;
+      public static final double pitch = 0.6;
       public static final Double roll = null;
     }
 
     public static class PlacementSetpoints {
       public static final class High {
-        public static final double pivot = 0.165;
+        public static final double pivot = 0.17;
         public static final double extension = WristAndArm.Limits.extensionMax-0.1;
         public static final double pitch = 0.722;
         public static final Double roll = null;
       }
 
       public static final class Middle {
-        public static final double pivot = 0.157;
+        public static final double pivot = 0.151;
         public static final double extension = 1.09;
         public static final double pitch = 0.722;
         public static final Double roll = null;
       }
 
       public static final class Low {
-        public static final double pivot = 0.203;
+        public static final double pivot = 0.205;
         public static final double extension = 1.09;
-        public static final double pitch = 0.722;
+        public static final double pitch = 0.817;
         public static final Double roll = null;
       }
     }
@@ -439,7 +439,7 @@ public final class Constants {
 
       public static class Pivot {
         public static final double P = 13.0 * 0.3;
-        public static final double I = 0.0001*0; // 0
+        public static final double I = 0.00004*0; // 0
         public static final double D = 5*0; // 1
         public static final double FF = 0.1;
       }

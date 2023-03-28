@@ -154,6 +154,8 @@ public class LegAnkleSubsystem extends SubsystemBase {
     encoderPitch = new SemiAbsoluteEncoder(motorPitchLeader);
     encoderRoll = new SemiAbsoluteEncoder(motorRoll);
 
+    encoderRoll.setInverted(true);
+
     encoderPitchRelative = encoderPitch.getSparkMAXEncoder();
 
     // H! Invert the motors that need to be inverted

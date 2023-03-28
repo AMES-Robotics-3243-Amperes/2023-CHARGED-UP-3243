@@ -149,6 +149,10 @@ public class RobotContainer {
   }
 
   public void teleopInit() {
+    
+  }
+
+  public void autoInit() {
     fieldPosManager.setScoringPositions();
   }
 
