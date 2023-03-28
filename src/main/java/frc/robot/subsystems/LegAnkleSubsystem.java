@@ -113,8 +113,8 @@ public class LegAnkleSubsystem extends SubsystemBase {
   private RelativeEncoder encoderPitchLeader = motorPitchLeader.getEncoder();
   private RelativeEncoder encoderPitchFollower = motorPitchFollower.getEncoder();
 
-  private final LegAnklePosition startingPosition = IK(StartingPosition.x, StartingPosition.y, StartingPosition.pitch, StartingPosition.roll);
-  private LegAnklePosition targetPosition = startingPosition;
+  // private final LegAnklePosition startingPosition = Constants.AutomationConfiguration.initialLegAnklePositonMovement;
+  private LegAnklePosition targetPosition = Constants.AutomationConfiguration.initialLegAnklePositonMovement;
 
   // H! FOR TESTING PURPOSES
   private ShuffleboardTab tab = Shuffleboard.getTab("Arm Testing");
@@ -154,7 +154,6 @@ public class LegAnkleSubsystem extends SubsystemBase {
     encoderPitch = new SemiAbsoluteEncoder(motorPitchLeader);
     encoderRoll = new SemiAbsoluteEncoder(motorRoll);
 
-    encoderRoll.setInverted(true);
 
     encoderPitchRelative = encoderPitch.getSparkMAXEncoder();
 
@@ -193,7 +192,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
 
     
     //MotorPos startingMotorPosition = IK(StartingPosition.x, StartingPosition.y, StartingPosition.pitch, StartingPosition.roll);
-    encoderExtension.setPosition(startingPosition.extension/*minLength*/);
+    encoderExtension.setPosition(StartingPosition.extension/*minLength*/);
     
     //encoderPivotRelative.setPosition(startingPosition.pivot); // :D I commented this out because we are using a semiabsolute encoder now
     encoderPitch.setZeroOffset(wristPitchEncoderSetZeroOffset);
@@ -208,6 +207,9 @@ public class LegAnkleSubsystem extends SubsystemBase {
     //wristRollEncoder.setZeroOffset(wristRollEncoder.getPosition() - 0.5);
     // :D hi I turned this into a constant // H! Great!
     encoderRoll.setZeroOffset(wristRollEncoderSetZeroOffset);
+
+    encoderRoll.setInverted(true);
+
 
     encoderPitchRight.setPosition(encoderPitch.getPosition());
 
@@ -268,6 +270,8 @@ public class LegAnkleSubsystem extends SubsystemBase {
     rollIValue = tab.add("Rol I Value", PID.Roll.I).getEntry();
     rollDValue = tab.add("Rol D Value", PID.Roll.D).getEntry();
     rollFFValue = tab.add("Rol FF Value", PID.Roll.FF).getEntry();
+
+    targetPosition.roll = encoderRoll.getPosition();
   }
 
 

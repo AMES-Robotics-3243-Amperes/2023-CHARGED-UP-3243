@@ -354,7 +354,7 @@ public final class Constants {
     public static final double pitchOutputRange = 0.3;
     public static final double extensionOutputRange = 0.5;
     public static final double rollOutputRange = 0.3;
-    public static final double wristRollEncoderSetZeroOffset = 0.1052921;
+    public static final double wristRollEncoderSetZeroOffset = 0.89855;
     public static final double wristPitchEncoderSetZeroOffset = 0.2574555;// :D prev value: 0.866; I changed it because it was flipped 180 degrees from what the standard on the pivot is
     public static final double wristPivotEncoderSetZeroOffset = 0.196875;
 
@@ -372,10 +372,10 @@ public final class Constants {
     }
 
     public static class StartingPosition {
-      public static final double x = -0.3;
-      public static final double y = 0.77;
-      public static final double pitch = -Math.PI / 2;
-      public static final Double roll = 0.25;
+      public static final double pivot = 0.308;
+      public static final double extension = 1.09;
+      public static final double pitch = 0.463;
+      public static final Double roll = 0.5;
     }
 
     public static class StartingSetpoints { // :D DONE: make these values not use inverse kinematics, it'll be easier to visually see and check/adjust
@@ -482,7 +482,7 @@ public final class Constants {
       public static final double pitchMin = 0.05;
       // H! Roll lime-ets
       public static final double rollMax = 1.0;
-      public static final double rollMin = 0.0;
+      public static final double rollMin = 0.5;
     }
   }
 
@@ -542,7 +542,7 @@ public final class Constants {
       WristAndArm.StartingSetpoints.extension,
       WristAndArm.StartingSetpoints.pivot,
       WristAndArm.StartingSetpoints.pitch,
-      WristAndArm.StartingSetpoints.roll
+      0.5
     );
 
     /**The position of the leg ankle to easily pick up game pieces from the double loading station
@@ -592,6 +592,13 @@ public final class Constants {
       WristAndArm.PlacementSetpoints.Low.pivot,
       WristAndArm.PlacementSetpoints.Low.pitch, 
       WristAndArm.PlacementSetpoints.Low.roll
+    );
+
+    public static final LegAnklePosition legAnkleNeutralPosition = new LegAnklePosition(
+      WristAndArm.StartingSetpoints.extension,
+      WristAndArm.StartingSetpoints.pivot,
+      WristAndArm.StartingSetpoints.pitch,
+      WristAndArm.StartingSetpoints.roll
     );
 
     // H! TODO: None of these constants are right // :D can this code be deleted?

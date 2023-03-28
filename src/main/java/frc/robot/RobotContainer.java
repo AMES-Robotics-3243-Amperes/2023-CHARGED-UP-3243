@@ -149,7 +149,7 @@ public class RobotContainer {
   }
 
   public void teleopInit() {
-    
+    fieldPosManager.setScoringPositions();
   }
 
   public void autoInit() {

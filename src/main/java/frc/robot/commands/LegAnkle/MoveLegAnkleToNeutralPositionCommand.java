@@ -18,15 +18,15 @@ public class MoveLegAnkleToNeutralPositionCommand extends SequentialCommandGroup
   public MoveLegAnkleToNeutralPositionCommand(LegAnkleSubsystem legAnkleSubsystem) {
     addCommands(
       new MoveLegAnkleToPositionCommand(legAnkleSubsystem, 
-       Constants.AutomationConfiguration.initialLegAnklePositonMovement.extension, 
+       Constants.AutomationConfiguration.legAnkleNeutralPosition.extension, 
         null, 
         null, 
         null
       ),
       new MoveLegAnkleToPositionCommand(legAnkleSubsystem, 
-        Constants.AutomationConfiguration.initialLegAnklePositonMovement.extension, 
-        Constants.AutomationConfiguration.initialLegAnklePositonMovement.pivot, 
-        Constants.AutomationConfiguration.initialLegAnklePositonMovement.pitch, 
+        Constants.AutomationConfiguration.legAnkleNeutralPosition.extension, 
+        Constants.AutomationConfiguration.legAnkleNeutralPosition.pivot, 
+        Constants.AutomationConfiguration.legAnkleNeutralPosition.pitch, 
         null
       )
     );
