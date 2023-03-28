@@ -6,13 +6,19 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.FieldPosManager;
+import frc.robot.utility_classes.LegAnklePosition;
 
 public class ShuffleboardSubsystem extends SubsystemBase {
+
+  //&& Tab objects
+  ShuffleboardTab tab = Shuffleboard.getTab("Autonomous Widgets");
 
   //&& Widget objects
   static ComplexWidget field2dWidget;
@@ -21,6 +27,7 @@ public class ShuffleboardSubsystem extends SubsystemBase {
   static SimpleWidget legAnkleCommandWidget;
   static SimpleWidget driveTrainWidget;
   static SimpleWidget chargeStationAngleWidget;
+  static 
   private SendableChooser<Pose2d> m_autoFirstComponent = new SendableChooser<>();
   private FieldPosManager fieldPoseManager;
 
@@ -28,6 +35,8 @@ public class ShuffleboardSubsystem extends SubsystemBase {
   private PhotonVisionSubsystem photonVisionSubsystem;
   private IMUSubsystem imuSubsystem;
   private GrabberSubsystem GrabberSubsystem;
+  private LegAnkleSubsystem legAnkleSubsystem;
+
 
 
   /**
@@ -43,25 +52,47 @@ public class ShuffleboardSubsystem extends SubsystemBase {
     photonVisionSubsystem = photonVision;
     imuSubsystem = IMU;
     GrabberSubsystem = grabber;
+    legAnkleSubsystem = legAnkle;
+    
+    LegAnklePosition targetPosition = legAnkleSubsystem.getManualSetpoints();
+
+
 
     //&& -----------------Titles of the widgets that get displayed in shuffleboard------------------
 
     SmartDashboard.putBoolean("doCharge", true);
-    // SmartDashboard.putBoolean("doUpperRoute", true);
+    
     SmartDashboard.putBoolean("doLowerRoute", true);
 
     SmartDashboard.putNumber("placePiece0", -1);
-    // SmartDashboard.putBoolean("piece0IsCube", false);
+
     SmartDashboard.putNumber("pickupPiece1", -1);
     SmartDashboard.putNumber("placePiece1", -1);
-    // SmartDashboard.putBoolean("piece1IsCube", true);
+
     SmartDashboard.putNumber("pickupPiece2", -1);
     SmartDashboard.putNumber("placePiece2", -1);
-    // SmartDashboard.putBoolean("piece2IsCube", true);
+
     SmartDashboard.putNumber("pickupPiece3", -1);
     SmartDashboard.putNumber("placePiece3", -1);
-    // SmartDashboard.putNumber("chargePosition", 0);
 
+    // H! display the current setpoint positions
+    SmartDashboard.putNumber("targetPivot", targetPosition.pivot);
+    SmartDashboard.putNumber("targetExtension", targetPosition.extension);
+    SmartDashboard.putNumber("targetPitch", targetPosition.pitch);
+    SmartDashboard.putNumber("targetRoll", targetPosition.roll);
+
+    
+    // H! display motor currents
+    SmartDashboard.putNumber("pivotCurrent", legAnkleSubsystem.motorPivot.getOutputCurrent());    
+    SmartDashboard.putNumber("extensionCurrent", legAnkleSubsystem.motorExtension.getOutputCurrent());
+    SmartDashboard.putNumber("pitchCurrent", legAnkleSubsystem.motorPitchRight.getOutputCurrent());
+    SmartDashboard.putNumber("rollCurrent", legAnkleSubsystem.motorRoll.getOutputCurrent());
+
+    // H! display current positions of the leg ankle
+    SmartDashboard.putNumber("pivotEncoder", legAnkleSubsystem.encoderPivotAbsolute.getPosition());    
+    SmartDashboard.putNumber("extensionEncoder", legAnkleSubsystem.encoderExtension.getPosition());
+    SmartDashboard.putNumber("pitchEncoder", legAnkleSubsystem.encoderPitch.getPosition());
+    SmartDashboard.putNumber("rollEncoder", legAnkleSubsystem.encoderRoll.getPosition());
   }
 
   @Override
@@ -70,26 +101,12 @@ public class ShuffleboardSubsystem extends SubsystemBase {
     //&& Field 2D widget
     SmartDashboard.putData(fieldPoseManager.getField2d());
 
-
-    
-
-    //&& Shows the command running for LegAnkleSubsystem
-    //SmartDashboard.putString("legAnkleCommandWidget", legAnkleSubsystem.getCurrentCommand().getName());
-
-    //&& Shows the command running for DriveTrainSubsystem
-    //SmartDashboard.putString("driveTrainCommandWidget", driveTrainSubsystem.getCurrentCommand().getName());
-
     //&& Shows whether any of the drivetrain motors are overheating
     SmartDashboard.putBoolean("motorTooHot", driveTrainSubsystem.getMotorsOkTemperature());
-
-    //&& TODO: Once Jasper merges into dev, finish creating widget for whether grabber is closed or not
-
 
     //&& Shows whether PhotonVision is registering an Apriltag
     SmartDashboard.putBoolean("seeingApriltag", photonVisionSubsystem.seeingApriltag());
 
-    //&& Shows the angle of the charge station as measured by the gyro
-    //SmartDashboard.putNumber("chargeStationAngleWidget", imuSubsystem.getChargeLevel().getDegrees());
 
     //&&---------------------------------------------------------------------------------------------
 
@@ -101,9 +118,6 @@ public class ShuffleboardSubsystem extends SubsystemBase {
 
         return SmartDashboard.getBoolean("doCharge", true);
 
-      // case goUpperRoute:
-
-      //   return SmartDashboard.getBoolean("doUpperRoute", true);
 
       case goLowerRoute:
 
@@ -163,6 +177,7 @@ public class ShuffleboardSubsystem extends SubsystemBase {
     }
 
   }
+
 
   public enum ShuffleBoardInput {
     piece0Place, piece1Pickup, piece1Place, piece2Pickup, piece2Place, piece3Pickup, piece3Place, goChargeStation,
