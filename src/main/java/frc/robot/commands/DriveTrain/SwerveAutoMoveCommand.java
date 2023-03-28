@@ -24,7 +24,7 @@ import java.util.List;
  * lenient with when the robot will move on from that point
  */
 public class SwerveAutoMoveCommand extends CommandBase {
-  private final DriveSubsystem m_subsystem;
+  protected final DriveSubsystem m_subsystem;
   private final double maxDistanceFromSetpointMeters;
   private final Rotation2d maxAngleFromSetpoint;
 
