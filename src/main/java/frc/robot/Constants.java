@@ -67,7 +67,7 @@ public final class Constants {
     public static final double openerMotorIGain = 0.0;
     public static final double openerMotorDGain = 0.0;
 
-    public static final double wheelMotorPGain = 0.00008;
+    public static final double wheelMotorPGain = 0.00004;
     public static final double wheelMotorIGain = 0.000000;
     public static final double wheelMotorDGain = 0.00000;
   
@@ -75,7 +75,7 @@ public final class Constants {
     public static final double openGrabberToWidthSetpoint = 0.44;
     public static final double intakeWheelSpeed = 10000;
     public static final double ambientWheelSpeed = 1000;
-    public static final double ejectWheelSpeed = -1000000000;
+    public static final double ejectWheelSpeed = -1000000000000000.0;
   }
 
   /**
@@ -395,12 +395,12 @@ public final class Constants {
     public static class PickupSetpointsLOW { // :D TODO: get the actual values
       public static final double pivot = 0.565;
       public static final double extension = 1.09;
-      public static final double pitch = 0.758;
+      public static final double pitch = 0.7;
       public static final Double roll = null;
     }
 
     public static class DoubleLoadSetpoints {
-      public static final double pivot = 0.375;
+      public static final double pivot = 0.37;
       public static final double extension = 1.09;
       public static final double pitch = 0.6;
       public static final Double roll = null;
@@ -438,7 +438,7 @@ public final class Constants {
       }
 
       public static class Pivot {
-        public static final double P = 13.0 * 0.3;
+        public static final double P = 13.0 * 0.5;
         public static final double I = 0.00004*0; // 0
         public static final double D = 5*0; // 1
         public static final double FF = 0.1;
