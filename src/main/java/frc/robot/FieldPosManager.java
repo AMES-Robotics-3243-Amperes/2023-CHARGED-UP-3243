@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
@@ -86,6 +87,18 @@ public class FieldPosManager {
     }
     
     hasPhotonPose = false;
+  }
+
+  public Translation2d getCenterPieceOffset(boolean ofCurrentAlliance, double offsetMagnitude) {
+    if (allianceColor != DriverStation.Alliance.Invalid && allianceColor != null) {
+      if ((ofCurrentAlliance && allianceColor == DriverStation.Alliance.Red) || (!ofCurrentAlliance && allianceColor == DriverStation.Alliance.Blue)) {
+        return new Translation2d(offsetMagnitude, 0);
+      } else {
+        return new Translation2d(-offsetMagnitude, 0);
+      }
+    } else {
+      return new Translation2d();
+    }
   }
 
   /**

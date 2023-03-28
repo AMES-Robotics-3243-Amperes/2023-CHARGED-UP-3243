@@ -45,6 +45,11 @@ public class GrabberSubsystem extends SubsystemBase {
   // ++ create PID objects
   private SparkMaxPIDController wheelMotorOnePID;
   private SparkMaxPIDController wheelMotorTwoPID;
+  
+  
+  private RelativeEncoder grabberRelativeEncoder;
+  private RelativeEncoder compliantRelativeEncoder1;
+  private RelativeEncoder compliantRelativeEncoder2;
 
 
  
@@ -53,6 +58,7 @@ public class GrabberSubsystem extends SubsystemBase {
   public GrabberSubsystem() {
     
     // ++ initializes opener objects
+    grabberRelativeEncoder = grabberOpenerMotor.getEncoder();
     grabberOpenerEncoder = grabberOpenerMotor.getAbsoluteEncoder(Type.kDutyCycle);
     //    grabberOpenerEncoder.setPositionConversionFactor(Constants.Grabber.grabberMotorOpenerGearRatio);
     grabberOpenerPID = grabberOpenerMotor.getPIDController();
@@ -62,6 +68,8 @@ public class GrabberSubsystem extends SubsystemBase {
     grabberOpenerEncoder.setZeroOffset(0.65);
     
     // ++ initializes wheel objects
+    compliantRelativeEncoder1 = wheelMotorOne.getEncoder();
+    compliantRelativeEncoder2 = wheelMotorTwo.getEncoder();
     // wheelMotorEncoderOne = wheelMotorOne.getEncoder();
     // wheelMotorEncoderTwo = wheelMotorTwo.getEncoder();
     // wheelMotorEncoderOne.setVelocityConversionFactor(Constants.Grabber.wheelMotorGearRatio);
@@ -118,13 +126,12 @@ public class GrabberSubsystem extends SubsystemBase {
   }
 
   public void ejectObject () {
-    setGrabberPosition(Constants.Grabber.openGrabberToWidthSetpoint + 0.1);
+    setGrabberPosition(Constants.Grabber.openGrabberToWidthSetpoint - 0.05);
     setGrabberWheelSpeeds(Constants.Grabber.ejectWheelSpeed);
   }
 
   /** ++ closes grabber */
-  public void 
-  closeGrabber () {
+  public void closeGrabber () {
     setGrabberPosition(Constants.Grabber.closedGrabberSetpoint);
     setGrabberWheelSpeeds(Constants.Grabber.ambientWheelSpeed);
   }
@@ -155,6 +162,10 @@ public class GrabberSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+
+    SmartDashboard.putNumber("grabber", grabberRelativeEncoder.getPosition());
+    SmartDashboard.putNumber("wheel1", compliantRelativeEncoder1.getPosition());
+    SmartDashboard.putNumber("wheel2", compliantRelativeEncoder2.getPosition());
     // This method will be called once per scheduler run
     
     // SmartDashboard.putNumber("Actual Current", grabberOpenerMotor.getOutputCurrent());

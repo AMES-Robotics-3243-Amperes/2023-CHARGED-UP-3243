@@ -24,7 +24,7 @@ public class GrabberOpenCommand extends InstantCommand {
   public GrabberOpenCommand(GrabberSubsystem subsystem, JoyUtil joy) {
     // Assigns the subsystem and the controller values
     m_GrabberSubsystem = subsystem;
-    joy = this.joy;
+    this.joy = joy;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);

@@ -43,19 +43,19 @@ public final class Constants {
     // public static final double openCloseSpeed = 0.05;
 
     // ++ grabber maximum/minimum positions
-    public static final double maximumGrabberLimit = 0.48;
-    public static final double minimumGrabberLimit = 0.22;
+    public static final double maximumGrabberLimit = 0.56;
+    public static final double minimumGrabberLimit = 0.4;
 
     // :D grabber open/close setpoints
-    public static final double openGrabberSetpoint = 0.25;
-    public static final double closedGrabberSetpoint = 0.45;
+    public static final double openGrabberSetpoint = 0.4;
+    public static final double closedGrabberSetpoint = 0.56;
 
     // ++ current limits
     public static final int hardOpenerMotorCurrentLimit = 30;
     public static final int hardWheelMotorCurrentLimit = 30;
     public static final int softOpenerMotorCurrentLimit = 15; // ++ this will have to be changed to adequately
     // compress game pieces
-    public static final int softWheelMotorCurrentLimit = 10; // ++ will have to be experimentally tuned
+    public static final int softWheelMotorCurrentLimit = 20; // ++ will have to be experimentally tuned
 
     // ++ gear ratios
     public static final double grabberMotorOpenerGearRatio = (1 / 1); // ++ find actual values! // :D by the way, the
@@ -67,15 +67,15 @@ public final class Constants {
     public static final double openerMotorIGain = 0.0;
     public static final double openerMotorDGain = 0.0;
 
-    public static final double wheelMotorPGain = 0.08;
-    public static final double wheelMotorIGain = 0.0;
-    public static final double wheelMotorDGain = 0.0;
+    public static final double wheelMotorPGain = 0.005 * 0;
+    public static final double wheelMotorIGain = 0.000000;
+    public static final double wheelMotorDGain = 0.00000;
   
     // ++ wheel spin speed constants
-    public static final double openGrabberToWidthSetpoint = 0.0;
-    public static final double intakeWheelSpeed = 500;
-    public static final double ambientWheelSpeed = 50;
-    public static final double ejectWheelSpeed = -10000;
+    public static final double openGrabberToWidthSetpoint = 0.48;
+    public static final double intakeWheelSpeed = 10;
+    public static final double ambientWheelSpeed = 10;
+    public static final double ejectWheelSpeed = -10;
   }
 
   /**
@@ -235,14 +235,13 @@ public final class Constants {
 
       // <> stuff pertaining to auto driving
       public static final class AutoConstants {
-        public static final double kP = 0.6;
+        public static final double kP = 0.2;
         public static final double kI = 0;
         public static final double kD = 0;
 
         public static final double kGoalVelocityMagnitudeScalar = 3.2;
 
-        public static final double kMaxVelocityMetersPerSecond = 1.5
-        ;
+        public static final double kMaxVelocityMetersPerSecond = 0.6;
         public static final double kMaxAccelerationMetersPerSecondSq = 2.5;
         public static final double kMaxJerkMetersPerSecondCubed = 3.5;
 
@@ -684,16 +683,16 @@ public final class Constants {
 
       public static final class autoPositions {
         public static final Pose2d[] lowerPath = {new Pose2d(new Translation2d(2.25, 0.75),
-          new Rotation2d(0)), new Pose2d(new Translation2d(6, 0.75), new Rotation2d(0))};
+          new Rotation2d(0)), new Pose2d(new Translation2d(6 - 3, 0.75), new Rotation2d(0))}; // TODO the -3
         public static final Pose2d[] upperPath = {new Pose2d(new Translation2d(2.25, 4.6),
-          new Rotation2d(0)), new Pose2d(new Translation2d(6, 4.6), new Rotation2d(0))};
+          new Rotation2d(0)), new Pose2d(new Translation2d(6 - 3, 4.6), new Rotation2d(0))}; // TODO this too
       }
 
       public static final class grabberPositions {
         public static final double highTargetsX = 0.379;
         public static final double middleTargetsX = 0.811;
         public static final double lowTargetsX = 1.185;
-        public static final double fieldCenterGamePiecesX = 7.068 - 1; // :D for testing purposes, due to limited space. TODO: remove the "- 1"
+        public static final double fieldCenterGamePiecesX = 7.068 - 3; // :D for testing purposes, due to limited space. TODO: remove the "- 1"
 
         public static final Pose3d[] fieldCenterGamePieces = {new Pose3d(new Translation3d(fieldCenterGamePiecesX, 4.577, 0),
           new Rotation3d()), new Pose3d(new Translation3d(fieldCenterGamePiecesX, 3.358, 0), new Rotation3d()), new Pose3d(
@@ -726,17 +725,17 @@ public final class Constants {
       public static Pose2d dividerTip = new Pose2d(new Translation2d(13.265, 5.487), new Rotation2d(0));
 
       public static final class autoPositions {
-        public static final Pose2d[] lowerPath = {new Pose2d(new Translation2d(14.25, 0.75),
-          new Rotation2d(Math.PI)), new Pose2d(new Translation2d(10.5, 0.75), new Rotation2d(Math.PI))};
-        public static final Pose2d[] upperPath = {new Pose2d(new Translation2d(14.25, 4.6),
-          new Rotation2d(Math.PI)), new Pose2d(new Translation2d(10.25, 4.6), new Rotation2d(Math.PI))};
+        public static final Pose2d[] lowerPath = {new Pose2d(new Translation2d(14.25, 0.75), // TODO remove the 3
+          new Rotation2d(Math.PI)), new Pose2d(new Translation2d(10.5 + 3, 0.75), new Rotation2d(Math.PI))};
+        public static final Pose2d[] upperPath = {new Pose2d(new Translation2d(14.25, 4.6), // TODO this too
+          new Rotation2d(Math.PI)), new Pose2d(new Translation2d(10.25 + 3, 4.6), new Rotation2d(Math.PI))};
       }
 
       public static final class grabberPositions {
         public static final double highTargetsX = 16.162;
         public static final double middleTargetsX = 15.730;
         public static final double lowTargetsX = 15.350;
-        public static final double fieldCenterGamePiecesX = 9.473;
+        public static final double fieldCenterGamePiecesX = 9.473 + 3;
 
         public static final Pose3d[] fieldCenterGamePieces = {new Pose3d(new Translation3d(fieldCenterGamePiecesX, 4.577, 0),
           new Rotation3d()), new Pose3d(new Translation3d(fieldCenterGamePiecesX, 3.358, 0), new Rotation3d()), new Pose3d(

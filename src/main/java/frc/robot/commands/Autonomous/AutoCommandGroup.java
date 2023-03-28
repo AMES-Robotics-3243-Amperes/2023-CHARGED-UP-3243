@@ -36,6 +36,8 @@ public class AutoCommandGroup extends SequentialCommandGroup {
   protected final GrabberSubsystem m_grabberSubsystem;
   protected final JoyUtil m_secondaryJoy;
 
+  ArrayList<Command> autoCommands;
+
   /**
    * <> creates a new {@link AutoCommandGroup}
    *
@@ -54,7 +56,7 @@ public class AutoCommandGroup extends SequentialCommandGroup {
     m_shuffleboardSubsystem = shuffleboardSubsystem;
     m_secondaryJoy = secondaryJoy;
 
-    ArrayList<Command> autoCommands = new ArrayList<>();
+    autoCommands = new ArrayList<>();
 
     boolean bottom = m_shuffleboardSubsystem.ShuffleBoardBooleanInput(
       ShuffleboardSubsystem.ShuffleBoardInput.goLowerRoute);
@@ -86,57 +88,56 @@ public class AutoCommandGroup extends SequentialCommandGroup {
     int piece2DropOffID = (int) m_shuffleboardSubsystem.ShuffleBoardNumberInput(
       ShuffleboardSubsystem.ShuffleBoardInput.piece2Place);
 
-    // TODO: make the pickup correct (be sure to shift them)
-    Pose2d dropOffPiece0Destination = m_posManager.get2dFieldObjectPose(FieldPosManager.fieldSpot2d.scoringPosition,
-      true, piece0DropOffID);
-
-    Pose2d pickupPiece1Position = m_posManager.get2dFieldObjectPose(FieldPosManager.fieldSpot2d.scoringPosition, true,
-      piece1ID);
-    Pose2d dropOffPiece1Destination = m_posManager.get2dFieldObjectPose(FieldPosManager.fieldSpot2d.scoringPosition,
-      true, piece1DropOffID);
-
-    Pose2d pickupPiece2Position = m_posManager.get2dFieldObjectPose(FieldPosManager.fieldSpot2d.scoringPosition, true,
-      piece2ID);
-    Pose2d dropOffPiece2Destination = m_posManager.get2dFieldObjectPose(FieldPosManager.fieldSpot2d.scoringPosition,
-      true, piece2DropOffID);
-
     // <> only add all the commands if neither of the ids are negative
     if (piece0DropOffID >= 0) {
+      Pose2d dropOffPiece0Destination = m_posManager.get2dFieldObjectPose(FieldPosManager.fieldSpot2d.scoringPosition,
+        true, piece0DropOffID);
+
       SwerveAutoMoveCommand goToPieceDropOffCommand = new SwerveAutoMoveCommand(m_driveSubsystem,
         dropOffPiece0Destination);
       autoCommands.add(goToPieceDropOffCommand);
 
-      addNewPlacementRoutine(legAnkleSubsystem, autoCommands);
+      addNewPlacementRoutine();
     }
 
     // <> only add all the commands if neither of the ids are negative
     if (piece1ID >= 0 && piece1DropOffID >= 0) {
+      Pose2d pickupPiece1Position = new Pose2d(m_posManager.get3dFieldObjectPose(FieldPosManager.fieldSpot3d.centerFieldGamePieces, true,
+        piece1ID).toPose2d().getTranslation().plus(m_posManager.getCenterPieceOffset(true, 1)), nearChargeAvoidIntermediatePoint.getRotation());
+      Pose2d dropOffPiece1Destination = m_posManager.get2dFieldObjectPose(FieldPosManager.fieldSpot2d.scoringPosition,
+        true, piece1DropOffID);
+
       SwerveAutoMoveCommand goToPieceCommand = new SwerveAutoMoveCommand(m_driveSubsystem, new ArrayList<>(
         List.of(nearChargeAvoidIntermediatePoint, farChargeAvoidIntermediatePoint, pickupPiece1Position)));
       autoCommands.add(goToPieceCommand);
 
-      addNewPickupRoutine(legAnkleSubsystem, grabberSubsystem, autoCommands);
+      addNewPickupRoutine();
 
       SwerveAutoMoveCommand goToPieceDropOffCommand = new SwerveAutoMoveCommand(m_driveSubsystem, new ArrayList<>(
         List.of(farChargeAvoidIntermediatePoint, nearChargeAvoidIntermediatePoint, dropOffPiece1Destination)));
       autoCommands.add(goToPieceDropOffCommand);
 
-      addNewPlacementRoutine(legAnkleSubsystem, autoCommands);
+      addNewPlacementRoutine();
     }
 
     // <> only add all the commands if neither of the ids are negative
     if (piece2ID >= 0 && piece2DropOffID >= 0) {
+      Pose2d pickupPiece2Position = new Pose2d(m_posManager.get3dFieldObjectPose(FieldPosManager.fieldSpot3d.centerFieldGamePieces, true,
+        piece2ID).toPose2d().getTranslation().plus(m_posManager.getCenterPieceOffset(true, 1)), nearChargeAvoidIntermediatePoint.getRotation());
+      Pose2d dropOffPiece2Destination = m_posManager.get2dFieldObjectPose(FieldPosManager.fieldSpot2d.scoringPosition,
+        true, piece2DropOffID);
+
       SwerveAutoMoveCommand goToPieceCommand = new SwerveAutoMoveCommand(m_driveSubsystem, new ArrayList<>(
         List.of(nearChargeAvoidIntermediatePoint, farChargeAvoidIntermediatePoint, pickupPiece2Position)));
       autoCommands.add(goToPieceCommand);
 
-      addNewPickupRoutine(legAnkleSubsystem, grabberSubsystem, autoCommands);
+      addNewPickupRoutine();
 
       SwerveAutoMoveCommand goToPieceDropOffCommand = new SwerveAutoMoveCommand(m_driveSubsystem, new ArrayList<>(
         List.of(farChargeAvoidIntermediatePoint, nearChargeAvoidIntermediatePoint, dropOffPiece2Destination)));
       autoCommands.add(goToPieceDropOffCommand);
 
-      addNewPlacementRoutine(legAnkleSubsystem, autoCommands);
+      addNewPlacementRoutine();
     }
 
     if (charge) {
@@ -164,17 +165,17 @@ public class AutoCommandGroup extends SequentialCommandGroup {
     addCommands(commandArray);
   }
 
-  private static void addNewPickupRoutine(LegAnkleSubsystem legAnkleSubsystem, GrabberSubsystem grabberSubsystem,
-                                          ArrayList<Command> autoCommands) {
-    SequentialCommandGroup pickupCommand = new SequentialCommandGroup(new MoveArmToPickupTargetAuto(legAnkleSubsystem),
-      new PickupGameObjectAuto(grabberSubsystem));
+  private void addNewPickupRoutine() {
+    SequentialCommandGroup pickupCommand = new SequentialCommandGroup(new MoveArmToPickupTargetAuto(m_legAnkleSubsystem),
+      new PickupGameObjectAuto(m_grabberSubsystem), new MoveLegAnkleToNeutralPositionCommand(m_legAnkleSubsystem));
 
     autoCommands.add(pickupCommand);
   }
 
-  private void addNewPlacementRoutine(LegAnkleSubsystem legAnkleSubsystem, ArrayList<Command> autoCommands) {
+  private void addNewPlacementRoutine() {
     SequentialCommandGroup dropOffCommand = new SequentialCommandGroup(
-      new MoveArmToPlaceTargetAuto(legAnkleSubsystem), new ReleaseGameObjectAuto(m_grabberSubsystem, m_secondaryJoy), new MoveLegAnkleToNeutralPositionCommand(legAnkleSubsystem));
+      new MoveArmToPlaceTargetAuto(m_legAnkleSubsystem), new ReleaseGameObjectAuto(m_grabberSubsystem, m_secondaryJoy),
+      new MoveLegAnkleToNeutralPositionCommand(m_legAnkleSubsystem));
 
     autoCommands.add(dropOffCommand);
   }

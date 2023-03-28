@@ -148,7 +148,9 @@ public class RobotContainer {
     primaryController.y().whileTrue(m_SnapToGridCommand); // :D hi i switched this to the primary controller
   }
 
-  public void teleopInit() {}
+  public void teleopInit() {
+    fieldPosManager.setScoringPositions();
+  }
 
   public Command getAutonomousCommand() {
     return new AutoCommandGroup(m_driveSubsystem, m_legAnkleSubsystem, m_shuffleboardSubsystem, m_GrabberSubsystem, fieldPosManager, secondaryController);
