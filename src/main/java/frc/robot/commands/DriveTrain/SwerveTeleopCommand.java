@@ -21,9 +21,6 @@ public class SwerveTeleopCommand extends CommandBase {
   // <> driving needs to be reversed if on red alliance
   private boolean reverse;
 
-  // <> this is the current goal angle for field relative turning
-  private Rotation2d fieldRelativeTurningGoal = Rotation2d.fromDegrees(0);
-
   /**
    * Creates a new SwerveTeleopCommand.
    */
@@ -59,7 +56,7 @@ public class SwerveTeleopCommand extends CommandBase {
       m_driveSubsystem.drive(xSpeed, ySpeed, m_driveSubsystem.getHeading(), true);
     } else if (fieldRelativeDriving) {
       // <> field relative turning, so get an angle
-      fieldRelativeTurningGoal = Rotation2d.fromRadians(Math.atan2(-controllerRightX, -controllerRightY));
+      Rotation2d fieldRelativeTurningGoal = Rotation2d.fromRadians(Math.atan2(-controllerRightX, -controllerRightY));
 
       m_driveSubsystem.drive(xSpeed, ySpeed, fieldRelativeTurningGoal, true);
     } else {
@@ -67,7 +64,6 @@ public class SwerveTeleopCommand extends CommandBase {
       double rotationSpeed = controllerRightX * DriveConstants.kAngularSpeedDamper;
 
       m_driveSubsystem.drive(xSpeed, ySpeed, rotationSpeed, false);
-      fieldRelativeTurningGoal = m_driveSubsystem.getHeading();
     }
   }
 
