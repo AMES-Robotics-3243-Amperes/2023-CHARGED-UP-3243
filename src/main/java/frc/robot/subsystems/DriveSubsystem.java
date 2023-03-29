@@ -69,7 +69,7 @@ public class DriveSubsystem extends SubsystemBase {
    * (smart to do at command initialization)
    */
   public void resetFieldRelativeTurningPid() {
-    m_thetaPidController.reset(getHeading().getRadians(), m_imuSubsystem.getTurnRate().getRadians());
+    m_thetaPidController.reset(getHeading().getDegrees(), m_imuSubsystem.getTurnRate().getDegrees());
   }
 
   /**

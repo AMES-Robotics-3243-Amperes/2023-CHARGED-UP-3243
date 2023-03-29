@@ -33,7 +33,7 @@ public class SwerveAutoMoveCommand extends CommandBase {
   private final ArrayList<Pose2d> absoluteGoalList;
 
   // <> current velocity of the robot
-  Translation2d velocity = new Translation2d();
+  private Translation2d velocity = new Translation2d();
 
   // <> active list of goals to go to (always targets
   // the first one in the list)

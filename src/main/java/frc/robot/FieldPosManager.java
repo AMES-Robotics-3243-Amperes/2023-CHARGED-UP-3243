@@ -35,8 +35,18 @@ public class FieldPosManager {
   public Pose2d[] opposingScoringPositions;
   private Field2d field2d = new Field2d();
 
+  // <> photonvision is innacurate on charge station so that stuff disables photonvision
+  public boolean disablePhotonVision = false;
+
   public FieldPosManager() {
     setScoringPositions();
+  }
+
+  /**
+   * setter for disabling and enabling photonvision
+   */
+  public void togglePhotonVisionDisabled(boolean isDisabled) {
+    disablePhotonVision = isDisabled;
   }
 
   /**
@@ -108,8 +118,10 @@ public class FieldPosManager {
    * @param photonPose is the position as reported by the PhotonVisionSubsystem.
    */
   public void updateFieldPosWithPhotonVisionPose(Pose2d photonPose) {
-    setRobotPose(photonPose);
-    hasPhotonPose = true;
+    if (!disablePhotonVision) {
+      setRobotPose(photonPose);
+      hasPhotonPose = true;
+    }
   }
 
   /**
@@ -411,6 +423,13 @@ public class FieldPosManager {
       System.err.println("INVALID ALLIANCE COLOR IN FIELDPOSMANAGER");
       return null;
     }
+  }
+
+  /**
+   * <> returns the center of the charge station of the current alliance
+   */
+  public Pose2d getChargePoint() {
+    return new Pose2d();
   }
 
   public enum fieldSpot2d {

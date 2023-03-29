@@ -56,7 +56,8 @@ public class SwerveTeleopCommand extends CommandBase {
       m_driveSubsystem.drive(xSpeed, ySpeed, m_driveSubsystem.getHeading(), true);
     } else if (fieldRelativeDriving) {
       // <> field relative turning, so get an angle
-      Rotation2d fieldRelativeTurningGoal = Rotation2d.fromRadians(Math.atan2(-controllerRightX, -controllerRightY));
+      double rotationOffsetRadians = reverse ? Math.PI: 0;
+      Rotation2d fieldRelativeTurningGoal = Rotation2d.fromRadians(Math.atan2(-controllerRightX, -controllerRightY) + rotationOffsetRadians);
 
       m_driveSubsystem.drive(xSpeed, ySpeed, fieldRelativeTurningGoal, true);
     } else {

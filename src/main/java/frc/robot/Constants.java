@@ -164,10 +164,10 @@ public final class Constants {
       public static final boolean kTurningFieldRelative = true;
 
       // <> speed damper (flat constant supplied speed is multiplied by)
-      public static final double kDrivingSpeedDamper = 1; // <> meters per second
+      public static final double kDrivingSpeedDamper = 1.4; // <> meters per second
       public static final double kAngularSpeedDamper = 1 * Math.PI; // <> radians per second
       // <> max speed
-      public static final double kMaxMetersPerSecond = 2;
+      public static final double kMaxMetersPerSecond = 4;
       // <> this should be true
       public static final boolean kGyroReversed = false;
 
@@ -225,7 +225,7 @@ public final class Constants {
 
         // <> these values aren't exact but are pretty close
         public static final double kMaxAngularAccelerationDegreesPerSecond = 350;
-        public static final double kMaxAngularVelocityDegreesPerSecond = 325;
+        public static final double kMaxAngularVelocityDegreesPerSecond = 300;
 
         public static final TrapezoidProfile.Constraints kConstraints = new TrapezoidProfile.Constraints(
           kMaxAngularVelocityDegreesPerSecond, kMaxAngularAccelerationDegreesPerSecond);
@@ -239,11 +239,11 @@ public final class Constants {
         public static final double kI = 0;
         public static final double kD = 0;
 
-        public static final double kGoalVelocityMagnitudeScalar = 3.2;
+        public static final double kGoalVelocityMagnitudeScalar = 2.8;
 
-        public static final double kMaxVelocityMetersPerSecond = 0.6;
-        public static final double kMaxAccelerationMetersPerSecondSq = 2.5;
-        public static final double kMaxJerkMetersPerSecondCubed = 3.5;
+        public static final double kMaxVelocityMetersPerSecond = 1.5;
+        public static final double kMaxAccelerationMetersPerSecondSq = 1.5;
+        public static final double kMaxJerkMetersPerSecondCubed = 3;
 
         public static final TrapezoidProfile.Constraints kConstraints = new TrapezoidProfile.Constraints(
           kMaxAccelerationMetersPerSecondSq, kMaxJerkMetersPerSecondCubed);
@@ -287,17 +287,21 @@ public final class Constants {
   public static class JoyUtilConstants {
     // <> size of controller deadzone
     public static final double kDeadzone = 0.12;
+
     // <> max amount controller output can change per second
-    public static final double kRateLimitLeft = 4;
+    public static final double kRateLimitLeft = 2.5;
     public static final double kRateLimitRight = 3.4;
+
     // <> curve stuff
     public static final int exponent1 = 1;
     public static final int exponent2 = 3;
     public static final double coeff1 = 0.4;
     public static final double coeff2 = 0.6;
+
     // <> fast and slow mode
-    public static final double leftTriggerSpeedMultiplier = 1.5;
-    public static final double rightTriggerSpeedMultiplier = 0.4;
+    public static final double leftTriggerSpeedMultiplier = 2.25;
+    public static final double rightTriggerSpeedMultiplier = 0.3;
+
     // <> ports
     public static int primaryControllerID = 0;
     public static int secondaryControllerID = 1;
