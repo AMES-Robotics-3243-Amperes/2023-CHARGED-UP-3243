@@ -428,9 +428,9 @@ public final class Constants {
 
     public static class PlacementSetpoints {
       public static final class High {
-        public static final double pivot = 0.17;
-        public static final double extension = WristAndArm.Limits.extensionMax;
-        public static final double pitch = 0.71;
+        public static final double pivot = 0.17; // :D this needs to be lower i think
+        public static final double extension = 1.601;
+        public static final double pitch = 0.66;
         public static final Double roll = null;
       }
 
@@ -721,7 +721,7 @@ public final class Constants {
         public static final double highTargetsX = 0.379;
         public static final double middleTargetsX = 0.811;
         public static final double lowTargetsX = 1.185;
-        public static final double fieldCenterGamePiecesX = 7.068 - 2; // :D for testing purposes, due to limited space. TODO: remove the "- 1"
+        public static final double fieldCenterGamePiecesX = 7.068 - Units.inchesToMeters(22); // :D for testing purposes, due to limited space. TODO: remove the "- 1"
 
         public static final Pose3d[] fieldCenterGamePieces = {new Pose3d(new Translation3d(fieldCenterGamePiecesX, 4.577, 0),
           new Rotation3d()), new Pose3d(new Translation3d(fieldCenterGamePiecesX, 3.358, 0), new Rotation3d()), new Pose3d(
@@ -765,7 +765,7 @@ public final class Constants {
         public static final double highTargetsX = 16.162;
         public static final double middleTargetsX = 15.730;
         public static final double lowTargetsX = 15.350;
-        public static final double fieldCenterGamePiecesX = 9.473 + 2;
+        public static final double fieldCenterGamePiecesX = 9.473 + Units.inchesToMeters(22);
 
         public static final Pose3d[] fieldCenterGamePieces = {new Pose3d(new Translation3d(fieldCenterGamePiecesX, 4.577, 0),
           new Rotation3d()), new Pose3d(new Translation3d(fieldCenterGamePiecesX, 3.358, 0), new Rotation3d()), new Pose3d(
