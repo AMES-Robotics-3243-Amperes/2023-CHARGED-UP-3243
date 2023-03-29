@@ -428,12 +428,21 @@ public class LegAnkleSubsystem extends SubsystemBase {
   public boolean isArmPositioned() {
     // H! Return whether it's in the right position
     // H! TODO: TEST THIS // :D tested enough already, right?
-    return (
-      (targetPosition.pivot == null || Math.abs( encoderPivotAbsolute.getPosition() - targetPosition.pivot ) < atSetpointThreshold) &&
-      (targetPosition.extension == null || Math.abs( encoderExtension.getPosition() - targetPosition.extension ) < atSetpointThreshold) &&
-      (targetPosition.pitch == null || Math.abs( encoderPitch.getPosition() - targetPosition.pitch ) < atSetpointThreshold) &&
-      (targetPosition.roll == null || Math.abs( encoderRoll.getPosition() - targetPosition.roll ) < atSetpointThreshold)
-    );
+    if (DriverStation.isAutonomous()) {
+      return (
+        (targetPosition.pivot == null || Math.abs( encoderPivotAbsolute.getPosition() - targetPosition.pivot ) < atSetpointThresholdsAuto.extension) &&
+        (targetPosition.extension == null || Math.abs( encoderExtension.getPosition() - targetPosition.extension ) < atSetpointThresholdsAuto.pivot) &&
+        (targetPosition.pitch == null || Math.abs( encoderPitch.getPosition() - targetPosition.pitch ) < atSetpointThresholdsAuto.pitch) &&
+        (targetPosition.roll == null || Math.abs( encoderRoll.getPosition() - targetPosition.roll ) < atSetpointThresholdsAuto.roll)
+      );
+    } else {
+      return (
+        (targetPosition.pivot == null || Math.abs( encoderPivotAbsolute.getPosition() - targetPosition.pivot ) < atSetpointThresholdsTeleop.extension) &&
+        (targetPosition.extension == null || Math.abs( encoderExtension.getPosition() - targetPosition.extension ) < atSetpointThresholdsTeleop.pivot) &&
+        (targetPosition.pitch == null || Math.abs( encoderPitch.getPosition() - targetPosition.pitch ) < atSetpointThresholdsTeleop.pitch) &&
+        (targetPosition.roll == null || Math.abs( encoderRoll.getPosition() - targetPosition.roll ) < atSetpointThresholdsTeleop.roll)
+      );
+    }
   }
 
 
