@@ -4,33 +4,38 @@
 
 package frc.robot.commands.DriveTrain;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.FieldPosManager;
+import frc.robot.Constants.DriveTrain.DriveConstants;
 import frc.robot.subsystems.DriveSubsystem;
 
 public class DriveOntoChargeCommand extends SwerveAutoMoveCommand {
+  FieldPosManager m_posManager;
+
   /** Creates a new DriveOntoChargeCommand. */
   public DriveOntoChargeCommand(DriveSubsystem subsystem, FieldPosManager posManager) {
-    
+    super(subsystem, posManager.getChargePoint(true));
+
+    m_posManager = posManager;
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {}
+  public void initialize() {
+    m_posManager.togglePhotonVisionDisabled(true);
+    super.initialize();
+  }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    return m_subsystem.isFinished() || 
+    m_posManager.togglePhotonVisionDisabled(false);
+    super.end(interrupted);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    boolean rotatedOnCharge = Math.abs(m_subsystem.getChargeLevel().getDegrees()) >= DriveConstants.AutoConstants.degreesBeforeConsideredOnCharge;
+    return super.isFinished() || rotatedOnCharge;
   }
 }

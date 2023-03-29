@@ -7,11 +7,13 @@ package frc.robot.commands.DriveTrain;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.FieldPosManager;
 import frc.robot.Constants.DriveTrain.DriveConstants.BalanceConstants;
 import frc.robot.subsystems.DriveSubsystem;
 
 public class BalanceCommand extends CommandBase {
   private final DriveSubsystem m_subsystem;
+  private final FieldPosManager m_posManager;
   private final ProfiledPIDController m_pidController = BalanceConstants.PIDController;
 
   // keeps track of how long the robot has been balanced
@@ -20,8 +22,9 @@ public class BalanceCommand extends CommandBase {
   /**
    * Creates a new BalanceCommand.
    */
-  public BalanceCommand(DriveSubsystem subsystem) {
+  public BalanceCommand(DriveSubsystem subsystem, FieldPosManager posManager) {
     m_subsystem = subsystem;
+    m_posManager = posManager;
     m_pidController.setGoal(0);
 
     // Use addRequirements() here to declare subsystem dependencies.
@@ -30,7 +33,9 @@ public class BalanceCommand extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    m_posManager.togglePhotonVisionDisabled(true);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -50,6 +55,7 @@ public class BalanceCommand extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     m_timer.reset();
+    m_posManager.togglePhotonVisionDisabled(false);
   }
 
   // Returns true when the command should end.

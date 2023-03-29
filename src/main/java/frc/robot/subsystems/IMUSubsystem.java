@@ -7,18 +7,25 @@ package frc.robot.subsystems;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.FieldPosManager;
 import frc.robot.Constants.DriveTrain.DriveConstants;
 
 /**
  * <> A wrapper for an {@link AHRS} with a bunch of useful stuff
+ * 
+ * @apiNote the field position manager is only used when getting charge level, not
+ * for the get yaw function or anything of that sort
  */
 public class IMUSubsystem extends SubsystemBase {
   private final AHRS m_imu = new AHRS();
+  private final FieldPosManager m_posManager;
 
   /**
    * Creates a new IMUSubsystem.
    */
-  public IMUSubsystem() {}
+  public IMUSubsystem(FieldPosManager posManager) {
+    m_posManager = posManager;
+  }
 
   @Override
   public void periodic() {}
@@ -70,9 +77,12 @@ public class IMUSubsystem extends SubsystemBase {
     // but we need to determine what way it's leaning another way
     Rotation2d upwardRotation = getVerticalInclination();
 
+    // <> get the robot's rotation
+    Rotation2d robotRotation = m_posManager.getRobotPose().getRotation();
+
     // <> extract the signs of the cos and sin of a shifted angle
-    boolean cosPositive = Math.cos(getYaw().getRadians() + Math.PI / 4) >= 0;
-    boolean sinPositive = Math.sin(getYaw().getRadians() + Math.PI / 4) >= 0;
+    boolean cosPositive = Math.cos(robotRotation.getRadians() + Math.PI / 4) >= 0;
+    boolean sinPositive = Math.sin(robotRotation.getRadians() + Math.PI / 4) >= 0;
 
     // <> and use their signs to figure out what way we're
     // facing and then determine the sign of the charge angle

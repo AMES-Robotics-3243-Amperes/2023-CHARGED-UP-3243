@@ -33,14 +33,13 @@ public class DriveSubsystem extends SubsystemBase {
     DriveConstants.IDs.kRearRightTurningCanId, DriveConstants.ModuleOffsets.kBackRightOffset);
 
   // <> gyro
-  private final IMUSubsystem m_imuSubsystem = new IMUSubsystem();
+  private final IMUSubsystem m_imuSubsystem;
 
   // <> field pos manager
   private final FieldPosManager m_fieldPosManager;
   
   // <> odometry for tracking robot pose
-  SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(DriveConstants.ChassisKinematics.kDriveKinematics,
-    getHeading(), getModulePositions());
+  SwerveDriveOdometry m_odometry;
 
   // <> pid controller for when turning is field relative (degrees)
   private ProfiledPIDController m_thetaPidController;
@@ -49,8 +48,12 @@ public class DriveSubsystem extends SubsystemBase {
    * Creates a new DriveSubsystem.
    */
   public DriveSubsystem(FieldPosManager fieldPosManager, ProfiledPIDController thetaPIDController) {
+    m_imuSubsystem = new IMUSubsystem(fieldPosManager);
     m_fieldPosManager = fieldPosManager;
     m_thetaPidController = thetaPIDController;
+
+    m_odometry = new SwerveDriveOdometry(DriveConstants.ChassisKinematics.kDriveKinematics,
+      getHeading(), getModulePositions());
 
     m_thetaPidController.enableContinuousInput(-180, 180);
     resetFieldRelativeTurningPid();
@@ -198,10 +201,6 @@ public class DriveSubsystem extends SubsystemBase {
    * @return the robot's heading
    */
   public Rotation2d getHeading() {
-    if (m_fieldPosManager == null) {
-      return m_imuSubsystem.getYaw();
-    }
-
     return m_fieldPosManager.getRobotPose().getRotation();
   }
 

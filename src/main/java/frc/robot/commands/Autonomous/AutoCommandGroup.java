@@ -13,6 +13,7 @@ import frc.robot.Constants.DriveTrain.DriveConstants;
 import frc.robot.FieldPosManager;
 import frc.robot.JoyUtil;
 import frc.robot.commands.DriveTrain.BalanceCommand;
+import frc.robot.commands.DriveTrain.DriveOntoChargeCommand;
 import frc.robot.commands.DriveTrain.LockSwerveWheelsCommand;
 import frc.robot.commands.DriveTrain.SwerveAutoMoveCommand;
 import frc.robot.commands.Grabber.OpenToWidthCommand;
@@ -148,22 +149,14 @@ public class AutoCommandGroup extends SequentialCommandGroup {
     }
 
     if (charge) {
-      Pose2d bottomNearChargeCorner = m_posManager.getAutoPose(FieldPosManager.autoPath.lowerPath, true, 0);
-      Pose2d topFarChargeCorner = m_posManager.getAutoPose(FieldPosManager.autoPath.upperPath, true, 1);
-      Pose2d chargePoint = bottomNearChargeCorner.plus(new Transform2d(bottomNearChargeCorner, topFarChargeCorner))
-        .div(2);
-
       Pose2d intermediatePoint = new Pose2d(
-        new Translation2d(nearChargeAvoidIntermediatePoint.getX(), chargePoint.getY()),
+        new Translation2d(nearChargeAvoidIntermediatePoint.getX(), m_posManager.getChargePoint(true).getY()),
         nearChargeAvoidIntermediatePoint.getRotation());
 
-      SwerveAutoMoveCommand getToPosCommand = new SwerveAutoMoveCommand(m_driveSubsystem,
-        new ArrayList<>(List.of(intermediatePoint, chargePoint)),
-        DriveConstants.AutoConstants.kMaxLenientMetersFromGoal,
-        DriveConstants.AutoConstants.kMaxLenientRotationFromGoal);
-
-      autoCommands.add(getToPosCommand);
-      autoCommands.add(new BalanceCommand(m_driveSubsystem));
+      autoCommands.add(new SwerveAutoMoveCommand(m_driveSubsystem, intermediatePoint,
+        DriveConstants.AutoConstants.kMaxLenientMetersFromGoal, DriveConstants.AutoConstants.kMaxLenientRotationFromGoal));
+      autoCommands.add(new DriveOntoChargeCommand(m_driveSubsystem, posManager));
+      autoCommands.add(new BalanceCommand(m_driveSubsystem, m_posManager));
       autoCommands.add(new LockSwerveWheelsCommand(m_driveSubsystem));
     }
 

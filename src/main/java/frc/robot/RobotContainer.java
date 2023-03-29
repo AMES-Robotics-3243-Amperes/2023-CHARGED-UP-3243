@@ -66,7 +66,7 @@ public class RobotContainer {
 
   // ++ ----- COMMANDS -------------
   public final SwerveTeleopCommand m_SwerveTeleopCommand = new SwerveTeleopCommand(m_driveSubsystem, primaryController);
-  public final BalanceCommand m_BalanceCommand = new BalanceCommand(m_driveSubsystem);
+  public final BalanceCommand m_BalanceCommand = new BalanceCommand(m_driveSubsystem, fieldPosManager);
   // public final MoveLegAnkleToPickupPositionCommand m_legAnkleToPickupCommand = new
   // MoveLegAnkleToPickupPositionCommand(
   //   m_legAnkleSubsystem);// :D duplicate??
@@ -135,6 +135,7 @@ public class RobotContainer {
     primaryController.a().toggleOnTrue(new SwerveAutoMoveCommand(m_driveSubsystem,
       new ArrayList<Pose2d>(List.of(new Pose2d(new Translation2d(2.5, 2.75), Rotation2d.fromDegrees(0)), new Pose2d(new Translation2d(3, 1), Rotation2d.fromDegrees(0)), new Pose2d(new Translation2d(5, 1), Rotation2d.fromDegrees(0)), new Pose2d(new Translation2d(6, 3), Rotation2d.fromDegrees(0)), new Pose2d(new Translation2d(5, 4), Rotation2d.fromDegrees(0)), new Pose2d(new Translation2d(4, 5), Rotation2d.fromDegrees(0)), new Pose2d(new Translation2d(3, 4), Rotation2d.fromDegrees(0)), new Pose2d(new Translation2d(2.5, 2.75), Rotation2d.fromDegrees(0))))));
     primaryController.b().toggleOnTrue(new SwerveAutoMoveCommand(m_driveSubsystem, new ArrayList<>(List.of(new Pose2d(new Translation2d(2, 2.748), Rotation2d.fromDegrees(180))))));
+    primaryController.start().whileTrue(m_BalanceCommand);
 
     secondaryController.rightBumper().onTrue(m_grabOpenCommand);
     secondaryController.rightBumper().onFalse(m_grabCloseCommand);

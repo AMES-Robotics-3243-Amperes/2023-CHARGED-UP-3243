@@ -235,6 +235,8 @@ public final class Constants {
 
       // <> stuff pertaining to auto driving
       public static final class AutoConstants {
+        public static final double degreesBeforeConsideredOnCharge = 12;
+
         public static final double kP = 0.2;
         public static final double kI = 0;
         public static final double kD = 0;
@@ -251,26 +253,27 @@ public final class Constants {
         public static final double kMaxMetersFromGoal = 0.06;
         public static final Rotation2d kMaxRotationFromGoal = Rotation2d.fromDegrees(2);
 
-        public static final double kMaxLenientMetersFromGoal = 0.18;
+        public static final double kMaxLenientMetersFromGoal = 0.2;
         public static final Rotation2d kMaxLenientRotationFromGoal = Rotation2d.fromDegrees(6);
       }
 
       public static final class BalanceConstants {
         // <> the max angle that is considered balanced
-        public static final Rotation2d kMaxBalanceLeniency = Rotation2d.fromDegrees(1.5);
+        public static final Rotation2d kMaxBalanceLeniency = Rotation2d.fromDegrees(1.75);
 
         // <> how long the robot must balance for the command to end
         public static final double kBalanceTimeSeconds = 1.5;
 
         // <> pid stuff while balancing
-        public static final double kP = 0.0135;
+        public static final double kP = 0.02;
         public static final double kI = 0;
-        public static final double kD = 0;
+        public static final double kD = 0.005;
 
         // <> max speed while balancing
-        public static final double kMaxBalanceMetersPerSecond = 0.8;
+        public static final double kMaxBalanceMetersPerSecond = 0.6;
+
         // <> max accel while balancing
-        public static final double kMaxBalanceAccelMetersPerSecond = 0.4;
+        public static final double kMaxBalanceAccelMetersPerSecond = 1;
 
         public static final TrapezoidProfile.Constraints kPIDControllerConstraints = new TrapezoidProfile.Constraints(
           kMaxBalanceMetersPerSecond, kMaxBalanceAccelMetersPerSecond);
