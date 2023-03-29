@@ -704,6 +704,8 @@ public final class Constants {
       public static Pose2d chargeStationBottomLeft = new Pose2d(new Translation2d(3.276, 1.522), new Rotation2d(0));
       public static Pose2d chargeStationTopRight = new Pose2d(new Translation2d(4.495, 3.979), new Rotation2d(0));
       public static Pose2d dividerTip = new Pose2d(new Translation2d(3.276, 5.487), new Rotation2d(0));
+      public static Pose2d chargeStationCenter = new Pose2d(new Translation2d(3.8855, 2.7505), new Rotation2d(0));
+      
 
       public static final class autoPositions {
         public static final Pose2d[] lowerPath = {new Pose2d(new Translation2d(2.25, 0.75),
@@ -747,6 +749,7 @@ public final class Constants {
       public static Pose2d chargeStationBottomLeft = new Pose2d(new Translation2d(12.046, 1.522), new Rotation2d(0));
       public static Pose2d chargeStationTopRight = new Pose2d(new Translation2d(13.265, 3.979), new Rotation2d(0));
       public static Pose2d dividerTip = new Pose2d(new Translation2d(13.265, 5.487), new Rotation2d(0));
+      public static Pose2d chargeStationCenter = new Pose2d(new Translation2d(12.6555, 2.7505), new Rotation2d(0));
 
       public static final class autoPositions {
         public static final Pose2d[] lowerPath = {new Pose2d(new Translation2d(14.25, 0.75), // TODO remove the 3

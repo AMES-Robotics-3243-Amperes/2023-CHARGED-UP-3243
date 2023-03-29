@@ -428,8 +428,17 @@ public class FieldPosManager {
   /**
    * <> returns the center of the charge station of the current alliance
    */
-  public Pose2d getChargePoint() {
-    return new Pose2d();
+  public Pose2d getChargePoint(boolean ofCurrentAlliance) {
+    if (allianceColor != DriverStation.Alliance.Invalid && allianceColor != null) {
+      if ((ofCurrentAlliance && allianceColor == DriverStation.Alliance.Red) || (!ofCurrentAlliance && allianceColor == DriverStation.Alliance.Blue)) {
+        // :D red alliance poses
+        return Constants.FieldConstants.Red.chargeStationCenter;
+      } else {
+        return Constants.FieldConstants.Blue.chargeStationCenter;
+      }
+    } else {
+      return new Pose2d();
+    }
   }
 
   public enum fieldSpot2d {
