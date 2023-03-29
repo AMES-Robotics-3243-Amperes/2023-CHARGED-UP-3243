@@ -14,6 +14,7 @@ import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -140,6 +141,8 @@ public class LegAnkleSubsystem extends SubsystemBase {
   private GenericEntry rollDValue;
   private GenericEntry rollFFValue;
 
+  public boolean calibrated = false;
+
   
   // :D Ahctipredocne
 
@@ -196,7 +199,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
     
     //encoderPivotRelative.setPosition(startingPosition.pivot); // :D I commented this out because we are using a semiabsolute encoder now
     encoderPitch.setZeroOffset(wristPitchEncoderSetZeroOffset);
-    encoderPivotAbsolute.setZeroOffset(wristPivotEncoderSetZeroOffset); // TODO :D check this value
+    // encoderPivotAbsolute.setZeroOffset(wristPivotEncoderSetZeroOffset); // TODO :D check this value
     // :D ^ this is in between the extreme values, so that the seam has the pivot facing where it physically can't go
     // :D the straight up direction is 0.43 on the absolute encoder
     // H! Set the left pitch encoder 
@@ -514,44 +517,54 @@ public class LegAnkleSubsystem extends SubsystemBase {
     
     // H! If the limit switch is triggered, we're at min extension.
     SmartDashboard.putBoolean("limit switch pressed", extensionLimitSwitch.get());
-    if (extensionLimitSwitch.get()) {
-      //encoderExtension.setPosition(Limits.extensionMin); Disabled because mechanical keeps not doing the limit switch properly
+    if(DriverStation.isTest()){
+      // H! This is maybe right TODO actually test it
+      if (!calibrated && pivotLimitSwitch.get()) {
+        encoderPivotAbsolute.setZeroOffset(encoderPivotAbsolute.getPosition() + encoderPivotAbsolute.getZeroOffset() - 0.51);
+        motorPivot.burnFlash();
+        calibrated = true;
+      }
+      SmartDashboard.putBoolean("switch piv", pivotLimitSwitch.get());
+      SmartDashboard.putNumber("piv offset", encoderPivotAbsolute.getZeroOffset());
+      if(calibrated){
+        motorPivot.set(0);
+      } else {
+        motorPivot.set(0.07);
+      }
+
+      // targetPosition = new LegAnklePosition(null, null, null, null);
+    }else{
+      if (extensionLimitSwitch.get()) {
+        //encoderExtension.setPosition(Limits.extensionMin); Disabled because mechanical keeps not doing the limit switch properly
+      }
+
+      // ++ clamp values to be safe -------------------------------------------
+      // H! Prevent arm from extending too much or too little
+      targetPosition.extension = GeneralUtil.clamp(Limits.extensionMin, Limits.extensionMax, targetPosition.extension);
+
+      // H! Prevent arm from pivoting too much or too little
+      targetPosition.pivot = GeneralUtil.clamp(Limits.pivotMin, Limits.pivotMax, targetPosition.pivot);
+
+      // H! Prevent arm from pivoting too much or too little
+      targetPosition.pitch = GeneralUtil.clamp(Limits.pitchMin, Limits.pitchMax, targetPosition.pitch);
+
+      // H! Prevent arm from pivoting too much or too little
+      targetPosition.roll = GeneralUtil.clamp(Limits.rollMin, Limits.rollMax, targetPosition.roll);
+
+
+      // H! NOTE: If you add xy limits, make sure to remove the comment in constants saying they're only used with IK
+      
+      // ++ pivot
+      // targetPosition.pivot = clamp(minPivotPos, maxPivotPos, targetPosition.pivot);
+      // ++ pitch
+      // targetPosition.pitch = clamp (minPitchPos, maxPitchPos, targetPosition.pitch);
+      // ++ ----------------------
+
+      // H! Set the position refrences
+      targetPosition.applyToMotors(pidExtension, pidPivot, pidPitch,  pidRoll);
     }
-
-    // ++ clamp values to be safe -------------------------------------------
-    // H! Prevent arm from extending too much or too little
-    targetPosition.extension = GeneralUtil.clamp(Limits.extensionMin, Limits.extensionMax, targetPosition.extension);
-
-    // H! Prevent arm from pivoting too much or too little
-    targetPosition.pivot = GeneralUtil.clamp(Limits.pivotMin, Limits.pivotMax, targetPosition.pivot);
-
-    // H! Prevent arm from pivoting too much or too little
-    targetPosition.pitch = GeneralUtil.clamp(Limits.pitchMin, Limits.pitchMax, targetPosition.pitch);
-
-    // H! Prevent arm from pivoting too much or too little
-    targetPosition.roll = GeneralUtil.clamp(Limits.rollMin, Limits.rollMax, targetPosition.roll);
-
-
-    // H! NOTE: If you add xy limits, make sure to remove the comment in constants saying they're only used with IK
-    
-    // ++ pivot
-    // targetPosition.pivot = clamp(minPivotPos, maxPivotPos, targetPosition.pivot);
-    // ++ pitch
-    // targetPosition.pitch = clamp (minPitchPos, maxPitchPos, targetPosition.pitch);
-    // ++ ----------------------
-
-    // H! Set the position refrences
-    targetPosition.applyToMotors(pidExtension, pidPivot, pidPitch,  pidRoll);
   }
 
-
-
-  public void testPeriodic() {
-    // H! This is maybe right TODO actually test it
-    if (pivotLimitSwitch.get()) {
-      encoderPivotAbsolute.setZeroOffset(encoderPivotAbsolute.getZeroOffset() + 0.5);
-    }
-  }
 
 
 

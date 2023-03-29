@@ -161,6 +161,10 @@ public class RobotContainer {
   }
 
   public void testPeriodic() {
-    m_legAnkleSubsystem.testPeriodic();
+    
+  }
+
+  public void testInit() {
+    m_legAnkleSubsystem.calibrated = false;
   }
 }

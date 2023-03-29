@@ -67,9 +67,9 @@ public final class Constants {
     public static final double openerMotorIGain = 0.0;
     public static final double openerMotorDGain = 0.0;
 
-    public static final double wheelMotorPGain = 0.00004;
+    public static final double wheelMotorPGain = 0.00008;
     public static final double wheelMotorIGain = 0.000000;
-    public static final double wheelMotorDGain = 0.00000;
+    public static final double wheelMotorDGain = 0.0000;
   
     // ++ wheel spin speed constants
     public static final double openGrabberToWidthSetpoint = 0.44;
@@ -386,16 +386,16 @@ public final class Constants {
     }
 
     public static class PickupSetpoints {
-      public static final double pivot = 0.53;
+      public static final double pivot = 0.528;
       public static final double extension = 1.09;
       public static final double pitch = 0.5;
       public static final Double roll = null;
     }
 
     public static class PickupSetpointsLOW { // :D TODO: get the actual values
-      public static final double pivot = 0.565;
+      public static final double pivot = 0.563;
       public static final double extension = 1.09;
-      public static final double pitch = 0.7;
+      public static final double pitch = 0.65;
       public static final Double roll = null;
     }
 
@@ -409,20 +409,20 @@ public final class Constants {
     public static class PlacementSetpoints {
       public static final class High {
         public static final double pivot = 0.17;
-        public static final double extension = WristAndArm.Limits.extensionMax-0.1;
-        public static final double pitch = 0.722;
+        public static final double extension = WristAndArm.Limits.extensionMax;
+        public static final double pitch = 0.71;
         public static final Double roll = null;
       }
 
       public static final class Middle {
-        public static final double pivot = 0.151;
+        public static final double pivot = 0.15;
         public static final double extension = 1.09;
-        public static final double pitch = 0.722;
+        public static final double pitch = 0.71;
         public static final Double roll = null;
       }
 
       public static final class Low {
-        public static final double pivot = 0.205;
+        public static final double pivot = 0.21;
         public static final double extension = 1.09;
         public static final double pitch = 0.817;
         public static final Double roll = null;
@@ -666,7 +666,7 @@ public final class Constants {
 
     public static final class Blue {
       // :D position of the robot's chassis:
-      public static double scoringChassisPositionX = 1.85 + 0.05;
+      public static double scoringChassisPositionX = 1.85 + 0.02;
       public static Pose2d[] scoringPositions = {new Pose2d(Constants.FieldConstants.Blue.scoringChassisPositionX,
         Constants.FieldConstants.targetPositionsY[0], new Rotation2d()), new Pose2d(
         Constants.FieldConstants.Blue.scoringChassisPositionX, Constants.FieldConstants.targetPositionsY[1],
@@ -690,16 +690,16 @@ public final class Constants {
 
       public static final class autoPositions {
         public static final Pose2d[] lowerPath = {new Pose2d(new Translation2d(2.25, 0.75),
-          new Rotation2d(0)), new Pose2d(new Translation2d(6 - 3, 0.75), new Rotation2d(0))}; // TODO the -3
+          new Rotation2d(0)), new Pose2d(new Translation2d(6 - 2, 0.75), new Rotation2d(0))}; // TODO the -3
         public static final Pose2d[] upperPath = {new Pose2d(new Translation2d(2.25, 4.6),
-          new Rotation2d(0)), new Pose2d(new Translation2d(6 - 3, 4.6), new Rotation2d(0))}; // TODO this too
+          new Rotation2d(0)), new Pose2d(new Translation2d(6 - 2, 4.6), new Rotation2d(0))}; // TODO this too
       }
 
       public static final class grabberPositions {
         public static final double highTargetsX = 0.379;
         public static final double middleTargetsX = 0.811;
         public static final double lowTargetsX = 1.185;
-        public static final double fieldCenterGamePiecesX = 7.068 - 3; // :D for testing purposes, due to limited space. TODO: remove the "- 1"
+        public static final double fieldCenterGamePiecesX = 7.068 - 2; // :D for testing purposes, due to limited space. TODO: remove the "- 1"
 
         public static final Pose3d[] fieldCenterGamePieces = {new Pose3d(new Translation3d(fieldCenterGamePiecesX, 4.577, 0),
           new Rotation3d()), new Pose3d(new Translation3d(fieldCenterGamePiecesX, 3.358, 0), new Rotation3d()), new Pose3d(
@@ -710,7 +710,7 @@ public final class Constants {
     }
 
     public static final class Red {
-      public static double scoringChassisPositionX = 14.697 - 0.05;
+      public static double scoringChassisPositionX = 14.697 - 0.02;
       public static Pose2d[] scoringPositions = {new Pose2d(Constants.FieldConstants.Red.scoringChassisPositionX,
         Constants.FieldConstants.targetPositionsY[0], new Rotation2d(Math.PI)), new Pose2d(
         Constants.FieldConstants.Red.scoringChassisPositionX, Constants.FieldConstants.targetPositionsY[1],
@@ -733,16 +733,16 @@ public final class Constants {
 
       public static final class autoPositions {
         public static final Pose2d[] lowerPath = {new Pose2d(new Translation2d(14.25, 0.75), // TODO remove the 3
-          new Rotation2d(Math.PI)), new Pose2d(new Translation2d(10.5 + 3, 0.75), new Rotation2d(Math.PI))};
+          new Rotation2d(Math.PI)), new Pose2d(new Translation2d(10.5 + 2, 0.75), new Rotation2d(Math.PI))};
         public static final Pose2d[] upperPath = {new Pose2d(new Translation2d(14.25, 4.6), // TODO this too
-          new Rotation2d(Math.PI)), new Pose2d(new Translation2d(10.25 + 3, 4.6), new Rotation2d(Math.PI))};
+          new Rotation2d(Math.PI)), new Pose2d(new Translation2d(10.25 + 2, 4.6), new Rotation2d(Math.PI))};
       }
 
       public static final class grabberPositions {
         public static final double highTargetsX = 16.162;
         public static final double middleTargetsX = 15.730;
         public static final double lowTargetsX = 15.350;
-        public static final double fieldCenterGamePiecesX = 9.473 + 3;
+        public static final double fieldCenterGamePiecesX = 9.473 + 2;
 
         public static final Pose3d[] fieldCenterGamePieces = {new Pose3d(new Translation3d(fieldCenterGamePiecesX, 4.577, 0),
           new Rotation3d()), new Pose3d(new Translation3d(fieldCenterGamePiecesX, 3.358, 0), new Rotation3d()), new Pose3d(
