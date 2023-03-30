@@ -188,7 +188,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
     // H! Set the position conversion factors. Pivot is commented out because it didn't want to set. It's burned to flash manually
     encoderExtension.setPositionConversionFactor(extensionEncoderConversionFactor);
     //armPivotEncoder.setPositionConversionFactor(1/10);//(1 / 100) * (35/50) * (21/32) = 0.00459357
-    encoderPivotAbsolute.setPositionConversionFactor(pivotEncoderConversionFactor); // TODO :D Check this value
+    encoderPivotAbsolute.setPositionConversionFactor(pivotEncoderConversionFactor);
     encoderPitchRight.setPositionConversionFactor(pitchEncoderConversionFactor);
     encoderPitchLeft.setPositionConversionFactor(pitchEncoderConversionFactor);
     
@@ -199,7 +199,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
     
     //encoderPivotRelative.setPosition(startingPosition.pivot); // :D I commented this out because we are using a semiabsolute encoder now
     encoderPitch.setZeroOffset(wristPitchEncoderSetZeroOffset);
-    // encoderPivotAbsolute.setZeroOffset(wristPivotEncoderSetZeroOffset); // TODO :D check this value
+    // encoderPivotAbsolute.setZeroOffset(wristPivotEncoderSetZeroOffset); // TODO :D keep this commented out
     // :D ^ this is in between the extreme values, so that the seam has the pivot facing where it physically can't go
     // :D the straight up direction is 0.43 on the absolute encoder
     // H! Set the left pitch encoder 
@@ -527,7 +527,6 @@ public class LegAnkleSubsystem extends SubsystemBase {
     // H! If the limit switch is triggered, we're at min extension.
     SmartDashboard.putBoolean("limit switch pressed", extensionLimitSwitch.get());
     if(DriverStation.isTest()){
-      // H! This is maybe right TODO actually test it
       if (!calibrated && pivotLimitSwitch.get()) {
         encoderPivotAbsolute.setZeroOffset(encoderPivotAbsolute.getPosition() + encoderPivotAbsolute.getZeroOffset() - 0.51);
         motorPivot.burnFlash();

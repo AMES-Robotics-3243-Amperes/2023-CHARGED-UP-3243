@@ -336,7 +336,7 @@ public final class Constants {
     public static final double pitchPickupPos = 0.0;
 
 
-    public static final double pivotEncoderOffset = 0.28125; // TODO :D check this value
+    public static final double pivotEncoderOffset = 0.28125; // :D check this value, no actually don't use this value, run in testing mode to calibrate instead
     public static final double wristLength = Units.inchesToMeters(5)/*0.072327*/;
     public static final double changeXMultiplier = 0.10 / 50;
     public static final double changeYMultiplier = 0.10 / 50;
@@ -412,7 +412,7 @@ public final class Constants {
       public static final Double roll = null;
     }
 
-    public static class PickupSetpointsLOW { // :D TODO: get the actual values
+    public static class PickupSetpointsLOW {
       public static final double pivot = 0.563;
       public static final double extension = 1.09;
       public static final double pitch = 0.65;
@@ -420,9 +420,9 @@ public final class Constants {
     }
 
     public static class DoubleLoadSetpoints {
-      public static final double pivot = 0.37;
+      public static final double pivot = 0.343;
       public static final double extension = 1.09;
-      public static final double pitch = 0.6;
+      public static final double pitch = 0.572;
       public static final Double roll = null;
     }
 
@@ -712,16 +712,16 @@ public final class Constants {
 
       public static final class autoPositions {
         public static final Pose2d[] lowerPath = {new Pose2d(new Translation2d(2.25, 0.75),
-          new Rotation2d(0)), new Pose2d(new Translation2d(6 - 2, 0.75), new Rotation2d(0))}; // TODO the -3
+          new Rotation2d(0)), new Pose2d(new Translation2d(6, 0.75), new Rotation2d(0))};
         public static final Pose2d[] upperPath = {new Pose2d(new Translation2d(2.25, 4.6),
-          new Rotation2d(0)), new Pose2d(new Translation2d(6 - 2, 4.6), new Rotation2d(0))}; // TODO this too
+          new Rotation2d(0)), new Pose2d(new Translation2d(6, 4.6), new Rotation2d(0))};
       }
 
       public static final class grabberPositions {
         public static final double highTargetsX = 0.379;
         public static final double middleTargetsX = 0.811;
         public static final double lowTargetsX = 1.185;
-        public static final double fieldCenterGamePiecesX = 7.068 - Units.inchesToMeters(22); // :D for testing purposes, due to limited space. TODO: remove the "- 1"
+        public static final double fieldCenterGamePiecesX = 7.068;
 
         public static final Pose3d[] fieldCenterGamePieces = {new Pose3d(new Translation3d(fieldCenterGamePiecesX, 4.577, 0),
           new Rotation3d()), new Pose3d(new Translation3d(fieldCenterGamePiecesX, 3.358, 0), new Rotation3d()), new Pose3d(
@@ -755,17 +755,17 @@ public final class Constants {
       public static Pose2d chargeStationCenter = new Pose2d(new Translation2d(12.6555, 2.7505), new Rotation2d(0));
 
       public static final class autoPositions {
-        public static final Pose2d[] lowerPath = {new Pose2d(new Translation2d(14.25, 0.75), // TODO remove the 3
-          new Rotation2d(Math.PI)), new Pose2d(new Translation2d(10.5 + 2, 0.75), new Rotation2d(Math.PI))};
-        public static final Pose2d[] upperPath = {new Pose2d(new Translation2d(14.25, 4.6), // TODO this too
-          new Rotation2d(Math.PI)), new Pose2d(new Translation2d(10.25 + 2, 4.6), new Rotation2d(Math.PI))};
+        public static final Pose2d[] lowerPath = {new Pose2d(new Translation2d(14.25, 0.75),
+          new Rotation2d(Math.PI)), new Pose2d(new Translation2d(10.5, 0.75), new Rotation2d(Math.PI))};
+        public static final Pose2d[] upperPath = {new Pose2d(new Translation2d(14.25, 4.6),
+          new Rotation2d(Math.PI)), new Pose2d(new Translation2d(10.25, 4.6), new Rotation2d(Math.PI))};
       }
 
       public static final class grabberPositions {
         public static final double highTargetsX = 16.162;
         public static final double middleTargetsX = 15.730;
         public static final double lowTargetsX = 15.350;
-        public static final double fieldCenterGamePiecesX = 9.473 + Units.inchesToMeters(22);
+        public static final double fieldCenterGamePiecesX = 9.473;
 
         public static final Pose3d[] fieldCenterGamePieces = {new Pose3d(new Translation3d(fieldCenterGamePiecesX, 4.577, 0),
           new Rotation3d()), new Pose3d(new Translation3d(fieldCenterGamePiecesX, 3.358, 0), new Rotation3d()), new Pose3d(

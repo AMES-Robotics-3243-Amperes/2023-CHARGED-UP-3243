@@ -22,6 +22,7 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.GrabberSubsystem;
 import frc.robot.subsystems.LegAnkleSubsystem;
 import frc.robot.subsystems.ShuffleboardSubsystem;
+import frc.robot.subsystems.ShuffleboardSubsystem.ShuffleBoardInput;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,6 +99,22 @@ public class AutoCommandGroup extends SequentialCommandGroup {
       autoCommands.add(goToPieceDropOffCommand);
 
       addNewPlacementRoutine();
+    }
+
+    // <> if this is true, drive out of the community and charge
+    if (m_shuffleboardSubsystem.ShuffleBoardBooleanInput(ShuffleBoardInput.exitCommunityONLY)) {
+      autoCommands.add(new DriveBehindChargeCommand(m_driveSubsystem, m_shuffleboardSubsystem, m_posManager));
+
+      if (charge) {
+        autoCommands.add(new DriveOntoChargeCommand(m_driveSubsystem, posManager));
+        autoCommands.add(new BalanceCommand(m_driveSubsystem, m_posManager));
+        autoCommands.add(new LockSwerveWheelsCommand(m_driveSubsystem));
+      }
+
+      Command[] commandArray = new Command[autoCommands.size()];
+      commandArray = autoCommands.toArray(commandArray);
+      addCommands(commandArray);
+      return;
     }
 
     // <> only add all the commands if neither of the ids are negative

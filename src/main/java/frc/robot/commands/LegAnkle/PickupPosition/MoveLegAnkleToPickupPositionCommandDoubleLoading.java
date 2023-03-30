@@ -10,7 +10,7 @@ import frc.robot.JoyUtil;
 import frc.robot.commands.LegAnkle.MoveLegAnkleToPositionCommand;
 import frc.robot.subsystems.LegAnkleSubsystem;
 
-public class MoveLegAnkleToPickupPositionCommandDoubleLoading extends SequentialCommandGroup { // :D TODO: this should move pivot first, then wrist
+public class MoveLegAnkleToPickupPositionCommandDoubleLoading extends SequentialCommandGroup {
 
   /** Creates a new MoveLegAnkleToPickupPositionCommand. 
    * 
