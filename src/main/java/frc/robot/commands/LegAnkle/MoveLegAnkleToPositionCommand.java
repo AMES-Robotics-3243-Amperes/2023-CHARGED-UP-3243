@@ -125,7 +125,8 @@ public class MoveLegAnkleToPositionCommand extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     // H! When the command is done, set the setpoints to the current position so it dosen't keep going.
-    legAnkleSubsystem.setMotorPositions(legAnkleSubsystem.getMotorPosition());
+    LegAnklePosition currentPosition = legAnkleSubsystem.getMotorPosition();
+    legAnkleSubsystem.setMotorPositions(currentPosition.extension, currentPosition.pivot, currentPosition.pitch, currentPosition.roll);
   }
 
   // Returns true when the command should end.

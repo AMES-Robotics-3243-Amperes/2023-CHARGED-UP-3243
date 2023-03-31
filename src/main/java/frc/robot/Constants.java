@@ -166,10 +166,10 @@ public final class Constants {
       public static final boolean kTurningFieldRelative = true;
 
       // <> speed damper (flat constant supplied speed is multiplied by)
-      public static final double kDrivingSpeedDamper = 2; // <> meters per second
-      public static final double kAngularSpeedDamper = 1 * Math.PI; // <> radians per second
+      public static final double kDrivingSpeedDamper = 3.2; // <> meters per second
+      public static final double kAngularSpeedDamper = 1.2 * Math.PI; // <> radians per second
       // <> max speed
-      public static final double kMaxMetersPerSecond = 6;
+      public static final double kMaxMetersPerSecond = 9;
       // <> this should be true
       public static final boolean kGyroReversed = false;
 
@@ -294,8 +294,8 @@ public final class Constants {
     public static final double kDeadzone = 0.12;
 
     // <> max amount controller output can change per second
-    public static final double kRateLimitLeft = 1.85;
-    public static final double kRateLimitRight = 3.4;
+    public static final double kRateLimitLeft = 1.3;
+    public static final double kRateLimitRight = 3.2;
 
     // <> curve stuff
     public static final int exponent1 = 1;
@@ -305,7 +305,7 @@ public final class Constants {
 
     // <> fast and slow mode
     public static final double leftTriggerSpeedMultiplier = 2.25;
-    public static final double rightTriggerSpeedMultiplier = 0.3;
+    public static final double rightTriggerSpeedMultiplier = 0.22;
 
     // <> ports
     public static int primaryControllerID = 0;
@@ -422,9 +422,9 @@ public final class Constants {
     }
 
     public static class DoubleLoadSetpoints {
-      public static final double pivot = 0.343;
+      public static final double pivot = 0.358;
       public static final double extension = 1.09;
-      public static final double pitch = 0.572;
+      public static final double pitch = 0.582;
       public static final Double roll = null;
     }
 
@@ -460,9 +460,9 @@ public final class Constants {
       }
 
       public static class Pivot {
-        public static final double P = 13.0 * 0.5 * 0;
+        public static final double P = 13.0 * 0.5;
         public static final double I = 0.00004*0; // 0
-        public static final double D = 5*0; // 1
+        public static final double D = 5; // 1
         public static final double FF = 0.1 * 0;
       }
 

@@ -51,10 +51,10 @@ public class SwerveTeleopCommand extends CommandBase {
     double controllerRightY = controller.getRightY();
     double controllerRightX = controller.getRightX();
 
-    if (fieldRelativeDriving && Math.sqrt(controllerRightX * controllerRightX + controllerRightY * controllerRightY) <= 0.8) {
+    if (fieldRelativeDriving && Math.sqrt(controllerRightX * controllerRightX + controllerRightY * controllerRightY) <= 0.8 && false) {
       // <> field relative driving, but no angle specified
       m_driveSubsystem.drive(xSpeed, ySpeed, m_driveSubsystem.getHeading(), true);
-    } else if (fieldRelativeDriving) {
+    } else if (fieldRelativeDriving && false) {
       // <> field relative turning, so get an angle
       double rotationOffsetRadians = reverse ? Math.PI: 0;
       Rotation2d fieldRelativeTurningGoal = Rotation2d.fromRadians(Math.atan2(-controllerRightX, -controllerRightY) + rotationOffsetRadians);
@@ -64,7 +64,7 @@ public class SwerveTeleopCommand extends CommandBase {
       // <> not field relative turning, so get raw rotation speed
       double rotationSpeed = controllerRightX * DriveConstants.kAngularSpeedDamper;
 
-      m_driveSubsystem.drive(xSpeed, ySpeed, rotationSpeed, false);
+      m_driveSubsystem.drive(xSpeed, ySpeed, rotationSpeed, fieldRelativeDriving);
     }
   }
 

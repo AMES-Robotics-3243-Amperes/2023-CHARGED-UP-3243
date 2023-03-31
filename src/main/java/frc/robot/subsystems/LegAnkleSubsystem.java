@@ -12,6 +12,7 @@ import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -275,7 +276,11 @@ public class LegAnkleSubsystem extends SubsystemBase {
     rollFFValue = tab.add("Rol FF Value", PID.Roll.FF).getEntry();
 
     targetPosition.roll = encoderRoll.getPosition();
+
+    // H! This just prevents the arm from pivoting at the start, in case you're worried it will eat Paul
+    // targetPosition.pivot = encoderPivotAbsolute.getPosition();
   }
+
 
 
 
@@ -527,18 +532,19 @@ public class LegAnkleSubsystem extends SubsystemBase {
     // H! If the limit switch is triggered, we're at min extension.
     SmartDashboard.putBoolean("limit switch pressed", extensionLimitSwitch.get());
     if(DriverStation.isTest()){
+      if(!calibrated){
+        motorPivot.set(0.07);
+      } else {
+        motorPivot.set(0);
+      }
+      SmartDashboard.putBoolean("switch piv", pivotLimitSwitch.get());
       if (!calibrated && pivotLimitSwitch.get()) {
-        encoderPivotAbsolute.setZeroOffset(encoderPivotAbsolute.getPosition() + encoderPivotAbsolute.getZeroOffset() - 0.51);
+        motorPivot.set(0);
+        encoderPivotAbsolute.setZeroOffset(MathUtil.inputModulus(encoderPivotAbsolute.getPosition() + encoderPivotAbsolute.getZeroOffset() - 0.51, 0, 1  ));
         motorPivot.burnFlash();
         calibrated = true;
       }
-      SmartDashboard.putBoolean("switch piv", pivotLimitSwitch.get());
       SmartDashboard.putNumber("piv offset", encoderPivotAbsolute.getZeroOffset());
-      if(calibrated){
-        motorPivot.set(0);
-      } else {
-        motorPivot.set(0.07);
-      }
 
       // targetPosition = new LegAnklePosition(null, null, null, null);
     }else{
