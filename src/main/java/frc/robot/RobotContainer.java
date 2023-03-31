@@ -146,9 +146,7 @@ public class RobotContainer {
     secondaryController.y().onTrue(m_moveLegAnkleToPlacementPositionCommand); // :D DONE: test this at some point soon // ss changed to a to stop conflicts
   }
 
-  public void teleopInit() {
-    fieldPosManager.setScoringPositions();
-  }
+  public void teleopInit() {}
 
   public void autoInit() {
     fieldPosManager.setScoringPositions();
@@ -158,9 +156,7 @@ public class RobotContainer {
     return new AutoCommandGroup(m_driveSubsystem, m_legAnkleSubsystem, m_shuffleboardSubsystem, m_GrabberSubsystem, fieldPosManager, secondaryController);
   }
 
-  public void testPeriodic() {
-    
-  }
+  public void testPeriodic() {}
 
   public void testInit() {
     m_legAnkleSubsystem.calibrated = false;

@@ -166,10 +166,10 @@ public final class Constants {
       public static final boolean kTurningFieldRelative = true;
 
       // <> speed damper (flat constant supplied speed is multiplied by)
-      public static final double kDrivingSpeedDamper = 3.2; // <> meters per second
+      public static final double kDrivingSpeedDamper = 3.8; // <> meters per second
       public static final double kAngularSpeedDamper = 1.2 * Math.PI; // <> radians per second
       // <> max speed
-      public static final double kMaxMetersPerSecond = 9;
+      public static final double kMaxMetersPerSecond = 10;
       // <> this should be true
       public static final boolean kGyroReversed = false;
 
@@ -294,7 +294,7 @@ public final class Constants {
     public static final double kDeadzone = 0.12;
 
     // <> max amount controller output can change per second
-    public static final double kRateLimitLeft = 1.3;
+    public static final double kRateLimitLeft = 1.1;
     public static final double kRateLimitRight = 3.2;
 
     // <> curve stuff
@@ -422,9 +422,9 @@ public final class Constants {
     }
 
     public static class DoubleLoadSetpoints {
-      public static final double pivot = 0.358;
-      public static final double extension = 1.09;
-      public static final double pitch = 0.582;
+      public static final double pivot = 0.304;
+      public static final double extension = 1.11;
+      public static final double pitch = 0.574;
       public static final Double roll = null;
     }
 

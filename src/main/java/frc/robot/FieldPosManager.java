@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -55,13 +56,19 @@ public class FieldPosManager {
    */
   public void setScoringPositions() {
     allianceColor = DriverStation.getAlliance();
+    System.out.println(allianceColor);
+
     if (allianceColor != DriverStation.Alliance.Invalid && allianceColor != null) {
       if (allianceColor == DriverStation.Alliance.Red) {
         alliedScoringPositions = Constants.FieldConstants.Red.scoringPositions;
         opposingScoringPositions = Constants.FieldConstants.Blue.scoringPositions;
+
+        latestRobotPosition = new Pose2d(latestRobotPosition.getTranslation(), Rotation2d.fromDegrees(180));
       } else if (allianceColor == DriverStation.Alliance.Blue) {
         alliedScoringPositions = Constants.FieldConstants.Blue.scoringPositions;
         opposingScoringPositions = Constants.FieldConstants.Red.scoringPositions;
+
+        latestRobotPosition = new Pose2d(latestRobotPosition.getTranslation(), Rotation2d.fromDegrees(0));
       }
     } else {
       System.err.println("INVALID ALLIANCE COLOR IN FIELDPOSMANAGER");

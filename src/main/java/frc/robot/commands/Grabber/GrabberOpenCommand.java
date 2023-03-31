@@ -37,7 +37,7 @@ public class GrabberOpenCommand extends CommandBase {
 
     if (joy.getPOVUp()) {
       m_GrabberSubsystem.ejectObject();
-    } else if (joy.getPOVDown()) {
+    } else if (joy.getBButton()) {
       m_GrabberSubsystem.openGrabberToWidth();
     } else {
       m_GrabberSubsystem.openGrabber();
