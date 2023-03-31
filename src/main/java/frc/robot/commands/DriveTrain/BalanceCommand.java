@@ -26,6 +26,7 @@ public class BalanceCommand extends CommandBase {
     m_subsystem = subsystem;
     m_posManager = posManager;
     m_pidController.setGoal(0);
+    m_pidController.setTolerance(BalanceConstants.kMaxBalanceLeniency.getDegrees());
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_subsystem);

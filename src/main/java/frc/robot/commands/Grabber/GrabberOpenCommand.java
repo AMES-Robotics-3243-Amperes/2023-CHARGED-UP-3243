@@ -10,11 +10,11 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 /** GrabberCommand controls the grabber. */
-public class GrabberOpenCommand extends InstantCommand {
+public class GrabberOpenCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   // ££ Defines the subsystem and the controller
   JoyUtil joy;
-  private final GrabberSubsystem m_GrabberSubsystem;
+  protected final GrabberSubsystem m_GrabberSubsystem;
 
   /**
    * Creates a new GrabberOpenCommand.
@@ -43,6 +43,11 @@ public class GrabberOpenCommand extends InstantCommand {
       m_GrabberSubsystem.openGrabber();
     }
     
+  }
+
+  @Override
+  public boolean isFinished() {
+    return true;
   }
 
 }

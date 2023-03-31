@@ -5,14 +5,15 @@
 package frc.robot.commands.Grabber;
 
 import frc.robot.subsystems.GrabberSubsystem;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants;
 
 /** GrabberCommand controls the grabber. */
-public class GrabberCloseCommand extends InstantCommand {
+public class GrabberCloseCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   // ££ Defines the subsystem and the controller
-  private final GrabberSubsystem m_GrabberSubsystem;
+  protected final GrabberSubsystem m_GrabberSubsystem;
 
   /**
    * Creates a new GrabberOpenCommand.
@@ -33,6 +34,11 @@ public class GrabberCloseCommand extends InstantCommand {
     
     m_GrabberSubsystem.closeGrabber();
 
+  }
+
+  @Override
+  public boolean isFinished() {
+    return true;
   }
 
 }

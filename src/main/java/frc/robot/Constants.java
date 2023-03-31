@@ -33,6 +33,8 @@ public final class Constants {
 
   // ££ Constants for the Grabber
   public static final class Grabber {
+    public static final double isAtSetpointThreshhold = 0.05;
+
     // ++ IDs for the motors:
     public static final int grabberOpenerMotorID = 16;
     public static final int wheelMotorOneID = 1;
@@ -74,7 +76,7 @@ public final class Constants {
     // ++ wheel spin speed constants
     public static final double openGrabberToWidthSetpoint = 0.44;
     public static final double intakeWheelSpeed = 10000;
-    public static final double ambientWheelSpeed = 1000;
+    public static final double ambientWheelSpeed = 4000;
     public static final double ejectWheelSpeed = -1000000000000000.0;
   }
 
@@ -164,10 +166,10 @@ public final class Constants {
       public static final boolean kTurningFieldRelative = true;
 
       // <> speed damper (flat constant supplied speed is multiplied by)
-      public static final double kDrivingSpeedDamper = 1.4; // <> meters per second
+      public static final double kDrivingSpeedDamper = 2; // <> meters per second
       public static final double kAngularSpeedDamper = 1 * Math.PI; // <> radians per second
       // <> max speed
-      public static final double kMaxMetersPerSecond = 4;
+      public static final double kMaxMetersPerSecond = 6;
       // <> this should be true
       public static final boolean kGyroReversed = false;
 
@@ -262,12 +264,12 @@ public final class Constants {
         public static final Rotation2d kMaxBalanceLeniency = Rotation2d.fromDegrees(1.75);
 
         // <> how long the robot must balance for the command to end
-        public static final double kBalanceTimeSeconds = 1.5;
+        public static final double kBalanceTimeSeconds = 1;
 
         // <> pid stuff while balancing
-        public static final double kP = 0.02;
+        public static final double kP = 0.024;
         public static final double kI = 0;
-        public static final double kD = 0.005;
+        public static final double kD = 0.0012;
 
         // <> max speed while balancing
         public static final double kMaxBalanceMetersPerSecond = 0.6;
@@ -292,7 +294,7 @@ public final class Constants {
     public static final double kDeadzone = 0.12;
 
     // <> max amount controller output can change per second
-    public static final double kRateLimitLeft = 2.5;
+    public static final double kRateLimitLeft = 1.85;
     public static final double kRateLimitRight = 3.4;
 
     // <> curve stuff
@@ -428,15 +430,15 @@ public final class Constants {
 
     public static class PlacementSetpoints {
       public static final class High {
-        public static final double pivot = 0.17; // :D this needs to be lower i think
-        public static final double extension = 1.601;
-        public static final double pitch = 0.66;
+        public static final double pivot = 0.15; // :D this needs to be lower i think
+        public static final double extension = Constants.WristAndArm.Limits.extensionMax; //1.601
+        public static final double pitch = 0.71;
         public static final Double roll = null;
       }
 
       public static final class Middle {
-        public static final double pivot = 0.15;
-        public static final double extension = 1.09;
+        public static final double pivot = 0.14;
+        public static final double extension = 1.19;
         public static final double pitch = 0.71;
         public static final Double roll = null;
       }
@@ -458,10 +460,10 @@ public final class Constants {
       }
 
       public static class Pivot {
-        public static final double P = 13.0 * 0.5;
+        public static final double P = 13.0 * 0.5 * 0;
         public static final double I = 0.00004*0; // 0
         public static final double D = 5*0; // 1
-        public static final double FF = 0.1;
+        public static final double FF = 0.1 * 0;
       }
 
       public static class Pitch {

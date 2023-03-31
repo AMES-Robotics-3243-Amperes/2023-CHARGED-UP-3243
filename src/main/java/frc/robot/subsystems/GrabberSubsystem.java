@@ -21,6 +21,19 @@ import frc.robot.Constants;
 
 public class GrabberSubsystem extends SubsystemBase {
 
+  public static enum GrabberState {
+    moving      (null),
+    fullOpen    (Constants.Grabber.openGrabberToWidthSetpoint),
+    partialOpen (Constants.Grabber.openGrabberSetpoint),
+    close       (Constants.Grabber.closedGrabberSetpoint);
+
+    public final Double position;
+
+    GrabberState(Double position) {
+      this.position = position;
+    }
+  }
+
   // ++ create motor objects, encoders, and PIDs
 
   // ++ grabberOpenerMotor opens and closes the sides of the grabber --
@@ -107,6 +120,18 @@ public class GrabberSubsystem extends SubsystemBase {
   /** ++ sets grabber open position */
   public void setGrabberPosition (double position) {
     grabberOpenerPID.setReference(position, ControlType.kPosition);
+  }
+
+  public GrabberState getGrabberState() {
+    if        (Math.abs(GrabberState.fullOpen.position    - grabberOpenerEncoder.getPosition()) < Constants.Grabber.isAtSetpointThreshhold) {
+      return GrabberState.fullOpen;
+    } else if (Math.abs(GrabberState.partialOpen.position - grabberOpenerEncoder.getPosition()) < Constants.Grabber.isAtSetpointThreshhold) {
+      return GrabberState.partialOpen;
+    } else if (Math.abs(GrabberState.close.position       - grabberOpenerEncoder.getPosition()) < Constants.Grabber.isAtSetpointThreshhold) {
+      return GrabberState.close;
+    } else {
+      return GrabberState.moving;
+    }
   }
 
   // public void spinCompliantWheels (double speed) {

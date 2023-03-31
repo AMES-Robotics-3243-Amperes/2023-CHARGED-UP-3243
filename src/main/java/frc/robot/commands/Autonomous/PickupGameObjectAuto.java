@@ -7,6 +7,7 @@ package frc.robot.commands.Autonomous;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.commands.Grabber.GrabberCloseCommand;
 import frc.robot.subsystems.GrabberSubsystem;
+import frc.robot.subsystems.GrabberSubsystem.GrabberState;
 
 public class PickupGameObjectAuto extends GrabberCloseCommand {
   
@@ -28,7 +29,9 @@ public class PickupGameObjectAuto extends GrabberCloseCommand {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return timeoutTimer.hasElapsed(timeoutDuration); // H! TODO Implement finding out whether the grabber is open and make this dependent on it
+    return 
+      timeoutTimer.hasElapsed(timeoutDuration) ||
+      m_GrabberSubsystem.getGrabberState() == GrabberState.close;
   }
 
 }
