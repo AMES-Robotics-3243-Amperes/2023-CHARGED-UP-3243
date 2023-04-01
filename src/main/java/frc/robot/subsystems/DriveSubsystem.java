@@ -12,6 +12,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveTrain.DriveConstants;
 import frc.robot.utility_classes.GeneralUtil;
@@ -137,6 +139,10 @@ public class DriveSubsystem extends SubsystemBase {
   public void drive(double xSpeed, double ySpeed, Rotation2d rotation, boolean fieldRelative) {
     double clampedGoal = GeneralUtil.clampRotation2d(rotation).getDegrees();
     double rotationSpeed = Math.toRadians(m_thetaPidController.calculate(getClampedHeading().getDegrees(), clampedGoal));
+
+    if (DriverStation.isAutonomous()) {
+      rotationSpeed = 0;
+    }
 
     // <> now that we got a speed, drive using raw speeds
     driveWithRawSpeeds(xSpeed, ySpeed, -rotationSpeed, fieldRelative);

@@ -5,7 +5,6 @@
 package frc.robot.commands.DriveTrain;
 
 import frc.robot.FieldPosManager;
-import frc.robot.Constants.DriveTrain.DriveConstants;
 import frc.robot.subsystems.DriveSubsystem;
 
 public class DriveOntoChargeCommand extends SwerveAutoMoveCommand {
@@ -35,7 +34,6 @@ public class DriveOntoChargeCommand extends SwerveAutoMoveCommand {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    boolean rotatedOnCharge = Math.abs(m_subsystem.getChargeLevel().getDegrees()) >= DriveConstants.AutoConstants.degreesBeforeConsideredOnCharge;
-    return super.isFinished() || rotatedOnCharge;
+    return super.isFinished();
   }
 }

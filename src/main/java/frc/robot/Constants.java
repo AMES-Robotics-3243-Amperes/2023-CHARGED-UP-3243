@@ -74,7 +74,7 @@ public final class Constants {
     public static final double wheelMotorDGain = 0.0000;
   
     // ++ wheel spin speed constants
-    public static final double openGrabberToWidthSetpoint = 0.44;
+    public static final double openGrabberToWidthSetpoint = 0.435;
     public static final double intakeWheelSpeed = 10000;
     public static final double ambientWheelSpeed = 4000;
     public static final double ejectWheelSpeed = -1000000000000000.0;
@@ -237,8 +237,6 @@ public final class Constants {
 
       // <> stuff pertaining to auto driving
       public static final class AutoConstants {
-        public static final double degreesBeforeConsideredOnCharge = 12;
-
         public static final double kP = 0.2;
         public static final double kI = 0;
         public static final double kD = 0;
@@ -246,17 +244,17 @@ public final class Constants {
         public static final double kGoalVelocityMagnitudeScalar = 2.8;
 
         public static final double kMaxVelocityMetersPerSecond = 1.5;
-        public static final double kMaxAccelerationMetersPerSecondSq = 1.5;
-        public static final double kMaxJerkMetersPerSecondCubed = 3;
+        public static final double kMaxAccelerationMetersPerSecondSq = 1.3;
+        public static final double kMaxJerkMetersPerSecondCubed = 3.5;
 
         public static final TrapezoidProfile.Constraints kConstraints = new TrapezoidProfile.Constraints(
           kMaxAccelerationMetersPerSecondSq, kMaxJerkMetersPerSecondCubed);
 
         public static final double kMaxMetersFromGoal = 0.06;
-        public static final Rotation2d kMaxRotationFromGoal = Rotation2d.fromDegrees(2);
+        public static final Rotation2d kMaxRotationFromGoal = Rotation2d.fromDegrees(180); // TODO: 2
 
         public static final double kMaxLenientMetersFromGoal = 0.2;
-        public static final Rotation2d kMaxLenientRotationFromGoal = Rotation2d.fromDegrees(6);
+        public static final Rotation2d kMaxLenientRotationFromGoal = Rotation2d.fromDegrees(180); // TODO: 6
       }
 
       public static final class BalanceConstants {
@@ -366,13 +364,13 @@ public final class Constants {
     }
 
     public static final class atSetpointThresholdsAuto {
-      public static final double extension = 0.02;
-      public static final double pivot = 0.02;
-      public static final double pitch = 0.02;
+      public static final double extension = 0.04;
+      public static final double pivot = 0.04;
+      public static final double pitch = 0.04;
       public static final double roll = 0.05;
     }
 
-    public static final double pivotOutputRange = 0.15;
+    public static final double pivotOutputRange = 0.2;
     public static final double pitchOutputRange = 0.3;
     public static final double extensionOutputRange = 0.5;
     public static final double rollOutputRange = 0.3;
@@ -417,7 +415,7 @@ public final class Constants {
     public static class PickupSetpointsLOW {
       public static final double pivot = 0.563;
       public static final double extension = 1.09;
-      public static final double pitch = 0.65;
+      public static final double pitch = 0.71;
       public static final Double roll = null;
     }
 
@@ -460,7 +458,7 @@ public final class Constants {
       }
 
       public static class Pivot {
-        public static final double P = 13.0 * 0.5;
+        public static final double P = 4.5;
         public static final double I = 0.00004*0; // 0
         public static final double D = 5; // 1
         public static final double FF = 0.1 * 0;
@@ -690,19 +688,19 @@ public final class Constants {
       // :D position of the robot's chassis:
       public static double scoringChassisPositionX = 1.85 + 0.02;
       public static Pose2d[] scoringPositions = {new Pose2d(Constants.FieldConstants.Blue.scoringChassisPositionX,
-        Constants.FieldConstants.targetPositionsY[0], new Rotation2d()), new Pose2d(
+        Constants.FieldConstants.targetPositionsY[0], new Rotation2d(0)), new Pose2d(
         Constants.FieldConstants.Blue.scoringChassisPositionX, Constants.FieldConstants.targetPositionsY[1],
-        new Rotation2d()), new Pose2d(Constants.FieldConstants.Blue.scoringChassisPositionX,
-        Constants.FieldConstants.targetPositionsY[2], new Rotation2d()), new Pose2d(
+        new Rotation2d(0)), new Pose2d(Constants.FieldConstants.Blue.scoringChassisPositionX,
+        Constants.FieldConstants.targetPositionsY[2], new Rotation2d(0)), new Pose2d(
         Constants.FieldConstants.Blue.scoringChassisPositionX, Constants.FieldConstants.targetPositionsY[3],
-        new Rotation2d()), new Pose2d(Constants.FieldConstants.Blue.scoringChassisPositionX,
-        Constants.FieldConstants.targetPositionsY[4], new Rotation2d()), new Pose2d(
+        new Rotation2d(0)), new Pose2d(Constants.FieldConstants.Blue.scoringChassisPositionX,
+        Constants.FieldConstants.targetPositionsY[4], new Rotation2d(0)), new Pose2d(
         Constants.FieldConstants.Blue.scoringChassisPositionX, Constants.FieldConstants.targetPositionsY[5],
-        new Rotation2d()), new Pose2d(Constants.FieldConstants.Blue.scoringChassisPositionX,
-        Constants.FieldConstants.targetPositionsY[6], new Rotation2d()), new Pose2d(
+        new Rotation2d(0)), new Pose2d(Constants.FieldConstants.Blue.scoringChassisPositionX,
+        Constants.FieldConstants.targetPositionsY[6], new Rotation2d(0)), new Pose2d(
         Constants.FieldConstants.Blue.scoringChassisPositionX, Constants.FieldConstants.targetPositionsY[7],
-        new Rotation2d()), new Pose2d(Constants.FieldConstants.Blue.scoringChassisPositionX,
-        Constants.FieldConstants.targetPositionsY[8], new Rotation2d())};
+        new Rotation2d(0)), new Pose2d(Constants.FieldConstants.Blue.scoringChassisPositionX,
+        Constants.FieldConstants.targetPositionsY[8], new Rotation2d(0))};
 
       public static Pose2d doubleLoadingZone = new Pose2d(new Translation2d(1.4, 6.75), new Rotation2d(Math.PI));
       public static Pose2d singleLoadingZone = new Pose2d(new Translation2d(2.342, 7), new Rotation2d(Math.PI / 2));
@@ -751,10 +749,10 @@ public final class Constants {
         Constants.FieldConstants.targetPositionsY[8], new Rotation2d(Math.PI))};
       public static Pose2d doubleLoadingZone = new Pose2d(new Translation2d(15, 6.75), new Rotation2d(0));
       public static Pose2d singleLoadingZone = new Pose2d(new Translation2d(14.199, 7), new Rotation2d(Math.PI / 2));
-      public static Pose2d chargeStationBottomLeft = new Pose2d(new Translation2d(12.046, 1.522), new Rotation2d(0));
-      public static Pose2d chargeStationTopRight = new Pose2d(new Translation2d(13.265, 3.979), new Rotation2d(0));
+      public static Pose2d chargeStationBottomLeft = new Pose2d(new Translation2d(12.046, 1.522), new Rotation2d(Math.PI));
+      public static Pose2d chargeStationTopRight = new Pose2d(new Translation2d(13.265, 3.979), new Rotation2d(Math.PI));
       public static Pose2d dividerTip = new Pose2d(new Translation2d(13.265, 5.487), new Rotation2d(0));
-      public static Pose2d chargeStationCenter = new Pose2d(new Translation2d(12.6555, 2.7505), new Rotation2d(0));
+      public static Pose2d chargeStationCenter = new Pose2d(new Translation2d(12.6555, 2.7505), new Rotation2d(Math.PI));
 
       public static final class autoPositions {
         public static final Pose2d[] lowerPath = {new Pose2d(new Translation2d(14.25, 0.75),

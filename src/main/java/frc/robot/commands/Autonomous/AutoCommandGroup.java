@@ -164,7 +164,7 @@ public class AutoCommandGroup extends SequentialCommandGroup {
     if (charge) {
       Pose2d intermediatePoint = new Pose2d(
         new Translation2d(nearChargeAvoidIntermediatePoint.getX(), m_posManager.getChargePoint(true).getY()),
-        nearChargeAvoidIntermediatePoint.getRotation());
+        m_posManager.getChargePoint(true).getRotation());
 
       autoCommands.add(new SwerveAutoMoveCommand(m_driveSubsystem, intermediatePoint,
         DriveConstants.AutoConstants.kMaxLenientMetersFromGoal,

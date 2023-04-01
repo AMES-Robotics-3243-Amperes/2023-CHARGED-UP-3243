@@ -187,9 +187,6 @@ public class SwerveAutoMoveCommand extends CommandBase {
     // <> we can easily figure out where we *should* be driving, so let this
     // function handle the acceleration limiting and actual driving
     driveWithGoalVelocity(goalVelocity);
-
-    SmartDashboard.putNumber("goalx", goalVelocity.getX());
-    SmartDashboard.putNumber("goaly", goalVelocity.getY());
   }
 
   @Override
