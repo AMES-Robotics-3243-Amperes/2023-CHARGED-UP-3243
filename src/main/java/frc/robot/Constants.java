@@ -54,7 +54,7 @@ public final class Constants {
 
     // ++ current limits
     public static final int hardOpenerMotorCurrentLimit = 30;
-    public static final int hardWheelMotorCurrentLimit = 30;
+    public static final int hardWheelMotorCurrentLimit = 30 * 0;
     public static final int softOpenerMotorCurrentLimit = 15; // ++ this will have to be changed to adequately
     // compress game pieces
     public static final int softWheelMotorCurrentLimit = 7; // ++ will have to be experimentally tuned
@@ -166,8 +166,8 @@ public final class Constants {
       public static final boolean kTurningFieldRelative = true;
 
       // <> speed damper (flat constant supplied speed is multiplied by)
-      public static final double kDrivingSpeedDamper = 3.8; // <> meters per second
-      public static final double kAngularSpeedDamper = 1.2 * Math.PI; // <> radians per second
+      public static final double kDrivingSpeedDamper = 0.8; // <> meters per second
+      public static final double kAngularSpeedDamper = 0.6 * Math.PI; // <> radians per second
       // <> max speed
       public static final double kMaxMetersPerSecond = 10;
       // <> this should be true
