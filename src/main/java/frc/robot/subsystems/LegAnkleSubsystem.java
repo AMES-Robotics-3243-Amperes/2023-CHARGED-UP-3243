@@ -84,33 +84,33 @@ public class LegAnkleSubsystem extends SubsystemBase {
   private SparkMaxPIDController pidPitch;
   private SparkMaxPIDController pidRoll;
   
-  private CANSparkMax motorPivot = new CANSparkMax(MotorIDs.armPivot, MotorType.kBrushless);
-  private CANSparkMax motorExtension = new CANSparkMax(MotorIDs.armExtension, MotorType.kBrushless);
-  private CANSparkMax motorPitchRight = new CANSparkMax(MotorIDs.WristPitchRight, MotorType.kBrushless);
-  private CANSparkMax motorPitchLeft = new CANSparkMax(MotorIDs.WristPitchLeft, MotorType.kBrushless);
-  private CANSparkMax motorRoll = new CANSparkMax(MotorIDs.WristRoll, MotorType.kBrushless);
+  public CANSparkMax motorPivot = new CANSparkMax(MotorIDs.armPivot, MotorType.kBrushless);
+  public CANSparkMax motorExtension = new CANSparkMax(MotorIDs.armExtension, MotorType.kBrushless);
+  public CANSparkMax motorPitchRight = new CANSparkMax(MotorIDs.WristPitchRight, MotorType.kBrushless);
+  public CANSparkMax motorPitchLeft = new CANSparkMax(MotorIDs.WristPitchLeft, MotorType.kBrushless);
+  public CANSparkMax motorRoll = new CANSparkMax(MotorIDs.WristRoll, MotorType.kBrushless);
 
   // H! This whole thing with aliases does actually work, I checked this
 
   /**An alias for the motor controller that leads pitch
    * H!
    */
-  private CANSparkMax motorPitchLeader = motorPitchLeft;
+  public CANSparkMax motorPitchLeader = motorPitchLeft;
   /**An alias for the motor controller that follows pitch
    * H!
    */
-  private CANSparkMax motorPitchFollower = motorPitchRight;
+  public CANSparkMax motorPitchFollower = motorPitchRight;
 
-  private SparkMaxAbsoluteEncoder encoderPivotAbsolute = motorPivot.getAbsoluteEncoder(Type.kDutyCycle);
-  private RelativeEncoder encoderPivotRelative = motorPivot.getEncoder();
-  private RelativeEncoder encoderExtension = motorExtension.getEncoder(/*Type.kDutyCycle*/);
-  private SemiAbsoluteEncoder encoderPitch;
-  private RelativeEncoder encoderPitchRelative;
-  private SparkMaxAbsoluteEncoder encoderPitchAbsolute = motorPitchLeader.getAbsoluteEncoder(Type.kDutyCycle);
-  private RelativeEncoder encoderPitchRight = motorPitchRight.getEncoder();
-  private RelativeEncoder encoderPitchLeft = motorPitchLeft.getEncoder();
-  private RelativeEncoder encoderRollRelative;
-  private SemiAbsoluteEncoder encoderRoll;
+  public SparkMaxAbsoluteEncoder encoderPivotAbsolute = motorPivot.getAbsoluteEncoder(Type.kDutyCycle);
+  public RelativeEncoder encoderPivotRelative = motorPivot.getEncoder();
+  public RelativeEncoder encoderExtension = motorExtension.getEncoder(/*Type.kDutyCycle*/);
+  public SemiAbsoluteEncoder encoderPitch;
+  public RelativeEncoder encoderPitchRelative;
+  public SparkMaxAbsoluteEncoder encoderPitchAbsolute = motorPitchLeader.getAbsoluteEncoder(Type.kDutyCycle);
+  public RelativeEncoder encoderPitchRight = motorPitchRight.getEncoder();
+  public RelativeEncoder encoderPitchLeft = motorPitchLeft.getEncoder();
+  public RelativeEncoder encoderRollRelative;
+  public SemiAbsoluteEncoder encoderRoll;
 
   private RelativeEncoder encoderPitchLeader = motorPitchLeader.getEncoder();
   private RelativeEncoder encoderPitchFollower = motorPitchFollower.getEncoder();
@@ -502,24 +502,6 @@ public class LegAnkleSubsystem extends SubsystemBase {
     // SmartDashboard.putNumber("targetY", kinematicSetpoints[1]);
     // SmartDashboard.putNumber("targetIKPitch", kinematicSetpoints[2]);
     // SmartDashboard.putNumber("targetIKRoll", kinematicSetpoints[3]);
-
-    // H! display the current setpoint positions
-    SmartDashboard.putNumber("targetPivot", targetPosition.pivot);
-    SmartDashboard.putNumber("targetExtension", targetPosition.extension);
-    SmartDashboard.putNumber("targetPitch", targetPosition.pitch);
-    SmartDashboard.putNumber("targetRoll", targetPosition.roll);
-
-    // H! display motor currents
-    SmartDashboard.putNumber("pivotCurrent", motorPivot.getOutputCurrent());    
-    SmartDashboard.putNumber("extensionCurrent", motorExtension.getOutputCurrent());
-    SmartDashboard.putNumber("pitchCurrent", motorPitchRight.getOutputCurrent());
-    SmartDashboard.putNumber("rollCurrent", motorRoll.getOutputCurrent());
-
-    // H! display current positions of the leg ankle
-    SmartDashboard.putNumber("pivotEncoder", encoderPivotAbsolute.getPosition());    
-    SmartDashboard.putNumber("extensionEncoder", encoderExtension.getPosition());
-    SmartDashboard.putNumber("pitchEncoder", encoderPitch.getPosition());
-    SmartDashboard.putNumber("rollEncoder", encoderRoll.getPosition());
 
     // SmartDashboard.putNumber("rollRelativeEncoder", encoderRoll.getSparkMAXEncoder().getPosition());
 
