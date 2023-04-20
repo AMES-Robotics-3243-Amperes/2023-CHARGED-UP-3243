@@ -166,7 +166,7 @@ public final class Constants {
       public static final boolean kTurningFieldRelative = true;
 
       // <> speed damper (flat constant supplied speed is multiplied by)
-      public static final double kDrivingSpeedDamper = 0.8; // <> meters per second
+      public static final double kDrivingSpeedDamper = 0.7; // <> meters per second
       public static final double kAngularSpeedDamper = 0.6 * Math.PI; // <> radians per second
       // <> max speed
       public static final double kMaxMetersPerSecond = 10;
@@ -221,13 +221,13 @@ public final class Constants {
       }
 
       public static final class FieldRelativeTurningConstants {
-        public static final double kP = 4;
+        public static final double kP = 3.4;
         public static final double kI = 0;
         public static final double kD = 0;
 
         // <> these values aren't exact but are pretty close
-        public static final double kMaxAngularAccelerationDegreesPerSecond = 350;
-        public static final double kMaxAngularVelocityDegreesPerSecond = 300;
+        public static final double kMaxAngularAccelerationDegreesPerSecond = 270;
+        public static final double kMaxAngularVelocityDegreesPerSecond = 100;
 
         public static final TrapezoidProfile.Constraints kConstraints = new TrapezoidProfile.Constraints(
           kMaxAngularVelocityDegreesPerSecond, kMaxAngularAccelerationDegreesPerSecond);
@@ -292,8 +292,8 @@ public final class Constants {
     public static final double kDeadzone = 0.12;
 
     // <> max amount controller output can change per second
-    public static final double kRateLimitLeft = 1.1;
-    public static final double kRateLimitRight = 3.2;
+    public static final double kRateLimitLeft = 4.3;
+    public static final double kRateLimitRight = 3.8;
 
     // <> curve stuff
     public static final int exponent1 = 1;
@@ -302,8 +302,8 @@ public final class Constants {
     public static final double coeff2 = 0.6;
 
     // <> fast and slow mode
-    public static final double leftTriggerSpeedMultiplier = 2.25;
-    public static final double rightTriggerSpeedMultiplier = 0.22;
+    public static final double leftTriggerSpeedMultiplier = 1.3;
+    public static final double rightTriggerSpeedMultiplier = 0.55;
 
     // <> ports
     public static int primaryControllerID = 0;
