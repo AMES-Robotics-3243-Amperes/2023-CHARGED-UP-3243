@@ -12,8 +12,10 @@ import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -113,8 +115,8 @@ public class LegAnkleSubsystem extends SubsystemBase {
   private RelativeEncoder encoderPitchLeader = motorPitchLeader.getEncoder();
   private RelativeEncoder encoderPitchFollower = motorPitchFollower.getEncoder();
 
-  private final LegAnklePosition startingPosition = IK(StartingPosition.x, StartingPosition.y, StartingPosition.pitch, StartingPosition.roll);
-  private LegAnklePosition targetPosition = startingPosition;
+  // private final LegAnklePosition startingPosition = Constants.AutomationConfiguration.initialLegAnklePositonMovement;
+  private LegAnklePosition targetPosition = Constants.AutomationConfiguration.initialLegAnklePositonMovement;
 
   // H! FOR TESTING PURPOSES
   private ShuffleboardTab tab = Shuffleboard.getTab("Arm Testing");
@@ -140,6 +142,8 @@ public class LegAnkleSubsystem extends SubsystemBase {
   private GenericEntry rollDValue;
   private GenericEntry rollFFValue;
 
+  public boolean calibrated = false;
+
   
   // :D Ahctipredocne
 
@@ -153,6 +157,7 @@ public class LegAnkleSubsystem extends SubsystemBase {
 
     encoderPitch = new SemiAbsoluteEncoder(motorPitchLeader);
     encoderRoll = new SemiAbsoluteEncoder(motorRoll);
+
 
     encoderPitchRelative = encoderPitch.getSparkMAXEncoder();
 
@@ -184,18 +189,18 @@ public class LegAnkleSubsystem extends SubsystemBase {
     // H! Set the position conversion factors. Pivot is commented out because it didn't want to set. It's burned to flash manually
     encoderExtension.setPositionConversionFactor(extensionEncoderConversionFactor);
     //armPivotEncoder.setPositionConversionFactor(1/10);//(1 / 100) * (35/50) * (21/32) = 0.00459357
-    encoderPivotAbsolute.setPositionConversionFactor(pivotEncoderConversionFactor); // TODO :D Check this value
+    encoderPivotAbsolute.setPositionConversionFactor(pivotEncoderConversionFactor);
     encoderPitchRight.setPositionConversionFactor(pitchEncoderConversionFactor);
     encoderPitchLeft.setPositionConversionFactor(pitchEncoderConversionFactor);
     
 
     
     //MotorPos startingMotorPosition = IK(StartingPosition.x, StartingPosition.y, StartingPosition.pitch, StartingPosition.roll);
-    encoderExtension.setPosition(startingPosition.extension/*minLength*/);
+    encoderExtension.setPosition(StartingPosition.extension/*minLength*/);
     
     //encoderPivotRelative.setPosition(startingPosition.pivot); // :D I commented this out because we are using a semiabsolute encoder now
     encoderPitch.setZeroOffset(wristPitchEncoderSetZeroOffset);
-    encoderPivotAbsolute.setZeroOffset(wristPivotEncoderSetZeroOffset); // TODO :D check this value
+    // encoderPivotAbsolute.setZeroOffset(wristPivotEncoderSetZeroOffset); // TODO :D keep this commented out
     // :D ^ this is in between the extreme values, so that the seam has the pivot facing where it physically can't go
     // :D the straight up direction is 0.43 on the absolute encoder
     // H! Set the left pitch encoder 
@@ -206,6 +211,9 @@ public class LegAnkleSubsystem extends SubsystemBase {
     //wristRollEncoder.setZeroOffset(wristRollEncoder.getPosition() - 0.5);
     // :D hi I turned this into a constant // H! Great!
     encoderRoll.setZeroOffset(wristRollEncoderSetZeroOffset);
+
+    encoderRoll.setInverted(true);
+
 
     encoderPitchRight.setPosition(encoderPitch.getPosition());
 
@@ -266,7 +274,13 @@ public class LegAnkleSubsystem extends SubsystemBase {
     rollIValue = tab.add("Rol I Value", PID.Roll.I).getEntry();
     rollDValue = tab.add("Rol D Value", PID.Roll.D).getEntry();
     rollFFValue = tab.add("Rol FF Value", PID.Roll.FF).getEntry();
+
+    targetPosition.roll = encoderRoll.getPosition();
+
+    // H! This just prevents the arm from pivoting at the start, in case you're worried it will eat Paul
+    // targetPosition.pivot = encoderPivotAbsolute.getPosition();
   }
+
 
 
 
@@ -419,12 +433,21 @@ public class LegAnkleSubsystem extends SubsystemBase {
   public boolean isArmPositioned() {
     // H! Return whether it's in the right position
     // H! TODO: TEST THIS // :D tested enough already, right?
-    return (
-      (targetPosition.pivot == null || Math.abs( encoderPivotAbsolute.getPosition() - targetPosition.pivot ) < atSetpointThreshold) &&
-      (targetPosition.extension == null || Math.abs( encoderExtension.getPosition() - targetPosition.extension ) < atSetpointThreshold) &&
-      (targetPosition.pitch == null || Math.abs( encoderPitch.getPosition() - targetPosition.pitch ) < atSetpointThreshold) &&
-      (targetPosition.roll == null || Math.abs( encoderRoll.getPosition() - targetPosition.roll ) < atSetpointThreshold)
-    );
+    if (DriverStation.isAutonomous()) {
+      return (
+        (targetPosition.pivot == null || Math.abs( encoderPivotAbsolute.getPosition() - targetPosition.pivot ) < atSetpointThresholdsAuto.extension) &&
+        (targetPosition.extension == null || Math.abs( encoderExtension.getPosition() - targetPosition.extension ) < atSetpointThresholdsAuto.pivot) &&
+        (targetPosition.pitch == null || Math.abs( encoderPitch.getPosition() - targetPosition.pitch ) < atSetpointThresholdsAuto.pitch) &&
+        (targetPosition.roll == null || Math.abs( encoderRoll.getPosition() - targetPosition.roll ) < atSetpointThresholdsAuto.roll)
+      );
+    } else {
+      return (
+        (targetPosition.pivot == null || Math.abs( encoderPivotAbsolute.getPosition() - targetPosition.pivot ) < atSetpointThresholdsTeleop.extension) &&
+        (targetPosition.extension == null || Math.abs( encoderExtension.getPosition() - targetPosition.extension ) < atSetpointThresholdsTeleop.pivot) &&
+        (targetPosition.pitch == null || Math.abs( encoderPitch.getPosition() - targetPosition.pitch ) < atSetpointThresholdsTeleop.pitch) &&
+        (targetPosition.roll == null || Math.abs( encoderRoll.getPosition() - targetPosition.roll ) < atSetpointThresholdsTeleop.roll)
+      );
+    }
   }
 
 
@@ -490,44 +513,54 @@ public class LegAnkleSubsystem extends SubsystemBase {
     
     // H! If the limit switch is triggered, we're at min extension.
     SmartDashboard.putBoolean("limit switch pressed", extensionLimitSwitch.get());
-    if (extensionLimitSwitch.get()) {
-      //encoderExtension.setPosition(Limits.extensionMin); Disabled because mechanical keeps not doing the limit switch properly
+    if(DriverStation.isTest()){
+      if(!calibrated){
+        motorPivot.set(0.07);
+      } else {
+        motorPivot.set(0);
+      }
+      SmartDashboard.putBoolean("switch piv", pivotLimitSwitch.get());
+      if (!calibrated && pivotLimitSwitch.get()) {
+        motorPivot.set(0);
+        encoderPivotAbsolute.setZeroOffset(MathUtil.inputModulus(encoderPivotAbsolute.getPosition() + encoderPivotAbsolute.getZeroOffset() - 0.51, 0, 1  ));
+        motorPivot.burnFlash();
+        calibrated = true;
+      }
+      SmartDashboard.putNumber("piv offset", encoderPivotAbsolute.getZeroOffset());
+
+      // targetPosition = new LegAnklePosition(null, null, null, null);
+    }else{
+      if (extensionLimitSwitch.get()) {
+        //encoderExtension.setPosition(Limits.extensionMin); Disabled because mechanical keeps not doing the limit switch properly
+      }
+
+      // ++ clamp values to be safe -------------------------------------------
+      // H! Prevent arm from extending too much or too little
+      targetPosition.extension = GeneralUtil.clamp(Limits.extensionMin, Limits.extensionMax, targetPosition.extension);
+
+      // H! Prevent arm from pivoting too much or too little
+      targetPosition.pivot = GeneralUtil.clamp(Limits.pivotMin, Limits.pivotMax, targetPosition.pivot);
+
+      // H! Prevent arm from pivoting too much or too little
+      targetPosition.pitch = GeneralUtil.clamp(Limits.pitchMin, Limits.pitchMax, targetPosition.pitch);
+
+      // H! Prevent arm from pivoting too much or too little
+      targetPosition.roll = GeneralUtil.clamp(Limits.rollMin, Limits.rollMax, targetPosition.roll);
+
+
+      // H! NOTE: If you add xy limits, make sure to remove the comment in constants saying they're only used with IK
+      
+      // ++ pivot
+      // targetPosition.pivot = clamp(minPivotPos, maxPivotPos, targetPosition.pivot);
+      // ++ pitch
+      // targetPosition.pitch = clamp (minPitchPos, maxPitchPos, targetPosition.pitch);
+      // ++ ----------------------
+
+      // H! Set the position refrences
+      targetPosition.applyToMotors(pidExtension, pidPivot, pidPitch,  pidRoll);
     }
-
-    // ++ clamp values to be safe -------------------------------------------
-    // H! Prevent arm from extending too much or too little
-    targetPosition.extension = GeneralUtil.clamp(Limits.extensionMin, Limits.extensionMax, targetPosition.extension);
-
-    // H! Prevent arm from pivoting too much or too little
-    targetPosition.pivot = GeneralUtil.clamp(Limits.pivotMin, Limits.pivotMax, targetPosition.pivot);
-
-    // H! Prevent arm from pivoting too much or too little
-    targetPosition.pitch = GeneralUtil.clamp(Limits.pitchMin, Limits.pitchMax, targetPosition.pitch);
-
-    // H! Prevent arm from pivoting too much or too little
-    targetPosition.roll = GeneralUtil.clamp(Limits.rollMin, Limits.rollMax, targetPosition.roll);
-
-
-    // H! NOTE: If you add xy limits, make sure to remove the comment in constants saying they're only used with IK
-    
-    // ++ pivot
-    // targetPosition.pivot = clamp(minPivotPos, maxPivotPos, targetPosition.pivot);
-    // ++ pitch
-    // targetPosition.pitch = clamp (minPitchPos, maxPitchPos, targetPosition.pitch);
-    // ++ ----------------------
-
-    // H! Set the position refrences
-    targetPosition.applyToMotors(pidExtension, pidPivot, pidPitch,  pidRoll);
   }
 
-
-
-  public void testPeriodic() {
-    // H! This is maybe right TODO actually test it
-    if (pivotLimitSwitch.get()) {
-      encoderPivotAbsolute.setZeroOffset(encoderPivotAbsolute.getZeroOffset() + 0.5);
-    }
-  }
 
 
 

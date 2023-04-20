@@ -6,8 +6,10 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
@@ -34,8 +36,18 @@ public class FieldPosManager {
   public Pose2d[] opposingScoringPositions;
   private Field2d field2d = new Field2d();
 
+  // <> photonvision is innacurate on charge station so that stuff disables photonvision
+  public boolean disablePhotonVision = false;
+
   public FieldPosManager() {
     setScoringPositions();
+  }
+
+  /**
+   * setter for disabling and enabling photonvision
+   */
+  public void togglePhotonVisionDisabled(boolean isDisabled) {
+    disablePhotonVision = isDisabled;
   }
 
   /**
@@ -44,13 +56,19 @@ public class FieldPosManager {
    */
   public void setScoringPositions() {
     allianceColor = DriverStation.getAlliance();
+    System.out.println(allianceColor);
+
     if (allianceColor != DriverStation.Alliance.Invalid && allianceColor != null) {
       if (allianceColor == DriverStation.Alliance.Red) {
         alliedScoringPositions = Constants.FieldConstants.Red.scoringPositions;
         opposingScoringPositions = Constants.FieldConstants.Blue.scoringPositions;
+
+        latestRobotPosition = new Pose2d(latestRobotPosition.getTranslation(), Rotation2d.fromDegrees(180));
       } else if (allianceColor == DriverStation.Alliance.Blue) {
         alliedScoringPositions = Constants.FieldConstants.Blue.scoringPositions;
         opposingScoringPositions = Constants.FieldConstants.Red.scoringPositions;
+
+        latestRobotPosition = new Pose2d(latestRobotPosition.getTranslation(), Rotation2d.fromDegrees(0));
       }
     } else {
       System.err.println("INVALID ALLIANCE COLOR IN FIELDPOSMANAGER");
@@ -88,6 +106,18 @@ public class FieldPosManager {
     hasPhotonPose = false;
   }
 
+  public Translation2d getCenterPieceOffset(boolean ofCurrentAlliance, double offsetMagnitude) {
+    if (allianceColor != DriverStation.Alliance.Invalid && allianceColor != null) {
+      if ((ofCurrentAlliance && allianceColor == DriverStation.Alliance.Red) || (!ofCurrentAlliance && allianceColor == DriverStation.Alliance.Blue)) {
+        return new Translation2d(offsetMagnitude, 0);
+      } else {
+        return new Translation2d(-offsetMagnitude, 0);
+      }
+    } else {
+      return new Translation2d();
+    }
+  }
+
   /**
    * This function is intended ONLY to be used by PhotonVisionSubsystem.
    * it updates the latest robot pose with photonvision data
@@ -95,8 +125,10 @@ public class FieldPosManager {
    * @param photonPose is the position as reported by the PhotonVisionSubsystem.
    */
   public void updateFieldPosWithPhotonVisionPose(Pose2d photonPose) {
-    setRobotPose(photonPose);
-    hasPhotonPose = true;
+    if (!disablePhotonVision) {
+      setRobotPose(photonPose);
+      hasPhotonPose = true;
+    }
   }
 
   /**
@@ -397,6 +429,22 @@ public class FieldPosManager {
     } else {
       System.err.println("INVALID ALLIANCE COLOR IN FIELDPOSMANAGER");
       return null;
+    }
+  }
+
+  /**
+   * <> returns the center of the charge station of the current alliance
+   */
+  public Pose2d getChargePoint(boolean ofCurrentAlliance) {
+    if (allianceColor != DriverStation.Alliance.Invalid && allianceColor != null) {
+      if ((ofCurrentAlliance && allianceColor == DriverStation.Alliance.Red) || (!ofCurrentAlliance && allianceColor == DriverStation.Alliance.Blue)) {
+        // :D red alliance poses
+        return Constants.FieldConstants.Red.chargeStationCenter;
+      } else {
+        return Constants.FieldConstants.Blue.chargeStationCenter;
+      }
+    } else {
+      return new Pose2d();
     }
   }
 

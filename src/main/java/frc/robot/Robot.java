@@ -4,7 +4,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -31,6 +33,7 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
 
     m_robotContainer.m_legAnkleSubsystem.updatePIDValues();
+    RobotContainer.fieldPosManager.setScoringPositions();
   }
 
   /**
@@ -61,14 +64,14 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+    m_robotContainer.autoInit();
+    m_robotContainer.m_legAnkleSubsystem.updatePIDValues();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
-
-    m_robotContainer.m_legAnkleSubsystem.updatePIDValues();
   }
 
   /** This function is called periodically during autonomous. */
@@ -85,10 +88,16 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
-    m_robotContainer.m_SwerveTeleopCommand.setReverse(false);
+    if (DriverStation.getAlliance() == Alliance.Red) {
+      m_robotContainer.m_SwerveTeleopCommand.setReverse(true);
+    } else {
+      m_robotContainer.m_SwerveTeleopCommand.setReverse(false);
+    }
     
     m_robotContainer.teleopInit();
     m_robotContainer.m_driveSubsystem.drive(0, 0, 0, true);
+
+    RobotContainer.fieldPosManager.togglePhotonVisionDisabled(false);
   }
 
   /** This function is called periodically during operator control. */
@@ -99,6 +108,8 @@ public class Robot extends TimedRobot {
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
+    m_robotContainer.testInit();
+
   }
 
   /** This function is called periodically during test mode. */

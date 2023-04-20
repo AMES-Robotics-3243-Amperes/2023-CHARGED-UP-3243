@@ -7,12 +7,13 @@ package frc.robot.commands.Autonomous;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.commands.Grabber.GrabberOpenCommand;
 import frc.robot.subsystems.GrabberSubsystem;
+import frc.robot.subsystems.GrabberSubsystem.GrabberState;
 import frc.robot.JoyUtil;
 
 public class ReleaseGameObjectAuto extends GrabberOpenCommand {
   
   protected Timer timeoutTimer = new Timer();
-  protected double timeoutDuration = 2.5;
+  protected double timeoutDuration = 0.75;
   protected boolean confirmed = false;
 
   /** Creates a new ReleaseGameObject. */
@@ -29,7 +30,9 @@ public class ReleaseGameObjectAuto extends GrabberOpenCommand {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return timeoutTimer.hasElapsed(timeoutDuration); // H! TODO Implement finding out whether the grabber is open and make this dependent on it
+    return 
+      timeoutTimer.hasElapsed(timeoutDuration) ||
+      m_GrabberSubsystem.getGrabberState() == GrabberState.fullOpen;
   }
 
 }

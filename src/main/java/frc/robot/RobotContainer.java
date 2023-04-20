@@ -26,8 +26,8 @@ import frc.robot.commands.LegAnkle.WristRollDefaultCommand;
 import frc.robot.commands.LegAnkle.WristRollUpCommand;
 import frc.robot.commands.LegAnkle.PickupPosition.MoveLegAnkleToPickupPositionCommand;
 import frc.robot.commands.LegAnkle.PickupPosition.MoveLegAnkleToPickupPositionCommandDoubleLoading;
-import frc.robot.commands.LegAnkle.PickupPosition.MoveLegAnkleToPickupPositionCommandLOW;
-import frc.robot.commands.LegAnkle.PickupPosition.MoveLegAnkleToPickupPositionCommandNormal;
+import frc.robot.commands.LegAnkle.PickupPosition.MoveLegAnkleToPickupPositionCommandSweep;
+import frc.robot.commands.LegAnkle.PickupPosition.MoveLegAnkleToPickupPositionCommandCrane;
 import frc.robot.commands.SnapToGridRoutine.SnapToGridCommand;
 import frc.robot.subsystems.*;
 
@@ -66,13 +66,13 @@ public class RobotContainer {
 
   // ++ ----- COMMANDS -------------
   public final SwerveTeleopCommand m_SwerveTeleopCommand = new SwerveTeleopCommand(m_driveSubsystem, primaryController);
-  public final BalanceCommand m_BalanceCommand = new BalanceCommand(m_driveSubsystem);
+  public final BalanceCommand m_BalanceCommand = new BalanceCommand(m_driveSubsystem, fieldPosManager);
   // public final MoveLegAnkleToPickupPositionCommand m_legAnkleToPickupCommand = new
   // MoveLegAnkleToPickupPositionCommand(
   //   m_legAnkleSubsystem);// :D duplicate??
   public final SnapToGridCommand m_SnapToGridCommand = new SnapToGridCommand(m_driveSubsystem, fieldPosManager, primaryController, secondaryController);
-  public final MoveLegAnkleToPickupPositionCommandNormal m_moveLegAnkleToPickupPositionCommandNormal = new MoveLegAnkleToPickupPositionCommandNormal(m_legAnkleSubsystem);
-  public final MoveLegAnkleToPickupPositionCommandLOW m_moveLegAnkleToPickupPositionCommandLOW = new MoveLegAnkleToPickupPositionCommandLOW(m_legAnkleSubsystem);
+  public final MoveLegAnkleToPickupPositionCommandCrane m_moveLegAnkleToPickupPositionCommandNormal = new MoveLegAnkleToPickupPositionCommandCrane(m_legAnkleSubsystem);
+  public final MoveLegAnkleToPickupPositionCommandSweep m_moveLegAnkleToPickupPositionCommandLOW = new MoveLegAnkleToPickupPositionCommandSweep(m_legAnkleSubsystem);
   public final MoveLegAnkleToPickupPositionCommandDoubleLoading m_moveLegAnkleToPickupPositionCommandDoubleLoading = new MoveLegAnkleToPickupPositionCommandDoubleLoading(m_legAnkleSubsystem);
   public final MoveLegAnkleToPickupPositionCommand m_MoveLegAnkleToPickupPositionCommand = new MoveLegAnkleToPickupPositionCommand(m_moveLegAnkleToPickupPositionCommandLOW, m_moveLegAnkleToPickupPositionCommandNormal, m_moveLegAnkleToPickupPositionCommandDoubleLoading, secondaryController);
 
@@ -103,7 +103,6 @@ public class RobotContainer {
    */
   public RobotContainer() {
     m_driveSubsystem.setDefaultCommand(m_SwerveTeleopCommand);
-
     m_legAnkleSubsystem.setDefaultCommand(m_manualLegAnkleCommand);
 
     //m_GrabberSubsystem.setDefaultCommand(m_grabCloseCommand);
@@ -131,10 +130,9 @@ public class RobotContainer {
    * {@link JoyUtil}
    */
   public void configureBindings() {
-    primaryController.x().toggleOnTrue(new LockSwerveWheelsCommand(m_driveSubsystem));
-    primaryController.a().toggleOnTrue(new SwerveAutoMoveCommand(m_driveSubsystem,
-      new ArrayList<Pose2d>(List.of(new Pose2d(new Translation2d(2.5, 2.75), Rotation2d.fromDegrees(0)), new Pose2d(new Translation2d(3, 1), Rotation2d.fromDegrees(0)), new Pose2d(new Translation2d(5, 1), Rotation2d.fromDegrees(0)), new Pose2d(new Translation2d(6, 3), Rotation2d.fromDegrees(0)), new Pose2d(new Translation2d(5, 4), Rotation2d.fromDegrees(0)), new Pose2d(new Translation2d(4, 5), Rotation2d.fromDegrees(0)), new Pose2d(new Translation2d(3, 4), Rotation2d.fromDegrees(0)), new Pose2d(new Translation2d(2.5, 2.75), Rotation2d.fromDegrees(0))))));
-    primaryController.b().toggleOnTrue(new SwerveAutoMoveCommand(m_driveSubsystem, new ArrayList<>(List.of(new Pose2d(new Translation2d(2, 2.748), Rotation2d.fromDegrees(180))))));
+    primaryController.x().whileTrue(new LockSwerveWheelsCommand(m_driveSubsystem));
+    primaryController.start().whileTrue(m_BalanceCommand);
+    primaryController.y().whileTrue(m_SnapToGridCommand); // :D hi i switched this to the primary controller
 
     secondaryController.rightBumper().onTrue(m_grabOpenCommand);
     secondaryController.rightBumper().onFalse(m_grabCloseCommand);
@@ -145,16 +143,21 @@ public class RobotContainer {
     secondaryController.a().onTrue(m_moveLegAnkleToNeutralPositionCommand);
     secondaryController.x().onTrue(m_MoveLegAnkleToPickupPositionCommand);
     secondaryController.y().onTrue(m_moveLegAnkleToPlacementPositionCommand); // :D DONE: test this at some point soon // ss changed to a to stop conflicts
-    primaryController.y().whileTrue(m_SnapToGridCommand); // :D hi i switched this to the primary controller
   }
 
   public void teleopInit() {}
+
+  public void autoInit() {
+    fieldPosManager.setScoringPositions();
+  }
 
   public Command getAutonomousCommand() {
     return new AutoCommandGroup(m_driveSubsystem, m_legAnkleSubsystem, m_shuffleboardSubsystem, m_GrabberSubsystem, fieldPosManager, secondaryController);
   }
 
-  public void testPeriodic() {
-    m_legAnkleSubsystem.testPeriodic();
+  public void testPeriodic() {}
+
+  public void testInit() {
+    m_legAnkleSubsystem.calibrated = false;
   }
 }

@@ -21,6 +21,19 @@ import frc.robot.Constants;
 
 public class GrabberSubsystem extends SubsystemBase {
 
+  public static enum GrabberState {
+    moving      (null),
+    fullOpen    (Constants.Grabber.openGrabberToWidthSetpoint),
+    partialOpen (Constants.Grabber.openGrabberSetpoint),
+    close       (Constants.Grabber.closedGrabberSetpoint);
+
+    public final Double position;
+
+    GrabberState(Double position) {
+      this.position = position;
+    }
+  }
+
   // ++ create motor objects, encoders, and PIDs
 
   // ++ grabberOpenerMotor opens and closes the sides of the grabber --
@@ -45,6 +58,11 @@ public class GrabberSubsystem extends SubsystemBase {
   // ++ create PID objects
   private SparkMaxPIDController wheelMotorOnePID;
   private SparkMaxPIDController wheelMotorTwoPID;
+  
+  
+  private RelativeEncoder grabberRelativeEncoder;
+  private RelativeEncoder compliantRelativeEncoder1;
+  private RelativeEncoder compliantRelativeEncoder2;
 
 
  
@@ -53,6 +71,7 @@ public class GrabberSubsystem extends SubsystemBase {
   public GrabberSubsystem() {
     
     // ++ initializes opener objects
+    grabberRelativeEncoder = grabberOpenerMotor.getEncoder();
     grabberOpenerEncoder = grabberOpenerMotor.getAbsoluteEncoder(Type.kDutyCycle);
     //    grabberOpenerEncoder.setPositionConversionFactor(Constants.Grabber.grabberMotorOpenerGearRatio);
     grabberOpenerPID = grabberOpenerMotor.getPIDController();
@@ -62,6 +81,8 @@ public class GrabberSubsystem extends SubsystemBase {
     grabberOpenerEncoder.setZeroOffset(0.65);
     
     // ++ initializes wheel objects
+    compliantRelativeEncoder1 = wheelMotorOne.getEncoder();
+    compliantRelativeEncoder2 = wheelMotorTwo.getEncoder();
     // wheelMotorEncoderOne = wheelMotorOne.getEncoder();
     // wheelMotorEncoderTwo = wheelMotorTwo.getEncoder();
     // wheelMotorEncoderOne.setVelocityConversionFactor(Constants.Grabber.wheelMotorGearRatio);
@@ -101,6 +122,18 @@ public class GrabberSubsystem extends SubsystemBase {
     grabberOpenerPID.setReference(position, ControlType.kPosition);
   }
 
+  public GrabberState getGrabberState() {
+    if        (Math.abs(GrabberState.fullOpen.position    - grabberOpenerEncoder.getPosition()) < Constants.Grabber.isAtSetpointThreshhold) {
+      return GrabberState.fullOpen;
+    } else if (Math.abs(GrabberState.partialOpen.position - grabberOpenerEncoder.getPosition()) < Constants.Grabber.isAtSetpointThreshhold) {
+      return GrabberState.partialOpen;
+    } else if (Math.abs(GrabberState.close.position       - grabberOpenerEncoder.getPosition()) < Constants.Grabber.isAtSetpointThreshhold) {
+      return GrabberState.close;
+    } else {
+      return GrabberState.moving;
+    }
+  }
+
   // public void spinCompliantWheels (double speed) {
   //   wheelMotorOne.set(speed);
   //   wheelMotorOne.set(speed);
@@ -118,13 +151,12 @@ public class GrabberSubsystem extends SubsystemBase {
   }
 
   public void ejectObject () {
-    setGrabberPosition(Constants.Grabber.openGrabberToWidthSetpoint + 0.1);
+    setGrabberPosition(Constants.Grabber.openGrabberToWidthSetpoint);
     setGrabberWheelSpeeds(Constants.Grabber.ejectWheelSpeed);
   }
 
   /** ++ closes grabber */
-  public void 
-  closeGrabber () {
+  public void closeGrabber () {
     setGrabberPosition(Constants.Grabber.closedGrabberSetpoint);
     setGrabberWheelSpeeds(Constants.Grabber.ambientWheelSpeed);
   }
@@ -155,6 +187,10 @@ public class GrabberSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+
+    SmartDashboard.putNumber("grabber", grabberOpenerMotor.getAppliedOutput());
+    SmartDashboard.putNumber("wheel1", wheelMotorOne.getAppliedOutput());
+    SmartDashboard.putNumber("wheel2", wheelMotorTwo.getAppliedOutput());
     // This method will be called once per scheduler run
     
     // SmartDashboard.putNumber("Actual Current", grabberOpenerMotor.getOutputCurrent());

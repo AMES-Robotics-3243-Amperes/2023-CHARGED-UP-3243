@@ -49,7 +49,7 @@ public class ManualLegAnkleCommand extends CommandBase {
     //&& Fast/slow mode for the LegAnkle using analog triggers
     m_subsystem.changeMotorPositions(
       MathUtil.applyDeadband(m_controller.getRightTriggerAxis() - m_controller.getLeftTriggerAxis(), JoyUtilConstants.kDeadzone) / 200,
-      m_controller.getLeftY() / -150,
+      m_controller.getLeftY() / -300,
       m_controller.getRightY() / -150,
       (m_controller.getRightX()) / 200
     );

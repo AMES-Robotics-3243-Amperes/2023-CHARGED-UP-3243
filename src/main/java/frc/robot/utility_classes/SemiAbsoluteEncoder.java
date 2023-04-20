@@ -25,6 +25,11 @@ public class SemiAbsoluteEncoder {
     
    }
 
+   public void setInverted(boolean inverted){
+      absolute.setInverted(inverted);
+      relative.setPosition(absolute.getPosition() * absConversionFactor); 
+   }
+
    /**
     * returns the numbers of rotations
     */

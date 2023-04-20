@@ -4,10 +4,10 @@
 
 package frc.robot.commands.Autonomous;
 
-import frc.robot.commands.LegAnkle.PickupPosition.MoveLegAnkleToPickupPositionCommandLOW;
+import frc.robot.commands.LegAnkle.PickupPosition.MoveLegAnkleToPickupPositionCommandSweep;
 import frc.robot.subsystems.LegAnkleSubsystem;
 
-public class MoveArmToPickupTargetAuto extends MoveLegAnkleToPickupPositionCommandLOW {
+public class MoveArmToPickupTargetAuto extends MoveLegAnkleToPickupPositionCommandSweep {
   LegAnkleSubsystem legAnkleSubsystem;
   public MoveArmToPickupTargetAuto(LegAnkleSubsystem legAnkleSubsystem) {
     super(legAnkleSubsystem);

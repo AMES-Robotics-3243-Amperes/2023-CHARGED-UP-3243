@@ -5,6 +5,7 @@
 package frc.robot.commands.DriveTrain;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveTrain.DriveConstants;
 import frc.robot.JoyUtil;
@@ -20,9 +21,6 @@ public class SwerveTeleopCommand extends CommandBase {
 
   // <> driving needs to be reversed if on red alliance
   private boolean reverse;
-
-  // <> this is the current goal angle for field relative turning
-  private Rotation2d fieldRelativeTurningGoal = Rotation2d.fromDegrees(0);
 
   /**
    * Creates a new SwerveTeleopCommand.
@@ -56,10 +54,11 @@ public class SwerveTeleopCommand extends CommandBase {
 
     if (fieldRelativeDriving && Math.sqrt(controllerRightX * controllerRightX + controllerRightY * controllerRightY) <= 0.8) {
       // <> field relative driving, but no angle specified
-      m_driveSubsystem.drive(xSpeed, ySpeed, fieldRelativeTurningGoal, true);
+      m_driveSubsystem.drive(xSpeed, ySpeed, m_driveSubsystem.getHeading(), true);
     } else if (fieldRelativeDriving) {
       // <> field relative turning, so get an angle
-      fieldRelativeTurningGoal = Rotation2d.fromRadians(Math.atan2(-controllerRightX, -controllerRightY));
+      double rotationOffsetRadians = reverse ? Math.PI: 0;
+      Rotation2d fieldRelativeTurningGoal = Rotation2d.fromRadians(Math.atan2(-controllerRightX, -controllerRightY) + rotationOffsetRadians);
 
       m_driveSubsystem.drive(xSpeed, ySpeed, fieldRelativeTurningGoal, true);
     } else {
@@ -67,7 +66,6 @@ public class SwerveTeleopCommand extends CommandBase {
       double rotationSpeed = controllerRightX * DriveConstants.kAngularSpeedDamper;
 
       m_driveSubsystem.drive(xSpeed, ySpeed, rotationSpeed, false);
-      fieldRelativeTurningGoal = m_driveSubsystem.getHeading();
     }
   }
 

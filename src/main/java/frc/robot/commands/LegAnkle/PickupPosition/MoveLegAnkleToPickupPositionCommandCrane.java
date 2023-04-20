@@ -10,32 +10,34 @@ import frc.robot.JoyUtil;
 import frc.robot.commands.LegAnkle.MoveLegAnkleToPositionCommand;
 import frc.robot.subsystems.LegAnkleSubsystem;
 
-public class MoveLegAnkleToPickupPositionCommandDoubleLoading extends SequentialCommandGroup {
+public class MoveLegAnkleToPickupPositionCommandCrane extends SequentialCommandGroup { // :D TODO: this should move pivot first, then wrist
+
+  // <> public class Dog extends AxiomOfCompleteness {}
 
   /** Creates a new MoveLegAnkleToPickupPositionCommand. 
    * 
-   * This will move the leg ankle to the double loading station pickup position. It will end when it is in an acceptable margin of the setpoints.
+   * This will move the leg ankle to the normal pickup position. It will end when it is in an acceptable margin of the setpoints.
    * 
    * @param legAnkleSubsystem The {@link LegAnkleSubsystem} that this is controlling.
   */
-  public MoveLegAnkleToPickupPositionCommandDoubleLoading(LegAnkleSubsystem legAnkleSubsystem) {
+  public MoveLegAnkleToPickupPositionCommandCrane(LegAnkleSubsystem legAnkleSubsystem) {
     addCommands(
       new MoveLegAnkleToPositionCommand(legAnkleSubsystem, 
-        Constants.AutomationConfiguration.legAnkleDoubleLoadingPosition.extension, 
+       Constants.AutomationConfiguration.legAnklePickupPositionCrane.extension, 
         null, 
         null, 
         null
       ),
       new MoveLegAnkleToPositionCommand(legAnkleSubsystem, 
-        Constants.AutomationConfiguration.legAnkleDoubleLoadingPosition.extension, 
+        Constants.AutomationConfiguration.legAnklePickupPositionCrane.extension, 
+        Constants.AutomationConfiguration.legAnklePickupPositionCrane.pivot, 
         null, 
-        Constants.AutomationConfiguration.legAnkleDoubleLoadingPosition.pitch, 
         null
       ),
       new MoveLegAnkleToPositionCommand(legAnkleSubsystem, 
-        Constants.AutomationConfiguration.legAnkleDoubleLoadingPosition.extension, 
-        Constants.AutomationConfiguration.legAnkleDoubleLoadingPosition.pivot, 
-        Constants.AutomationConfiguration.legAnkleDoubleLoadingPosition.pitch, 
+        Constants.AutomationConfiguration.legAnklePickupPositionCrane.extension, 
+        Constants.AutomationConfiguration.legAnklePickupPositionCrane.pivot, 
+        Constants.AutomationConfiguration.legAnklePickupPositionCrane.pitch, 
         null
       )
     );

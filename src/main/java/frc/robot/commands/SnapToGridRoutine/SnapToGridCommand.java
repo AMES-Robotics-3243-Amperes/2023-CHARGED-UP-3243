@@ -11,6 +11,7 @@ import frc.robot.FieldPosManager;
 import frc.robot.JoyUtil;
 import frc.robot.commands.DriveTrain.SwerveAutoMoveCommand;
 import frc.robot.subsystems.*;
+import frc.robot.utility_classes.GeneralUtil;
 
 public class SnapToGridCommand extends SwerveAutoMoveCommand { // :D hi after looking over this, it looks like due to the fact that only one command
   private final FieldPosManager m_FieldPosManager;
@@ -56,26 +57,25 @@ public class SnapToGridCommand extends SwerveAutoMoveCommand { // :D hi after lo
     if(m_PrimaryController.getPOVRight() && !lastPOVRight){
       // ss if blue, right means subtract 1
       if (m_FieldPosManager.allianceColor == Alliance.Blue) {
-        index--;
+        index++;
       } // ss if red, right means add 1
       else if (m_FieldPosManager.allianceColor == Alliance.Red) {
-        index++;
-      }
-      index = (int)MathUtil.inputModulus(index, 0, 8);
-
-      // ss change the goal to the new index
-      changeGoal(m_FieldPosManager.get2dFieldObjectPose(FieldPosManager.fieldSpot2d.scoringPosition, true, index));
-    }
-    if(m_PrimaryController.getPOVLeft() && !lastPOVLeft){
-      // ss if blue, left means add 1
-      if (m_FieldPosManager.allianceColor == Alliance.Blue) {
-        index++;
-      } // ss if red, left means subtract 1
-      else if (m_FieldPosManager.allianceColor == Alliance.Red) {
         index--;
       }
-      index = (int)MathUtil.inputModulus(index, 0, 8);
-
+      index = (int)GeneralUtil.clamp(0, 8, index);
+      
+      // ss change the goal to the new index
+      changeGoal(m_FieldPosManager.get2dFieldObjectPose(FieldPosManager.fieldSpot2d.scoringPosition, true, index));
+    } else if(m_PrimaryController.getPOVLeft() && !lastPOVLeft){
+      // ss if blue, left means add 1
+      if (m_FieldPosManager.allianceColor == Alliance.Blue) {
+        index--;
+      } // ss if red, left means subtract 1
+      else if (m_FieldPosManager.allianceColor == Alliance.Red) {
+        index++;
+      }
+      index = (int)GeneralUtil.clamp(0, 8, index);
+      
       // ss change the goal to the new index
       changeGoal(m_FieldPosManager.get2dFieldObjectPose(FieldPosManager.fieldSpot2d.scoringPosition, true, index));
     }

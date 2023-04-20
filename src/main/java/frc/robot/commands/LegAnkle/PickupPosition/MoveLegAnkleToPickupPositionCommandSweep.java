@@ -10,32 +10,33 @@ import frc.robot.JoyUtil;
 import frc.robot.commands.LegAnkle.MoveLegAnkleToPositionCommand;
 import frc.robot.subsystems.LegAnkleSubsystem;
 
-public class MoveLegAnkleToPickupPositionCommandDoubleLoading extends SequentialCommandGroup {
+public class MoveLegAnkleToPickupPositionCommandSweep extends SequentialCommandGroup {
 
   /** Creates a new MoveLegAnkleToPickupPositionCommand. 
    * 
-   * This will move the leg ankle to the double loading station pickup position. It will end when it is in an acceptable margin of the setpoints.
+   * This will move the leg ankle to the low pickup position. It will end when it is in an acceptable margin of the setpoints.
+   * First, it will move the wrist to the correct angle, and then move the whole assembly to the corret position.
    * 
    * @param legAnkleSubsystem The {@link LegAnkleSubsystem} that this is controlling.
   */
-  public MoveLegAnkleToPickupPositionCommandDoubleLoading(LegAnkleSubsystem legAnkleSubsystem) {
+  public MoveLegAnkleToPickupPositionCommandSweep(LegAnkleSubsystem legAnkleSubsystem) {
     addCommands(
       new MoveLegAnkleToPositionCommand(legAnkleSubsystem, 
-        Constants.AutomationConfiguration.legAnkleDoubleLoadingPosition.extension, 
         null, 
         null, 
+        Constants.AutomationConfiguration.legAnklePickupPositionSweep.pitch, 
         null
       ),
       new MoveLegAnkleToPositionCommand(legAnkleSubsystem, 
-        Constants.AutomationConfiguration.legAnkleDoubleLoadingPosition.extension, 
+        Constants.AutomationConfiguration.legAnklePickupPositionSweep.extension, 
         null, 
-        Constants.AutomationConfiguration.legAnkleDoubleLoadingPosition.pitch, 
+        Constants.AutomationConfiguration.legAnklePickupPositionSweep.pitch, 
         null
       ),
       new MoveLegAnkleToPositionCommand(legAnkleSubsystem, 
-        Constants.AutomationConfiguration.legAnkleDoubleLoadingPosition.extension, 
-        Constants.AutomationConfiguration.legAnkleDoubleLoadingPosition.pivot, 
-        Constants.AutomationConfiguration.legAnkleDoubleLoadingPosition.pitch, 
+        Constants.AutomationConfiguration.legAnklePickupPositionSweep.extension, 
+        Constants.AutomationConfiguration.legAnklePickupPositionSweep.pivot, 
+        Constants.AutomationConfiguration.legAnklePickupPositionSweep.pitch, 
         null
       )
     );

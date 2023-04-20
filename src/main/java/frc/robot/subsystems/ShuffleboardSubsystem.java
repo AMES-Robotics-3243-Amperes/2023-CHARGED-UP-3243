@@ -63,6 +63,7 @@ public class ShuffleboardSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("doCharge", true);
     
     SmartDashboard.putBoolean("doLowerRoute", true);
+    SmartDashboard.putBoolean("exitCommunityONLY", false);
 
     SmartDashboard.putNumber("placePiece0", -1);
 
@@ -104,6 +105,7 @@ public class ShuffleboardSubsystem extends SubsystemBase {
     //&& Shows whether any of the drivetrain motors are overheating
     SmartDashboard.putBoolean("motorTooHot", driveTrainSubsystem.getMotorsOkTemperature());
 
+
     //&& Shows whether PhotonVision is registering an Apriltag
     SmartDashboard.putBoolean("seeingApriltag", photonVisionSubsystem.seeingApriltag());
 
@@ -118,6 +120,9 @@ public class ShuffleboardSubsystem extends SubsystemBase {
 
         return SmartDashboard.getBoolean("doCharge", true);
 
+      // case goUpperRoute:
+
+      //   return SmartDashboard.getBoolean("doUpperRoute", true);
 
       case goLowerRoute:
 
@@ -181,6 +186,6 @@ public class ShuffleboardSubsystem extends SubsystemBase {
 
   public enum ShuffleBoardInput {
     piece0Place, piece1Pickup, piece1Place, piece2Pickup, piece2Place, piece3Pickup, piece3Place, goChargeStation,
-    chargeStationPosition, goUpperRoute, goLowerRoute, piece0IsCube, piece1IsCube, piece2IsCube
+    chargeStationPosition, goUpperRoute, goLowerRoute, piece0IsCube, piece1IsCube, piece2IsCube, exitCommunityONLY
   }
 }
