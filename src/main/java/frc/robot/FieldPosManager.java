@@ -254,6 +254,7 @@ public class FieldPosManager {
           case singleLoadingZone:
             return Constants.FieldConstants.Red.singleLoadingZone;
 
+            
           case chargeStationBottomLeft:
             return Constants.FieldConstants.Red.chargeStationBottomLeft;
 

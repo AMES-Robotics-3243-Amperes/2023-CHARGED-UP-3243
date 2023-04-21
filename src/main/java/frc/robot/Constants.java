@@ -243,8 +243,8 @@ public final class Constants {
 
         public static final double kGoalVelocityMagnitudeScalar = 2.8;
 
-        public static final double kMaxVelocityMetersPerSecond = 1.5;
-        public static final double kMaxAccelerationMetersPerSecondSq = 1.3;
+        public static final double kMaxVelocityMetersPerSecond = 0.6;
+        public static final double kMaxAccelerationMetersPerSecondSq = 0.8;
         public static final double kMaxJerkMetersPerSecondCubed = 3.5;
 
         public static final TrapezoidProfile.Constraints kConstraints = new TrapezoidProfile.Constraints(

@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DriveTrain.DriveConstants;
 import frc.robot.commands.Autonomous.AutoCommandGroup;
 import frc.robot.commands.DriveTrain.BalanceCommand;
+import frc.robot.commands.DriveTrain.FollowID4;
 import frc.robot.commands.DriveTrain.LockSwerveWheelsCommand;
 import frc.robot.commands.DriveTrain.SwerveAutoMoveCommand;
 import frc.robot.commands.DriveTrain.SwerveTeleopCommand;
@@ -66,11 +67,9 @@ public class RobotContainer {
 
   // ++ ----- COMMANDS -------------
   public final SwerveTeleopCommand m_SwerveTeleopCommand = new SwerveTeleopCommand(m_driveSubsystem, primaryController);
-  public final BalanceCommand m_BalanceCommand = new BalanceCommand(m_driveSubsystem, fieldPosManager);
   // public final MoveLegAnkleToPickupPositionCommand m_legAnkleToPickupCommand = new
   // MoveLegAnkleToPickupPositionCommand(
   //   m_legAnkleSubsystem);// :D duplicate??
-  public final SnapToGridCommand m_SnapToGridCommand = new SnapToGridCommand(m_driveSubsystem, fieldPosManager, primaryController, secondaryController);
   public final MoveLegAnkleToPickupPositionCommandCrane m_moveLegAnkleToPickupPositionCommandNormal = new MoveLegAnkleToPickupPositionCommandCrane(m_legAnkleSubsystem);
   public final MoveLegAnkleToPickupPositionCommandSweep m_moveLegAnkleToPickupPositionCommandLOW = new MoveLegAnkleToPickupPositionCommandSweep(m_legAnkleSubsystem);
   public final MoveLegAnkleToPickupPositionCommandDoubleLoading m_moveLegAnkleToPickupPositionCommandDoubleLoading = new MoveLegAnkleToPickupPositionCommandDoubleLoading(m_legAnkleSubsystem);
@@ -130,14 +129,12 @@ public class RobotContainer {
    * {@link JoyUtil}
    */
   public void configureBindings() {
-    primaryController.x().whileTrue(new LockSwerveWheelsCommand(m_driveSubsystem));
-    primaryController.start().whileTrue(m_BalanceCommand);
-    primaryController.y().whileTrue(m_SnapToGridCommand); // :D hi i switched this to the primary controller
-
     secondaryController.rightBumper().onTrue(m_grabOpenCommand);
     secondaryController.rightBumper().onFalse(m_grabCloseCommand);
     secondaryController.leftBumper().onTrue(m_wristRollUpCommand);
     secondaryController.leftBumper().onFalse(m_wristRollDefaultCommand);
+
+    primaryController.a().whileTrue(new FollowID4(m_driveSubsystem, fieldPosManager));
     //secondaryController.x().onTrue(m_legAnkleToPickupCommand);
     // to use the x button
     /* H! Remove the move to setpoint buttons
@@ -153,7 +150,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return new AutoCommandGroup(m_driveSubsystem, m_legAnkleSubsystem, m_shuffleboardSubsystem, m_GrabberSubsystem, fieldPosManager, secondaryController);
+    return null;
   }
 
   public void testPeriodic() {}
