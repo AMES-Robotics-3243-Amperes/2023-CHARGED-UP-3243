@@ -370,10 +370,10 @@ public final class Constants {
       public static final double roll = 0.05;
     }
 
-    public static final double pivotOutputRange = 0.2;
-    public static final double pitchOutputRange = 0.3;
-    public static final double extensionOutputRange = 0.5;
-    public static final double rollOutputRange = 0.3;
+    public static final double pivotOutputRange = 0.2 - 0.1;
+    public static final double pitchOutputRange = 0.3 - 0.1;
+    public static final double extensionOutputRange = 0.5 - 0.25;
+    public static final double rollOutputRange = 0.3 - 0.15;
     public static final double wristRollEncoderSetZeroOffset = 0.89855;
     public static final double wristPitchEncoderSetZeroOffset = 0.2574555;// :D prev value: 0.866; I changed it because it was flipped 180 degrees from what the standard on the pivot is
     public static final double wristPivotEncoderSetZeroOffset = 0.196875;
@@ -493,13 +493,13 @@ public final class Constants {
 
       // H! Extension limits
       public static final double extensionMin = 0.92804 /*+ 0.05*/;
-      public static final double extensionMax = extensionMin + Units.inchesToMeters(30);// :D approx. equals: 1.69; prev value: 1.5494
+      public static final double extensionMax = extensionMin + Units.inchesToMeters(30 - 5);// H! I changed this again, with the -5 // :D approx. equals: 1.69; prev value: 1.5494
       // ++ pivot limits
-      public static final double pivotMax = 0.58;
-      public static final double pivotMin = 0.075;
+      public static final double pivotMax = 0.59  - 0.04;
+      public static final double pivotMin = 0.075 + 0.04;
       // H! Pitch limitssssessss
-      public static final double pitchMax = 0.95;
-      public static final double pitchMin = 0.05;
+      public static final double pitchMax = 0.95 - 0.05;
+      public static final double pitchMin = 0.05 + 0.05;
       // H! Roll lime-ets
       public static final double rollMax = 1.0;
       public static final double rollMin = 0.5;
