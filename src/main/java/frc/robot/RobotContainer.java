@@ -140,9 +140,10 @@ public class RobotContainer {
     secondaryController.leftBumper().onFalse(m_wristRollDefaultCommand);
     //secondaryController.x().onTrue(m_legAnkleToPickupCommand);
     // to use the x button
+    /* H! Remove the move to setpoint buttons
     secondaryController.a().onTrue(m_moveLegAnkleToNeutralPositionCommand);
     secondaryController.x().onTrue(m_MoveLegAnkleToPickupPositionCommand);
-    secondaryController.y().onTrue(m_moveLegAnkleToPlacementPositionCommand); // :D DONE: test this at some point soon // ss changed to a to stop conflicts
+    secondaryController.y().onTrue(m_moveLegAnkleToPlacementPositionCommand); */// :D DONE: test this at some point soon // ss changed to a to stop conflicts
   }
 
   public void teleopInit() {}
