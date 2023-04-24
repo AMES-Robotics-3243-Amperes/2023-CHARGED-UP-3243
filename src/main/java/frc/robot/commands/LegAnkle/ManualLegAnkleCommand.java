@@ -17,6 +17,7 @@ public class ManualLegAnkleCommand extends CommandBase {
    */
   private final LegAnkleSubsystem m_subsystem;
   private final JoyUtil m_controller;
+  private boolean previousIsControlled;
 
   public LegAnkleSubsystem legAnkleSubsystem;
 
@@ -41,7 +42,8 @@ public class ManualLegAnkleCommand extends CommandBase {
    
     LegAnklePosition currentTargets = m_subsystem.getManualSetpoints();
 
-    if(m_controller.getLeftY() == 0 ){
+
+    if(previousIsControlled == true){
       legAnkleSubsystem.setMotorPositions(legAnkleSubsystem.getMotorPosition());
     }
    
@@ -73,6 +75,14 @@ public class ManualLegAnkleCommand extends CommandBase {
 
     m_subsystem.deleteThis_doSetpoint = true;
     //m_subsystem.resetRoll();
+
+    previousIsControlled = 
+       m_controller.getLeftY() != 0 
+    || m_controller.getLeftX() != 0 
+    || m_controller.getRightY() != 0 
+    || m_controller.getRightX() != 0 
+    || m_controller.getRightTriggerAxis() != 0 
+    || m_controller.getLeftTriggerAxis() != 0;
 
   }
 
