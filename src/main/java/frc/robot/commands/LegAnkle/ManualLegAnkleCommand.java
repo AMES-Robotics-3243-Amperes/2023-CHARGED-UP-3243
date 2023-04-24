@@ -18,6 +18,8 @@ public class ManualLegAnkleCommand extends CommandBase {
   private final LegAnkleSubsystem m_subsystem;
   private final JoyUtil m_controller;
 
+  public LegAnkleSubsystem legAnkleSubsystem;
+
   public ManualLegAnkleCommand(LegAnkleSubsystem subsystem, JoyUtil controller) {
     m_subsystem = subsystem;
     m_controller = controller;
@@ -35,7 +37,14 @@ public class ManualLegAnkleCommand extends CommandBase {
     // m_subsystem.moveByXYTheta(JoyUtil.posWithDeadzone( m_controller.getLeftX() ), JoyUtil.posWithDeadzone(
     // -m_controller.getLeftY() ), JoyUtil.posWithDeadzone( m_controller.getRightY() ), JoyUtil.posWithDeadzone(
     // -m_controller.getRightX()));
+
+   
     LegAnklePosition currentTargets = m_subsystem.getManualSetpoints();
+
+    if(m_controller.getLeftY() == 0 ){
+      legAnkleSubsystem.setMotorPositions(legAnkleSubsystem.getMotorPosition());
+    }
+   
 
     /*m_subsystem.setMotorPositions(
       currentTargets.pivot, 
