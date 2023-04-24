@@ -237,13 +237,13 @@ public final class Constants {
 
       // <> stuff pertaining to auto driving
       public static final class AutoConstants {
-        public static final double kP = 0.2;
+        public static final double kP = 0.22;
         public static final double kI = 0;
         public static final double kD = 0;
 
         public static final double kGoalVelocityMagnitudeScalar = 2.8;
 
-        public static final double kMaxVelocityMetersPerSecond = 0.6;
+        public static final double kMaxVelocityMetersPerSecond = 1.4;
         public static final double kMaxAccelerationMetersPerSecondSq = 0.8;
         public static final double kMaxJerkMetersPerSecondCubed = 3.5;
 
