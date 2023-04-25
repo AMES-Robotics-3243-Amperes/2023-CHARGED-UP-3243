@@ -17,7 +17,7 @@ public class ManualLegAnkleCommand extends CommandBase {
    */
   private final LegAnkleSubsystem m_subsystem;
   private final JoyUtil m_controller;
-  private boolean previousIsControlled;
+  private boolean previousWasControlled;
 
   public LegAnkleSubsystem legAnkleSubsystem;
 
@@ -42,8 +42,9 @@ public class ManualLegAnkleCommand extends CommandBase {
    
     LegAnklePosition currentTargets = m_subsystem.getManualSetpoints();
 
+    //&& If the PREVIOUS cycle was controlled, and the CURRENT cycle is not, set motor positions to the current motor positions
 
-    if(previousIsControlled == true){
+    if(previousWasControlled){
       legAnkleSubsystem.setMotorPositions(legAnkleSubsystem.getMotorPosition());
     }
    
@@ -76,7 +77,10 @@ public class ManualLegAnkleCommand extends CommandBase {
     m_subsystem.deleteThis_doSetpoint = true;
     //m_subsystem.resetRoll();
 
-    previousIsControlled = 
+    //&& If all these values are NOT equal to zero, previousWasControlled is true.
+    //&& It will not reset until the end of the cycle, so it always has the previous cycle's information
+
+    previousWasControlled = 
        m_controller.getLeftY() != 0 
     || m_controller.getLeftX() != 0 
     || m_controller.getRightY() != 0 
