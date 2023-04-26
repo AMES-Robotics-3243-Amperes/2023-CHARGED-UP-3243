@@ -370,7 +370,7 @@ public final class Constants {
       public static final double roll = 0.05;
     }
 
-    public static final double pivotOutputRange = 0.2 - 0.1;
+    public static final double pivotOutputRange = 0.2 - 0.05;
     public static final double pitchOutputRange = 0.3 - 0.1;
     public static final double extensionOutputRange = 0.5 - 0.25;
     public static final double rollOutputRange = 0.3 - 0.15;
